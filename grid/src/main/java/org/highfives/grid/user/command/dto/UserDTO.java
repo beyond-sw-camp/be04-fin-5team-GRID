@@ -36,4 +36,22 @@ public class UserDTO {
     private int teamId;
     private int departmentId;
 
+    public UserDTO(String email, String pwd, String name, int employeeNumber, Gender gender,
+                    String phoneNumber, String joinTime, JoinType joinType, WorkType workType,
+                    String contractStartTime, int dutiesId, int positionId, int teamId, int departmentId) {
+        this.email = email;
+        this.pwd = pwd;
+        this.name = name;
+        this.employeeNumber = employeeNumber;
+        this.gender = gender;
+        this.phoneNumber = phoneNumber;
+        this.joinTime = joinTime;
+        this.joinType = joinType;
+        this.workType = workType;
+        this.contractStartTime = contractStartTime;
+        this.dutiesId = dutiesId;
+        this.positionId = positionId;
+        this.teamId = teamId;
+        this.departmentId = departmentId;
+    }
 }

@@ -3,15 +3,17 @@ package org.highfives.grid.user.command.aggregate;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Table(name="employee")
 @Getter
 @RequiredArgsConstructor
+@ToString
 public class Employee {
 
     @Id
-    @Column(name = "id")
+    @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @Column
@@ -62,6 +64,7 @@ public class Employee {
     private int teamId;
     @Column(name = "department_id")
     private int departmentId;
+
 
     public Employee(String email, String pwd, String name, int employeeNumber, Gender gender,
                    String phoneNumber, String joinTime, JoinType joinType, WorkType workType,

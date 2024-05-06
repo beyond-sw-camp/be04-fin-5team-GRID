@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 
-@RestController
+@RestController("userCommand")
 @RequestMapping("/user")
 public class UserController {
 
@@ -25,6 +25,42 @@ public class UserController {
     }
 
     // 신규 유저 등록
+    /*
+* 프론트에서 받아야할 내용 :
+
+1. email
+2. pwd
+3. name
+4. employee_number
+5. gender
+6. phone_number
+7. join_type
+8. work_type
+9. 직책 id
+10. 직위 id
+11. 팀 id
+12. 부서 id
+13. 입사일
+
+회원 가입 시 엔터티로 넘겨야할 내용 :
+1. email
+2. pwd
+3. name
+4. employee_number
+5. gender
+6. phone_number
+7. join_time
+8. join_type
+9. work_type
+10. constract_start_time
+11. 직책 id
+12. 직위 id
+13. 팀 id
+14. 부서 id
+*
+*
+* */
+
     @PostMapping
     public ResponseEntity<ResponseVO> addNewUser(@RequestBody UserDTO givenInfo) {
 
@@ -38,12 +74,13 @@ public class UserController {
     private UserDTO inputTimeData(UserDTO givenInfo) {
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String currentTime = simpleDateFormat.format(LocalDate.now());
+        String joinTime = simpleDateFormat.format(givenInfo.getJoinTime());
 
-        givenInfo.setJoinTime(currentTime);
-        givenInfo.setContractStartTime(currentTime);
+        givenInfo.setJoinTime(joinTime);
+        givenInfo.setContractStartTime(joinTime);
 
         return givenInfo;
     }
 
 }
+
