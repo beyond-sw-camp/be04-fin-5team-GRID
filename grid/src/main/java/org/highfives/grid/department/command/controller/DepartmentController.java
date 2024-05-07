@@ -38,5 +38,12 @@ public class DepartmentController {
         return ResponseEntity.ok().body(departmentList);
     }
 
+    /* 설명. 부서 정보 수정 기능*/
+    @PatchMapping("/update")
+    public ResponseEntity<DepartmentDTO> modifyDepartment(@RequestBody DepartmentDTO departmentDTO) {
+        DepartmentDTO departmentList = departmentService.modifyDepartment(departmentDTO);
+
+        return ResponseEntity.ok().body(departmentList);
+    }
 
 }

@@ -68,4 +68,31 @@ class DepartmentServiceImplTest {
 
         assertThat(departmentDTOList.getName()).isEqualTo("테스트");
     }
+
+    @Test
+    @DisplayName("부서 정보 수정")
+    @Transactional
+    void modifyDepartment() {
+
+        // Given
+        DepartmentDTO departmentDTO = DepartmentDTO.builder()
+                .id(9)
+                .name("update")
+                .highDepartment("update2")
+                .departmentStatus("N")
+                .leaderId(1)
+                .build();
+
+        // When
+        DepartmentDTO departmentDTOList = departmentService.modifyDepartment(departmentDTO);
+
+        // Then
+
+        assertThat(departmentDTOList.getName()).isEqualTo("update");
+        assertThat(departmentDTOList.getHighDepartment()).isEqualTo("update2");
+        assertThat(departmentDTOList.getLeaderId()).isEqualTo(1);
+
+    }
+
+
 }

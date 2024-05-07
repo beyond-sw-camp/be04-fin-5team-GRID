@@ -42,6 +42,7 @@ public class DepartmentServiceImpl implements DepartmentService{
             findDepartmentInfo = departmentRepository.findById(id).orElseThrow(() -> new DepartmentNotFoundException("Department not found with id: " + id));
 
             return mapper.map(findDepartmentInfo, DepartmentDTO.class);
+
         } catch (DepartmentNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -80,5 +81,45 @@ public class DepartmentServiceImpl implements DepartmentService{
         departmentRepository.save(department);
 
         return mapper.map(department, DepartmentDTO.class);
+    }
+
+    @Override
+    public DepartmentDTO modifyDepartment(DepartmentDTO departmentDTO) {
+        DepartmentDTO currentDepartmentInfo = findDepartmentById(departmentDTO.getId());
+
+        if(!departmentDTO.getDepartmentStatus().equals("N")) {
+            Department department = Department.builder()
+                    .id(departmentDTO.getId())
+                    .name(departmentDTO.getName())
+                    .departmentStatus(departmentDTO.getDepartmentStatus())
+                    .startTime(currentDepartmentInfo.getStartTime())
+                    .endTime(departmentDTO.getEndTime())
+                    .highDepartment(departmentDTO.getHighDepartment())
+                    .memberCnt(currentDepartmentInfo.getMemberCnt())
+                    .leaderId(departmentDTO.getLeaderId())
+                    .build();
+
+            departmentRepository.save(department);
+            return mapper.map(department, DepartmentDTO.class);
+        }
+
+            Date currentDate = new Date();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String formattedDate = dateFormat.format(currentDate);
+
+            Department department = Department.builder()
+                    .id(departmentDTO.getId())
+                    .name(departmentDTO.getName())
+                    .departmentStatus(departmentDTO.getDepartmentStatus())
+                    .startTime(currentDepartmentInfo.getStartTime())
+                    .endTime(formattedDate)
+                    .highDepartment(departmentDTO.getHighDepartment())
+                    .memberCnt(currentDepartmentInfo.getMemberCnt())
+                    .leaderId(departmentDTO.getLeaderId())
+                    .build();
+
+            departmentRepository.save(department);
+            return mapper.map(department, DepartmentDTO.class);
+
     }
 }
