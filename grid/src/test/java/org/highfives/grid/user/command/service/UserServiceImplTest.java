@@ -29,7 +29,7 @@ class UserServiceImplTest {
         return Stream.of(
                 Arguments.of(new UserDTO(
                         "testemail@gamil.com","testpwd","tester1",
-                        2499999, Gender.M,"010-1234-5678",
+                        "2499999", Gender.M,"010-1234-5678",
                         "2024-05-06", JoinType.NEW, WorkType.R, "2024-05-06",
                         4,1,1,1)
                 )

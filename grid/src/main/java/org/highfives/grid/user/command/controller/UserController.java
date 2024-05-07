@@ -2,16 +2,14 @@ package org.highfives.grid.user.command.controller;
 
 import org.highfives.grid.user.command.dto.UserDTO;
 import org.highfives.grid.user.command.service.UserService;
-import org.highfives.grid.user.command.vo.ResponseVO;
+import org.highfives.grid.user.command.vo.ResAddOneUserVO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 
 @RestController("userCommand")
 @RequestMapping("/user")
@@ -24,7 +22,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    // 신규 유저 등록
+
     /*
 * 프론트에서 받아야할 내용 :
 
@@ -60,27 +58,49 @@ public class UserController {
 *
 *
 * */
-
+    // 유저 등록시 예외 사항? : 중복값 발생,
+    // 신규 유저 등록 (단일)
     @PostMapping
-    public ResponseEntity<ResponseVO> addNewUser(@RequestBody UserDTO givenInfo) {
+    public ResponseEntity<ResAddOneUserVO> addNewUser(@RequestBody UserDTO givenInfo) {
 
-        givenInfo = inputTimeData(givenInfo);
+        System.out.println("givenInfo = " + givenInfo);
 
-        userService.addNewUser(givenInfo);
+        if(duplicateInfoCheck(givenInfo) != null)
+            return duplicateInfoCheck(givenInfo);
+
+        givenInfo.setContractStartTime(givenInfo.getJoinTime());
+
+        System.out.println("givenInfo2 = " + givenInfo);
+        UserDTO result = userService.addNewUser(givenInfo);
+
+        ResAddOneUserVO response = new ResAddOneUserVO (
+            201, "Success to add new user", "/user", result);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    private ResponseEntity<ResAddOneUserVO> duplicateInfoCheck(UserDTO givenInfo) {
+
+        if (!userService.duplicateInfoCheck(givenInfo).equals("OK")) {
+
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ResAddOneUserVO (400,
+                            userService.duplicateInfoCheck(givenInfo),
+                            "/user", null ));
+        }
 
         return null;
     }
-
-    private UserDTO inputTimeData(UserDTO givenInfo) {
-
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String joinTime = simpleDateFormat.format(givenInfo.getJoinTime());
-
-        givenInfo.setJoinTime(joinTime);
-        givenInfo.setContractStartTime(joinTime);
-
-        return givenInfo;
-    }
+//    private UserDTO inputTimeData(UserDTO givenInfo) {
+//
+//        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+//        String joinTime = simpleDateFormat.format(givenInfo.getJoinTime());
+//
+//        givenInfo.setJoinTime(joinTime);
+//        givenInfo.setContractStartTime(joinTime);
+//
+//        return givenInfo;
+//    }
 
 }
 

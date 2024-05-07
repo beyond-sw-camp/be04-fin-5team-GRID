@@ -23,7 +23,7 @@ public class Employee {
     @Column
     private String name;
     @Column
-    private int employeeNumber;
+    private String employeeNumber;
     @Column
     private Gender gender;
     @Column
@@ -66,7 +66,7 @@ public class Employee {
     private int departmentId;
 
 
-    public Employee(String email, String pwd, String name, int employeeNumber, Gender gender,
+    public Employee(String email, String pwd, String name, String employeeNumber, Gender gender,
                    String phoneNumber, String joinTime, JoinType joinType, WorkType workType,
                    String contractStartTime, int dutiesId, int positionId, int teamId, int departmentId) {
         this.email = email;
