@@ -94,5 +94,21 @@ class DepartmentServiceImplTest {
 
     }
 
+    @Test
+    @DisplayName("부서 삭제")
+    @Transactional
+    void deleteDepartment() {
+
+        // Given
+        int id = 1;
+
+        // When
+        departmentService.deleteDepartment(id);
+
+//        DepartmentDTO departmentById = departmentService.findDepartmentById(id);
+        // Then
+
+    }
+
 
 }

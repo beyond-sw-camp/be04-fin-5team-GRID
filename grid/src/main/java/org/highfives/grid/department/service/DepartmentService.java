@@ -13,4 +13,6 @@ public interface DepartmentService {
     DepartmentDTO registDepartment(DepartmentDTO departmentDTO);
 
     DepartmentDTO modifyDepartment(DepartmentDTO departmentDTO);
+
+    void deleteDepartment(int id);
 }

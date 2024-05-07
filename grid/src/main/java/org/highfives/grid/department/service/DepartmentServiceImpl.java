@@ -93,7 +93,7 @@ public class DepartmentServiceImpl implements DepartmentService{
                     .name(departmentDTO.getName())
                     .departmentStatus(departmentDTO.getDepartmentStatus())
                     .startTime(currentDepartmentInfo.getStartTime())
-                    .endTime(departmentDTO.getEndTime())
+                    .endTime(currentDepartmentInfo.getEndTime())
                     .highDepartment(departmentDTO.getHighDepartment())
                     .memberCnt(currentDepartmentInfo.getMemberCnt())
                     .leaderId(departmentDTO.getLeaderId())
@@ -120,6 +120,13 @@ public class DepartmentServiceImpl implements DepartmentService{
 
             departmentRepository.save(department);
             return mapper.map(department, DepartmentDTO.class);
+
+    }
+
+    @Override
+    public void deleteDepartment(int id) {
+
+        departmentRepository.deleteById(id);
 
     }
 }
