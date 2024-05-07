@@ -10,6 +10,9 @@ import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class DepartmentServiceImpl implements DepartmentService{
 
@@ -42,4 +45,21 @@ public class DepartmentServiceImpl implements DepartmentService{
         }
 
     }
+
+    @Override
+    public List<DepartmentDTO> findAllDepartment() {
+
+        // 부서 정보 리스트
+        List<Department> departmentList = departmentMapper.findAllDepartment();
+
+        // DTO형식으로 변환
+        List<DepartmentDTO> departmentDTOList = new ArrayList<>();
+
+        for (Department department : departmentList) {
+            departmentDTOList.add(mapper.map(department, DepartmentDTO.class));
+        }
+
+        return departmentDTOList;
+    }
+
 }

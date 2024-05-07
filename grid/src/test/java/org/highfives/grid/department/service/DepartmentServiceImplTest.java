@@ -1,25 +1,27 @@
-package org.highfives.grid.department.controller;
+package org.highfives.grid.department.service;
 
-import org.assertj.core.api.Assertions;
 import org.highfives.grid.department.dto.DepartmentDTO;
-import org.highfives.grid.department.service.DepartmentService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-class DepartmentControllerTest {
+class DepartmentServiceImplTest {
 
     private final DepartmentService departmentService;
 
     @Autowired
-    public DepartmentControllerTest(DepartmentService departmentService) {
+    public DepartmentServiceImplTest(DepartmentService departmentService) {
         this.departmentService = departmentService;
     }
+
+
 
     @Test
     @DisplayName("부서 조회")
@@ -31,8 +33,20 @@ class DepartmentControllerTest {
         DepartmentDTO departmentById = departmentService.findDepartmentById(id);
 
         // Then
-        System.out.println(departmentById.getId());
         assertThat(departmentById.getId()).isEqualTo(id);
 
+    }
+
+    @Test
+    @DisplayName("부서 전체 조회")
+    void findAllDepartment() {
+
+        // Given
+
+        // When
+        List<DepartmentDTO> departmentDTOList = departmentService.findAllDepartment();
+
+        // Then
+        assertThat(departmentDTOList).isNotNull();
     }
 }
