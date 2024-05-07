@@ -8,4 +8,7 @@ public interface DepartmentService {
     DepartmentDTO findDepartmentById(int id);
 
     List<DepartmentDTO> findAllDepartment();
+
+
+    DepartmentDTO registDepartment(DepartmentDTO departmentDTO);
 }

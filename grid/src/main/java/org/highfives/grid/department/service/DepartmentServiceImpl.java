@@ -10,7 +10,9 @@ import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -62,4 +64,21 @@ public class DepartmentServiceImpl implements DepartmentService{
         return departmentDTOList;
     }
 
+    @Override
+    public DepartmentDTO registDepartment(DepartmentDTO departmentDTO) {
+
+        Date currentDate = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String formattedDate = dateFormat.format(currentDate);
+
+        Department department = Department.builder()
+                .name(departmentDTO.getName())
+                .departmentStatus("Y")
+                .startTime(formattedDate)
+                .build();
+
+        departmentRepository.save(department);
+
+        return mapper.map(department, DepartmentDTO.class);
+    }
 }
