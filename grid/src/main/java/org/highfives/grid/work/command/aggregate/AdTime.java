@@ -3,6 +3,7 @@ package org.highfives.grid.work.command.aggregate;
 import jakarta.persistence.*;
 import lombok.*;
 
+// 엔티티 패키지 따로
 @Entity
 @Table(name="ad_time")
 //@NoArgsConstructor
