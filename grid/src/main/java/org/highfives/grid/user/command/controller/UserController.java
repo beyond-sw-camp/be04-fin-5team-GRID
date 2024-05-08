@@ -2,17 +2,17 @@ package org.highfives.grid.user.command.controller;
 
 import org.highfives.grid.user.command.dto.UserDTO;
 import org.highfives.grid.user.command.service.UserService;
-import org.highfives.grid.user.command.vo.ResAddOneUserVO;
+import org.highfives.grid.user.command.vo.ResAddUserVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController("userCommand")
-@RequestMapping("/user")
+@RequestMapping("/users")
 public class UserController {
 
     private final UserService userService;
@@ -61,46 +61,63 @@ public class UserController {
     // 유저 등록시 예외 사항? : 중복값 발생,
     // 신규 유저 등록 (단일)
     @PostMapping
-    public ResponseEntity<ResAddOneUserVO> addNewUser(@RequestBody UserDTO givenInfo) {
-
-        System.out.println("givenInfo = " + givenInfo);
+    public ResponseEntity<ResAddUserVO> addNewUser(@RequestBody UserDTO givenInfo) {
 
         if(duplicateInfoCheck(givenInfo) != null)
             return duplicateInfoCheck(givenInfo);
 
         givenInfo.setContractStartTime(givenInfo.getJoinTime());
 
-        System.out.println("givenInfo2 = " + givenInfo);
-        UserDTO result = userService.addNewUser(givenInfo);
+        List<UserDTO> result = new ArrayList<>();
+        result.add(userService.addNewUser(givenInfo));
 
-        ResAddOneUserVO response = new ResAddOneUserVO (
+        ResAddUserVO response = new ResAddUserVO(
             201, "Success to add new user", "/user", result);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    private ResponseEntity<ResAddOneUserVO> duplicateInfoCheck(UserDTO givenInfo) {
+    // 다중 유저 가입 ( csv 파싱은 프론트에서 처리해서 json 형태로 전해준다고 가정 )
+    @PostMapping("/list")
+    public ResponseEntity<ResAddUserVO> addMultiUser(@RequestBody List<UserDTO> infoList) {
 
-        if (!userService.duplicateInfoCheck(givenInfo).equals("OK")) {
+        List<UserDTO> givenInfo = new ArrayList<>();
+
+        for (UserDTO info : infoList) {
+
+            if( duplicateInfoCheck(info) != null )
+                return duplicateInfoCheck(info);
+            givenInfo.add(info);
+            System.out.println("info = " + info);
+        }
+
+        return null;
+    }
+
+//    private List<UserDTO> CSVtoDTO(MultipartFile givenFile) throws IOException {
+//
+//        List<UserDTO> result = new ArrayList<>();
+//
+//
+//        Reader reader = new InputStreamReader(givenFile.getInputStream());
+//        CSVReader csvReader = new CSVReaderBuilder(reader).withSkipLines(1).build();
+//
+//
+//        return null;
+//    }
+
+    private ResponseEntity<ResAddUserVO> duplicateInfoCheck(UserDTO givenInfo) {
+
+        if (!userService.duplicateInfoCheck(givenInfo).equals("Pass")) {
 
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ResAddOneUserVO (400,
+                    .body(new ResAddUserVO(400,
                             userService.duplicateInfoCheck(givenInfo),
                             "/user", null ));
         }
 
         return null;
     }
-//    private UserDTO inputTimeData(UserDTO givenInfo) {
-//
-//        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-//        String joinTime = simpleDateFormat.format(givenInfo.getJoinTime());
-//
-//        givenInfo.setJoinTime(joinTime);
-//        givenInfo.setContractStartTime(joinTime);
-//
-//        return givenInfo;
-//    }
 
 }
 

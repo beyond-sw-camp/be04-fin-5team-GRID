@@ -46,24 +46,20 @@ public class UserServiceImpl implements UserService{
     public String duplicateInfoCheck(UserDTO givenInfo) {
 
         try {
-            userRepository.findByEmail(givenInfo.getEmail());
-            return "Duplicated Email";
-        } catch (Exception e){
-            return "OK";
+            if (userRepository.findByEmail(givenInfo.getEmail()) != null) {
+                return "Duplicated Email";
+            }
+            if (userRepository.findByEmployeeNumber(givenInfo.getEmployeeNumber()) != null) {
+                return "Duplicated Employee Number";
+            }
+            if (userRepository.findByPhoneNumber(givenInfo.getPhoneNumber()) != null) {
+                return "Duplicated Phone Number";
+            }
+        } catch (Exception e) {
+            return "NP";
         }
 
-        if ( userRepository.findByEmail(givenInfo.getEmail()) != null){
-            System.out.println(" 여기까지 " );
-            return "Duplicated Email";}
-
-        if ( userRepository.findByEmployeeNumber(givenInfo.getEmployeeNumber()) != null)
-        {return "Duplicated Employee Number";}
-
-
-        if ( userRepository.findByPhoneNumber(givenInfo.getPhoneNumber()) != null)
-        {return "Duplicated Phone Number";}
-
-        return "OK";
+        return "Pass";
     }
 
     private Employee dTOtoEntity(UserDTO givenInfo) {

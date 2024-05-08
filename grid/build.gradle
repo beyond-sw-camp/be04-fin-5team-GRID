@@ -32,20 +32,18 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
 
-	// 모델 매퍼
+	// ModelMapper
 	implementation 'org.modelmapper:modelmapper:3.2.0'
 	// jasypt
 	implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5'
 	// aws S3
 	implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.4.4'
-
 	// JWT 토큰 생성을 위한 라이브러리
-	// https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-api
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
-	// https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-impl
 	implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
-	// https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-jackson
 	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+	// OpenCSV
+	implementation 'com.opencsv:opencsv:5.9'
 }
 
 tasks.named('test') {
