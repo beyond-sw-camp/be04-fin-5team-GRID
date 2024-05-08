@@ -1,11 +1,8 @@
 package org.highfives.grid.work.command.service;
 
-import net.bytebuddy.implementation.bind.annotation.Argument;
 import org.highfives.grid.work.command.dto.AdTimeDTO;
-import org.highfives.grid.work.query.dto.QueryAdTimeDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -14,8 +11,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.stream.Stream;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class AdTimeServiceImplTest {

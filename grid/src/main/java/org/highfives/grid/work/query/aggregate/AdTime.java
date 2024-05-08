@@ -14,7 +14,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class QueryAdTime {
+public class AdTime {
 
     @Id
     @Column
@@ -30,12 +30,12 @@ public class QueryAdTime {
     @Column(name = "employee_id")
     private int employeeId;
 
-    public QueryAdTime(String startTime, int employeeId) {
+    public AdTime(String startTime, int employeeId) {
         this.startTime = startTime;
         this.employeeId = employeeId;
     }
 
-    public QueryAdTime(int employeeId, String endTime) {
+    public AdTime(int employeeId, String endTime) {
         this.employeeId = employeeId;
         this.endTime = endTime;
     }

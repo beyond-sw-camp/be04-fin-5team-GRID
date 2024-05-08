@@ -6,10 +6,7 @@ import org.highfives.grid.work.command.vo.ResponseAdTimeVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("ad-time")
@@ -40,7 +37,7 @@ public class AdTimeController {
     }
 
     /* 설명. 퇴근 체크 기능 */
-    @PostMapping("/departure-time")
+    @PutMapping("/departure-time")
     public ResponseEntity<ResponseAdTimeVO> addEndTime(@RequestBody AdTimeDTO adTimeDTO) {
         AdTimeDTO result = adTimeService.addEndTime(adTimeDTO);
 
