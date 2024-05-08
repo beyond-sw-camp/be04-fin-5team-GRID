@@ -1,11 +1,12 @@
 package org.highfives.grid.work.query.controller;
 
-import org.highfives.grid.work.query.dto.AdTimeDTO;
+import org.highfives.grid.work.query.dto.QueryAdTimeDTO;
 import org.highfives.grid.work.query.service.AdTimeService;
 import org.highfives.grid.work.query.vo.ResponseAdTimeListVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("ad-times")
+@Component("QueryAdTimeController")
 public class AdTimeController {
     private final AdTimeService adTimeService;
 
@@ -23,9 +25,10 @@ public class AdTimeController {
         this.adTimeService = adTimeService;
     }
 
+    // 조회 null일 때 예외 처리 필요
     @GetMapping("/{employeeId}")
     public ResponseEntity<ResponseAdTimeListVO> findAdTimeByEmployeeId(@PathVariable int employeeId) {
-        List<AdTimeDTO> adTimeList = adTimeService.findAdTimeByEmployeeId(employeeId);
+        List<QueryAdTimeDTO> adTimeList = adTimeService.findAdTimeByEmployeeId(employeeId);
 
         ResponseAdTimeListVO response = new ResponseAdTimeListVO(
                 "조회 성공",
@@ -34,4 +37,18 @@ public class AdTimeController {
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
+    @GetMapping("/all")
+    public ResponseEntity<ResponseAdTimeListVO> findAdTimeAll() {
+        List<QueryAdTimeDTO> adTimeList = adTimeService.findAdTimeAll();
+
+        ResponseAdTimeListVO response = new ResponseAdTimeListVO(
+                "조회 성공",
+                adTimeList
+        );
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+
 }

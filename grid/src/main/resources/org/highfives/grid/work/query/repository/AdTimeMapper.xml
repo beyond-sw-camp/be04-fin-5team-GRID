@@ -4,7 +4,7 @@
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.highfives.grid.work.query.repository.AdTimeMapper">
 
-    <resultMap id="adTimeResultMap" type="org.highfives.grid.work.query.aggregate.AdTime">
+    <resultMap id="adTimeResultMap" type="org.highfives.grid.work.query.aggregate.QueryAdTime">
         <id property="id" column="ID"/>
         <result property="startTime" column="START_TIME"/>
         <result property="endTime" column="END_TIME"/>
@@ -30,6 +30,15 @@
               , EMPLOYEE_ID
           FROM AD_TIME
          WHERE EMPLOYEE_ID = #{employeeId}
+    </select>
+
+    <select id="selectAdTimeAll" resultMap="adTimeResultMap">
+        SELECT
+                ID
+        , START_TIME
+        , END_TIME
+        , EMPLOYEE_ID
+        FROM AD_TIME
     </select>
 
 </mapper>

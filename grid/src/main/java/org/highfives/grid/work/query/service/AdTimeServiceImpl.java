@@ -1,16 +1,18 @@
 package org.highfives.grid.work.query.service;
 
-import org.highfives.grid.work.query.aggregate.AdTime;
-import org.highfives.grid.work.query.dto.AdTimeDTO;
+import org.highfives.grid.work.query.aggregate.QueryAdTime;
+import org.highfives.grid.work.query.dto.QueryAdTimeDTO;
 import org.highfives.grid.work.query.repository.AdTimeMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Component("QueryAdTimeServiceImpl")
 public class AdTimeServiceImpl implements AdTimeService {
 
     private final AdTimeMapper adTimeMapper;
@@ -22,26 +24,42 @@ public class AdTimeServiceImpl implements AdTimeService {
         this.modelMapper = modelMapper;
     }
 
+
+    // 조회한 값이 없을 때 예외 처리 추가
     @Override
-    public AdTimeDTO findAdTimeByEmployeeIdAndStartTime(AdTimeDTO adTimeDTO) {
-        String time = adTimeDTO.getEndTime().split(" ")[0]; // 날짜 부분만 저장
+    public QueryAdTimeDTO findAdTimeByEmployeeIdAndStartTime(QueryAdTimeDTO queryAdTimeDTO) {
+        String time = queryAdTimeDTO.getEndTime().split(" ")[0]; // 날짜 부분만 저장
 
-        AdTime adTime = new AdTime(time, adTimeDTO.getEmployeeId());
-        AdTime findAdTime = adTimeMapper.selectAdTimeByEmployeeIdAndEndTime(adTime);
+        QueryAdTime queryAdTime = new QueryAdTime(time, queryAdTimeDTO.getEmployeeId());
+        QueryAdTime findQueryAdTime = adTimeMapper.selectAdTimeByEmployeeIdAndEndTime(queryAdTime);
 
 
-        return modelMapper.map(findAdTime, AdTimeDTO.class);
+        return modelMapper.map(findQueryAdTime, QueryAdTimeDTO.class);
     }
 
     @Override
-    public List<AdTimeDTO> findAdTimeByEmployeeId(int employeeId) {
+    public List<QueryAdTimeDTO> findAdTimeByEmployeeId(int employeeId) {
 
-        List<AdTime> findAdTimeList = adTimeMapper.selectAdTimeByEmployee(employeeId);
+        List<QueryAdTime> findQueryAdTimeList = adTimeMapper.selectAdTimeByEmployee(employeeId);
 
-        List<AdTimeDTO> findAdTimeDTOList = findAdTimeList.stream()
-                .map(data -> modelMapper.map(data, AdTimeDTO.class))
+        List<QueryAdTimeDTO> findQueryAdTimeDTOList = findQueryAdTimeList.stream()
+                .map(data -> modelMapper.map(data, QueryAdTimeDTO.class))
                 .collect(Collectors.toList());
 
-        return findAdTimeDTOList;
+        return findQueryAdTimeDTOList;
+    }
+
+    @Override
+    public List<QueryAdTimeDTO> findAdTimeAll() {
+
+        List<QueryAdTime> findQueryAdTimeList = adTimeMapper.selectAdTimeAll();
+
+        System.out.println(findQueryAdTimeList);
+
+        List<QueryAdTimeDTO> findQueryAdTimeDTOList = findQueryAdTimeList.stream()
+                .map(data -> modelMapper.map(data, QueryAdTimeDTO.class))
+                .collect(Collectors.toList());
+
+        return findQueryAdTimeDTOList;
     }
 }

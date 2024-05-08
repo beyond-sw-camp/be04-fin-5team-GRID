@@ -1,7 +1,7 @@
 package org.highfives.grid.work.query.vo;
 
 import lombok.*;
-import org.highfives.grid.work.query.dto.AdTimeDTO;
+import org.highfives.grid.work.query.dto.QueryAdTimeDTO;
 
 import java.util.List;
 
@@ -13,5 +13,5 @@ import java.util.List;
 public class ResponseAdTimeListVO {
     private String message;
 
-    private List<AdTimeDTO> adTimeDTOList;
+    private List<QueryAdTimeDTO> queryAdTimeDTOList;
 }

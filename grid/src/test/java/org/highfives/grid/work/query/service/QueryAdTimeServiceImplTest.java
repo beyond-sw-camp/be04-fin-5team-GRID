@@ -1,6 +1,6 @@
 package org.highfives.grid.work.query.service;
 
-import org.highfives.grid.work.query.dto.AdTimeDTO;
+import org.highfives.grid.work.query.dto.QueryAdTimeDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,15 +13,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.stream.Stream;
 
 @SpringBootTest
-class AdTimeServiceImplTest {
+class QueryAdTimeServiceImplTest {
 
     @Autowired
-    private AdTimeServiceImpl queryAdTimeService;
+    private AdTimeServiceImpl adTimeService;
 
     static Stream<Arguments> findAdTimeDTO() {
 
         return Stream.of(
-                Arguments.of(new AdTimeDTO(
+                Arguments.of(new QueryAdTimeDTO(
                         1,
                         "2024-05-07 08:40:30"
                 ))
@@ -31,9 +31,9 @@ class AdTimeServiceImplTest {
     @DisplayName("퇴근시간으로 기존 출근 조회")
     @ParameterizedTest
     @MethodSource("findAdTimeDTO")
-    void findAdTime(AdTimeDTO adTimeDTO) {
+    void findAdTime(QueryAdTimeDTO queryAdTimeDTO) {
         Assertions.assertDoesNotThrow(
-                () -> queryAdTimeService.findAdTimeByEmployeeIdAndStartTime(adTimeDTO)
+                () -> adTimeService.findAdTimeByEmployeeIdAndStartTime(queryAdTimeDTO)
         );
     }
 
@@ -42,7 +42,16 @@ class AdTimeServiceImplTest {
     void findAdTimeByEmployeeId() {
         int employeeId = 1;
         Assertions.assertDoesNotThrow(
-                () -> queryAdTimeService.findAdTimeByEmployeeId(employeeId)
+                () -> adTimeService.findAdTimeByEmployeeId(employeeId)
+        );
+    }
+
+    @DisplayName("전체 조회")
+    @Test
+    void findAdTimeAll() {
+        System.out.println("전체 조회");
+        Assertions.assertDoesNotThrow(
+                () -> adTimeService.findAdTimeAll()
         );
     }
 }
