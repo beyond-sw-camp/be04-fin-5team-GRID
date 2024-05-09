@@ -9,11 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-@Service
+@Service("UserCommandService")
 public class UserServiceImpl implements UserService{
 
     private final UserRepository userRepository;
@@ -43,6 +42,24 @@ public class UserServiceImpl implements UserService{
         return modelMapper.map(addResult, UserDTO.class);
     }
 
+    @Override
+    public List<UserDTO> addMultiUser(List<UserDTO> givenInfo) {
+
+        List<UserDTO> addResultList = new ArrayList<>();
+        for (UserDTO userInfo : givenInfo) {
+            encodePwd(userInfo);
+            Employee employee = dTOtoEntity(userInfo);
+
+            userRepository.save(employee);
+
+            addResultList
+                    .add(modelMapper
+                            .map(userRepository.findByEmail(userInfo.getEmail()), UserDTO.class));
+        }
+
+        return addResultList;
+    }
+
     // 회원 가입 시 예외 처리 메소드 ( 중복된 값 )
     @Override
     public String duplicateInfoCheck(UserDTO givenInfo) {
@@ -62,23 +79,6 @@ public class UserServiceImpl implements UserService{
         }
 
         return "Pass";
-    }
-
-    @Override
-    public List<UserDTO> addMultiUser(List<UserDTO> givenInfo) {
-
-        List<UserDTO> addResultList = new ArrayList<>();
-        for (UserDTO userInfo : givenInfo) {
-            Employee employee = dTOtoEntity(userInfo);
-
-            userRepository.save(employee);
-
-            addResultList
-                    .add(modelMapper
-                            .map(userRepository.findByEmail(userInfo.getEmail()), UserDTO.class));
-        }
-
-        return addResultList;
     }
 
     private Employee dTOtoEntity(UserDTO givenInfo) {

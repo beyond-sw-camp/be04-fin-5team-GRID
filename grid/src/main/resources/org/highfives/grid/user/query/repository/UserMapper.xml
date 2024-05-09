@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.highfives.grid.user.query.repository.UserMapper">
+
+    <resultMap id="fairList" type="com.teamphoenix.ahub.fair.query.dto.FairDTO">
+        <id property="fairId" column="fair_id"/>
+        <result property="fairTitle" column="fair_title"/>
+    </resultMap>
+
+    <select id="getFairPost" parameterType="_int" resultMap="fairList">
+        SELECT
+        F.fair_id
+        , F.fair_title
+        , F.fair_content
+        , F.fair_writedate
+        , F.use_acceptance
+        , F.member_code
+        , F.fair_tag1
+        , F.fair_tag2
+        , F.fair_tag3
+        , F.fair_startdate
+        , F.fair_enddate
+        , F.fair_location
+        , F.fair_area
+        FROM fair F
+        WHERE F.fair_id = #{fairId}
+    </select>
+
+    <select id="selectPostsByCondition" parameterType="com.teamphoenix.ahub.fair.query.dto.FairDTO" resultMap="fairList">
+        SELECT
+        F.fair_id
+        , F.fair_title
+        , F.fair_content
+        , F.fair_writedate
+        , F.use_acceptance
+        , F.member_code
+        , F.fair_tag1
+        , F.fair_tag2
+        , F.fair_tag3
+        , F.fair_startdate
+        , F.fair_enddate
+        , F.fair_location
+        , F.fair_area
+        FROM fair F
+        <where>
+            <if test="fairTitle neq null and fairContent eq null">
+                F.fair_title LIKE CONCAT ('%', #{fairTitle}, '%')
+            </if>
+            <if test="fairContent neq null and fairTitle eq null">
+                F.fair_content LIKE CONCAT('%', #{fairContent}, '%')
+            </if>
+            <if test="fairTitle neq null and fairContent neq null">
+                F.fair_title LIKE CONCAT('%', #{fairTitle}, '%')
+                OR F.fair_content LIKE CONCAT('%', #{fairContent}, '%')
+            </if>
+            <if test="memberCode neq 0">
+                F.member_code = #{memberCode}
+            </if>
+        </where>
+    </select>
+</mapper>

@@ -1,15 +1,15 @@
 package org.highfives.grid.user.command.aggregate;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 @Entity
 @Table(name="employee")
 @Getter
 @RequiredArgsConstructor
 @ToString
+@AllArgsConstructor
+@Builder
 public class Employee {
 
     @Id
@@ -64,7 +64,6 @@ public class Employee {
     private int teamId;
     @Column(name = "department_id")
     private int departmentId;
-
 
     public Employee(String email, String pwd, String name, String employeeNumber, Gender gender,
                    String phoneNumber, String joinTime, JoinType joinType, WorkType workType,
