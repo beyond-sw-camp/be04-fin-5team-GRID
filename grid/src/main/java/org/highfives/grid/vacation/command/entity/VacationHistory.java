@@ -14,12 +14,18 @@ public class VacationHistory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(nullable = false, name = "change_type")
-    private String changeType;
-
     @Column(nullable = false, name = "change_time")
     private String changeTime;
 
+    @Column(nullable = false, name = "change_reason")
+    private String changeReason;
+
     @Column(nullable = false, name = "type_id")
     private int typeId;
+
+    @Column(nullable = false, name = "change_type_id")
+    private int changeTypeId;
+
+    @Column(nullable = false, name = "employee_id")
+    private int employeeId;
 }

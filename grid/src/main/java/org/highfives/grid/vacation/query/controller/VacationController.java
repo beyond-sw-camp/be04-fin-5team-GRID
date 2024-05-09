@@ -1,5 +1,6 @@
 package org.highfives.grid.vacation.query.controller;
 
+import org.highfives.grid.vacation.query.dto.VacationHistoryDTO;
 import org.highfives.grid.vacation.query.dto.VacationInfoDTO;
 import org.highfives.grid.vacation.query.dto.VacationPolicyDTO;
 import org.highfives.grid.vacation.query.service.VacationService;
@@ -39,6 +40,12 @@ public class VacationController {
     public ResponseEntity<List<VacationPolicyDTO>> getVacationPolicy(@PathVariable int typeId) {
         List<VacationPolicyDTO> policies = vacationService.getVacationPolicy(typeId);
         return ResponseEntity.status(HttpStatus.OK).body(policies);
+    }
+
+    @GetMapping("/details")
+    public ResponseEntity<List<VacationHistoryDTO>> getAllVacationHistories() {
+        List<VacationHistoryDTO> histories = vacationService.getAllVacationHistory();
+        return ResponseEntity.status(HttpStatus.OK).body(histories);
     }
 
 

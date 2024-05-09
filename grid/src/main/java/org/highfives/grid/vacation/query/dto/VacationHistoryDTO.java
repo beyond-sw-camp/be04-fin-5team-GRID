@@ -1,9 +1,9 @@
-package org.highfives.grid.vacation.query.entity;
+package org.highfives.grid.vacation.query.dto;
 
 import lombok.Data;
 
 @Data
-public class VacationHistory {
+public class VacationHistoryDTO {
     private int id;
     private String changeTime;
     private String changeReason;

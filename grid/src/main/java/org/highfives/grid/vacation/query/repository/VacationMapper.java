@@ -1,6 +1,7 @@
 package org.highfives.grid.vacation.query.repository;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.highfives.grid.vacation.query.entity.VacationHistory;
 import org.highfives.grid.vacation.query.entity.VacationInfo;
 import org.highfives.grid.vacation.query.entity.VacationPolicy;
 
@@ -14,4 +15,6 @@ public interface VacationMapper {
     List<VacationInfo> selectUserVacationInfo(int employeeId);
 
     List<VacationPolicy> selectAllPolicy(int typeId);
+
+    List<VacationHistory> selectAllHistories();
 }
