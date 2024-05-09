@@ -6,19 +6,14 @@ import lombok.Setter;
 import lombok.ToString;
 
 
-//@NoArgsConstructor
-//@AllArgsConstructor
 @RequiredArgsConstructor
 @Getter
 @Setter
 @ToString
 public class AdTimeDTO {
     private int id;
-
     private String startTime;
-
     private String endTime;
-
     private int employeeId;
 
     public AdTimeDTO(String startTime, int employeeId) {

@@ -1,16 +1,16 @@
 package org.highfives.grid.work.query.repository;
 
 import org.apache.ibatis.annotations.Mapper;
-import org.highfives.grid.work.query.aggregate.AdTime;
+import org.highfives.grid.work.query.dto.AdTimeDTO;
 
 import java.util.List;
 
 @Mapper
 public interface AdTimeMapper {
 
-   AdTime selectAdTimeByEmployeeIdAndEndTime(AdTime adTime);
+//   AdTime selectAdTimeByEmployeeIdAndEndTime(AdTimeDTO adTime);
 
-   List<AdTime> selectAdTimeByEmployee(int employeeId);
+   List<AdTimeDTO> selectAdTimeByEmployee(int employeeId);
 
-   List<AdTime> selectAdTimeAll();
+   List<AdTimeDTO> selectAdTimeAll();
 }

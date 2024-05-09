@@ -6,11 +6,8 @@ import lombok.*;
 // 엔티티 패키지 따로
 @Entity
 @Table(name="ad_time")
-//@NoArgsConstructor
-//@AllArgsConstructor
 @RequiredArgsConstructor
 @Getter
-@Setter
 @ToString
 public class AdTime {
 
@@ -22,6 +19,7 @@ public class AdTime {
     @Column(name = "start_time")
     private String startTime;
 
+    @Setter
     @Column(name = "end_time")
     private String endTime;
 
