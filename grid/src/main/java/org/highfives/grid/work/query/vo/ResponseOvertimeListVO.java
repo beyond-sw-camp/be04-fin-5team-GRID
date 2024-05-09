@@ -1,7 +1,7 @@
 package org.highfives.grid.work.query.vo;
 
 import lombok.*;
-import org.highfives.grid.work.query.dto.AdTimeDTO;
+import org.highfives.grid.work.query.dto.OvertimeApprovalDTO;
 
 import java.util.List;
 
@@ -9,8 +9,8 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @ToString
-public class ResponseAdTimeListVO {
+public class ResponseOvertimeListVO {
     private String message;
 
-    private List<AdTimeDTO> adTimeDTOList;
+    private List<OvertimeApprovalDTO> overTimeList;
 }
