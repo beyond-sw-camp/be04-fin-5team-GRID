@@ -13,13 +13,14 @@ public class GridApplication {
 		SpringApplication.run(GridApplication.class, args);
 	}
 
-		@Bean
-		public ModelMapper modelMapper(){
-			return new ModelMapper();
-		}
+  @Bean
+  public ModelMapper modelMapper(){
+    return new ModelMapper();
+  }
 
-		@Bean
-		public BCryptPasswordEncoder bCryptPasswordEncoder() {
-			return new BCryptPasswordEncoder();
-		}
+  @Bean
+  public BCryptPasswordEncoder bCryptPasswordEncoder() {
+    return new BCryptPasswordEncoder();
+  }
+
 }
