@@ -10,6 +10,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService{
@@ -47,19 +49,36 @@ public class UserServiceImpl implements UserService{
 
         try {
             if (userRepository.findByEmail(givenInfo.getEmail()) != null) {
-                return "Duplicated Email";
+                return "Already Used Email : " + givenInfo.getEmail();
             }
             if (userRepository.findByEmployeeNumber(givenInfo.getEmployeeNumber()) != null) {
-                return "Duplicated Employee Number";
+                return "Already Employee Number : " + givenInfo.getEmployeeNumber();
             }
             if (userRepository.findByPhoneNumber(givenInfo.getPhoneNumber()) != null) {
-                return "Duplicated Phone Number";
+                return "Already Phone Number : " + givenInfo.getPhoneNumber();
             }
         } catch (Exception e) {
             return "NP";
         }
 
         return "Pass";
+    }
+
+    @Override
+    public List<UserDTO> addMultiUser(List<UserDTO> givenInfo) {
+
+        List<UserDTO> addResultList = new ArrayList<>();
+        for (UserDTO userInfo : givenInfo) {
+            Employee employee = dTOtoEntity(userInfo);
+
+            userRepository.save(employee);
+
+            addResultList
+                    .add(modelMapper
+                            .map(userRepository.findByEmail(userInfo.getEmail()), UserDTO.class));
+        }
+
+        return addResultList;
     }
 
     private Employee dTOtoEntity(UserDTO givenInfo) {

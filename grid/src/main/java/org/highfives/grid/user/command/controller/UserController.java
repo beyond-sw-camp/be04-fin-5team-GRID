@@ -22,7 +22,6 @@ public class UserController {
         this.userService = userService;
     }
 
-
     /*
 * 프론트에서 받아야할 내용 :
 
@@ -84,27 +83,18 @@ public class UserController {
         List<UserDTO> givenInfo = new ArrayList<>();
 
         for (UserDTO info : infoList) {
-
             if( duplicateInfoCheck(info) != null )
                 return duplicateInfoCheck(info);
+            info.setContractStartTime(info.getJoinTime());
             givenInfo.add(info);
-            System.out.println("info = " + info);
         }
 
-        return null;
-    }
+        List<UserDTO> result = userService.addMultiUser(givenInfo);
+        ResAddUserVO response = new ResAddUserVO(
+                201, "Success to add new users", "/user", result);
 
-//    private List<UserDTO> CSVtoDTO(MultipartFile givenFile) throws IOException {
-//
-//        List<UserDTO> result = new ArrayList<>();
-//
-//
-//        Reader reader = new InputStreamReader(givenFile.getInputStream());
-//        CSVReader csvReader = new CSVReaderBuilder(reader).withSkipLines(1).build();
-//
-//
-//        return null;
-//    }
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
 
     private ResponseEntity<ResAddUserVO> duplicateInfoCheck(UserDTO givenInfo) {
 
