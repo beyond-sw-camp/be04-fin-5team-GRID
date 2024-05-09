@@ -12,7 +12,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class QueryAdTimeDTO {
+public class AdTimeDTO {
     private int id;
 
     private String startTime;
@@ -21,12 +21,12 @@ public class QueryAdTimeDTO {
 
     private int employeeId;
 
-    public QueryAdTimeDTO(String startTime, int employeeId) {
+    public AdTimeDTO(String startTime, int employeeId) {
         this.startTime = startTime;
         this.employeeId = employeeId;
     }
 
-    public QueryAdTimeDTO(int employeeId, String endTime) {
+    public AdTimeDTO(int employeeId, String endTime) {
         this.employeeId = employeeId;
         this.endTime = endTime;
     }

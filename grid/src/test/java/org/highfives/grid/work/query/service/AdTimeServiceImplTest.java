@@ -1,6 +1,6 @@
 package org.highfives.grid.work.query.service;
 
-import org.highfives.grid.work.query.dto.QueryAdTimeDTO;
+import org.highfives.grid.work.query.dto.AdTimeDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,8 +12,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.stream.Stream;
 
-@SpringBootTest
-class QueryAdTimeServiceImplTest {
+@SpringBootTest(value = "QueryAdTimeServiceImplTest")
+class AdTimeServiceImplTest {
 
     @Autowired
     private AdTimeServiceImpl adTimeService;
@@ -21,7 +21,7 @@ class QueryAdTimeServiceImplTest {
     static Stream<Arguments> findAdTimeDTO() {
 
         return Stream.of(
-                Arguments.of(new QueryAdTimeDTO(
+                Arguments.of(new AdTimeDTO(
                         1,
                         "2024-05-07 08:40:30"
                 ))
@@ -31,9 +31,9 @@ class QueryAdTimeServiceImplTest {
     @DisplayName("퇴근시간으로 기존 출근 조회")
     @ParameterizedTest
     @MethodSource("findAdTimeDTO")
-    void findAdTime(QueryAdTimeDTO queryAdTimeDTO) {
+    void findAdTime(AdTimeDTO adTimeDTO) {
         Assertions.assertDoesNotThrow(
-                () -> adTimeService.findAdTimeByEmployeeIdAndStartTime(queryAdTimeDTO)
+                () -> adTimeService.findAdTimeByEmployeeIdAndStartTime(adTimeDTO)
         );
     }
 

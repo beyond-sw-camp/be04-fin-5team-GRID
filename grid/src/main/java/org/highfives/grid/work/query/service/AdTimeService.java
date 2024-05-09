@@ -1,6 +1,6 @@
 package org.highfives.grid.work.query.service;
 
-import org.highfives.grid.work.query.dto.QueryAdTimeDTO;
+import org.highfives.grid.work.query.dto.AdTimeDTO;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -8,9 +8,9 @@ import java.util.List;
 @Component("QueryAdTimeService")
 public interface AdTimeService {
 
-    QueryAdTimeDTO findAdTimeByEmployeeIdAndStartTime(QueryAdTimeDTO queryAdTimeDTO);
+    AdTimeDTO findAdTimeByEmployeeIdAndStartTime(AdTimeDTO adTimeDTO);
 
-    List<QueryAdTimeDTO> findAdTimeByEmployeeId(int employeeId);
+    List<AdTimeDTO> findAdTimeByEmployeeId(int employeeId);
 
-    List<QueryAdTimeDTO> findAdTimeAll();
+    List<AdTimeDTO> findAdTimeAll();
 }

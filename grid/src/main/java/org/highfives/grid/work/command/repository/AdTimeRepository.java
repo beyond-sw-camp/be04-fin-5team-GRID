@@ -10,7 +10,7 @@ public interface AdTimeRepository extends JpaRepository<AdTime, Integer> {
     AdTime findByStartTimeAndEmployeeId(String startTime, int employeeId);
 
     @Query(value = "select adTime " +
-                    "from QueryAdTime adTime " +
+                    "from AdTime adTime " +
                     "where adTime.startTime like concat(:startTime, '%') " +
                     "AND adTime.employeeId = :employeeId")
     AdTime findAdTimeByEmployeeIdAndEndTime(
