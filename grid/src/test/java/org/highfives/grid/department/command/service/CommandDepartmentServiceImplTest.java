@@ -1,7 +1,7 @@
-package org.highfives.grid.department.service;
+package org.highfives.grid.department.command.service;
 
-import org.highfives.grid.department.dto.DepartmentDTO;
-import org.highfives.grid.department.entity.Department;
+import org.highfives.grid.department.command.service.CommandDepartmentService;
+import org.highfives.grid.department.command.dto.DepartmentDTO;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,16 +11,15 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-class DepartmentServiceImplTest {
+class CommandDepartmentServiceImplTest {
 
-    private final DepartmentService departmentService;
+    private final CommandDepartmentService commandDepartmentService;
 
     @Autowired
-    public DepartmentServiceImplTest(DepartmentService departmentService) {
-        this.departmentService = departmentService;
+    public CommandDepartmentServiceImplTest(CommandDepartmentService commandDepartmentService) {
+        this.commandDepartmentService = commandDepartmentService;
     }
 
 
@@ -32,25 +31,14 @@ class DepartmentServiceImplTest {
         int id = 1;
 
         // When
-        DepartmentDTO departmentById = departmentService.findDepartmentById(id);
+        DepartmentDTO departmentById = commandDepartmentService.findDepartmentById(id);
 
         // Then
         assertThat(departmentById.getId()).isEqualTo(id);
 
     }
 
-    @Test
-    @DisplayName("부서 전체 조회")
-    void findAllDepartment() {
 
-        // Given
-
-        // When
-        List<DepartmentDTO> departmentDTOList = departmentService.findAllDepartment();
-
-        // Then
-        assertThat(departmentDTOList).isNotNull();
-    }
 
     @Test
     @DisplayName("부서 등록")
@@ -62,7 +50,7 @@ class DepartmentServiceImplTest {
         departmentDTO.setName("테스트");
 
         // When
-        DepartmentDTO departmentDTOList = departmentService.registDepartment(departmentDTO);
+        DepartmentDTO departmentDTOList = commandDepartmentService.registDepartment(departmentDTO);
 
         // Then
 
@@ -76,7 +64,7 @@ class DepartmentServiceImplTest {
 
         // Given
         DepartmentDTO departmentDTO = DepartmentDTO.builder()
-                .id(9)
+                .id(8)
                 .name("update")
                 .highDepartment("update2")
                 .departmentStatus("N")
@@ -84,7 +72,7 @@ class DepartmentServiceImplTest {
                 .build();
 
         // When
-        DepartmentDTO departmentDTOList = departmentService.modifyDepartment(departmentDTO);
+        DepartmentDTO departmentDTOList = commandDepartmentService.modifyDepartment(departmentDTO);
 
         // Then
 
@@ -103,7 +91,7 @@ class DepartmentServiceImplTest {
         int id = 1;
 
         // When
-        departmentService.deleteDepartment(id);
+        commandDepartmentService.deleteDepartment(id);
 
 //        DepartmentDTO departmentById = departmentService.findDepartmentById(id);
         // Then

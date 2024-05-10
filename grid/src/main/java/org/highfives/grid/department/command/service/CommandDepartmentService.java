@@ -1,14 +1,11 @@
-package org.highfives.grid.department.service;
+package org.highfives.grid.department.command.service;
 
-import org.highfives.grid.department.dto.DepartmentDTO;
+import org.highfives.grid.department.command.dto.DepartmentDTO;
 
 import java.util.List;
 
-public interface DepartmentService {
+public interface CommandDepartmentService {
     DepartmentDTO findDepartmentById(int id);
-
-    List<DepartmentDTO> findAllDepartment();
-
 
     DepartmentDTO registDepartment(DepartmentDTO departmentDTO);
 

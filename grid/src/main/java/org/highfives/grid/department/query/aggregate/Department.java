@@ -1,13 +1,14 @@
-package org.highfives.grid.department.dto;
+package org.highfives.grid.department.query.aggregate;
 
-import jakarta.persistence.*;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
-@NoArgsConstructor
 @Getter
-@Setter
+@NoArgsConstructor
 @ToString
-public class DepartmentDTO {
+public class Department {
 
 
     private int id;
@@ -27,7 +28,7 @@ public class DepartmentDTO {
     private int leaderId;
 
     @Builder
-    public DepartmentDTO(int id, String name, int memberCnt, String departmentStatus, String startTime, String endTime, String highDepartment, int leaderId) {
+    public Department(int id, String name, int memberCnt, String departmentStatus, String startTime, String endTime, String highDepartment, int leaderId) {
         this.id = id;
         this.name = name;
         this.memberCnt = memberCnt;
