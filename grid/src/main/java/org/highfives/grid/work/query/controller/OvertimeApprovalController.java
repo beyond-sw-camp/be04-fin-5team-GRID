@@ -24,6 +24,7 @@ public class OvertimeApprovalController {
         this.overtimeApprovalService = overtimeApprovalService;
     }
 
+    /* 설명. 승인된 시간 외 근무 전체 조회 */
     @GetMapping("/all")
     public ResponseEntity<ResponseOvertimeListVO> findAllOvertime() {
         List<OvertimeApprovalDTO> overtimeList = overtimeApprovalService.findOvertimeAll();
@@ -36,6 +37,7 @@ public class OvertimeApprovalController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    /* 설명. 승인된 시간 외 근무 직원별 조회 */
     @GetMapping("/{employeeId}")
     public ResponseEntity<ResponseOvertimeListVO> findAllOvertime(@PathVariable int employeeId) {
         List<OvertimeApprovalDTO> overtimeList = overtimeApprovalService.findOvertimeByEmployeeId(employeeId);
