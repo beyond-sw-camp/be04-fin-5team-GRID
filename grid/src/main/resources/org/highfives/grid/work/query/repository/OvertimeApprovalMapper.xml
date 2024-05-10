@@ -30,7 +30,9 @@
               , REQUESTER_ID
               , CANCEL_DOCUMENT_ID
         FROM OVERTIME_APPROVAL
-        WHERE APPROVAL_STATUS = '승인';
+        WHERE APPROVAL_STATUS = '승인'
+        AND CANCEL_YN = 'N'
+        AND CANCEL_DOCUMENT_ID IS NULL;
     </select>
 
     <select id="selectOvertimeByEmployeeId" resultMap="overtimeResultMap" parameterType="int">
@@ -47,6 +49,8 @@
         , CANCEL_DOCUMENT_ID
         FROM OVERTIME_APPROVAL
         WHERE APPROVAL_STATUS = '승인'
+        AND CANCEL_YN = 'N'
+        AND CANCEL_DOCUMENT_ID IS NULL
         AND REQUESTER_ID = #{employeeId};
     </select>
 
