@@ -1,7 +1,7 @@
-package org.highfives.grid.department.dao;
+package org.highfives.grid.department.query.dao;
 
 import org.apache.ibatis.annotations.Mapper;
-import org.highfives.grid.department.entity.Department;
+import org.highfives.grid.department.query.aggregate.Department;
 
 import java.util.List;
 

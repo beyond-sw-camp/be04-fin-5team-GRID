@@ -1,10 +1,10 @@
-package org.highfives.grid.department.service;
+package org.highfives.grid.department.command.service;
 
-import org.highfives.grid.department.dao.DepartmentMapper;
-import org.highfives.grid.department.dto.DepartmentDTO;
-import org.highfives.grid.department.entity.Department;
-import org.highfives.grid.department.exception.DepartmentNotFoundException;
-import org.highfives.grid.department.repository.DepartmentRepository;
+import org.highfives.grid.department.query.dao.DepartmentMapper;
+import org.highfives.grid.department.command.dto.DepartmentDTO;
+import org.highfives.grid.department.command.aggregate.Department;
+import org.highfives.grid.department.command.exception.DepartmentNotFoundException;
+import org.highfives.grid.department.command.repository.DepartmentRepository;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,18 +16,16 @@ import java.util.Date;
 import java.util.List;
 
 @Service
-public class DepartmentServiceImpl implements DepartmentService{
+public class CommandDepartmentServiceImpl implements CommandDepartmentService {
 
 
     private final DepartmentRepository departmentRepository;
 
-    private final DepartmentMapper departmentMapper;
     private final ModelMapper mapper;
 
     @Autowired
-    public DepartmentServiceImpl(DepartmentRepository departmentRepository, DepartmentMapper departmentMapper, ModelMapper mapper) {
+    public CommandDepartmentServiceImpl(DepartmentRepository departmentRepository, ModelMapper mapper) {
         this.departmentRepository = departmentRepository;
-        this.departmentMapper = departmentMapper;
         this.mapper = mapper;
     }
 
@@ -49,21 +47,7 @@ public class DepartmentServiceImpl implements DepartmentService{
 
     }
 
-    @Override
-    public List<DepartmentDTO> findAllDepartment() {
 
-        // 부서 정보 리스트
-        List<Department> departmentList = departmentMapper.findAllDepartment();
-
-        // DTO형식으로 변환
-        List<DepartmentDTO> departmentDTOList = new ArrayList<>();
-
-        for (Department department : departmentList) {
-            departmentDTOList.add(mapper.map(department, DepartmentDTO.class));
-        }
-
-        return departmentDTOList;
-    }
 
     @Override
     public DepartmentDTO registDepartment(DepartmentDTO departmentDTO) {

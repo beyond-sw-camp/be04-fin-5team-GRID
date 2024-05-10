@@ -1,57 +1,84 @@
 package org.highfives.grid.department.command.controller;
 
-import org.highfives.grid.department.dto.DepartmentDTO;
-import org.highfives.grid.department.service.DepartmentService;
+import org.highfives.grid.department.command.dto.DepartmentDTO;
+import org.highfives.grid.department.command.service.CommandDepartmentService;
+import org.highfives.grid.department.command.vo.ResponseDepartmentVO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController("jpa")
 @RequestMapping("/department")
 public class DepartmentController {
 
-    private final DepartmentService departmentService;
+    private final CommandDepartmentService commandDepartmentService;
 
     @Autowired
-    public DepartmentController(DepartmentService departmentService) {
-        this.departmentService = departmentService;
+    public DepartmentController(CommandDepartmentService commandDepartmentService) {
+        this.commandDepartmentService = commandDepartmentService;
     }
 
     /* 설명. 부서 정보 조회 기능 */
-    @GetMapping("/find/{id}")
-    public ResponseEntity<DepartmentDTO> findDepartmentById(@PathVariable int id) {
+    @GetMapping("/{id}")
+    public ResponseEntity<ResponseDepartmentVO> findDepartmentById(@PathVariable int id) {
 
         // 해당 부서 정보 반환
-        DepartmentDTO departmentInfo = departmentService.findDepartmentById(id);
+        DepartmentDTO departmentInfo = commandDepartmentService.findDepartmentById(id);
 
-        return ResponseEntity.ok().body(departmentInfo);
+        ResponseDepartmentVO responseDepartmentVO = ResponseDepartmentVO.builder()
+                .message("success")
+                .href("/{id}")
+                .statusCode(200)
+                .result(departmentInfo)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(responseDepartmentVO);
     }
 
     /* 설명. 부서 등록 기능 */
-    @PostMapping("/regist")
-    public ResponseEntity<DepartmentDTO> registDepartment(@RequestBody DepartmentDTO departmentDTO) {
+    @PostMapping("/add")
+    public ResponseEntity<ResponseDepartmentVO> registDepartment(@RequestBody DepartmentDTO departmentDTO) {
 
-        DepartmentDTO departmentList = departmentService.registDepartment(departmentDTO);
+        DepartmentDTO departmentList = commandDepartmentService.registDepartment(departmentDTO);
 
-        return ResponseEntity.ok().body(departmentList);
+        ResponseDepartmentVO responseDepartmentVO = ResponseDepartmentVO.builder()
+                .message("success")
+                .href("/{id}")
+                .statusCode(201)
+                .result(departmentList)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseDepartmentVO);
     }
 
     /* 설명. 부서 정보 수정 기능*/
     @PutMapping("/update")
-    public ResponseEntity<DepartmentDTO> modifyDepartment(@RequestBody DepartmentDTO departmentDTO) {
-        DepartmentDTO departmentList = departmentService.modifyDepartment(departmentDTO);
+    public ResponseEntity<ResponseDepartmentVO> modifyDepartment(@RequestBody DepartmentDTO departmentDTO) {
+        DepartmentDTO departmentList = commandDepartmentService.modifyDepartment(departmentDTO);
 
-        return ResponseEntity.ok().body(departmentList);
+        ResponseDepartmentVO responseDepartmentVO = ResponseDepartmentVO.builder()
+                .message("success")
+                .href("/{id}")
+                .statusCode(201)
+                .result(departmentList)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(responseDepartmentVO);
     }
 
     /* 설명. 부서 삭제 기능 */
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<DepartmentDTO> deleteDepartment(@PathVariable int id) {
-        departmentService.deleteDepartment(id);
+    public ResponseEntity<ResponseDepartmentVO> deleteDepartment(@PathVariable int id) {
+        commandDepartmentService.deleteDepartment(id);
 
-        return ResponseEntity.ok().build();
+        ResponseDepartmentVO responseDepartmentVO = ResponseDepartmentVO.builder()
+                .message("success")
+                .href("/{id}")
+                .statusCode(200)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(responseDepartmentVO);
     }
 
 }

@@ -1,4 +1,4 @@
-package org.highfives.grid.department.exception;
+package org.highfives.grid.department.command.exception;
 
 public class DepartmentNotFoundException extends Exception {
 

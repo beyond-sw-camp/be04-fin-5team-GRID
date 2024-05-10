@@ -1,4 +1,4 @@
-package org.highfives.grid.department.entity;
+package org.highfives.grid.department.command.aggregate;
 
 import jakarta.persistence.*;
 import lombok.Builder;
