@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://localhost:3306/griddb
+    username: griddb
+    password: griddb
+
+  jpa:
+    show-sql: true
+    database: mysql
+    properties:
+      hibernate:
+        '[format_sql]': true

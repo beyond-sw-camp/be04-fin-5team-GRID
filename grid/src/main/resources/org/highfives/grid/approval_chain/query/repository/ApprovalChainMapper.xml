@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.highfives.grid.approval_chain.query.repository.ApprovalChainMapper">
+    <resultMap id="approvalChainMap" type="org.highfives.grid.approval_chain.common.dto.ApprovalChainDTO">
+        <id property="id" column="id"/>
+        <id property="duty" column="duty"/>
+        <id property="priority" column="priority"/>
+        <id property="typeId" column="type_id"/>
+    </resultMap>
+
+    <select id="findChainListByApprovalId" resultMap="approvalChainMap" parameterType="int">
+        SELECT
+                id
+              , duty
+              , priority
+              , type_id
+        FROM approval_chain
+        WHERE type_id = #{approval_id}
+    </select>
+<!--    <select id="findTeamLeaderByEmployeeId" resultMap="teamLeaderMap" parameterType="int">-->
+
+<!--    </select>-->
+<!--    <select id="findDeptLeaderByEmployeeId" resultMap="deptLeaderMap" parameterType="int">-->
+
+<!--    </select>-->
+
+</mapper>
