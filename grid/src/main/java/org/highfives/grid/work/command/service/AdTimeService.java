@@ -1,9 +1,0 @@
-package org.highfives.grid.work.command.service;
-
-import org.highfives.grid.work.command.dto.AdTimeDTO;
-
-public interface AdTimeService {
-    AdTimeDTO addStartTime(AdTimeDTO adTimeDTO);
-
-    AdTimeDTO addEndTime(AdTimeDTO adTimeDTO);
-}
