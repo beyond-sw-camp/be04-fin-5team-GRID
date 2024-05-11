@@ -1,15 +1,14 @@
 package org.highfives.grid.review.command.controller;
 
 import org.highfives.grid.review.command.dto.ReviewDTO;
+import org.highfives.grid.review.command.dto.ReviewListDTO;
 import org.highfives.grid.review.command.service.CommandReviewService;
+import org.highfives.grid.review.command.vo.ResponseReviewListVO;
 import org.highfives.grid.review.command.vo.ResponseReviewVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/review")
@@ -22,6 +21,7 @@ public class CommandReviewController {
         this.reviewService = reviewService;
     }
 
+    /* 설명. 평가 조회 기능 */
     @GetMapping("/{id}")
     public ResponseEntity<ResponseReviewVO> findReviewById(@PathVariable int id) {
 
@@ -38,6 +38,39 @@ public class CommandReviewController {
         return ResponseEntity.status(HttpStatus.OK).body(responseReviewVO);
 
 
+
+    }
+
+    @PostMapping("/add")
+    public ResponseEntity<ResponseReviewVO> insertReviewById(@RequestBody ReviewDTO requestData) {
+
+
+         ReviewDTO reviewInfo = reviewService.insertReviewById(requestData);
+
+
+        ResponseReviewVO responseReviewVO = ResponseReviewVO.builder()
+                .message("success")
+                .statusCode(201)
+                .href("/{id}")
+                .result(reviewInfo)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseReviewVO);
+    }
+
+    /* 설명. 평가 항목 리스트 전체 조회*/
+    @GetMapping("/find-all")
+    public ResponseEntity<ResponseReviewListVO> findAllReview() {
+        ReviewListDTO reviewList = reviewService.findAllReview();
+
+        ResponseReviewListVO responseReviewListVO = ResponseReviewListVO.builder()
+                .message("success")
+                .statusCode(201)
+                .href("/{id}")
+                .result(reviewList)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(responseReviewListVO);
 
     }
 
