@@ -1,9 +1,6 @@
 package org.highfives.grid.user.query.dto;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.highfives.grid.user.command.aggregate.Gender;
 import org.highfives.grid.user.command.aggregate.JoinType;
 import org.highfives.grid.user.command.aggregate.WorkType;
@@ -12,7 +9,6 @@ import org.highfives.grid.user.command.aggregate.YN;
 @Getter
 @Setter
 @RequiredArgsConstructor
-@Builder
 public class UserDTO {
 
     private String email;
@@ -41,4 +37,39 @@ public class UserDTO {
     private int departmentId;
     private String profilePath;
     private String sealPath;
+
+    @Builder
+    public UserDTO(String email, String pwd, String name, String employeeNumber,
+                   Gender gender, String phoneNumber, String callNumber, int zipCode,
+                   String address, String assignedTask, String joinTime, JoinType joinType,
+                   String resignTime, YN resignYn, WorkType workType, String contractStartTime,
+                   String contractEndTime, int salary, YN absenceYn, String absenceContent, int dutiesId,
+                   int positionId, int teamId, int departmentId, String profilePath, String sealPath) {
+        this.email = email;
+        this.pwd = pwd;
+        this.name = name;
+        this.employeeNumber = employeeNumber;
+        this.gender = gender;
+        this.phoneNumber = phoneNumber;
+        this.callNumber = callNumber;
+        this.zipCode = zipCode;
+        this.address = address;
+        this.assignedTask = assignedTask;
+        this.joinTime = joinTime;
+        this.joinType = joinType;
+        this.resignTime = resignTime;
+        this.resignYn = resignYn;
+        this.workType = workType;
+        this.contractStartTime = contractStartTime;
+        this.contractEndTime = contractEndTime;
+        this.salary = salary;
+        this.absenceYn = absenceYn;
+        this.absenceContent = absenceContent;
+        this.dutiesId = dutiesId;
+        this.positionId = positionId;
+        this.teamId = teamId;
+        this.departmentId = departmentId;
+        this.profilePath = profilePath;
+        this.sealPath = sealPath;
+    }
 }

@@ -1,9 +1,18 @@
 package org.highfives.grid.user.query.repository;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.highfives.grid.user.query.dto.LeaderInfoDTO;
+import org.highfives.grid.user.query.dto.UserDTO;
 
 @Mapper
-public class UserMapper {
+public interface UserMapper {
+    LeaderInfoDTO getLeaderInfo(int id);
 
+    LeaderInfoDTO getDepInfo(int id);
 
+    LeaderInfoDTO getTeamInfo(int id);
+
+    LeaderInfoDTO getDepLeaderInfo(int depLeaderId);
+
+    LeaderInfoDTO getTeamLeaderInfo(int teamLeaderId);
 }
