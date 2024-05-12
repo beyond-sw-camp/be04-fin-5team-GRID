@@ -3,6 +3,7 @@ package org.highfives.grid.review.command.service;
 import org.assertj.core.api.Assertions;
 import org.highfives.grid.department.command.dto.DepartmentDTO;
 import org.highfives.grid.review.command.dto.ReviewDTO;
+import org.highfives.grid.review.command.dto.ReviewHistoryDTO;
 import org.highfives.grid.review.command.dto.ReviewListDTO;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -50,11 +51,29 @@ class CommandReviewServiceImplTest {
 
         // When
 
-        ReviewListDTO ReviewList = commandReviewService.findAllReview();
+        ReviewListDTO reviewList = commandReviewService.findAllReview();
 
 
         // Then
-        assertThat(ReviewList).isNotNull();
+        assertThat(reviewList).isNotNull();
+
+    }
+
+    @Test
+    @DisplayName("평가 항목 내역 단일 조회")
+    void findReviewHistoryById() {
+
+        // Given
+
+        int id = 1;
+
+        // When
+
+        ReviewHistoryDTO reviewHistoryDTO = commandReviewService.findReviewHistoryById(id);
+
+
+        // Then
+        assertThat(reviewHistoryDTO.getReviewerId()).isSameAs(id);
 
     }
 }

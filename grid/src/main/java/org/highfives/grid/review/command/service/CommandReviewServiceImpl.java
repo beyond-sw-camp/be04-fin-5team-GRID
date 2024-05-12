@@ -1,8 +1,11 @@
 package org.highfives.grid.review.command.service;
 
+import org.highfives.grid.review.command.aggregate.ReviewHistory;
 import org.highfives.grid.review.command.aggregate.ReviewList;
 import org.highfives.grid.review.command.dto.ReviewDTO;
+import org.highfives.grid.review.command.dto.ReviewHistoryDTO;
 import org.highfives.grid.review.command.dto.ReviewListDTO;
+import org.highfives.grid.review.command.repository.ReviewHistoryRepository;
 import org.highfives.grid.review.command.repository.ReviewListRepository;
 import org.highfives.grid.review.command.repository.ReviewRepository;
 import org.highfives.grid.review.command.aggregate.Review;
@@ -19,16 +22,18 @@ public class CommandReviewServiceImpl implements CommandReviewService{
 
     private final ReviewListRepository reviewListRepository;
 
+    private final ReviewHistoryRepository reviewHistoryRepository;
+
     private final ModelMapper mapper;
 
     @Autowired
-    public CommandReviewServiceImpl(ReviewRepository reviewRepository, ReviewListRepository reviewListRepository, ModelMapper mapper) {
+    public CommandReviewServiceImpl(ReviewRepository reviewRepository, ReviewListRepository reviewListRepository,
+                                    ReviewHistoryRepository reviewHistoryRepository, ModelMapper mapper) {
         this.reviewRepository = reviewRepository;
         this.reviewListRepository = reviewListRepository;
+        this.reviewHistoryRepository = reviewHistoryRepository;
         this.mapper = mapper;
     }
-
-
 
     @Override
     public ReviewDTO findReviewById(int id) {
@@ -61,4 +66,15 @@ public class CommandReviewServiceImpl implements CommandReviewService{
 
         return mapper.map(reviewLists, ReviewListDTO.class);
     }
+
+    @Override
+    public ReviewHistoryDTO findReviewHistoryById(int id) {
+
+
+        ReviewHistory reviewHistory =  reviewHistoryRepository.findById(id).orElseThrow(() -> new IllegalArgumentException());
+
+        return mapper.map(reviewHistory, ReviewHistoryDTO.class);
+    }
+
+
 }

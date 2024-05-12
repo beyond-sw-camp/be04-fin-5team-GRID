@@ -21,7 +21,7 @@ public class ReviewHistory {
     private String content;
 
     @Column(name = "review_status", nullable = false)
-    private ReviewStatus reviewStatus;
+    private String reviewStatus;
 
     @Column(name = "write_time", nullable = false)
     private String writeTime;

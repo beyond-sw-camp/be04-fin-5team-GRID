@@ -1,8 +1,10 @@
 package org.highfives.grid.review.command.controller;
 
 import org.highfives.grid.review.command.dto.ReviewDTO;
+import org.highfives.grid.review.command.dto.ReviewHistoryDTO;
 import org.highfives.grid.review.command.dto.ReviewListDTO;
 import org.highfives.grid.review.command.service.CommandReviewService;
+import org.highfives.grid.review.command.vo.ResponseReviewHistoryVO;
 import org.highfives.grid.review.command.vo.ResponseReviewListVO;
 import org.highfives.grid.review.command.vo.ResponseReviewVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,13 +61,13 @@ public class CommandReviewController {
     }
 
     /* 설명. 평가 항목 리스트 전체 조회*/
-    @GetMapping("/find-all")
+    @GetMapping("/list")
     public ResponseEntity<ResponseReviewListVO> findAllReview() {
         ReviewListDTO reviewList = reviewService.findAllReview();
 
         ResponseReviewListVO responseReviewListVO = ResponseReviewListVO.builder()
                 .message("success")
-                .statusCode(201)
+                .statusCode(200)
                 .href("/{id}")
                 .result(reviewList)
                 .build();
@@ -73,6 +75,25 @@ public class CommandReviewController {
         return ResponseEntity.status(HttpStatus.OK).body(responseReviewListVO);
 
     }
+
+    /* 설명. 평가 항목 내역 단일 조회 */
+    @GetMapping("/history/{id}")
+    public ResponseEntity<ResponseReviewHistoryVO> findReviewHistoryById(@PathVariable int id) {
+
+        ReviewHistoryDTO historyDTO = reviewService.findReviewHistoryById(id);
+
+        ResponseReviewHistoryVO responseReviewHistoryVO = ResponseReviewHistoryVO.builder()
+                .message("success")
+                .statusCode(200)
+                .href("/{id}")
+                .result(historyDTO)
+                .build();
+
+
+        return ResponseEntity.status(HttpStatus.OK).body(responseReviewHistoryVO);
+
+    }
+
 
 
 
