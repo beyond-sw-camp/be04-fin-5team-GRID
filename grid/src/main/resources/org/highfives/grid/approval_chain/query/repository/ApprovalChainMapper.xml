@@ -2,6 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
 <mapper namespace="org.highfives.grid.approval_chain.query.repository.ApprovalChainMapper">
     <resultMap id="approvalChainMap" type="org.highfives.grid.approval_chain.common.dto.ApprovalChainDTO">
         <id property="id" column="id"/>
@@ -10,20 +11,34 @@
         <id property="typeId" column="type_id"/>
     </resultMap>
 
-    <select id="findChainListByApprovalId" resultMap="approvalChainMap" parameterType="int">
+    <select id="findChainListByTypeId" resultMap="approvalChainMap" parameterType="int">
         SELECT
                 id
               , duty
               , priority
               , type_id
         FROM approval_chain
-        WHERE type_id = #{approval_id}
+        WHERE type_id = #{typeId}
     </select>
-<!--    <select id="findTeamLeaderByEmployeeId" resultMap="teamLeaderMap" parameterType="int">-->
 
-<!--    </select>-->
-<!--    <select id="findDeptLeaderByEmployeeId" resultMap="deptLeaderMap" parameterType="int">-->
+    <select id="findTeamLeaderByEmployeeId" resultType="java.lang.Integer" parameterType="int">
+       SELECT
+              leader_id
+         FROM team
+        WHERE id = (SELECT
+                           team_id
+                      FROM employee
+                     WHERE id = #{employeeId});
+    </select>
 
-<!--    </select>-->
+    <select id="findDeptLeaderByEmployeeId" resultType="java.lang.Integer" parameterType="int">
+        SELECT
+               leader_id
+          FROM team
+         WHERE id = (SELECT
+                            department_id
+                       FROM employee
+                      WHERE id = #{employeeId});
+    </select>
 
 </mapper>

@@ -6,5 +6,7 @@ import java.util.List;
 
 public interface ApprovalChainService {
 
-    List<ApprovalChainDTO> findChainListByApprovalId(int approvalId);
+    List<ApprovalChainDTO> findChainListByTypeId(int approvalId);
+
+    int findLeaderByEmployeeId(int employeeId, int chainId);
 }

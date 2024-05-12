@@ -8,5 +8,9 @@ import java.util.List;
 @Mapper
 public interface ApprovalChainMapper {
 
-    List<ApprovalChainDTO> findChainListByApprovalId(int approvalId);
+    List<ApprovalChainDTO> findChainListByTypeId(int typeId);
+
+    int findTeamLeaderByEmployeeId(int employeeId);
+
+    int findDeptLeaderByEmployeeId(int employeeId);
 }
