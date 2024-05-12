@@ -80,19 +80,37 @@ public class CommandReviewController {
     @GetMapping("/history/{id}")
     public ResponseEntity<ResponseReviewHistoryVO> findReviewHistoryById(@PathVariable int id) {
 
-        ReviewHistoryDTO historyDTO = reviewService.findReviewHistoryById(id);
+        ReviewHistoryDTO responseData = reviewService.findReviewHistoryById(id);
 
         ResponseReviewHistoryVO responseReviewHistoryVO = ResponseReviewHistoryVO.builder()
                 .message("success")
                 .statusCode(200)
                 .href("/{id}")
-                .result(historyDTO)
+                .result(responseData)
                 .build();
 
 
         return ResponseEntity.status(HttpStatus.OK).body(responseReviewHistoryVO);
 
     }
+
+    @PostMapping("/history")
+    public ResponseEntity<ResponseReviewHistoryVO> addReviewHistory(@RequestBody ReviewHistoryDTO historyDTO) {
+
+        ReviewHistoryDTO responseData = reviewService.addReviewHistory(historyDTO);
+
+        ResponseReviewHistoryVO responseReviewHistoryVO = ResponseReviewHistoryVO.builder()
+                .message("success")
+                .statusCode(200)
+                .href("/{id}")
+                .result(responseData)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseReviewHistoryVO);
+    }
+
+
+
 
 
 

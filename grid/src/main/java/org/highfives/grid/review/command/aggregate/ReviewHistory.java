@@ -1,6 +1,7 @@
 package org.highfives.grid.review.command.aggregate;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
@@ -38,4 +39,15 @@ public class ReviewHistory {
     @Column(name = "reviewee_id", nullable = false)
     private int revieweeId;
 
+    @Builder
+    public ReviewHistory(int id, String content, String reviewStatus, String writeTime, int year, int quarter, int reviewerId, int revieweeId) {
+        this.id = id;
+        this.content = content;
+        this.reviewStatus = reviewStatus;
+        this.writeTime = writeTime;
+        this.year = year;
+        this.quarter = quarter;
+        this.reviewerId = reviewerId;
+        this.revieweeId = revieweeId;
+    }
 }

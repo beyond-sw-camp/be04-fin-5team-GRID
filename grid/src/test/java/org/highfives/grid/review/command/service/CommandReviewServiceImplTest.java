@@ -9,6 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -74,6 +75,32 @@ class CommandReviewServiceImplTest {
 
         // Then
         assertThat(reviewHistoryDTO.getReviewerId()).isSameAs(id);
+
+    }
+
+    @Test
+    @DisplayName("평가 후 평가 항목 내역 추가 기능")
+    @Transactional
+    void addReviewHistory() {
+
+        // Given
+
+        ReviewHistoryDTO historyDTO = ReviewHistoryDTO.builder()
+                .content("test")
+                .quarter(1)
+                .year(2024)
+                .revieweeId(1)
+                .reviewerId(3)
+                .build();
+
+        // When
+
+        ReviewHistoryDTO reviewHistoryDTO = commandReviewService.addReviewHistory(historyDTO);
+
+
+        // Then
+        assertThat(reviewHistoryDTO.getReviewerId()).isSameAs(historyDTO.getReviewerId());
+        assertThat(reviewHistoryDTO.getRevieweeId()).isSameAs(historyDTO.getRevieweeId());
 
     }
 }

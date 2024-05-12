@@ -1,9 +1,6 @@
 package org.highfives.grid.review.command.dto;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.highfives.grid.review.command.aggregate.ReviewStatus;
 
 @Getter
@@ -27,5 +24,15 @@ public class ReviewHistoryDTO {
 
     private int revieweeId;
 
-
+    @Builder
+    public ReviewHistoryDTO(int id, String content, String reviewStatus, String writeTime, int year, int quarter, int reviewerId, int revieweeId) {
+        this.id = id;
+        this.content = content;
+        this.reviewStatus = reviewStatus;
+        this.writeTime = writeTime;
+        this.year = year;
+        this.quarter = quarter;
+        this.reviewerId = reviewerId;
+        this.revieweeId = revieweeId;
+    }
 }

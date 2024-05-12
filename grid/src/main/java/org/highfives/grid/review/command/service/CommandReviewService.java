@@ -12,4 +12,6 @@ public interface CommandReviewService {
     ReviewListDTO findAllReview();
 
     ReviewHistoryDTO findReviewHistoryById(int id);
+
+    ReviewHistoryDTO addReviewHistory(ReviewHistoryDTO historyDTO);
 }
