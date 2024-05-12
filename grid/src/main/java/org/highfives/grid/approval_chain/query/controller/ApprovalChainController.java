@@ -23,7 +23,7 @@ public class ApprovalChainController {
         this.approvalChainService = approvalChainService;
     }
 
-
+    // 직원 부분에서 받은 배열 변형에 사용
     @GetMapping("/{typeId}")
     public ResponseEntity<List<ApprovalChainDTO>> findChainListByTypeId(@PathVariable int typeId) {
 

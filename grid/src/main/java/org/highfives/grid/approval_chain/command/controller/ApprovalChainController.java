@@ -1,9 +1,15 @@
 package org.highfives.grid.approval_chain.command.controller;
 
 import org.highfives.grid.approval_chain.command.service.ApprovalChainService;
+import org.highfives.grid.approval_chain.command.vo.ReqAddApprovalChainVO;
+import org.highfives.grid.approval_chain.command.vo.ResAddApprovalChainVO;
+import org.highfives.grid.approval_chain.common.dto.BTApprovalChainDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController(value = "CommandApprovalChainController")
 @RequestMapping("/approval-chain")
@@ -16,10 +22,15 @@ public class ApprovalChainController {
         this.approvalChainService = approvalChainService;
     }
 
-    // body에 담는 post 메소드로 추후 변경?
-    @GetMapping("add/{typeId}/{approvalId}/{employeeId}")
-    public void addBTApprovalChain(@PathVariable int typeId, @PathVariable int approvalId, @PathVariable int employeeId) {
+    @PostMapping("add")
+    public ResponseEntity<ResAddApprovalChainVO> addBTApprovalChain(@RequestBody ReqAddApprovalChainVO btChainVO) {
 
-        approvalChainService.addBTApprovalChain(typeId, approvalId, employeeId);
+        List<BTApprovalChainDTO> result = approvalChainService.addBTApprovalChain(btChainVO);
+
+        ResAddApprovalChainVO response = new ResAddApprovalChainVO(
+            201, "Success to add new buisness trip approval chain.", "", result
+        );
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 }

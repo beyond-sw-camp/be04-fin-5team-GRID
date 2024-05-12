@@ -1,6 +1,5 @@
 package org.highfives.grid.approval_chain.query.service;
 
-import org.highfives.grid.approval_chain.command.repository.ApprovalChainRepository;
 import org.highfives.grid.approval_chain.common.dto.ApprovalChainDTO;
 import org.highfives.grid.approval_chain.query.repository.ApprovalChainMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,12 +10,10 @@ import java.util.List;
 @Service(value = "QueryApprovalChainService")
 public class ApprovalChainServiceImpl implements ApprovalChainService {
 
-    private final ApprovalChainRepository approvalChainRepository;
     private final ApprovalChainMapper approvalChainMapper;
 
     @Autowired
-    public ApprovalChainServiceImpl(ApprovalChainRepository approvalChainRepository, ApprovalChainMapper approvalChainMapper) {
-        this.approvalChainRepository = approvalChainRepository;
+    public ApprovalChainServiceImpl(ApprovalChainMapper approvalChainMapper) {
         this.approvalChainMapper = approvalChainMapper;
     }
 

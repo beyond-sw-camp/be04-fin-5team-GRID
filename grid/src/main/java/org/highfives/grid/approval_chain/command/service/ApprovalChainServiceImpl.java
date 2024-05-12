@@ -3,6 +3,7 @@ package org.highfives.grid.approval_chain.command.service;
 import org.highfives.grid.approval_chain.command.aggregate.BTApprovalChain;
 import org.highfives.grid.approval_chain.command.aggregate.ChainStatus;
 import org.highfives.grid.approval_chain.command.repository.BTApprovalChainRepository;
+import org.highfives.grid.approval_chain.command.vo.ReqAddApprovalChainVO;
 import org.highfives.grid.approval_chain.common.dto.ApprovalChainDTO;
 import org.highfives.grid.approval_chain.common.dto.BTApprovalChainDTO;
 import org.modelmapper.ModelMapper;
@@ -29,7 +30,11 @@ public class ApprovalChainServiceImpl implements ApprovalChainService{
 
     @Override
     @Transactional
-    public List<BTApprovalChainDTO> addBTApprovalChain(int typeId, int approvalId, int employeeId) {
+    public List<BTApprovalChainDTO> addBTApprovalChain(ReqAddApprovalChainVO btChainVO) {
+
+        int typeId = btChainVO.getTypeId();
+        int employeeId = btChainVO.getEmployeeId();
+        int approvalId = btChainVO.getApprovalId();
 
         List<ApprovalChainDTO> chainList = approvalChainService.findChainListByTypeId(typeId);
         List<BTApprovalChainDTO> btChainDTOList = new ArrayList<>();
