@@ -13,5 +13,5 @@ public class GridApplication {
 	}
 
 	@Bean
-	public ModelMapper getModelMapper() { return new ModelMapper(); }
+	public ModelMapper modelMapper() { return new ModelMapper(); }
 }

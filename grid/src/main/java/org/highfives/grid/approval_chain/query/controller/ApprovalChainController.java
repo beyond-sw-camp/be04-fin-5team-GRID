@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@RestController
+@RestController(value = "QueryApprovalChainController")
 @RequestMapping("/approval-chain")
 public class ApprovalChainController {
 
@@ -24,10 +24,10 @@ public class ApprovalChainController {
     }
 
 
-    @GetMapping("/{approvalId}")
-    public ResponseEntity<List<ApprovalChainDTO>> findChainListByApprovalId(@PathVariable int approvalId) {
+    @GetMapping("/{typeId}")
+    public ResponseEntity<List<ApprovalChainDTO>> findChainListByTypeId(@PathVariable int typeId) {
 
-        List<ApprovalChainDTO> approvalChainDTOList = approvalChainService.findChainListByApprovalId(approvalId);
+        List<ApprovalChainDTO> approvalChainDTOList = approvalChainService.findChainListByTypeId(typeId);
 
         return ResponseEntity.status(HttpStatus.OK).body(approvalChainDTOList);
     }

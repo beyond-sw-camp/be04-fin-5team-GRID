@@ -18,7 +18,7 @@ public class BTApprovalChainDTO {
 
     private String comment;
 
-    private int approval_id;
+    private int approvalId;
 
     private int employeeId;
 

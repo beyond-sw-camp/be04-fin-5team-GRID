@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
+@Service(value = "QueryApprovalChainService")
 public class ApprovalChainServiceImpl implements ApprovalChainService {
 
     private final ApprovalChainRepository approvalChainRepository;
@@ -21,10 +21,24 @@ public class ApprovalChainServiceImpl implements ApprovalChainService {
     }
 
     @Override
-    public List<ApprovalChainDTO> findChainListByApprovalId(int approvalId) {
+    public List<ApprovalChainDTO> findChainListByTypeId(int typeId) {
 
-        List<ApprovalChainDTO> approvalChainList = approvalChainMapper.findChainListByApprovalId(approvalId);
+        List<ApprovalChainDTO> approvalChainList = approvalChainMapper.findChainListByTypeId(typeId);
 
         return approvalChainList;
+    }
+
+    @Override
+    public int findLeaderByEmployeeId(int employeeId, int chainId) {
+
+        int leaderId;
+
+        if (chainId == 1) {
+            leaderId = approvalChainMapper.findTeamLeaderByEmployeeId(employeeId);
+        } else {
+            leaderId = approvalChainMapper.findDeptLeaderByEmployeeId(employeeId);
+        }
+
+        return leaderId;
     }
 }

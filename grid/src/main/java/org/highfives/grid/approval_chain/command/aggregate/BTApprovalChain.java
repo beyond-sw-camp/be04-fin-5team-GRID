@@ -23,14 +23,25 @@ public class BTApprovalChain {
     private String approvalTime;
 
     @Column(name = "approval_status")
+    @Enumerated(EnumType.STRING)
     private ChainStatus approvalStatus;
 
     @Column(name = "comment")
     private String comment;
+
+    @Column(name = "approval_id")
+    private int approvalId;
 
     @Column(name = "employee_id")
     private int employeeId;
 
     @Column(name = "chain_id")
     private int chainId;
+
+    public BTApprovalChain(ChainStatus approvalStatus, int approvalId, int employeeId, int chainId) {
+        this.approvalStatus = approvalStatus;
+        this.approvalId = approvalId;
+        this.employeeId = employeeId;
+        this.chainId = chainId;
+    }
 }
