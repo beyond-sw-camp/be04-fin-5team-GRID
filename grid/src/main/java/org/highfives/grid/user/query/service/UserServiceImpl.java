@@ -6,6 +6,8 @@ import org.highfives.grid.user.query.repository.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service("QueryUserService")
 public class UserServiceImpl implements UserService{
 
@@ -17,8 +19,11 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public void findAllUsers() {
+    public List<UserDTO> findAllUsers() {
 
+        List<UserDTO> test = userMapper.getUserList();
+        System.out.println("test = " + test);
+        return null;
     }
 
     @Override

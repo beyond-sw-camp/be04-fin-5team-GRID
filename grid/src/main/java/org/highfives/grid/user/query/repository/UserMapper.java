@@ -4,9 +4,10 @@ import org.apache.ibatis.annotations.Mapper;
 import org.highfives.grid.user.query.dto.LeaderInfoDTO;
 import org.highfives.grid.user.query.dto.UserDTO;
 
+import java.util.List;
+
 @Mapper
 public interface UserMapper {
-    LeaderInfoDTO getLeaderInfo(int id);
 
     LeaderInfoDTO getDepInfo(int id);
 
@@ -15,4 +16,6 @@ public interface UserMapper {
     LeaderInfoDTO getDepLeaderInfo(int depLeaderId);
 
     LeaderInfoDTO getTeamLeaderInfo(int teamLeaderId);
+
+    List<UserDTO> getUserList();
 }

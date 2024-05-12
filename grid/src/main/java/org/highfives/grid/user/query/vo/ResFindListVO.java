@@ -2,8 +2,11 @@ package org.highfives.grid.user.query.vo;
 
 
 
+import lombok.AllArgsConstructor;
+
 import java.util.List;
 
+@AllArgsConstructor
 public class ResFindListVO {
 
     private int statusCode;

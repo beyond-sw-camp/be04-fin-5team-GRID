@@ -22,7 +22,13 @@ class UserServiceImplTests {
         Assertions.assertDoesNotThrow(
                 () -> userService.findLeaderInfo(id)
         );
+    }
 
-
+    @DisplayName("전체 유저 리스트 조회")
+    @Test
+    void findAllUsers() {
+        Assertions.assertDoesNotThrow(
+                () -> userService.findAllUsers()
+        );
     }
 }

@@ -8,9 +8,11 @@ import org.highfives.grid.user.command.aggregate.YN;
 
 @Getter
 @Setter
+@ToString
 @RequiredArgsConstructor
 public class UserDTO {
 
+    private int id;
     private String email;
     private String pwd;
     private String name;
@@ -39,12 +41,13 @@ public class UserDTO {
     private String sealPath;
 
     @Builder
-    public UserDTO(String email, String pwd, String name, String employeeNumber,
-                   Gender gender, String phoneNumber, String callNumber, int zipCode,
-                   String address, String assignedTask, String joinTime, JoinType joinType,
-                   String resignTime, YN resignYn, WorkType workType, String contractStartTime,
-                   String contractEndTime, int salary, YN absenceYn, String absenceContent, int dutiesId,
-                   int positionId, int teamId, int departmentId, String profilePath, String sealPath) {
+    public UserDTO(int id, String email, String pwd, String name, String employeeNumber,
+                   Gender gender, String phoneNumber, String callNumber, int zipCode, String address,
+                   String assignedTask, String joinTime, JoinType joinType, String resignTime, YN resignYn,
+                   WorkType workType, String contractStartTime, String contractEndTime, int salary, YN absenceYn,
+                   String absenceContent, int dutiesId, int positionId, int teamId, int departmentId,
+                   String profilePath, String sealPath) {
+        this.id = id;
         this.email = email;
         this.pwd = pwd;
         this.name = name;
@@ -72,4 +75,5 @@ public class UserDTO {
         this.profilePath = profilePath;
         this.sealPath = sealPath;
     }
+
 }

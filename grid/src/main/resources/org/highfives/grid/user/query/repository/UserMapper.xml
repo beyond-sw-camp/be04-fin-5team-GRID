@@ -24,6 +24,20 @@
         <result property="teamLeaderPosition" column="duties_name"/>
     </resultMap>
 
+    <resultMap id="userList" type="org.highfives.grid.user.query.dto.UserDTO">
+        <id property="id" column="id"/>
+        <result property="profilePath" column="path"/>
+        <result property="name" column="employee_name"/>
+        <result property="employeeNumber" column="employee_number"/>
+        <result property="position" column="position_id"/>
+        <result property="duties" column="duties_id"/>
+        <result property="phoneNumber" column="phone_number"/>
+        <result property="absenceYn" column="absence_yn"/>
+        <result property="absenceContent" column="absence_content"/>
+        <result property="joinTime" column="join_time"/>
+    </resultMap>
+
+    <!-- 팀장/부서장 정보 불러오는 쿼리 -->
     <select id="getDepInfo" parameterType="_int" resultMap="depInfo">
         SELECT
         D.department_name,
@@ -58,6 +72,23 @@
         FROM Employee E
         JOIN Duties D ON E.duties_id = D.id
         WHERE E.id = #{id}
+    </select>
+
+    <!-- 전체 유저 리스트 조회 쿼리 -->
+    <select id="getUserList" resultMap="userList">
+        SELECT
+        E.id,
+        E.employee_name,
+        E.employee_number,
+        E.position_id,
+        E.duties_id,
+        E.phone_number,
+        E.absence_yn,
+        E.absence_content,
+        E.join_time,
+        I.path
+        FROM Employee E
+        JOIN Employee_img I ON E.id = I.employee_id
     </select>
 
 <!--    <select id="selectPostsByCondition" parameterType="com.teamphoenix.ahub.fair.query.dto.FairDTO" resultMap="fairList">-->

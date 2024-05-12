@@ -17,7 +17,11 @@ public class SimpleInfo {
     // 연락처(전화번호)
     // 부재중 상태
     // 부재중 내용
-    private String imgPath;
+    /*동현님 요청으로 추가*/
+    // pk
+    // 입사일
+    private int id;
+    private String profilePath;
     private String name;
     private String employeeNumber;
     private String position;
@@ -25,5 +29,5 @@ public class SimpleInfo {
     private String phoneNumber;
     private YN absenceYn;
     private String absenceContent;
-
+    private String joinTime;
 }
