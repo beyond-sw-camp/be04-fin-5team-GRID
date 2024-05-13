@@ -22,7 +22,7 @@ public class ApprovalChainController {
         this.approvalChainService = approvalChainService;
     }
 
-    @PostMapping("add")
+    @PostMapping("/bt")
     public ResponseEntity<ResAddApprovalChainVO> addBTApprovalChain(@RequestBody ReqAddApprovalChainVO btChainVO) {
 
         List<BTApprovalChainDTO> result = approvalChainService.addBTApprovalChain(btChainVO);
