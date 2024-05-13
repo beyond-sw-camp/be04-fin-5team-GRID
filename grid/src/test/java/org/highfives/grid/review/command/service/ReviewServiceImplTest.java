@@ -1,5 +1,6 @@
 package org.highfives.grid.review.command.service;
 
+import org.highfives.grid.review.command.aggregate.ReviewStatus;
 import org.highfives.grid.review.command.dto.ReviewDTO;
 import org.highfives.grid.review.command.dto.ReviewHistoryDTO;
 import org.highfives.grid.review.command.dto.ReviewListDTO;
@@ -8,6 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -36,7 +39,7 @@ class ReviewServiceImplTest {
 
         // Then
 
-        assertThat(reviewById.getReviewId()).isEqualTo(id);
+        assertThat(reviewById.getId()).isEqualTo(id);
 
 
     }
@@ -49,7 +52,7 @@ class ReviewServiceImplTest {
 
         // When
 
-        ReviewListDTO reviewList = reviewService.findAllReview();
+        List<ReviewListDTO> reviewList = reviewService.findAllReview();
 
 
         // Then
@@ -71,7 +74,7 @@ class ReviewServiceImplTest {
 
 
         // Then
-        assertThat(reviewHistoryDTO.getReviewerId()).isSameAs(id);
+        assertThat(reviewHistoryDTO.getId()).isSameAs(id);
 
     }
 
@@ -122,6 +125,31 @@ class ReviewServiceImplTest {
         // Then
 
         assertThat(review.getScore()).isEqualTo(reviewDTO.getScore());
+
+    }
+
+    @Test
+    @DisplayName("평가 후 결과 저장 기능")
+    @Transactional
+    void modifyReviewHistory() {
+
+        // Given
+
+        ReviewHistoryDTO reviewHistoryDTO = ReviewHistoryDTO.builder()
+                .id(1)
+                .content("update")
+                .quarter(1)
+                .year(2024)
+                .reviewerId(2)
+                .revieweeId(3)
+                .build();
+
+        // When
+        ReviewHistoryDTO updateData = reviewService.modifyReviewHistory(reviewHistoryDTO);
+
+
+        // Then
+        assertThat(updateData.getReviewStatus()).isSameAs("COMPLETE");
 
     }
 }

@@ -17,7 +17,7 @@ public class ReviewList {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "name", length = 255,nullable = false)
-    private String name;
+    @Column(name = "list_name", length = 255,nullable = false)
+    private String listName;
 
 }

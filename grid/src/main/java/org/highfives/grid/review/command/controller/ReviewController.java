@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController(value = "Command")
 @RequestMapping("/review")
 public class ReviewController {
@@ -30,9 +32,9 @@ public class ReviewController {
         ReviewDTO reviewDTO = reviewService.findReviewById(id);
 
         ResponseReviewVO responseReviewVO = ResponseReviewVO.builder()
-                .message("success")
+                .message("find success")
                 .statusCode(200)
-                .href("/{id}")
+                .href("/review/{id}")
                 .result(reviewDTO)
                 .build();
 
@@ -52,9 +54,9 @@ public class ReviewController {
 
 
         ResponseReviewVO responseReviewVO = ResponseReviewVO.builder()
-                .message("success")
+                .message("create success")
                 .statusCode(201)
-                .href("/{id}")
+                .href("/review")
                 .result(reviewInfo)
                 .build();
 
@@ -64,12 +66,12 @@ public class ReviewController {
     /* 설명. 평가 항목 리스트 전체 조회*/
     @GetMapping("/list")
     public ResponseEntity<ResponseReviewListVO> findAllReview() {
-        ReviewListDTO reviewList = reviewService.findAllReview();
+        List<ReviewListDTO> reviewList = reviewService.findAllReview();
 
         ResponseReviewListVO responseReviewListVO = ResponseReviewListVO.builder()
-                .message("success")
+                .message("find success")
                 .statusCode(200)
-                .href("/{id}")
+                .href("/review/list")
                 .result(reviewList)
                 .build();
 
@@ -84,9 +86,9 @@ public class ReviewController {
         ReviewHistoryDTO responseData = reviewService.findReviewHistoryById(id);
 
         ResponseReviewHistoryVO responseReviewHistoryVO = ResponseReviewHistoryVO.builder()
-                .message("success")
+                .message("find success")
                 .statusCode(200)
-                .href("/{id}")
+                .href("/review/history/{id}")
                 .result(responseData)
                 .build();
 
@@ -102,16 +104,30 @@ public class ReviewController {
         ReviewHistoryDTO responseData = reviewService.addReviewHistory(historyDTO);
 
         ResponseReviewHistoryVO responseReviewHistoryVO = ResponseReviewHistoryVO.builder()
-                .message("success")
-                .statusCode(200)
-                .href("/{id}")
+                .message("create success")
+                .statusCode(201)
+                .href("/review/history")
                 .result(responseData)
                 .build();
 
         return ResponseEntity.status(HttpStatus.CREATED).body(responseReviewHistoryVO);
     }
 
+    /* 설명. 평가 내역 수정 */
+    @PutMapping("/history")
+    public ResponseEntity<ResponseReviewHistoryVO> modifyReviewHistory(@RequestBody ReviewHistoryDTO historyDTO) {
 
+        ReviewHistoryDTO responseData = reviewService.modifyReviewHistory(historyDTO);
+
+        ResponseReviewHistoryVO responseReviewHistoryVO = ResponseReviewHistoryVO.builder()
+                .message("update success")
+                .statusCode(200)
+                .href("/review/history")
+                .result(responseData)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseReviewHistoryVO);
+    }
 
 
 

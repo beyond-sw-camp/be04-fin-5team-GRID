@@ -13,7 +13,7 @@ import lombok.ToString;
 public class ReviewListDTO {
     private int id;
 
-    private String name;
+    private String listName;
 
 
 }

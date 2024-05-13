@@ -18,8 +18,8 @@ public class Department {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "name", length = 127, nullable = false)
-    private String name;
+    @Column(name = "department_name", length = 127, nullable = false)
+    private String departmentName;
 
     @Column(name = "member_cnt", nullable = false)
     private int memberCnt;
@@ -39,15 +39,20 @@ public class Department {
     @Column(name = "leader_id", nullable = false)
     private int leaderId;
 
+    @Column(name = "department_code", nullable = false)
+    private String departmentCode;
+
     @Builder
-    public Department(int id, String name, int memberCnt, String departmentStatus, String startTime, String endTime, String highDepartment, int leaderId) {
+    public Department(int id, String departmentName, int memberCnt, String departmentStatus,
+                      String startTime, String endTime, String highDepartment, int leaderId, String departmentCode) {
         this.id = id;
-        this.name = name;
+        this.departmentName = departmentName;
         this.memberCnt = memberCnt;
         this.departmentStatus = departmentStatus;
         this.startTime = startTime;
         this.endTime = endTime;
         this.highDepartment = highDepartment;
         this.leaderId = leaderId;
+        this.departmentCode = departmentCode;
     }
 }

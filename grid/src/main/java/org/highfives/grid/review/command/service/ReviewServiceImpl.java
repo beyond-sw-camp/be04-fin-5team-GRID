@@ -6,6 +6,7 @@ import org.highfives.grid.review.command.aggregate.ReviewStatus;
 import org.highfives.grid.review.command.dto.ReviewDTO;
 import org.highfives.grid.review.command.dto.ReviewHistoryDTO;
 import org.highfives.grid.review.command.dto.ReviewListDTO;
+import org.highfives.grid.review.command.exception.NotFoundException;
 import org.highfives.grid.review.command.repository.ReviewHistoryRepository;
 import org.highfives.grid.review.command.repository.ReviewListRepository;
 import org.highfives.grid.review.command.repository.ReviewRepository;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -70,11 +72,22 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public ReviewListDTO findAllReview() {
+    public List<ReviewListDTO> findAllReview() {
 
         List<ReviewList> reviewLists = reviewListRepository.findAll();
+        if (reviewLists == null) {
+            try {
+                throw new NotFoundException("No reviews found");
+            } catch (NotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        }
 
-        return mapper.map(reviewLists, ReviewListDTO.class);
+        List<ReviewListDTO> reviewListDTOs = new ArrayList<>();
+        for (ReviewList reviewList : reviewLists) {
+            reviewListDTOs.add(mapper.map(reviewList, ReviewListDTO.class));
+        }
+        return reviewListDTOs;
     }
 
     @Override
@@ -89,16 +102,13 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public ReviewHistoryDTO addReviewHistory(ReviewHistoryDTO historyDTO) {
 
-        Date currentDate = new Date();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String formattedDate = dateFormat.format(currentDate);
+
 
         ReviewHistory reviewHistory = ReviewHistory.builder()
                 .content(historyDTO.getContent())
                 .year(historyDTO.getYear())
                 .quarter(historyDTO.getQuarter())
-                .reviewStatus(ReviewStatus.N)
-                .writeTime(formattedDate)
+                .reviewStatus(ReviewStatus.INCOMPLETE)
                 .reviewerId(historyDTO.getReviewerId())
                 .revieweeId(historyDTO.getRevieweeId())
                 .build();
@@ -109,5 +119,29 @@ public class ReviewServiceImpl implements ReviewService {
 
 
         return mapper.map(reviewHistory, ReviewHistoryDTO.class);
+    }
+
+    @Override
+    public ReviewHistoryDTO modifyReviewHistory(ReviewHistoryDTO historyDTO) {
+        ReviewHistory reviewHistory = reviewHistoryRepository.findById(historyDTO.getId()).orElseThrow(() -> new IllegalArgumentException());
+
+        Date currentDate = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String formattedDate = dateFormat.format(currentDate);
+
+        ReviewHistory updateReviewHistory = ReviewHistory.builder()
+                .id(historyDTO.getId())
+                .content(reviewHistory.getContent())
+                .year(reviewHistory.getYear())
+                .quarter(reviewHistory.getQuarter())
+                .reviewStatus(ReviewStatus.COMPLETE)
+                .writeTime(formattedDate)
+                .reviewerId(historyDTO.getReviewerId())
+                .revieweeId(historyDTO.getRevieweeId())
+                .build();
+
+        reviewHistoryRepository.save(updateReviewHistory);
+
+        return mapper.map(updateReviewHistory, ReviewHistoryDTO.class);
     }
 }
