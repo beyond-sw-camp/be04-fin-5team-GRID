@@ -10,4 +10,6 @@ public interface UserService {
     String duplicateInfoCheck(UserDTO givenInfo);
 
     List<UserDTO> addMultiUser(List<UserDTO> givenInfo);
+
+    UserDTO modifyUser(UserDTO modifyInfo);
 }
