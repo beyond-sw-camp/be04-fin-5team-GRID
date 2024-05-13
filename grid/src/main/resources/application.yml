@@ -14,5 +14,3 @@ spring:
     url: jdbc:mariadb://localhost:3306/grid
     username: grid
     password: grid
-server:
-  port: 8080
