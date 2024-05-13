@@ -47,4 +47,15 @@ public class BTApproval {
 
     @Column(name = "requester_id")
     private int reqeusterId;
+
+    public BTApproval(String startTime, String endTime, String destination, String content, ApprovalStatus approvalStatus, String writeTime, YN cancelYN, int reqeusterId) {
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.destination = destination;
+        this.content = content;
+        this.approvalStatus = approvalStatus;
+        this.writeTime = writeTime;
+        this.cancelYN = cancelYN;
+        this.reqeusterId = reqeusterId;
+    }
 }

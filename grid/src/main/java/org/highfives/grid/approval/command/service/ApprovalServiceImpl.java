@@ -42,7 +42,7 @@ public class ApprovalServiceImpl implements ApprovalService {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String now = dateFormat.format(currentTime);
 
-        BTApproval btApproval = new BTApproval(0, startTime, endTime, destination, content, ApprovalStatus.미열람, now, YN.N, -1, requesterId);
+        BTApproval btApproval = new BTApproval(startTime, endTime, destination, content, ApprovalStatus.N, now, YN.N, requesterId);
         btApprovalRepository.save(btApproval);
 
         return mapper.map(btApproval, BTApprovalDTO.class);
