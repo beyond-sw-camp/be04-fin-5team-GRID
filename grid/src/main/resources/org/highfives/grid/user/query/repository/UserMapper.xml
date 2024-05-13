@@ -29,8 +29,8 @@
         <result property="profilePath" column="path"/>
         <result property="name" column="employee_name"/>
         <result property="employeeNumber" column="employee_number"/>
-        <result property="position" column="position_id"/>
-        <result property="duties" column="duties_id"/>
+        <result property="positionId" column="position_id"/>
+        <result property="dutiesId" column="duties_id"/>
         <result property="phoneNumber" column="phone_number"/>
         <result property="absenceYn" column="absence_yn"/>
         <result property="absenceContent" column="absence_content"/>
@@ -85,10 +85,8 @@
         E.phone_number,
         E.absence_yn,
         E.absence_content,
-        E.join_time,
-        I.path
+        E.join_time
         FROM Employee E
-        JOIN Employee_img I ON E.id = I.employee_id
     </select>
 
 <!--    <select id="selectPostsByCondition" parameterType="com.teamphoenix.ahub.fair.query.dto.FairDTO" resultMap="fairList">-->
