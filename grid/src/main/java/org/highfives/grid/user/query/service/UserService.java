@@ -9,4 +9,6 @@ public interface UserService {
     List<UserDTO> findAllUsers();
 
     LeaderInfoDTO findLeaderInfo(int id);
+
+    UserDTO findUserByEmployeeNum(int eNum);
 }

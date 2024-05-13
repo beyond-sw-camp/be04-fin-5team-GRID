@@ -60,19 +60,30 @@ public class UserServiceImpl implements UserService{
         return addResultList;
     }
 
-    // 회원 가입 시 예외 처리 메소드 ( 중복된 값 )
+    @Override
+    public UserDTO modifyUser(UserDTO modifyInfo) {
+
+        Employee oldInfo = userRepository.findById(modifyInfo.getId()).orElseThrow(NullPointerException::new);
+        modelMapper.map(modifyInfo, oldInfo);
+
+        System.out.println("oldInfo = " + oldInfo);
+
+        return null;
+    }
+
+    // 중복 값 입력 예외 처리 메소드
     @Override
     public String duplicateInfoCheck(UserDTO givenInfo) {
 
         try {
             if (userRepository.findByEmail(givenInfo.getEmail()) != null) {
-                return "Already Used Email : " + givenInfo.getEmail();
+                return "Already used Email : " + givenInfo.getEmail();
             }
             if (userRepository.findByEmployeeNumber(givenInfo.getEmployeeNumber()) != null) {
-                return "Already Employee Number : " + givenInfo.getEmployeeNumber();
+                return "Already used Employee Number : " + givenInfo.getEmployeeNumber();
             }
             if (userRepository.findByPhoneNumber(givenInfo.getPhoneNumber()) != null) {
-                return "Already Phone Number : " + givenInfo.getPhoneNumber();
+                return "Already used Phone Number : " + givenInfo.getPhoneNumber();
             }
         } catch (Exception e) {
             return "NP";
@@ -108,5 +119,22 @@ public class UserServiceImpl implements UserService{
         givenInfo.setPwd(bCryptPasswordEncoder.encode(givenInfo.getPwd()));
 
         return givenInfo;
+    }
+
+    private Employee inputNewInfo(Employee oldInfo, UserDTO givenInfo) {
+
+
+//        oldInfo.setEmail(givenInfo.getEmail());
+//        oldInfo.setPwd(givenInfo.getPwd());
+//        oldInfo.setEmployeeName(givenInfo.getName());
+//        oldInfo.setGender(givenInfo.getGender());
+//        oldInfo.setPhoneNumber(givenInfo.getPhoneNumber());
+//        oldInfo.setCallNumber(givenInfo.getCallNumber());
+//        oldInfo.setZipCode(givenInfo.getZipCode());
+//        oldInfo.setAddress(givenInfo.getAddress());
+//        oldInfo.setJoinTime(givenInfo.getJoinTime());
+//        oldInfo.setJoinType(givenInfo.getJoinType());
+
+        return oldInfo;
     }
 }

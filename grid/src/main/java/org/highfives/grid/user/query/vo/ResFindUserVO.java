@@ -1,17 +1,16 @@
 package org.highfives.grid.user.query.vo;
 
-
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.*;
+import org.highfives.grid.user.query.dto.UserDTO;
 
 import java.util.List;
+
 @Getter
 @AllArgsConstructor
-public class ResFindListVO {
+public class ResFindUserVO {
 
     private int statusCode;
     private String message;
     private String href;
-    private List<SimpleInfo> result;
+    private UserDTO result;
 }

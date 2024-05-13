@@ -7,6 +7,7 @@ import org.highfives.grid.user.command.aggregate.WorkType;
 import org.highfives.grid.user.command.dto.UserDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -75,5 +76,14 @@ class UserServiceImplTests {
         );
     }
 
+    @DisplayName("유저 수정")
+    @Test
+    @Transactional
+    void modifyUserTest() {
+
+        Assertions.assertDoesNotThrow(
+                () -> userService.modifyUser(new UserDTO(1, "test@gmail.com"))
+        );
+    }
 
 }

@@ -18,4 +18,10 @@ public interface UserMapper {
     LeaderInfoDTO getTeamLeaderInfo(int teamLeaderId);
 
     List<UserDTO> getUserList();
+
+    UserDTO getUserInfo(int eNum);
+
+    String getPosition(int id);
+
+    String getDuties(int id);
 }
