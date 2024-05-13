@@ -1,4 +1,4 @@
-package org.highfives.grid.configure;
+package org.highfives.grid.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
