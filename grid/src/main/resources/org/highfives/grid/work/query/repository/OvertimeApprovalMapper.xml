@@ -4,7 +4,7 @@
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.highfives.grid.work.query.repository.OvertimeApprovalMapper">
 
-    <resultMap id="overtimeResultMap" type="org.highfives.grid.work.query.dto.OvertimeApprovalDTO">
+    <resultMap id="overtimeResultMap" type="org.highfives.grid.approval.common.dto.OvertimeApprovalDTO">
         <id property="id" column="ID"/>
         <result property="startTime" column="START_TIME"/>
         <result property="endTime" column="END_TIME"/>

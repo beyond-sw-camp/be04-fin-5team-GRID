@@ -32,5 +32,19 @@ public class OvertimeApproval {
     @Enumerated(EnumType.STRING)
     private ApprovalStatus approvalStatus;
 
-    
+    @Column(name = "write_time")
+    private String writeTime;
+
+    @Column(name = "cancel_yn")
+    @Enumerated(EnumType.STRING)
+    private YN cancelYN;
+
+    @Column(name = "cancel_document_id")
+    private int cancelDocId;
+
+    @Column(name = "requester_id")
+    private int reqeusterId;
+
+    @Column(name = "type_id")
+    private int typeId;
 }

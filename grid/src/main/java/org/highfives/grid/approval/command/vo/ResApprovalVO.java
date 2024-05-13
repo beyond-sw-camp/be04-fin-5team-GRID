@@ -1,19 +1,22 @@
-package org.highfives.grid.work.query.vo;
+package org.highfives.grid.approval.command.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.Setter;
 import org.highfives.grid.approval.common.dto.BTApprovalDTO;
-
-import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-@ToString
-public class ResponseBtListVO {
+@Setter
+public class ResApprovalVO {
+
+    private int statusCode;
+
     private String message;
 
-    private List<BTApprovalDTO> btList;
+    private String href;
+
+    private BTApprovalDTO result;
 }

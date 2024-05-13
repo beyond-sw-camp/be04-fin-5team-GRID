@@ -1,6 +1,6 @@
 package org.highfives.grid.work.query.controller;
 
-import org.highfives.grid.work.query.dto.AdTimeDTO;
+import org.highfives.grid.work.common.dto.AdTimeDTO;
 import org.highfives.grid.work.query.service.AdTimeService;
 import org.highfives.grid.work.query.vo.ResponseAdTimeListVO;
 import org.springframework.beans.factory.annotation.Autowired;

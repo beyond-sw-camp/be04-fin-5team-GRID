@@ -1,20 +1,31 @@
-package org.highfives.grid.work.query.dto;
+package org.highfives.grid.approval.common.dto;
 
 import lombok.*;
+import org.highfives.grid.approval.command.aggregate.ApprovalStatus;
 
 @RequiredArgsConstructor
 @Getter
 @Setter
 @ToString
-public class BtApprovalDTO {
+public class OvertimeApprovalDTO {
+
     private int id;
+
     private String startTime;
+
     private String endTime;
-    private String destination;
+
     private String content;
-    private String approvalStatus;
+
+    private ApprovalStatus approvalStatus;
+
     private String writeTime;
+
     private String cancelYn;
+
+    private int cancelDocId;
+
     private int requesterId;
-    private int cancelDocumentId;
+
+    private int typeId;
 }

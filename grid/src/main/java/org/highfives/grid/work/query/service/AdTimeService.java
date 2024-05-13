@@ -1,6 +1,6 @@
 package org.highfives.grid.work.query.service;
 
-import org.highfives.grid.work.query.dto.AdTimeDTO;
+import org.highfives.grid.work.common.dto.AdTimeDTO;
 
 import java.util.List;
 

@@ -1,6 +1,6 @@
 package org.highfives.grid.work.query.controller;
 
-import org.highfives.grid.work.query.dto.RwApprovalDTO;
+import org.highfives.grid.approval.common.dto.RwApprovalDTO;
 import org.highfives.grid.work.query.service.RwApprovalService;
 import org.highfives.grid.work.query.vo.ResponseRwListVO;
 import org.springframework.beans.factory.annotation.Autowired;
