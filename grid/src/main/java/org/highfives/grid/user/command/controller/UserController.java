@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@RestController("userCommand")
+@RestController("UserCommandController")
 @RequestMapping("/users")
 public class UserController {
 
@@ -22,42 +22,6 @@ public class UserController {
         this.userService = userService;
     }
 
-    /*
-* 프론트에서 받아야할 내용 :
-
-1. email
-2. pwd
-3. name
-4. employee_number
-5. gender
-6. phone_number
-7. join_type
-8. work_type
-9. 직책 id
-10. 직위 id
-11. 팀 id
-12. 부서 id
-13. 입사일
-
-회원 가입 시 엔터티로 넘겨야할 내용 :
-1. email
-2. pwd
-3. name
-4. employee_number
-5. gender
-6. phone_number
-7. join_time
-8. join_type
-9. work_type
-10. constract_start_time
-11. 직책 id
-12. 직위 id
-13. 팀 id
-14. 부서 id
-*
-*
-* */
-    // 유저 등록시 예외 사항? : 중복값 발생,
     // 신규 유저 등록 (단일)
     @PostMapping
     public ResponseEntity<ResAddUserVO> addNewUser(@RequestBody UserDTO givenInfo) {
