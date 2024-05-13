@@ -7,7 +7,5 @@ import java.util.List;
 
 @Mapper
 public interface DepartmentMapper {
-
-
     List<Department> findAllDepartment();
 }

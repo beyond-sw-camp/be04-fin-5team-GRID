@@ -4,40 +4,12 @@
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.highfives.grid.user.query.repository.UserMapper">
 
+    <!-- 부서 정보 불러오는 쿼리 -->
     <resultMap id="depInfo" type="org.highfives.grid.user.query.dto.LeaderInfoDTO">
         <id property="depName" column="department_name"/>
         <result property="depLeaderId" column="leader_id"/>
     </resultMap>
 
-    <resultMap id="teamInfo" type="org.highfives.grid.user.query.dto.LeaderInfoDTO">
-        <id property="teamName" column="team_name"/>
-        <result property="teamLeaderId" column="leader_id"/>
-    </resultMap>
-
-    <resultMap id="depLeaderInfo" type="org.highfives.grid.user.query.dto.LeaderInfoDTO">
-        <id property="depLeaderName" column="employee_name"/>
-        <result property="depLeaderPosition" column="position_name"/>
-    </resultMap>
-
-    <resultMap id="teamLeaderInfo" type="org.highfives.grid.user.query.dto.LeaderInfoDTO">
-        <id property="teamLeaderName" column="employee_name"/>
-        <result property="teamLeaderPosition" column="duties_name"/>
-    </resultMap>
-
-    <resultMap id="userList" type="org.highfives.grid.user.query.dto.UserDTO">
-        <id property="id" column="id"/>
-        <result property="profilePath" column="path"/>
-        <result property="name" column="employee_name"/>
-        <result property="employeeNumber" column="employee_number"/>
-        <result property="positionId" column="position_id"/>
-        <result property="dutiesId" column="duties_id"/>
-        <result property="phoneNumber" column="phone_number"/>
-        <result property="absenceYn" column="absence_yn"/>
-        <result property="absenceContent" column="absence_content"/>
-        <result property="joinTime" column="join_time"/>
-    </resultMap>
-
-    <!-- 팀장/부서장 정보 불러오는 쿼리 -->
     <select id="getDepInfo" parameterType="_int" resultMap="depInfo">
         SELECT
         D.department_name,
@@ -47,6 +19,11 @@
         WHERE E.id = #{id}
     </select>
 
+    <!-- 팀 정보 불러오는 쿼리  -->
+    <resultMap id="teamInfo" type="org.highfives.grid.user.query.dto.LeaderInfoDTO">
+        <id property="teamName" column="team_name"/>
+        <result property="teamLeaderId" column="leader_id"/>
+    </resultMap>
     <select id="getTeamInfo" parameterType="_int" resultMap="teamInfo">
         SELECT
         T.team_name,
@@ -55,6 +32,12 @@
         JOIN employee E ON T.id = E.team_id
         WHERE E.id = #{id}
     </select>
+
+    <!--  부서장 정보 조회  -->
+    <resultMap id="depLeaderInfo" type="org.highfives.grid.user.query.dto.LeaderInfoDTO">
+        <id property="depLeaderName" column="employee_name"/>
+        <result property="depLeaderPosition" column="position_name"/>
+    </resultMap>
 
     <select id="getDepLeaderInfo" parameterType="_int" resultMap="depLeaderInfo">
         SELECT
@@ -65,6 +48,12 @@
         WHERE E.id = #{id}
     </select>
 
+    <!--  팀장 정보 조회  -->
+    <resultMap id="teamLeaderInfo" type="org.highfives.grid.user.query.dto.LeaderInfoDTO">
+        <id property="teamLeaderName" column="employee_name"/>
+        <result property="teamLeaderPosition" column="duties_name"/>
+    </resultMap>
+
     <select id="getTeamLeaderInfo" parameterType="_int" resultMap="teamLeaderInfo">
         SELECT
         E.employee_name,
@@ -74,8 +63,49 @@
         WHERE E.id = #{id}
     </select>
 
-    <!-- 전체 유저 리스트 조회 쿼리 -->
-    <select id="getUserList" resultMap="userList">
+    <!--  유저 정보 조회 관련  -->
+    <resultMap id="userInfo" type="org.highfives.grid.user.query.dto.UserDTO">
+        <id property="id" column="id"/>
+        <result property="email" column="email"/>
+        <result property="name" column="employee_name"/>
+        <result property="employeeNumber" column="employee_number"/>
+        <result property="gender" column="gender"/>
+        <result property="phoneNumber" column="phone_number"/>
+        <result property="callNumber" column="call_number"/>
+        <result property="zipCode" column="zip_code"/>
+        <result property="address" column="address"/>
+        <result property="assignedTask" column="assigned_task"/>
+        <result property="joinTime" column="join_time"/>
+        <result property="joinType" column="join_type"/>
+        <result property="resignTime" column="resign_time"/>
+        <result property="resignYn" column="resign_yn"/>
+        <result property="workType" column="work_type"/>
+        <result property="contractStartTime" column="contract_start_time"/>
+        <result property="contractEndTime" column="contract_end_time"/>
+        <result property="salary" column="salary"/>
+        <result property="absenceYn" column="absence_yn"/>
+        <result property="absenceContent" column="absence_content"/>
+        <result property="dutiesId" column="duties_id"/>
+        <result property="positionId" column="position_id"/>
+        <result property="teamId" column="team_id"/>
+        <result property="departmentId" column="department_id"/>
+    </resultMap>
+
+    <!--    &lt;!&ndash; 전체 유저 리스트 조회 쿼리 &ndash;&gt;-->
+<!--    <resultMap id="userList" type="org.highfives.grid.user.query.dto.UserDTO">-->
+<!--        <id property="id" column="id"/>-->
+<!--        <result property="profilePath" column="path"/>-->
+<!--        <result property="name" column="employee_name"/>-->
+<!--        <result property="employeeNumber" column="employee_number"/>-->
+<!--        <result property="positionId" column="position_id"/>-->
+<!--        <result property="dutiesId" column="duties_id"/>-->
+<!--        <result property="phoneNumber" column="phone_number"/>-->
+<!--        <result property="absenceYn" column="absence_yn"/>-->
+<!--        <result property="absenceContent" column="absence_content"/>-->
+<!--        <result property="joinTime" column="join_time"/>-->
+<!--    </resultMap>-->
+
+    <select id="getUserList" resultMap="userInfo">
         SELECT
         E.id,
         E.employee_name,
@@ -89,6 +119,54 @@
         FROM Employee E
     </select>
 
+    <!-- 사원 번호로 유저 조회 쿼리    -->
+    <select id="getUserInfo" parameterType="_int" resultMap="userInfo">
+        SELECT
+        E.id,
+        E.email,
+        E.employee_name,
+        E.employee_number,
+        E.gender,
+        E.phone_number,
+        E.call_number,
+        E.zip_code,
+        E.address,
+        E.assigned_task,
+        E.join_time,
+        E.join_type,
+        E.resign_time,
+        E.resign_yn,
+        E.work_type,
+        E.contract_start_time,
+        E.contract_end_time,
+        E.salary,
+        E.absence_yn,
+        E.absence_content,
+        E.position_id,
+        E.duties_id,
+        E.team_id,
+        E.department_id
+        FROM Employee E
+        WHERE E.employee_number = #{id}
+    </select>
+
+    <!--  사원 직위명 조회  -->
+    <select id="getPosition" parameterType="_int">
+        SELECT
+        P.position_name
+        FROM e_position P
+        JOIN employee E ON E.position_id = P.id
+        WHERE E.id = #{id}
+    </select>
+
+    <!--  사원 직책명 조회  -->
+    <select id="getDuties" parameterType="_int">
+        SELECT
+        D.duties_name
+        FROM duties D
+        JOIN employee E ON E.duties_id = D.id
+        WHERE E.id = #{eNum}
+    </select>
 <!--    <select id="selectPostsByCondition" parameterType="com.teamphoenix.ahub.fair.query.dto.FairDTO" resultMap="fairList">-->
 <!--        SELECT-->
 <!--        F.fair_id-->

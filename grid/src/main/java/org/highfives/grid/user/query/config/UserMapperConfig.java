@@ -6,5 +6,5 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @MapperScan(basePackages = "org.highfives.grid.user.query.repository", annotationClass = Mapper.class)
-public class MapperConfig {
+public class UserMapperConfig {
 }

@@ -23,6 +23,23 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    public UserDTO findUserByEmployeeNum(int eNum) {
+
+        try {
+            UserDTO result = userMapper.getUserInfo(eNum);
+            result.setProfilePath(imgMapper.getProfileImg(result.getId()));
+            result.setPosition(userMapper.getPosition(result.getId()));
+            result.setDuties(userMapper.getDuties(result.getId()));
+
+            System.out.println("result = " + result);
+            return result;
+
+        } catch (NullPointerException e) {
+            return null;
+        }
+    }
+
+    @Override
     public List<UserDTO> findAllUsers() {
 
         // employee 테이블 정보 조회
@@ -31,8 +48,10 @@ public class UserServiceImpl implements UserService{
         // profile 이미지 조회 해서 입력
         for (int i = 0; i < userList.size(); i++) {
             UserDTO userDTO = userList.get(i);
-            String profilePath = imgMapper.getProfileImg(userDTO.getId());
-            userDTO.setProfilePath(profilePath);
+
+            userDTO.setProfilePath(imgMapper.getProfileImg(userDTO.getId()));
+            userDTO.setPosition(userMapper.getPosition(userDTO.getId()));
+            userDTO.setDuties(userMapper.getDuties(userDTO.getId()));
 
             userList.set(i, userDTO);
         }
@@ -60,4 +79,6 @@ public class UserServiceImpl implements UserService{
 
         return result;
     }
+
+
 }
