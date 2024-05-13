@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.highfives.grid.department.query.dao.DepartmentMapper">
+<mapper namespace="org.highfives.grid.department.query.repository.DepartmentMapper">
 
     <resultMap id="DepartmentResultMap" type="org.highfives.grid.department.query.aggregate.Department">
         <id column="id" property="id"/>

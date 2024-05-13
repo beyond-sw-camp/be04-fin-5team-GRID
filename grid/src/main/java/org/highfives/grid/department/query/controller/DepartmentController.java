@@ -3,7 +3,7 @@ package org.highfives.grid.department.query.controller;
 
 
 import org.highfives.grid.department.query.dto.DepartmentDTO;
-import org.highfives.grid.department.query.service.QueryDepartmentService;
+import org.highfives.grid.department.query.service.DepartmentService;
 import org.highfives.grid.department.query.vo.ResponseDepartmentVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,11 +18,11 @@ import java.util.List;
 @RequestMapping("/department")
 public class DepartmentController {
 
-    private final QueryDepartmentService queryDepartmentService;
+    private final DepartmentService departmentService;
 
     @Autowired
-    public DepartmentController(QueryDepartmentService queryDepartmentService) {
-        this.queryDepartmentService = queryDepartmentService;
+    public DepartmentController(DepartmentService departmentService) {
+        this.departmentService = departmentService;
     }
 
 
@@ -32,7 +32,7 @@ public class DepartmentController {
     @GetMapping("/find-all")
     public ResponseEntity<ResponseDepartmentVO> findAllDepartment() {
 
-        List<DepartmentDTO> departmentList = queryDepartmentService.findAllDepartment();
+        List<DepartmentDTO> departmentList = departmentService.findAllDepartment();
 
         ResponseDepartmentVO responseDepartmentVO = ResponseDepartmentVO.builder()
                 .statusCode(200)

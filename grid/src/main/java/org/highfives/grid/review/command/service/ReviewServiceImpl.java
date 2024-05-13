@@ -2,6 +2,7 @@ package org.highfives.grid.review.command.service;
 
 import org.highfives.grid.review.command.aggregate.ReviewHistory;
 import org.highfives.grid.review.command.aggregate.ReviewList;
+import org.highfives.grid.review.command.aggregate.ReviewStatus;
 import org.highfives.grid.review.command.dto.ReviewDTO;
 import org.highfives.grid.review.command.dto.ReviewHistoryDTO;
 import org.highfives.grid.review.command.dto.ReviewListDTO;
@@ -17,8 +18,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-@Service
-public class CommandReviewServiceImpl implements CommandReviewService{
+@Service(value = "CommandReviewService")
+public class ReviewServiceImpl implements ReviewService {
 
     private final ReviewRepository reviewRepository;
 
@@ -29,8 +30,8 @@ public class CommandReviewServiceImpl implements CommandReviewService{
     private final ModelMapper mapper;
 
     @Autowired
-    public CommandReviewServiceImpl(ReviewRepository reviewRepository, ReviewListRepository reviewListRepository,
-                                    ReviewHistoryRepository reviewHistoryRepository, ModelMapper mapper) {
+    public ReviewServiceImpl(ReviewRepository reviewRepository, ReviewListRepository reviewListRepository,
+                             ReviewHistoryRepository reviewHistoryRepository, ModelMapper mapper) {
         this.reviewRepository = reviewRepository;
         this.reviewListRepository = reviewListRepository;
         this.reviewHistoryRepository = reviewHistoryRepository;
@@ -55,9 +56,16 @@ public class CommandReviewServiceImpl implements CommandReviewService{
     }
 
     @Override
-    public ReviewDTO insertReviewById(ReviewDTO reviewDTO) {
+    public ReviewDTO addReview(ReviewDTO reviewDTO) {
 
-        return null;
+        Review review = Review.builder()
+                .score(reviewDTO.getScore())
+                .reviewId(reviewDTO.getReviewId())
+                .historyId(reviewDTO.getHistoryId())
+                .build();
+
+        reviewRepository.save(review);
+        return mapper.map(review, ReviewDTO.class);
 
     }
 
@@ -89,7 +97,7 @@ public class CommandReviewServiceImpl implements CommandReviewService{
                 .content(historyDTO.getContent())
                 .year(historyDTO.getYear())
                 .quarter(historyDTO.getQuarter())
-                .reviewStatus("Y")
+                .reviewStatus(ReviewStatus.N)
                 .writeTime(formattedDate)
                 .reviewerId(historyDTO.getReviewerId())
                 .revieweeId(historyDTO.getRevieweeId())

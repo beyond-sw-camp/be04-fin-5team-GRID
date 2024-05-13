@@ -1,6 +1,5 @@
 package org.highfives.grid.department.command.service;
 
-import org.highfives.grid.department.command.service.CommandDepartmentService;
 import org.highfives.grid.department.command.dto.DepartmentDTO;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -8,18 +7,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-class CommandDepartmentServiceImplTest {
+class DepartmentServiceImplTest {
 
-    private final CommandDepartmentService commandDepartmentService;
+    private final DepartmentService departmentService;
 
     @Autowired
-    public CommandDepartmentServiceImplTest(CommandDepartmentService commandDepartmentService) {
-        this.commandDepartmentService = commandDepartmentService;
+    public DepartmentServiceImplTest(DepartmentService departmentService) {
+        this.departmentService = departmentService;
     }
 
 
@@ -31,7 +28,7 @@ class CommandDepartmentServiceImplTest {
         int id = 1;
 
         // When
-        DepartmentDTO departmentById = commandDepartmentService.findDepartmentById(id);
+        DepartmentDTO departmentById = departmentService.findDepartmentById(id);
 
         // Then
         assertThat(departmentById.getId()).isEqualTo(id);
@@ -50,7 +47,7 @@ class CommandDepartmentServiceImplTest {
         departmentDTO.setName("테스트");
 
         // When
-        DepartmentDTO departmentDTOList = commandDepartmentService.registDepartment(departmentDTO);
+        DepartmentDTO departmentDTOList = departmentService.registDepartment(departmentDTO);
 
         // Then
 
@@ -72,7 +69,7 @@ class CommandDepartmentServiceImplTest {
                 .build();
 
         // When
-        DepartmentDTO departmentDTOList = commandDepartmentService.modifyDepartment(departmentDTO);
+        DepartmentDTO departmentDTOList = departmentService.modifyDepartment(departmentDTO);
 
         // Then
 
@@ -91,7 +88,7 @@ class CommandDepartmentServiceImplTest {
         int id = 1;
 
         // When
-        commandDepartmentService.deleteDepartment(id);
+        departmentService.deleteDepartment(id);
 
 //        DepartmentDTO departmentById = departmentService.findDepartmentById(id);
         // Then

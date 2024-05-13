@@ -1,7 +1,5 @@
 package org.highfives.grid.review.command.service;
 
-import org.assertj.core.api.Assertions;
-import org.highfives.grid.department.command.dto.DepartmentDTO;
 import org.highfives.grid.review.command.dto.ReviewDTO;
 import org.highfives.grid.review.command.dto.ReviewHistoryDTO;
 import org.highfives.grid.review.command.dto.ReviewListDTO;
@@ -12,17 +10,16 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-class CommandReviewServiceImplTest {
+class ReviewServiceImplTest {
 
 
-    private final CommandReviewService commandReviewService;
+    private final ReviewService reviewService;
 
     @Autowired
-    public CommandReviewServiceImplTest(CommandReviewService commandReviewService) {
-        this.commandReviewService = commandReviewService;
+    public ReviewServiceImplTest(ReviewService reviewService) {
+        this.reviewService = reviewService;
     }
 
     @Test
@@ -34,7 +31,7 @@ class CommandReviewServiceImplTest {
         int id = 1;
 
         // When
-        ReviewDTO reviewById = commandReviewService.findReviewById(id);
+        ReviewDTO reviewById = reviewService.findReviewById(id);
 
 
         // Then
@@ -52,7 +49,7 @@ class CommandReviewServiceImplTest {
 
         // When
 
-        ReviewListDTO reviewList = commandReviewService.findAllReview();
+        ReviewListDTO reviewList = reviewService.findAllReview();
 
 
         // Then
@@ -70,7 +67,7 @@ class CommandReviewServiceImplTest {
 
         // When
 
-        ReviewHistoryDTO reviewHistoryDTO = commandReviewService.findReviewHistoryById(id);
+        ReviewHistoryDTO reviewHistoryDTO = reviewService.findReviewHistoryById(id);
 
 
         // Then
@@ -95,12 +92,36 @@ class CommandReviewServiceImplTest {
 
         // When
 
-        ReviewHistoryDTO reviewHistoryDTO = commandReviewService.addReviewHistory(historyDTO);
+        ReviewHistoryDTO reviewHistoryDTO = reviewService.addReviewHistory(historyDTO);
 
 
         // Then
         assertThat(reviewHistoryDTO.getReviewerId()).isSameAs(historyDTO.getReviewerId());
         assertThat(reviewHistoryDTO.getRevieweeId()).isSameAs(historyDTO.getRevieweeId());
+
+    }
+
+    @Test
+    @DisplayName("평가 후 결과 저장 기능")
+    @Transactional
+    void addReview() {
+
+        // Given
+
+        ReviewDTO reviewDTO = ReviewDTO.builder()
+                .score(400)
+                .reviewId(1)
+                .historyId(1)
+                .build();
+
+        // When
+
+        ReviewDTO review = reviewService.addReview(reviewDTO);
+
+
+        // Then
+
+        assertThat(review.getScore()).isEqualTo(reviewDTO.getScore());
 
     }
 }

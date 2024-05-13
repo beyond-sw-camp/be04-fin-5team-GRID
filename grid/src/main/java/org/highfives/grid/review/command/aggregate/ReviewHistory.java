@@ -22,7 +22,7 @@ public class ReviewHistory {
     private String content;
 
     @Column(name = "review_status", nullable = false)
-    private String reviewStatus;
+    private ReviewStatus reviewStatus;
 
     @Column(name = "write_time", nullable = false)
     private String writeTime;
@@ -40,7 +40,8 @@ public class ReviewHistory {
     private int revieweeId;
 
     @Builder
-    public ReviewHistory(int id, String content, String reviewStatus, String writeTime, int year, int quarter, int reviewerId, int revieweeId) {
+    public ReviewHistory(int id, String content, ReviewStatus reviewStatus, String writeTime
+            , int year, int quarter, int reviewerId, int revieweeId) {
         this.id = id;
         this.content = content;
         this.reviewStatus = reviewStatus;

@@ -4,10 +4,10 @@ import org.highfives.grid.review.command.dto.ReviewDTO;
 import org.highfives.grid.review.command.dto.ReviewHistoryDTO;
 import org.highfives.grid.review.command.dto.ReviewListDTO;
 
-public interface CommandReviewService {
+public interface ReviewService {
     ReviewDTO findReviewById(int id);
 
-    ReviewDTO insertReviewById(ReviewDTO reviewDTO);
+    ReviewDTO addReview(ReviewDTO reviewDTO);
 
     ReviewListDTO findAllReview();
 

@@ -1,6 +1,5 @@
 package org.highfives.grid.department.command.service;
 
-import org.highfives.grid.department.query.dao.DepartmentMapper;
 import org.highfives.grid.department.command.dto.DepartmentDTO;
 import org.highfives.grid.department.command.aggregate.Department;
 import org.highfives.grid.department.command.exception.DepartmentNotFoundException;
@@ -11,12 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
-@Service
-public class CommandDepartmentServiceImpl implements CommandDepartmentService {
+@Service(value = "commandDepartmentService")
+public class DepartmentServiceImpl implements DepartmentService {
 
 
     private final DepartmentRepository departmentRepository;
@@ -24,7 +21,7 @@ public class CommandDepartmentServiceImpl implements CommandDepartmentService {
     private final ModelMapper mapper;
 
     @Autowired
-    public CommandDepartmentServiceImpl(DepartmentRepository departmentRepository, ModelMapper mapper) {
+    public DepartmentServiceImpl(DepartmentRepository departmentRepository, ModelMapper mapper) {
         this.departmentRepository = departmentRepository;
         this.mapper = mapper;
     }

@@ -3,7 +3,7 @@ package org.highfives.grid.review.command.controller;
 import org.highfives.grid.review.command.dto.ReviewDTO;
 import org.highfives.grid.review.command.dto.ReviewHistoryDTO;
 import org.highfives.grid.review.command.dto.ReviewListDTO;
-import org.highfives.grid.review.command.service.CommandReviewService;
+import org.highfives.grid.review.command.service.ReviewService;
 import org.highfives.grid.review.command.vo.ResponseReviewHistoryVO;
 import org.highfives.grid.review.command.vo.ResponseReviewListVO;
 import org.highfives.grid.review.command.vo.ResponseReviewVO;
@@ -12,18 +12,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
+@RestController(value = "Command")
 @RequestMapping("/review")
-public class CommandReviewController {
+public class ReviewController {
 
-    private final CommandReviewService reviewService;
+    private final ReviewService reviewService;
 
     @Autowired
-    public CommandReviewController(CommandReviewService reviewService) {
+    public ReviewController(ReviewService reviewService) {
         this.reviewService = reviewService;
     }
 
-    /* 설명. 평가 조회 기능 */
+    /* 설명. 평가 결과 조회 기능 */
     @GetMapping("/{id}")
     public ResponseEntity<ResponseReviewVO> findReviewById(@PathVariable int id) {
 
@@ -43,11 +43,12 @@ public class CommandReviewController {
 
     }
 
-    @PostMapping("/add")
-    public ResponseEntity<ResponseReviewVO> insertReviewById(@RequestBody ReviewDTO requestData) {
+    /* 설명. 평가 후 결과 저장 기능 */
+    @PostMapping
+    public ResponseEntity<ResponseReviewVO> addReview(@RequestBody ReviewDTO requestData) {
 
 
-         ReviewDTO reviewInfo = reviewService.insertReviewById(requestData);
+         ReviewDTO reviewInfo = reviewService.addReview(requestData);
 
 
         ResponseReviewVO responseReviewVO = ResponseReviewVO.builder()
@@ -94,6 +95,7 @@ public class CommandReviewController {
 
     }
 
+    /* 설명. 평가 작성 시 평가 내역 추가 기능 */
     @PostMapping("/history")
     public ResponseEntity<ResponseReviewHistoryVO> addReviewHistory(@RequestBody ReviewHistoryDTO historyDTO) {
 
@@ -108,8 +110,6 @@ public class CommandReviewController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(responseReviewHistoryVO);
     }
-
-
 
 
 

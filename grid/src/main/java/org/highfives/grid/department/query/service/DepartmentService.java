@@ -4,7 +4,7 @@ import org.highfives.grid.department.query.dto.DepartmentDTO;
 
 import java.util.List;
 
-public interface QueryDepartmentService {
+public interface DepartmentService {
 
 
     List<DepartmentDTO> findAllDepartment();

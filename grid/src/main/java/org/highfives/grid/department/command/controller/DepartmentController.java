@@ -1,22 +1,22 @@
 package org.highfives.grid.department.command.controller;
 
 import org.highfives.grid.department.command.dto.DepartmentDTO;
-import org.highfives.grid.department.command.service.CommandDepartmentService;
+import org.highfives.grid.department.command.service.DepartmentService;
 import org.highfives.grid.department.command.vo.ResponseDepartmentVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@RestController("jpa")
+@RestController("CommandDepartmentController")
 @RequestMapping("/department")
 public class DepartmentController {
 
-    private final CommandDepartmentService commandDepartmentService;
+    private final DepartmentService departmentService;
 
     @Autowired
-    public DepartmentController(CommandDepartmentService commandDepartmentService) {
-        this.commandDepartmentService = commandDepartmentService;
+    public DepartmentController(DepartmentService departmentService) {
+        this.departmentService = departmentService;
     }
 
     /* 설명. 부서 정보 조회 기능 */
@@ -24,7 +24,7 @@ public class DepartmentController {
     public ResponseEntity<ResponseDepartmentVO> findDepartmentById(@PathVariable int id) {
 
         // 해당 부서 정보 반환
-        DepartmentDTO departmentInfo = commandDepartmentService.findDepartmentById(id);
+        DepartmentDTO departmentInfo = departmentService.findDepartmentById(id);
 
         ResponseDepartmentVO responseDepartmentVO = ResponseDepartmentVO.builder()
                 .message("success")
@@ -37,10 +37,10 @@ public class DepartmentController {
     }
 
     /* 설명. 부서 등록 기능 */
-    @PostMapping("/add")
+    @PostMapping
     public ResponseEntity<ResponseDepartmentVO> registDepartment(@RequestBody DepartmentDTO departmentDTO) {
 
-        DepartmentDTO departmentList = commandDepartmentService.registDepartment(departmentDTO);
+        DepartmentDTO departmentList = departmentService.registDepartment(departmentDTO);
 
         ResponseDepartmentVO responseDepartmentVO = ResponseDepartmentVO.builder()
                 .message("success")
@@ -55,12 +55,12 @@ public class DepartmentController {
     /* 설명. 부서 정보 수정 기능*/
     @PutMapping("/update")
     public ResponseEntity<ResponseDepartmentVO> modifyDepartment(@RequestBody DepartmentDTO departmentDTO) {
-        DepartmentDTO departmentList = commandDepartmentService.modifyDepartment(departmentDTO);
+        DepartmentDTO departmentList = departmentService.modifyDepartment(departmentDTO);
 
         ResponseDepartmentVO responseDepartmentVO = ResponseDepartmentVO.builder()
                 .message("success")
                 .href("/{id}")
-                .statusCode(201)
+                .statusCode(200)
                 .result(departmentList)
                 .build();
 
@@ -70,7 +70,7 @@ public class DepartmentController {
     /* 설명. 부서 삭제 기능 */
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<ResponseDepartmentVO> deleteDepartment(@PathVariable int id) {
-        commandDepartmentService.deleteDepartment(id);
+        departmentService.deleteDepartment(id);
 
         ResponseDepartmentVO responseDepartmentVO = ResponseDepartmentVO.builder()
                 .message("success")

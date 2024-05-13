@@ -1,10 +1,7 @@
 package org.highfives.grid.review.command.dto;
 
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 @Getter
 @Setter
@@ -20,5 +17,11 @@ public class ReviewDTO {
 
     private int reviewId;
 
-
+    @Builder
+    public ReviewDTO(int id, int score, int historyId, int reviewId) {
+        this.id = id;
+        this.score = score;
+        this.historyId = historyId;
+        this.reviewId = reviewId;
+    }
 }

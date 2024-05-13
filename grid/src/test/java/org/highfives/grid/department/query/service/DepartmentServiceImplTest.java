@@ -9,16 +9,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-class QueryDepartmentServiceImplTest {
+class DepartmentServiceImplTest {
 
-    private final QueryDepartmentService queryDepartmentService;
+    private final DepartmentService departmentService;
 
     @Autowired
-    public QueryDepartmentServiceImplTest(QueryDepartmentService queryDepartmentService) {
-        this.queryDepartmentService = queryDepartmentService;
+    public DepartmentServiceImplTest(DepartmentService departmentService) {
+        this.departmentService = departmentService;
     }
 
     @Test
@@ -28,7 +27,7 @@ class QueryDepartmentServiceImplTest {
         // Given
 
         // When
-        List<DepartmentDTO> departmentDTOList = queryDepartmentService.findAllDepartment();
+        List<DepartmentDTO> departmentDTOList = departmentService.findAllDepartment();
 
         // Then
         assertThat(departmentDTOList).isNotNull();
