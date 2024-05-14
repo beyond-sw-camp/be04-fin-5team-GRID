@@ -14,4 +14,8 @@ public interface UserService {
     UserDTO modifyUser(int id, UserDTO modifyInfo);
 
     boolean idCheck(int id, UserDTO modifyInfo);
+
+    List<UserDTO> modifyMultiUser(List<UserDTO> modifyList);
+
+    String multiInfoInputCheck(List<UserDTO> modifyList);
 }

@@ -10,7 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @RestController("UserCommandController")
 @RequestMapping("/users")
@@ -44,6 +46,14 @@ public class UserController {
     @PostMapping("/list")
     public ResponseEntity<ResUserListVO> addMultiUser(@RequestBody List<UserDTO> infoList) {
 
+        //받아온 데이터 간 중복 체크
+        if(!userService.multiInfoInputCheck(infoList).equals("P"))
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ResUserListVO(
+                            400, "Some infos are duplicated..!",
+                            "/users/list", null));
+
+        //계약일 자동 입력을 위한 List 객체 생성
         List<UserDTO> givenInfo = new ArrayList<>();
 
         for (UserDTO info : infoList) {
@@ -76,10 +86,39 @@ public class UserController {
 
         UserDTO result = userService.modifyUser(id, modifyInfo);
         ResUserVO response =
-                new ResUserVO(200, "Success to modify info", "/users/{id}", result);
+                new ResUserVO(200, "Success to modify user info", "/users/{id}", result);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
+    // 회원 정보 일괄 수정
+    @PutMapping("/list")
+    public ResponseEntity<ResUserListVO> modifyMultiUser(@RequestBody List<UserDTO> modifyList) {
+
+        //받아온 데이터 간 중복 체크
+        if(!userService.multiInfoInputCheck(modifyList).equals("P"))
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ResUserListVO(
+                            400, "Some infos are duplicated..!",
+                            "/users/list", null));
+
+        //받아온 데이터 간의 중복 체크가 정상적으로 종료 시, DB의 데이터와 중복 체크
+        for(UserDTO info : modifyList) {
+            if( duplicateInfoCheck(info) != null ){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(new ResUserListVO (
+                                400, duplicateInfoCheck(info).getBody().getMessage(),
+                                "/users", null));
+            }
+        }
+
+        List<UserDTO> result = userService.modifyMultiUser(modifyList);
+        ResUserListVO response =
+                new ResUserListVO(200, "Success to modify all infos", "/users/lists", result);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
 
     @GetMapping("/duplication")
     public ResponseEntity<ResUserVO> duplicateInfoCheck(UserDTO givenInfo) {

@@ -10,6 +10,7 @@ import org.highfives.grid.user.command.aggregate.YN;
 @Setter
 @ToString
 @RequiredArgsConstructor
+@AllArgsConstructor
 public class UserDTO {
 
     private int id;
