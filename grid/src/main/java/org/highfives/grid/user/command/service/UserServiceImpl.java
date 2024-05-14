@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService{
     @Transactional
     public UserDTO addNewUser(UserDTO givenInfo) {
 
-        encodePwd(givenInfo);
+        givenInfo.setPwd(encodePwd(givenInfo));
 
         Employee addInfo = dTOtoEntity(givenInfo);
         userRepository.save(addInfo);
@@ -47,7 +47,7 @@ public class UserServiceImpl implements UserService{
 
         List<UserDTO> addResultList = new ArrayList<>();
         for (UserDTO userInfo : givenInfo) {
-            encodePwd(userInfo);
+            userInfo.setPwd(encodePwd(userInfo));
             Employee employee = dTOtoEntity(userInfo);
 
             userRepository.save(employee);
@@ -61,14 +61,15 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public UserDTO modifyUser(UserDTO modifyInfo) {
+    public UserDTO modifyUser(int id, UserDTO modifyInfo) {
 
-        Employee oldInfo = userRepository.findById(modifyInfo.getId()).orElseThrow(NullPointerException::new);
-        modelMapper.map(modifyInfo, oldInfo);
+        Employee oldInfo = userRepository.findById(id).orElseThrow(NullPointerException::new);
 
-        System.out.println("oldInfo = " + oldInfo);
+        userRepository.save(inputNewInfo(oldInfo, modifyInfo));
 
-        return null;
+        Employee resultInfo = userRepository.findById(modifyInfo.getId()).orElseThrow(NullPointerException::new);
+
+        return modelMapper.map(resultInfo, UserDTO.class);
     }
 
     // 중복 값 입력 예외 처리 메소드
@@ -94,7 +95,7 @@ public class UserServiceImpl implements UserService{
 
     private Employee dTOtoEntity(UserDTO givenInfo) {
 
-        Employee result = new Employee (
+        return new Employee (
                 givenInfo.getEmail(),
                 givenInfo.getPwd(),
                 givenInfo.getName(),
@@ -110,22 +111,22 @@ public class UserServiceImpl implements UserService{
                 givenInfo.getDepartmentId(),
                 givenInfo.getTeamId()
         );
-
-        return result;
     }
 
-    private UserDTO encodePwd(UserDTO givenInfo) {
+    private String encodePwd(UserDTO givenInfo) {
 
-        givenInfo.setPwd(bCryptPasswordEncoder.encode(givenInfo.getPwd()));
+        return bCryptPasswordEncoder.encode(givenInfo.getPwd());
+    }
 
-        return givenInfo;
+    public boolean idCheck(int id, UserDTO givenInfo) {
+
+        return id == givenInfo.getId();
     }
 
     private Employee inputNewInfo(Employee oldInfo, UserDTO givenInfo) {
 
-
 //        oldInfo.setEmail(givenInfo.getEmail());
-//        oldInfo.setPwd(givenInfo.getPwd());
+//        oldInfo.setPwd(encodePwd(givenInfo));
 //        oldInfo.setEmployeeName(givenInfo.getName());
 //        oldInfo.setGender(givenInfo.getGender());
 //        oldInfo.setPhoneNumber(givenInfo.getPhoneNumber());
@@ -134,7 +135,45 @@ public class UserServiceImpl implements UserService{
 //        oldInfo.setAddress(givenInfo.getAddress());
 //        oldInfo.setJoinTime(givenInfo.getJoinTime());
 //        oldInfo.setJoinType(givenInfo.getJoinType());
+//        oldInfo.setResignTime(givenInfo.getResignTime());
+//        oldInfo.setResignYn(givenInfo.getResignYn());
+//        oldInfo.setWorkType(givenInfo.getWorkType());
+//        oldInfo.setContractStartTime(givenInfo.getContractStartTime());
+//        oldInfo.setContractEndTime(givenInfo.getContractEndTime());
+//        oldInfo.setSalary(givenInfo.getSalary());
+//        oldInfo.setAbsenceYn(givenInfo.getAbsenceYn());
+//        oldInfo.setAbsenceContent(givenInfo.getAbsenceContent());
+//        oldInfo.setDutiesId(givenInfo.getDutiesId());
+//        oldInfo.setPositionId(givenInfo.getPositionId());
+//        oldInfo.setTeamId(givenInfo.getTeamId());
+//        oldInfo.setDepartmentId(givenInfo.getDepartmentId());
 
-        return oldInfo;
+        return Employee.builder()
+                .id(oldInfo.getId())
+                .email(givenInfo.getEmail())
+                .pwd(givenInfo.getPwd())
+                .employeeName(givenInfo.getName())
+                .employeeNumber(oldInfo.getEmployeeNumber())
+                .gender(givenInfo.getGender())
+                .phoneNumber(givenInfo.getPhoneNumber())
+                .callNumber(givenInfo.getCallNumber())
+                .zipCode(givenInfo.getZipCode())
+                .address(givenInfo.getAddress())
+                .assignedTask(givenInfo.getAssignedTask())
+                .joinTime(givenInfo.getJoinTime())
+                .joinType(givenInfo.getJoinType())
+                .resignTime(givenInfo.getResignTime())
+                .resignYn(givenInfo.getResignYn())
+                .workType(givenInfo.getWorkType())
+                .contractStartTime(givenInfo.getContractStartTime())
+                .contractEndTime(givenInfo.getContractEndTime())
+                .salary(givenInfo.getSalary())
+                .absenceYn(givenInfo.getAbsenceYn())
+                .absenceContent(givenInfo.getAbsenceContent())
+                .dutiesId(givenInfo.getDutiesId())
+                .positionId(givenInfo.getPositionId())
+                .teamId(givenInfo.getTeamId())
+                .departmentId(givenInfo.getDepartmentId())
+                .build();
     }
 }

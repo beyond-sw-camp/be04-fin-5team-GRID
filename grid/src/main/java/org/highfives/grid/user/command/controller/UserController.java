@@ -64,13 +64,17 @@ public class UserController {
     }
 
     // 회원 정보 단일 수정
-    @PutMapping
-    public ResponseEntity<ResUserVO> modifyUserInfo(@RequestBody UserDTO modifyInfo) {
+    @PutMapping("/{id}")
+    public ResponseEntity<ResUserVO> modifyUserInfo(@PathVariable("id") int id, @RequestBody UserDTO modifyInfo) {
+
+        if(!userService.idCheck(id, modifyInfo))
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ResUserVO(400, "Unmatched Id info", "/users/{id}", null));
 
         if(duplicateInfoCheck(modifyInfo) != null)
             return duplicateInfoCheck(modifyInfo);
 
-        UserDTO result = userService.modifyUser(modifyInfo);
+        UserDTO result = userService.modifyUser(id, modifyInfo);
         ResUserVO response =
                 new ResUserVO(200, "Success to modify info", "/users/{id}", result);
 

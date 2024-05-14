@@ -82,7 +82,7 @@ class UserServiceImplTests {
     void modifyUserTest() {
 
         Assertions.assertDoesNotThrow(
-                () -> userService.modifyUser(new UserDTO(1, "test@gmail.com"))
+                () -> userService.modifyUser(1, new UserDTO(1, "test@gmail.com"))
         );
     }
 

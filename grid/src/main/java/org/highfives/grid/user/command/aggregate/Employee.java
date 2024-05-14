@@ -68,7 +68,6 @@ public class Employee {
     @Column
     private int departmentId;
 
-    @Builder
     public Employee(String email, String pwd, String employeeName, String employeeNumber, Gender gender,
                    String phoneNumber, String joinTime, JoinType joinType, WorkType workType,
                    String contractStartTime, int dutiesId, int positionId, int teamId, int departmentId) {
@@ -121,95 +120,4 @@ public class Employee {
         this.departmentId = departmentId;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setPwd(String pwd) {
-        this.pwd = pwd;
-    }
-
-    public void setEmployeeName(String employeeName) {
-        this.employeeName = employeeName;
-    }
-
-    public void setGender(Gender gender) {
-        this.gender = gender;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public void setCallNumber(String callNumber) {
-        this.callNumber = callNumber;
-    }
-
-    public void setZipCode(String zipCode) {
-        this.zipCode = zipCode;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public void setAssignedTask(String assignedTask) {
-        this.assignedTask = assignedTask;
-    }
-
-    public void setJoinTime(String joinTime) {
-        this.joinTime = joinTime;
-    }
-
-    public void setJoinType(JoinType joinType) {
-        this.joinType = joinType;
-    }
-
-    public void setResignTime(String resignTime) {
-        this.resignTime = resignTime;
-    }
-
-    public void setResignYn(YN resignYn) {
-        this.resignYn = resignYn;
-    }
-
-    public void setWorkType(WorkType workType) {
-        this.workType = workType;
-    }
-
-    public void setContractStartTime(String contractStartTime) {
-        this.contractStartTime = contractStartTime;
-    }
-
-    public void setContractEndTime(String contractEndTime) {
-        this.contractEndTime = contractEndTime;
-    }
-
-    public void setSalary(int salary) {
-        this.salary = salary;
-    }
-
-    public void setAbsenceYn(YN absenceYn) {
-        this.absenceYn = absenceYn;
-    }
-
-    public void setAbsenceContent(String absenceContent) {
-        this.absenceContent = absenceContent;
-    }
-
-    public void setDutiesId(int dutiesId) {
-        this.dutiesId = dutiesId;
-    }
-
-    public void setPositionId(int positionId) {
-        this.positionId = positionId;
-    }
-
-    public void setTeamId(int teamId) {
-        this.teamId = teamId;
-    }
-
-    public void setDepartmentId(int departmentId) {
-        this.departmentId = departmentId;
-    }
 }
