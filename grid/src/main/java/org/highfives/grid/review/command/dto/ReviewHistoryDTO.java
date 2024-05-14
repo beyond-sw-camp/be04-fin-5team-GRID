@@ -4,7 +4,6 @@ import lombok.*;
 import org.highfives.grid.review.command.aggregate.ReviewStatus;
 
 @Getter
-@Setter
 @RequiredArgsConstructor
 @ToString
 public class ReviewHistoryDTO {

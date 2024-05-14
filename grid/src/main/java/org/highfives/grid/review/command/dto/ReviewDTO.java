@@ -4,7 +4,6 @@ package org.highfives.grid.review.command.dto;
 import lombok.*;
 
 @Getter
-@Setter
 @RequiredArgsConstructor
 @ToString
 public class ReviewDTO {

@@ -1,10 +1,7 @@
 package org.highfives.grid.review.command.dto;
 
 import jakarta.persistence.Column;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 @Getter
 @Setter
@@ -15,5 +12,9 @@ public class ReviewListDTO {
 
     private String listName;
 
-
+    @Builder
+    public ReviewListDTO(int id, String listName) {
+        this.id = id;
+        this.listName = listName;
+    }
 }

@@ -18,4 +18,14 @@ public interface ReviewService {
     ReviewHistoryDTO addReviewHistory(ReviewHistoryDTO historyDTO);
 
     ReviewHistoryDTO modifyReviewHistory(ReviewHistoryDTO historyDTO);
+
+    ReviewListDTO addReviewList(ReviewListDTO reviewListDTO);
+
+    ReviewListDTO modifyReviewList(ReviewListDTO reviewListDTO);
+
+    void deleteReviewList(int id);
+
+    void deleteReviewHistory(int id);
+
+    ReviewDTO modifyReview(ReviewDTO reviewDTO);
 }

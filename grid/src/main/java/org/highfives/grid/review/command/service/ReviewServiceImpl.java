@@ -72,6 +72,23 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
+    public ReviewDTO modifyReview(ReviewDTO reviewDTO) {
+
+        ReviewDTO currentData = findReviewById(reviewDTO.getId());
+
+        Review review = Review.builder()
+                .id(reviewDTO.getId())
+                .score(reviewDTO.getScore())
+                .reviewId(currentData.getReviewId())
+                .historyId(currentData.getHistoryId())
+                .build();
+
+        reviewRepository.save(review);
+
+        return mapper.map(review, ReviewDTO.class);
+    }
+
+    @Override
     public List<ReviewListDTO> findAllReview() {
 
         List<ReviewList> reviewLists = reviewListRepository.findAll();
@@ -91,6 +108,27 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
+    public ReviewListDTO addReviewList(ReviewListDTO reviewListDTO) {
+
+        ReviewList reviewList = ReviewList.builder()
+                .listName(reviewListDTO.getListName())
+                .build();
+
+        return mapper.map(reviewList, ReviewListDTO.class);
+    }
+
+    @Override
+    public ReviewListDTO modifyReviewList(ReviewListDTO reviewListDTO) {
+
+        ReviewList reviewList = ReviewList.builder()
+                .id(reviewListDTO.getId())
+                .listName(reviewListDTO.getListName())
+                .build();
+
+        return mapper.map(reviewList, ReviewListDTO.class);
+    }
+
+    @Override
     public ReviewHistoryDTO findReviewHistoryById(int id) {
 
 
@@ -100,9 +138,14 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
+    public void deleteReviewList(int id) {
+
+        reviewListRepository.deleteById(id);
+
+    }
+
+    @Override
     public ReviewHistoryDTO addReviewHistory(ReviewHistoryDTO historyDTO) {
-
-
 
         ReviewHistory reviewHistory = ReviewHistory.builder()
                 .content(historyDTO.getContent())
@@ -115,8 +158,6 @@ public class ReviewServiceImpl implements ReviewService {
 
 
         reviewHistoryRepository.save(reviewHistory);
-
-
 
         return mapper.map(reviewHistory, ReviewHistoryDTO.class);
     }
@@ -143,5 +184,13 @@ public class ReviewServiceImpl implements ReviewService {
         reviewHistoryRepository.save(updateReviewHistory);
 
         return mapper.map(updateReviewHistory, ReviewHistoryDTO.class);
+
+    }
+
+    @Override
+    public void deleteReviewHistory(int id) {
+
+        reviewHistoryRepository.deleteById(id);
+
     }
 }
