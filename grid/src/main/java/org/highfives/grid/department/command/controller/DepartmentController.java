@@ -54,7 +54,7 @@ public class DepartmentController {
     }
 
     /* 설명. 부서 정보 수정 기능*/
-    @PutMapping("/update")
+    @PutMapping
     public ResponseEntity<ResponseDepartmentVO> modifyDepartment(@RequestBody DepartmentDTO departmentDTO) {
         DepartmentDTO departmentList = departmentService.modifyDepartment(departmentDTO);
 
@@ -69,7 +69,7 @@ public class DepartmentController {
     }
 
     /* 설명. 부서 삭제 기능 */
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<ResponseDepartmentVO> deleteDepartment(@PathVariable int id) {
         departmentService.deleteDepartment(id);
 

@@ -13,7 +13,7 @@ public class Department {
 
     private int id;
 
-    private String name;
+    private String departmentName;
 
     private int memberCnt;
 
@@ -27,15 +27,19 @@ public class Department {
 
     private int leaderId;
 
+    private String departmentCode;
+
     @Builder
-    public Department(int id, String name, int memberCnt, String departmentStatus, String startTime, String endTime, String highDepartment, int leaderId) {
+    public Department(int id, String departmentName, int memberCnt, String departmentStatus, String startTime,
+                      String endTime, String highDepartment, int leaderId, String departmentCode) {
         this.id = id;
-        this.name = name;
+        this.departmentName = departmentName;
         this.memberCnt = memberCnt;
         this.departmentStatus = departmentStatus;
         this.startTime = startTime;
         this.endTime = endTime;
         this.highDepartment = highDepartment;
         this.leaderId = leaderId;
+        this.departmentCode = departmentCode;
     }
 }

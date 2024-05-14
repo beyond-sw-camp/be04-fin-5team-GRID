@@ -22,9 +22,10 @@ public class ReviewHistory {
     private String content;
 
     @Column(name = "review_status", nullable = false)
+    @Enumerated(EnumType.STRING)
     private ReviewStatus reviewStatus;
 
-    @Column(name = "write_time", nullable = false)
+    @Column(name = "write_time")
     private String writeTime;
 
     @Column(name = "year", nullable = false)

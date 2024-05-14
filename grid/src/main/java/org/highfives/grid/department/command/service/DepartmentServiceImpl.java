@@ -53,8 +53,9 @@ public class DepartmentServiceImpl implements DepartmentService {
         String formattedDate = dateFormat.format(currentDate);
 
         Department department = Department.builder()
-                .name(departmentDTO.getName())
+                .departmentName(departmentDTO.getDepartmentName())
                 .departmentStatus("Y")
+                .departmentCode(departmentDTO.getDepartmentCode())
                 .startTime(formattedDate)
                 .build();
 
@@ -70,7 +71,7 @@ public class DepartmentServiceImpl implements DepartmentService {
         if(!departmentDTO.getDepartmentStatus().equals("N")) {
             Department department = Department.builder()
                     .id(departmentDTO.getId())
-                    .name(departmentDTO.getName())
+                    .departmentName(departmentDTO.getDepartmentName())
                     .departmentStatus(departmentDTO.getDepartmentStatus())
                     .startTime(currentDepartmentInfo.getStartTime())
                     .endTime(currentDepartmentInfo.getEndTime())
@@ -89,7 +90,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 
             Department department = Department.builder()
                     .id(departmentDTO.getId())
-                    .name(departmentDTO.getName())
+                    .departmentName(departmentDTO.getDepartmentName())
                     .departmentStatus(departmentDTO.getDepartmentStatus())
                     .startTime(currentDepartmentInfo.getStartTime())
                     .endTime(formattedDate)
