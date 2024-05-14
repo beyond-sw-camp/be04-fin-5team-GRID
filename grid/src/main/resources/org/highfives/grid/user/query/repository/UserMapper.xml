@@ -91,20 +91,6 @@
         <result property="departmentId" column="department_id"/>
     </resultMap>
 
-    <!--    &lt;!&ndash; 전체 유저 리스트 조회 쿼리 &ndash;&gt;-->
-<!--    <resultMap id="userList" type="org.highfives.grid.user.query.dto.UserDTO">-->
-<!--        <id property="id" column="id"/>-->
-<!--        <result property="profilePath" column="path"/>-->
-<!--        <result property="name" column="employee_name"/>-->
-<!--        <result property="employeeNumber" column="employee_number"/>-->
-<!--        <result property="positionId" column="position_id"/>-->
-<!--        <result property="dutiesId" column="duties_id"/>-->
-<!--        <result property="phoneNumber" column="phone_number"/>-->
-<!--        <result property="absenceYn" column="absence_yn"/>-->
-<!--        <result property="absenceContent" column="absence_content"/>-->
-<!--        <result property="joinTime" column="join_time"/>-->
-<!--    </resultMap>-->
-
     <select id="getUserList" resultMap="userInfo">
         SELECT
         E.id,
@@ -117,6 +103,7 @@
         E.absence_content,
         E.join_time
         FROM Employee E
+        WHERE E.resign_yn = 'N'
     </select>
 
     <!-- 사원 번호로 유저 조회 쿼리    -->

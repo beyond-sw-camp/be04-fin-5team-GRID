@@ -120,4 +120,11 @@ public class Employee {
         this.departmentId = departmentId;
     }
 
+    public void setResignTime(String resignTime) {
+        this.resignTime = resignTime;
+    }
+
+    public void setResignYn(YN resignYn) {
+        this.resignYn = resignYn;
+    }
 }

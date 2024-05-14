@@ -114,4 +114,14 @@ class UserServiceImplTests {
         );
     }
 
+    @DisplayName("유저 탈퇴")
+    @Test
+    @Transactional
+    void deleteUserTest() {
+
+        Assertions.assertDoesNotThrow(
+                () -> userService.deleteUser("9999999")
+        );
+    }
+
 }
