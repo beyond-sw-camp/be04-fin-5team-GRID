@@ -65,9 +65,7 @@ public class UserServiceImpl implements UserService{
 
         Employee oldInfo = userRepository.findById(id).orElseThrow(NullPointerException::new);
 
-        oldInfo = inputNewInfo(oldInfo, modifyInfo);
-
-        userRepository.save(oldInfo);
+        userRepository.save(inputNewInfo(oldInfo, modifyInfo));
 
         Employee resultInfo = userRepository.findById(modifyInfo.getId()).orElseThrow(NullPointerException::new);
 
@@ -127,29 +125,55 @@ public class UserServiceImpl implements UserService{
 
     private Employee inputNewInfo(Employee oldInfo, UserDTO givenInfo) {
 
-        oldInfo.setEmail(givenInfo.getEmail());
-        oldInfo.setPwd(encodePwd(givenInfo));
-        oldInfo.setEmployeeName(givenInfo.getName());
-        oldInfo.setGender(givenInfo.getGender());
-        oldInfo.setPhoneNumber(givenInfo.getPhoneNumber());
-        oldInfo.setCallNumber(givenInfo.getCallNumber());
-        oldInfo.setZipCode(givenInfo.getZipCode());
-        oldInfo.setAddress(givenInfo.getAddress());
-        oldInfo.setJoinTime(givenInfo.getJoinTime());
-        oldInfo.setJoinType(givenInfo.getJoinType());
-        oldInfo.setResignTime(givenInfo.getResignTime());
-        oldInfo.setResignYn(givenInfo.getResignYn());
-        oldInfo.setWorkType(givenInfo.getWorkType());
-        oldInfo.setContractStartTime(givenInfo.getContractStartTime());
-        oldInfo.setContractEndTime(givenInfo.getContractEndTime());
-        oldInfo.setSalary(givenInfo.getSalary());
-        oldInfo.setAbsenceYn(givenInfo.getAbsenceYn());
-        oldInfo.setAbsenceContent(givenInfo.getAbsenceContent());
-        oldInfo.setDutiesId(givenInfo.getDutiesId());
-        oldInfo.setPositionId(givenInfo.getPositionId());
-        oldInfo.setTeamId(givenInfo.getTeamId());
-        oldInfo.setDepartmentId(givenInfo.getDepartmentId());
+//        oldInfo.setEmail(givenInfo.getEmail());
+//        oldInfo.setPwd(encodePwd(givenInfo));
+//        oldInfo.setEmployeeName(givenInfo.getName());
+//        oldInfo.setGender(givenInfo.getGender());
+//        oldInfo.setPhoneNumber(givenInfo.getPhoneNumber());
+//        oldInfo.setCallNumber(givenInfo.getCallNumber());
+//        oldInfo.setZipCode(givenInfo.getZipCode());
+//        oldInfo.setAddress(givenInfo.getAddress());
+//        oldInfo.setJoinTime(givenInfo.getJoinTime());
+//        oldInfo.setJoinType(givenInfo.getJoinType());
+//        oldInfo.setResignTime(givenInfo.getResignTime());
+//        oldInfo.setResignYn(givenInfo.getResignYn());
+//        oldInfo.setWorkType(givenInfo.getWorkType());
+//        oldInfo.setContractStartTime(givenInfo.getContractStartTime());
+//        oldInfo.setContractEndTime(givenInfo.getContractEndTime());
+//        oldInfo.setSalary(givenInfo.getSalary());
+//        oldInfo.setAbsenceYn(givenInfo.getAbsenceYn());
+//        oldInfo.setAbsenceContent(givenInfo.getAbsenceContent());
+//        oldInfo.setDutiesId(givenInfo.getDutiesId());
+//        oldInfo.setPositionId(givenInfo.getPositionId());
+//        oldInfo.setTeamId(givenInfo.getTeamId());
+//        oldInfo.setDepartmentId(givenInfo.getDepartmentId());
 
-        return oldInfo;
+        return Employee.builder()
+                .id(oldInfo.getId())
+                .email(givenInfo.getEmail())
+                .pwd(givenInfo.getPwd())
+                .employeeName(givenInfo.getName())
+                .employeeNumber(oldInfo.getEmployeeNumber())
+                .gender(givenInfo.getGender())
+                .phoneNumber(givenInfo.getPhoneNumber())
+                .callNumber(givenInfo.getCallNumber())
+                .zipCode(givenInfo.getZipCode())
+                .address(givenInfo.getAddress())
+                .assignedTask(givenInfo.getAssignedTask())
+                .joinTime(givenInfo.getJoinTime())
+                .joinType(givenInfo.getJoinType())
+                .resignTime(givenInfo.getResignTime())
+                .resignYn(givenInfo.getResignYn())
+                .workType(givenInfo.getWorkType())
+                .contractStartTime(givenInfo.getContractStartTime())
+                .contractEndTime(givenInfo.getContractEndTime())
+                .salary(givenInfo.getSalary())
+                .absenceYn(givenInfo.getAbsenceYn())
+                .absenceContent(givenInfo.getAbsenceContent())
+                .dutiesId(givenInfo.getDutiesId())
+                .positionId(givenInfo.getPositionId())
+                .teamId(givenInfo.getTeamId())
+                .departmentId(givenInfo.getDepartmentId())
+                .build();
     }
 }
