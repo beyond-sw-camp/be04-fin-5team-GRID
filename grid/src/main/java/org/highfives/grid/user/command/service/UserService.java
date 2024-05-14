@@ -11,5 +11,7 @@ public interface UserService {
 
     List<UserDTO> addMultiUser(List<UserDTO> givenInfo);
 
-    UserDTO modifyUser(UserDTO modifyInfo);
+    UserDTO modifyUser(int id, UserDTO modifyInfo);
+
+    boolean idCheck(int id, UserDTO modifyInfo);
 }
