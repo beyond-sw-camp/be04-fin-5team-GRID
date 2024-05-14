@@ -6,6 +6,7 @@ import lombok.*;
 @Getter
 @RequiredArgsConstructor
 @ToString
+@Setter
 public class ReviewDTO {
 
     private int id;

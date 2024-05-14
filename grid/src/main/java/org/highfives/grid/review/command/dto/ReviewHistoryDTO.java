@@ -6,6 +6,7 @@ import org.highfives.grid.review.command.aggregate.ReviewStatus;
 @Getter
 @RequiredArgsConstructor
 @ToString
+@Setter
 public class ReviewHistoryDTO {
     private int id;
 

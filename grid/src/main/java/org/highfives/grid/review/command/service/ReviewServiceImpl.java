@@ -1,5 +1,6 @@
 package org.highfives.grid.review.command.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.highfives.grid.review.command.aggregate.ReviewHistory;
 import org.highfives.grid.review.command.aggregate.ReviewList;
 import org.highfives.grid.review.command.aggregate.ReviewStatus;
@@ -21,6 +22,7 @@ import java.util.Date;
 import java.util.List;
 
 @Service(value = "CommandReviewService")
+@Slf4j
 public class ReviewServiceImpl implements ReviewService {
 
     private final ReviewRepository reviewRepository;
