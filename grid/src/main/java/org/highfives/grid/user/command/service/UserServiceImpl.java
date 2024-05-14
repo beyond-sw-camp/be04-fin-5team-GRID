@@ -1,6 +1,5 @@
 package org.highfives.grid.user.command.service;
 
-import jakarta.transaction.Transactional;
 import org.highfives.grid.user.command.aggregate.Employee;
 import org.highfives.grid.user.command.dto.UserDTO;
 import org.highfives.grid.user.command.repository.UserRepository;
@@ -8,9 +7,12 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service("UserCommandService")
 public class UserServiceImpl implements UserService{
@@ -43,6 +45,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    @Transactional
     public List<UserDTO> addMultiUser(List<UserDTO> givenInfo) {
 
         List<UserDTO> addResultList = new ArrayList<>();
@@ -61,6 +64,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    @Transactional
     public UserDTO modifyUser(int id, UserDTO modifyInfo) {
 
         Employee oldInfo = userRepository.findById(id).orElseThrow(NullPointerException::new);
@@ -70,6 +74,30 @@ public class UserServiceImpl implements UserService{
         Employee resultInfo = userRepository.findById(modifyInfo.getId()).orElseThrow(NullPointerException::new);
 
         return modelMapper.map(resultInfo, UserDTO.class);
+    }
+
+    @Override
+    @Transactional
+    public List<UserDTO> modifyMultiUser(List<UserDTO> modifyList) {
+
+        List<Employee> employeeList = new ArrayList<>();
+
+        for (UserDTO userDTO : modifyList) {
+            Employee oldInfo = userRepository.findById(userDTO.getId()).orElseThrow(NullPointerException::new);
+            employeeList.add(inputNewInfo(oldInfo, userDTO));
+        }
+
+        userRepository.saveAll(employeeList);
+
+        List<UserDTO> resultList = new ArrayList<>();
+
+        for (int i = 0; i < employeeList.size(); i++) {
+            Employee result =
+                    userRepository.findById(modifyList.get(i).getId()).orElseThrow(NullPointerException::new);
+            resultList.add(modelMapper.map(result, UserDTO.class));
+        }
+
+        return resultList;
     }
 
     // 중복 값 입력 예외 처리 메소드
@@ -91,6 +119,28 @@ public class UserServiceImpl implements UserService{
         }
 
         return "Pass";
+    }
+
+    @Override
+    public String multiInfoInputCheck(List<UserDTO> modifyList) {
+
+        Set<String> emailCheck = new HashSet<>();
+        Set<String> eNumCheck = new HashSet<>();
+        Set<String> phoneNumCheck = new HashSet<>();
+
+        for (int i = 0; i < modifyList.size(); i++) {
+            emailCheck.add(modifyList.get(i).getEmail());
+            eNumCheck.add(modifyList.get(i).getEmployeeNumber());
+            phoneNumCheck.add(modifyList.get(i).getPhoneNumber());
+        }
+
+        if (emailCheck.size() != modifyList.size() ||
+                eNumCheck.size() != modifyList.size() ||
+                phoneNumCheck.size() != modifyList.size()) {
+            return "NP";
+        }
+
+        return "P";
     }
 
     private Employee dTOtoEntity(UserDTO givenInfo) {
@@ -125,33 +175,10 @@ public class UserServiceImpl implements UserService{
 
     private Employee inputNewInfo(Employee oldInfo, UserDTO givenInfo) {
 
-//        oldInfo.setEmail(givenInfo.getEmail());
-//        oldInfo.setPwd(encodePwd(givenInfo));
-//        oldInfo.setEmployeeName(givenInfo.getName());
-//        oldInfo.setGender(givenInfo.getGender());
-//        oldInfo.setPhoneNumber(givenInfo.getPhoneNumber());
-//        oldInfo.setCallNumber(givenInfo.getCallNumber());
-//        oldInfo.setZipCode(givenInfo.getZipCode());
-//        oldInfo.setAddress(givenInfo.getAddress());
-//        oldInfo.setJoinTime(givenInfo.getJoinTime());
-//        oldInfo.setJoinType(givenInfo.getJoinType());
-//        oldInfo.setResignTime(givenInfo.getResignTime());
-//        oldInfo.setResignYn(givenInfo.getResignYn());
-//        oldInfo.setWorkType(givenInfo.getWorkType());
-//        oldInfo.setContractStartTime(givenInfo.getContractStartTime());
-//        oldInfo.setContractEndTime(givenInfo.getContractEndTime());
-//        oldInfo.setSalary(givenInfo.getSalary());
-//        oldInfo.setAbsenceYn(givenInfo.getAbsenceYn());
-//        oldInfo.setAbsenceContent(givenInfo.getAbsenceContent());
-//        oldInfo.setDutiesId(givenInfo.getDutiesId());
-//        oldInfo.setPositionId(givenInfo.getPositionId());
-//        oldInfo.setTeamId(givenInfo.getTeamId());
-//        oldInfo.setDepartmentId(givenInfo.getDepartmentId());
-
         return Employee.builder()
                 .id(oldInfo.getId())
                 .email(givenInfo.getEmail())
-                .pwd(givenInfo.getPwd())
+                .pwd(encodePwd(givenInfo))
                 .employeeName(givenInfo.getName())
                 .employeeNumber(oldInfo.getEmployeeNumber())
                 .gender(givenInfo.getGender())
