@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.highfives.grid.review.query.repository.ReviewMapper">
+
+    <resultMap id="ReviewHistoryResultMap" type="org.highfives.grid.review.query.aggregate.ReviewHistory">
+        <id column="id" property="ID"/>
+        <result column="content" property="CONTENT"/>
+        <result column="review_status" property="REVIEW_STATUS"/>
+        <result column="writeTime" property="WRITE_TIME"/>
+        <result column="year" property="YEAR"/>
+        <result column="quarter" property="QUARTER"/>
+        <result column="reviewerId" property="REVIEWER_ID"/>
+        <result column="revieweeId" property="REVIEWEE_ID"/>
+        <collection property="Review" ofType="org.highfives.grid.review.query.aggregate.Review" javaType="java.util.List">
+            <id property="id" column="ID"/>
+            <id property="historyId" column="HISTORY_ID"/>
+            <id property="reviewId" column="REVIEW_ID"/>
+            <result property="score" column="SCORE"/>
+        </collection>
+    </resultMap>
+
+    <select id="findHistoryAndScoreById" resultMap="ReviewHistoryResultMap">
+        SELECT
+        A.id AS id,
+        A.content AS content,
+        A.write_time AS writeTime,
+        A.year AS year,
+        A.quarter AS quarter,
+        A.reviewer_id AS reviewerId,
+        A.reviewee_id AS revieweeId,
+        B.id AS ID,
+        B.history_id AS HISTORY_ID,
+        B.review_id AS REVIEW_ID,
+        B.score AS SCORE
+        FROM
+        member_review_history A
+        JOIN
+        member_review B ON A.id = B.history_id
+
+    </select>
+
+</mapper>

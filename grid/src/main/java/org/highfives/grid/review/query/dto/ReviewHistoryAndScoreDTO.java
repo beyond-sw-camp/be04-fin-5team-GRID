@@ -1,15 +1,8 @@
-package org.highfives.grid.review.query.aggregate;
+package org.highfives.grid.review.query.dto;
 
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
 import org.highfives.grid.review.command.aggregate.ReviewStatus;
 
-@Getter
-@RequiredArgsConstructor
-@ToString
-public class ReviewHistory {
+public class ReviewHistoryAndScoreDTO {
 
     private int id;
 
@@ -26,5 +19,8 @@ public class ReviewHistory {
     private int reviewerId;
 
     private int revieweeId;
+
+    private int score;
+
 
 }

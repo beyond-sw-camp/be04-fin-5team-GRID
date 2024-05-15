@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController(value = "Command")
+@RestController(value = "CommandReviewController")
 @RequestMapping("/review")
 public class ReviewController {
 
