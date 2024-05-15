@@ -14,8 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static org.highfives.grid.user.command.aggregate.YN.N;
-
 @Service(value = "CommandApprovalService")
 public class ApprovalServiceImpl implements ApprovalService {
 
@@ -47,4 +45,26 @@ public class ApprovalServiceImpl implements ApprovalService {
 
         return mapper.map(btApproval, BTApprovalDTO.class);
     }
+
+    @Override
+    @Transactional
+    public BTApprovalDTO modifyApproval(BTApprovalVO btApprovalVO, int btApprovalId) {
+
+        BTApproval btApproval = btApprovalRepository.findById(btApprovalId).orElseThrow();
+
+        if (btApproval.getApprovalStatus() == ApprovalStatus.N){
+            btApproval.builder()
+                    .startTime(btApprovalVO.getStartTime())
+                    .endTime(btApprovalVO.getEndTime())
+                    .destination(btApprovalVO.getDestination())
+                    .content(btApprovalVO.getContent())
+                    .build();
+        }
+
+        btApprovalRepository.save(btApproval);
+
+        return mapper.map(btApproval, BTApprovalDTO.class);
+    }
+
+
 }
