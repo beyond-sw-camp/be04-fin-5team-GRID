@@ -1,7 +1,19 @@
 package org.highfives.grid.review.query.dto;
 
-import org.highfives.grid.review.command.aggregate.ReviewStatus;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import org.highfives.grid.review.query.aggregate.Review;
+import org.highfives.grid.review.query.aggregate.ReviewStatus;
 
+import java.util.List;
+
+
+@Getter
+@RequiredArgsConstructor
+@ToString
+@Setter
 public class ReviewHistoryAndScoreDTO {
 
     private int id;
@@ -16,11 +28,7 @@ public class ReviewHistoryAndScoreDTO {
 
     private int quarter;
 
-    private int reviewerId;
-
-    private int revieweeId;
-
-    private int score;
+    private List<ReviewDTO> reviewInfo;
 
 
 }

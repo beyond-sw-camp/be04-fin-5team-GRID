@@ -4,16 +4,16 @@
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.highfives.grid.review.query.repository.ReviewMapper">
 
-    <resultMap id="ReviewHistoryResultMap" type="org.highfives.grid.review.query.aggregate.ReviewHistory">
-        <id column="id" property="ID"/>
-        <result column="content" property="CONTENT"/>
-        <result column="review_status" property="REVIEW_STATUS"/>
-        <result column="writeTime" property="WRITE_TIME"/>
-        <result column="year" property="YEAR"/>
-        <result column="quarter" property="QUARTER"/>
-        <result column="reviewerId" property="REVIEWER_ID"/>
-        <result column="revieweeId" property="REVIEWEE_ID"/>
-        <collection property="Review" ofType="org.highfives.grid.review.query.aggregate.Review" javaType="java.util.List">
+    <resultMap id="ReviewHistoryResultMap" type="org.highfives.grid.review.query.aggregate.ReviewHistoryAndScore">
+        <id property="id" column="ID"/>
+        <result property="content" column="CONTENT"/>
+        <result property="reviewStatus" column="REVIEW_STATUS"/>
+        <result property="writeTime" column="WRITE_TIME"/>
+        <result property="year" column="YEAR"/>
+        <result property="quarter" column="QUARTER"/>
+        <result property="reviewerId" column="REVIEWER_ID"/>
+        <result property="revieweeId" column="REVIEWEE_ID"/>
+        <collection property="reviewInfo" ofType="org.highfives.grid.review.query.aggregate.Review" javaType="java.util.List">
             <id property="id" column="ID"/>
             <id property="historyId" column="HISTORY_ID"/>
             <id property="reviewId" column="REVIEW_ID"/>
@@ -21,24 +21,23 @@
         </collection>
     </resultMap>
 
-    <select id="findHistoryAndScoreById" resultMap="ReviewHistoryResultMap">
+    <select id="findHistoryAndScoreById" resultMap="ReviewHistoryResultMap" parameterType="int">
         SELECT
-        A.id AS id,
-        A.content AS content,
-        A.write_time AS writeTime,
-        A.year AS year,
-        A.quarter AS quarter,
-        A.reviewer_id AS reviewerId,
-        A.reviewee_id AS revieweeId,
-        B.id AS ID,
-        B.history_id AS HISTORY_ID,
-        B.review_id AS REVIEW_ID,
-        B.score AS SCORE
+        A.ID AS REVIEW_HISTORY_ID,
+        A.CONTENT,
+        A.WRITE_TIME ,
+        A.YEAR,
+        A.QUARTER,
+        A.REVIEWER_ID,
+        A.REVIEWEE_ID,
+        B.ID AS REVIEW_ID,
+        B.HISTORY_ID,
+        B.REVIEW_ID,
+        B.SCORE
         FROM
-        member_review_history A
+        MEMBER_REVIEW_HISTORY A
         JOIN
-        member_review B ON A.id = B.history_id
-
+        MEMBER_REVIEW B ON A.ID = B.HISTORY_ID
     </select>
 
 </mapper>

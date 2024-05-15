@@ -1,14 +1,15 @@
 package org.highfives.grid.review.query.aggregate;
 
-import jakarta.persistence.*;
 import lombok.*;
-import org.highfives.grid.review.query.aggregate.ReviewStatus;
+
+import java.util.List;
+
 
 @Getter
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @ToString
-public class ReviewHistory {
+public class ReviewHistoryAndScore {
 
     private int id;
 
@@ -25,5 +26,8 @@ public class ReviewHistory {
     private int reviewerId;
 
     private int revieweeId;
+
+    private List<Review> reviewInfo;
+
 
 }
