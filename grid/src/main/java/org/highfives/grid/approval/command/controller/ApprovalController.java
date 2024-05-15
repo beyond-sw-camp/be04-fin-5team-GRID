@@ -26,9 +26,24 @@ public class ApprovalController {
         BTApprovalDTO result = approvalService.addBTApproval(btApprovalVO);
 
         ResApprovalVO response = new ResApprovalVO(
-                201, "Success to add new business trip approval", "", result
+                201, "출장 결재 생성 성공", "", result
         );
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PutMapping("/bt/{btApprovalId}")
+    public ResponseEntity<ResApprovalVO> modifyBTApproval(@RequestBody BTApprovalVO btApprovalVO, @PathVariable int btApprovalId) {
+
+        BTApprovalDTO result = approvalService.modifyApproval(btApprovalVO, btApprovalId);
+
+        ResApprovalVO response = ResApprovalVO.builder()
+                .statusCode(200)
+                .message("출장 결재 수정 성공")
+                .href("")
+                .result(result)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

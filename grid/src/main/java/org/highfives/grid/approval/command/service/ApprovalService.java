@@ -6,4 +6,5 @@ import org.highfives.grid.approval.common.dto.BTApprovalDTO;
 public interface ApprovalService {
 
     BTApprovalDTO addBTApproval(BTApprovalVO btApprovalVO);
+    BTApprovalDTO modifyApproval(BTApprovalVO btApprovalVO, int btApprovalId);
 }
