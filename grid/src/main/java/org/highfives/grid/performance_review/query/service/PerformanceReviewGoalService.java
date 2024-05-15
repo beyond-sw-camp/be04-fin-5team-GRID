@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface PerformanceReviewGoalService {
     List<PerformanceReviewGoalDTO> findAllGoalByWriterId(int employeeId);
+
+    List<PerformanceReviewGoalDTO> findAllGoalByApproverId(int employeeId);
 }

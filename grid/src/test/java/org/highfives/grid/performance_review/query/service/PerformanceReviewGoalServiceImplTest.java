@@ -18,9 +18,18 @@ class PerformanceReviewGoalServiceImplTest {
 
     @DisplayName("6번 직원의 업적 평가 목록 조회")
     @Test
-    public void findGoalByEmployeeId(){
+    public void findGoalByWriterId(){
         int employeeId = 6;
         List<PerformanceReviewGoalDTO> findGoal = performanceReviewGoalService.findAllGoalByWriterId(employeeId);
+
+        assertNotNull(findGoal);
+    }
+
+    @DisplayName("5번 직원이 결재할 업적 평가 목록 조회")
+    @Test
+    public void findGoalByEApproverId(){
+        int employeeId = 5;
+        List<PerformanceReviewGoalDTO> findGoal = performanceReviewGoalService.findAllGoalByApproverId(employeeId);
 
         assertNotNull(findGoal);
     }

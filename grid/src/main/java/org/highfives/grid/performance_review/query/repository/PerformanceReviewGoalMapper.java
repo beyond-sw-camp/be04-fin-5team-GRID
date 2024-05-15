@@ -9,4 +9,6 @@ import java.util.List;
 @Mapper
 public interface PerformanceReviewGoalMapper {
     List<PerformanceReviewGoalDTO> selectAllGoalByWriterId(int employeeId);
+
+    List<PerformanceReviewGoalDTO> selectAllGoalByApproverId(int employeeId);
 }

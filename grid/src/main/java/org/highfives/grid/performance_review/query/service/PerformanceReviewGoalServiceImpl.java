@@ -28,4 +28,12 @@ public class PerformanceReviewGoalServiceImpl implements PerformanceReviewGoalSe
         System.out.println(findGoalList);
         return findGoalList;
     }
+
+    @Override
+    public List<PerformanceReviewGoalDTO> findAllGoalByApproverId(int employeeId) {
+        System.out.println(employeeId);
+        List<PerformanceReviewGoalDTO> findGoalList = performanceReviewGoalMapper.selectAllGoalByApproverId(employeeId);
+        System.out.println(findGoalList);
+        return findGoalList;
+    }
 }

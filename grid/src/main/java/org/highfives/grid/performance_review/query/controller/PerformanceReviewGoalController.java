@@ -24,9 +24,9 @@ public class PerformanceReviewGoalController {
         this.performanceReviewGoalService = performanceReviewGoalService;
     }
 
-    // 한 직원의 작성한 평가 목표 목록 조회
-    @GetMapping("/{employeeId}")
-    public ResponseEntity<ResponsePerformanceReviewGoalVO> findAllGoalByEmployeeId(@PathVariable int employeeId){
+    // 한 팀원의 작성한 평가 목표 목록 조회
+    @GetMapping("/member/{employeeId}")
+    public ResponseEntity<ResponsePerformanceReviewGoalVO> findAllGoalByWriterId(@PathVariable int employeeId){
         List<PerformanceReviewGoalDTO> findGoalList = performanceReviewGoalService.findAllGoalByWriterId(employeeId);
 
         ResponsePerformanceReviewGoalVO response =
@@ -38,5 +38,21 @@ public class PerformanceReviewGoalController {
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
+    // 한 팀장의 작성한 평가 목표 목록 조회
+    @GetMapping("/leader/{employeeId}")
+    public ResponseEntity<ResponsePerformanceReviewGoalVO> findAllGoalByApproverId(@PathVariable int employeeId){
+        List<PerformanceReviewGoalDTO> findGoalList = performanceReviewGoalService.findAllGoalByApproverId(employeeId);
+
+        ResponsePerformanceReviewGoalVO response =
+                new ResponsePerformanceReviewGoalVO().builder()
+                        .statusCode(200)
+                        .message("평가 목록 조회 성공")
+                        .findGoalList(findGoalList)
+                        .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
 
 }
