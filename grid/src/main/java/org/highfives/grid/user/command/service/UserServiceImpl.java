@@ -1,19 +1,18 @@
 package org.highfives.grid.user.command.service;
 
-import org.highfives.grid.review.command.exception.NotFoundException;
 import org.highfives.grid.user.command.aggregate.Employee;
 import org.highfives.grid.user.command.aggregate.YN;
 import org.highfives.grid.user.command.dto.UserDTO;
 import org.highfives.grid.user.command.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.*;
 
 @Service("UserCommandService")
@@ -223,5 +222,10 @@ public class UserServiceImpl implements UserService{
                 .teamId(givenInfo.getTeamId())
                 .departmentId(givenInfo.getDepartmentId())
                 .build();
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return null;
     }
 }
