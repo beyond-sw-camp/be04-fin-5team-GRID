@@ -1,7 +1,9 @@
 package org.highfives.grid.performance_review.query.controller;
 
+import org.highfives.grid.performance_review.query.dto.DetailGoalDTO;
 import org.highfives.grid.performance_review.query.dto.PerformanceReviewGoalDTO;
 import org.highfives.grid.performance_review.query.service.PerformanceReviewGoalService;
+import org.highfives.grid.performance_review.query.vo.ResponseDetailGoalVO;
 import org.highfives.grid.performance_review.query.vo.ResponsePerformanceReviewGoalVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -49,6 +51,22 @@ public class PerformanceReviewGoalController {
                         .statusCode(200)
                         .message("평가 목록 조회 성공")
                         .findGoalList(findGoalList)
+                        .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    // 한 팀장의 작성한 평가 목표 목록 조회
+    @GetMapping("/detail/{id}")
+    public ResponseEntity<ResponseDetailGoalVO> findDetailGoalById(@PathVariable int id){
+        DetailGoalDTO findDetailGoal = performanceReviewGoalService.findDetailGoalById(id);
+
+        new ResponseDetailGoalVO();
+        ResponseDetailGoalVO response =
+                ResponseDetailGoalVO.builder()
+                        .statusCode(200)
+                        .message("평가 상세 조회 성공")
+                        .findDetailGoal(findDetailGoal)
                         .build();
 
         return ResponseEntity.status(HttpStatus.OK).body(response);

@@ -1,6 +1,8 @@
 package org.highfives.grid.performance_review.query.service;
 
 import org.highfives.grid.performance_review.query.aggregate.PerformanceReviewGoal;
+import org.highfives.grid.performance_review.query.dto.DetailGoalDTO;
+import org.highfives.grid.performance_review.query.dto.GoalItemDTO;
 import org.highfives.grid.performance_review.query.dto.PerformanceReviewGoalDTO;
 import org.highfives.grid.performance_review.query.repository.PerformanceReviewGoalMapper;
 import org.modelmapper.ModelMapper;
@@ -35,5 +37,19 @@ public class PerformanceReviewGoalServiceImpl implements PerformanceReviewGoalSe
         List<PerformanceReviewGoalDTO> findGoalList = performanceReviewGoalMapper.selectAllGoalByApproverId(employeeId);
         System.out.println(findGoalList);
         return findGoalList;
+    }
+
+    @Override
+    public DetailGoalDTO findDetailGoalById(int id) {
+        System.out.println(id);
+        DetailGoalDTO findDetailGoal = performanceReviewGoalMapper.selectDetailGoalById(id);
+
+
+        List<GoalItemDTO> findGoalItemList = performanceReviewGoalMapper.selectAllGoalItemByGoalId(id);
+
+        findDetailGoal.setGoalItemList(findGoalItemList);
+        System.out.println(findDetailGoal);
+
+        return findDetailGoal;
     }
 }
