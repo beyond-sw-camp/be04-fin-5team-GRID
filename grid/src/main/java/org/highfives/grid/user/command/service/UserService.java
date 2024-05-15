@@ -18,4 +18,6 @@ public interface UserService {
     List<UserDTO> modifyMultiUser(List<UserDTO> modifyList);
 
     String multiInfoInputCheck(List<UserDTO> modifyList);
+
+    boolean deleteUser(String employeeNumber);
 }

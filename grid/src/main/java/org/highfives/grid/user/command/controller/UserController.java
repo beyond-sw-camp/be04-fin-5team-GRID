@@ -114,11 +114,25 @@ public class UserController {
 
         List<UserDTO> result = userService.modifyMultiUser(modifyList);
         ResUserListVO response =
-                new ResUserListVO(200, "Success to modify all infos", "/users/lists", result);
+                new ResUserListVO(200, "Success to modify all infos", "/users/list", result);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    @PutMapping("/{eNum}/status")
+    public ResponseEntity<ResUserVO> resignUser(@PathVariable("eNum") String employeeNumber) {
+
+        if(!userService.deleteUser(employeeNumber))
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                    new ResUserVO(400, "No matched user", "/users/list", null)
+            );
+
+        ResUserVO response =
+                new ResUserVO(200, "Success to resign " + employeeNumber + " user",
+                        "/users/list", null);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
 
     @GetMapping("/duplication")
     public ResponseEntity<ResUserVO> duplicateInfoCheck(UserDTO givenInfo) {

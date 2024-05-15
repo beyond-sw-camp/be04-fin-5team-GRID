@@ -1,6 +1,8 @@
 package org.highfives.grid.user.command.service;
 
+import org.highfives.grid.review.command.exception.NotFoundException;
 import org.highfives.grid.user.command.aggregate.Employee;
+import org.highfives.grid.user.command.aggregate.YN;
 import org.highfives.grid.user.command.dto.UserDTO;
 import org.highfives.grid.user.command.repository.UserRepository;
 import org.modelmapper.ModelMapper;
@@ -9,10 +11,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Service("UserCommandService")
 public class UserServiceImpl implements UserService{
@@ -98,6 +100,25 @@ public class UserServiceImpl implements UserService{
         }
 
         return resultList;
+    }
+
+    @Override
+    @Transactional
+    public boolean deleteUser(String eNum) {
+
+        try {
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            String resignTime = simpleDateFormat.format(new Date());
+
+            Employee userInfo = userRepository.findByEmployeeNumber(eNum);
+            userInfo.setResignYn(YN.Y);
+            userInfo.setResignTime(resignTime);
+
+            userRepository.save(userInfo);
+        } catch(NullPointerException e) {
+            return false;
+        }
+        return true;
     }
 
     // 중복 값 입력 예외 처리 메소드
