@@ -1,9 +1,9 @@
 package org.highfives.grid.review.command.service;
 
-import org.highfives.grid.review.command.aggregate.ReviewStatus;
 import org.highfives.grid.review.command.dto.ReviewDTO;
 import org.highfives.grid.review.command.dto.ReviewHistoryDTO;
 import org.highfives.grid.review.command.dto.ReviewListDTO;
+import org.highfives.grid.review.query.dto.ReviewHistoryAndScoreDTO;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,12 +18,17 @@ import static org.assertj.core.api.Assertions.*;
 class ReviewServiceImplTest {
 
 
-    private final ReviewService reviewService;
+    private final ReviewService commandReviewService;
 
+    private final org.highfives.grid.review.query.service.ReviewService queryReviewService;
     @Autowired
-    public ReviewServiceImplTest(ReviewService reviewService) {
-        this.reviewService = reviewService;
+    public ReviewServiceImplTest(ReviewService commandReviewService,
+                                 org.highfives.grid.review.query.service.ReviewService queryReviewService) {
+        this.commandReviewService = commandReviewService;
+        this.queryReviewService = queryReviewService;
     }
+
+
 
     @Test
     @DisplayName("작성한 평가 조회")
@@ -34,7 +39,7 @@ class ReviewServiceImplTest {
         int id = 1;
 
         // When
-        ReviewDTO reviewById = reviewService.findReviewById(id);
+        ReviewDTO reviewById = commandReviewService.findReviewById(id);
 
 
         // Then
@@ -52,7 +57,7 @@ class ReviewServiceImplTest {
 
         // When
 
-        List<ReviewListDTO> reviewList = reviewService.findAllReview();
+        List<ReviewListDTO> reviewList = commandReviewService.findAllReview();
 
 
         // Then
@@ -70,7 +75,7 @@ class ReviewServiceImplTest {
 
         // When
 
-        ReviewHistoryDTO reviewHistoryDTO = reviewService.findReviewHistoryById(id);
+        ReviewHistoryDTO reviewHistoryDTO = commandReviewService.findReviewHistoryById(id);
 
 
         // Then
@@ -95,7 +100,7 @@ class ReviewServiceImplTest {
 
         // When
 
-        ReviewHistoryDTO reviewHistoryDTO = reviewService.addReviewHistory(historyDTO);
+        ReviewHistoryDTO reviewHistoryDTO = commandReviewService.addReviewHistory(historyDTO);
 
 
         // Then
@@ -119,7 +124,7 @@ class ReviewServiceImplTest {
 
         // When
 
-        ReviewDTO review = reviewService.addReview(reviewDTO);
+        ReviewDTO review = commandReviewService.addReview(reviewDTO);
 
 
         // Then
@@ -145,7 +150,7 @@ class ReviewServiceImplTest {
                 .build();
 
         // When
-        ReviewHistoryDTO updateData = reviewService.modifyReviewHistory(reviewHistoryDTO);
+        ReviewHistoryDTO updateData = commandReviewService.modifyReviewHistory(reviewHistoryDTO);
 
 
         // Then
@@ -164,7 +169,7 @@ class ReviewServiceImplTest {
                 .build();
 
         // When
-        ReviewDTO updateData = reviewService.modifyReview(reviewDTO);
+        ReviewDTO updateData = commandReviewService.modifyReview(reviewDTO);
 
         // Then
         assertThat(updateData.getScore()).isEqualTo(350);
@@ -182,7 +187,7 @@ class ReviewServiceImplTest {
 
         // When
 
-        ReviewListDTO result = reviewService.addReviewList(reviewListDTO);
+        ReviewListDTO result = commandReviewService.addReviewList(reviewListDTO);
 
         // Then
         assertThat(result.getListName()).isEqualTo(result.getListName());
@@ -200,7 +205,7 @@ class ReviewServiceImplTest {
 
 
         // When
-        ReviewListDTO updateData = reviewService.modifyReviewList(reviewListDTO);
+        ReviewListDTO updateData = commandReviewService.modifyReviewList(reviewListDTO);
 
         // Then
         assertThat(updateData.getListName()).isEqualTo("2024년 상반기 테스트");
@@ -218,11 +223,52 @@ class ReviewServiceImplTest {
 
 
         // When
-        reviewService.deleteReviewList(id);
+        commandReviewService.deleteReviewList(id);
 
         // Then
 //        ReviewDTO result = reviewService.findReviewById(id);
 //        assertThat(result).isNull();
+
+    }
+
+    @Test
+    @DisplayName("동료 평가 결과 조회 기능")
+    @Transactional
+    void findHistoryAndScoreById(){
+        // Given
+        int historyId = 1;
+        int reviewId = 1;
+
+        // When
+        List<ReviewHistoryAndScoreDTO> historyAndScoreById = queryReviewService.findHistoryAndScoreById(historyId, reviewId);
+        // Then
+        assertThat(historyAndScoreById).isNotNull();
+
+        for (ReviewHistoryAndScoreDTO reviewHistoryAndScoreDTO : historyAndScoreById) {
+            List<org.highfives.grid.review.query.dto.ReviewDTO> reviewInfoList = reviewHistoryAndScoreDTO.getReviewInfo();
+
+            for (org.highfives.grid.review.query.dto.ReviewDTO reviewDTO : reviewInfoList) {
+                assertThat(reviewDTO.getHistoryId()).isEqualTo(historyId);
+                assertThat(reviewDTO.getReviewId()).isEqualTo(reviewId);
+            }
+        }
+    }
+
+    @Test
+    @DisplayName("배정된 동료 평가 조회 기능")
+    void findAssignedReviewByReviewerId(){
+        // Given
+            int reviewerId = 1;
+
+        // When
+        List<org.highfives.grid.review.query.dto.ReviewHistoryDTO> assignedReviewByReviewerId =
+                queryReviewService.findAssignedReviewByReviewerId(reviewerId);
+
+
+        // Then
+        for (org.highfives.grid.review.query.dto.ReviewHistoryDTO reviewHistoryDTO : assignedReviewByReviewerId) {
+            assertThat(reviewHistoryDTO.getReviewerId()).isSameAs(reviewerId);
+        }
 
     }
 }
