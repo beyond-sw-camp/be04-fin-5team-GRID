@@ -13,4 +13,6 @@ public interface VacationService {
     void giveAnnualVacationBeforeYear();
 
     void giveAnnualVacationAfterYear();
+
+    void giveRegularVacation();
 }

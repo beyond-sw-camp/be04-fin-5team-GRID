@@ -221,6 +221,62 @@ public class VacationServiceImpl implements VacationService{
         }
     }
 
+    // 각각의 직원에게 정기휴가를 insert하는 메서드
+    @Override
+    @Transactional
+//    @Scheduled(cron = "0 0 0 1 1 ?")
+    public void giveRegularVacation() {
+        LocalDate firstDayOfYear = LocalDate.now().withDayOfYear(1);
+        String firstDayString = firstDayOfYear.toString();
+        LocalDate lastDayOfYear = LocalDate.now().withDayOfYear(LocalDate.now().lengthOfYear());
+        String lastDayString = lastDayOfYear.toString();
+        List<Employee> employees = userService.getAllUserinfo();
+
+        // 휴가를 새로 insert 하기 전, 기존의 휴가가 남아있다면 삭제하고, 그 기록을 vacation_history에 저장
+        for (int i = 1; i < employees.size(); i++) {
+            int userId = employees.get(i).getId();
+
+            if(vacationInfoRepository.findByEmployeeIdAndTypeId(userId, 3).getVacationNum() != 0) {
+                vacationInfoRepository.deleteByTypeIdAndEmployeeId(3,userId);
+                VacationHistory inputVacationHistory = new VacationHistory();
+
+                inputVacationHistory.setChangeTime(firstDayString);
+                inputVacationHistory.setChangeReason("사용기한 만료로 인한 정기휴가 소멸");
+                inputVacationHistory.setTypeId(3);
+                inputVacationHistory.setChangeTypeId(2);
+                inputVacationHistory.setEmployeeId(userId);
+
+                vacationHistoryRepository.save(inputVacationHistory);
+            } else {
+                vacationInfoRepository.deleteByTypeIdAndEmployeeId(3,userId);
+            }
+        }
+
+        // 휴가를 새로 insert 하고, 그 기록을 vacation_history에 저장
+        for (int i = 1; i < employees.size(); i++) {
+            int userId = employees.get(i).getId();
+            VacationInfo inputVacationInfo = new VacationInfo();
+
+            inputVacationInfo.setVacationNum(4);
+            inputVacationInfo.setAddTime(firstDayString);
+            inputVacationInfo.setEndTime(lastDayString);
+            inputVacationInfo.setEmployeeId(userId);
+            inputVacationInfo.setTypeId(3);
+
+            vacationInfoRepository.save(inputVacationInfo);
+
+            VacationHistory inputVacationHistory = new VacationHistory();
+
+            inputVacationHistory.setChangeTime(firstDayString);
+            inputVacationHistory.setChangeReason("연도 갱신에 따른 정기휴가 자동 부여");
+            inputVacationHistory.setTypeId(3);
+            inputVacationHistory.setChangeTypeId(1);
+            inputVacationHistory.setEmployeeId(userId);
+
+            vacationHistoryRepository.save(inputVacationHistory);
+        }
+    }
+
 
     // 입사이후 총 몇일이 지났는지 계산하는 메서드
     private int countDays(int userId) {
