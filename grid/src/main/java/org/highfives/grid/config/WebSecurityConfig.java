@@ -1,7 +1,9 @@
 package org.highfives.grid.config;
 
 import jakarta.servlet.Filter;
-import org.highfives.grid.filter.AuthenticationFilter;
+import org.highfives.grid.security.AuthenticationFilter;
+import org.highfives.grid.security.JwtFilter;
+import org.highfives.grid.security.JwtUtil;
 import org.highfives.grid.user.command.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -15,6 +17,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
@@ -24,6 +27,7 @@ public class WebSecurityConfig {
     private final UserService userService;
     private final Environment environment;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private JwtUtil jwtUtil;
 
     @Autowired
     public WebSecurityConfig(UserService userService,
@@ -58,12 +62,13 @@ public class WebSecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         http.addFilter(getAuthenticationFilter(authenticationManager));
+        http.addFilterBefore(new JwtFilter(userService, jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
     private Filter getAuthenticationFilter(AuthenticationManager authenticationManager) {
 
-        return new AuthenticationFilter(authenticationManager, userService, environment);
+        return new AuthenticationFilter(authenticationManager, environment);
     }
 
 }
