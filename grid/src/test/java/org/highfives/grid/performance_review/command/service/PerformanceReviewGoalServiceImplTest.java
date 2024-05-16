@@ -29,7 +29,7 @@ class PerformanceReviewGoalServiceImplTest {
                 5
         );
 
-        PerformanceReviewGoalDTO saveGoal = performanceReviewGoalService.addGoal(performanceReviewGoalDTO);
+        PerformanceReviewGoalDTO saveGoal = performanceReviewGoalService.addNewGoal(performanceReviewGoalDTO);
 
         assertNotNull(saveGoal);
     }

@@ -25,11 +25,12 @@ public class PerformanceReviewGoalController {
         this.modelMapper = modelMapper;
     }
 
+    // 업적 평가 목표 처음 생성
     @PostMapping
     public ResponseEntity<ResponsePerformanceReviewGoalVO> addGoal(
             @RequestBody PerformanceReviewGoalDTO performanceReviewGoalDTO){
 
-        PerformanceReviewGoalDTO addGoalDTO = performanceReviewGoalService.addGoal(performanceReviewGoalDTO);
+        PerformanceReviewGoalDTO addGoalDTO = performanceReviewGoalService.addNewGoal(performanceReviewGoalDTO);
         ResponsePerformanceReviewGoalVO response = ResponsePerformanceReviewGoalVO.builder()
                 .statusCode(200)
                 .message("평가 추가 완료")

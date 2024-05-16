@@ -28,7 +28,7 @@ public class PerformanceReviewGoalItemController {
         this.modelMapper = modelMapper;
     }
 
-    // 업적 평가 목표 처음 생성
+    // 목표 항목 추가 수정을 PerformanceReviewGoal에서 하기
     @PostMapping
     public ResponseEntity<ResponseGoalItemListVO> addGoalItem(
             @RequestBody RequestGoalItemListVO requestGoalItemListVO) {

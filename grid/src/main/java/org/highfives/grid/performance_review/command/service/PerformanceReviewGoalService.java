@@ -4,5 +4,7 @@ import org.highfives.grid.performance_review.command.dto.PerformanceReviewGoalDT
 
 public interface PerformanceReviewGoalService {
 
-    PerformanceReviewGoalDTO addGoal(PerformanceReviewGoalDTO performanceReviewGoalDTO);
+    PerformanceReviewGoalDTO addNewGoal(PerformanceReviewGoalDTO performanceReviewGoalDTO);
+
+    PerformanceReviewGoalDTO modifyGoalStatusInProgress(int id);
 }
