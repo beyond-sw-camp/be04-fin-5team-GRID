@@ -1,8 +1,11 @@
 package org.highfives.grid.vacation.query.dto;
 
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Setter
+@Getter
+@ToString
+@RequiredArgsConstructor
 public class VacationInfoDTO {
     private int id;
     private double vacationNum;
@@ -10,4 +13,14 @@ public class VacationInfoDTO {
     private String endTime;
     private int employeeId;
     private int typeId;
+
+    @Builder
+    public VacationInfoDTO(int id, double vacationNum, String addTime, String endTime, int employeeId, int typeId) {
+        this.id = id;
+        this.vacationNum = vacationNum;
+        this.addTime = addTime;
+        this.endTime = endTime;
+        this.employeeId = employeeId;
+        this.typeId = typeId;
+    }
 }

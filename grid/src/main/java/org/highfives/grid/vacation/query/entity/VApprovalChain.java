@@ -1,8 +1,11 @@
 package org.highfives.grid.vacation.query.entity;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.ToString;
 
-@Data
+@Getter
+@ToString
 public class VApprovalChain {
     private int id;
     private String approvalTime;

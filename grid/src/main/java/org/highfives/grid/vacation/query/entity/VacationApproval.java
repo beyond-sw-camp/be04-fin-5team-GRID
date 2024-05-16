@@ -1,8 +1,13 @@
 package org.highfives.grid.vacation.query.entity;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
-@Data
+@Getter
+@RequiredArgsConstructor
+@ToString
 public class VacationApproval {
     private int id;
     private String content;
