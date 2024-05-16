@@ -9,4 +9,6 @@ public interface VacationService {
     void deleteVacationPolicy(int id);
 
     void registVacationPolicy(RegistPolicy policyInfo);
+
+    void giveAnnualVacationBeforeYear();
 }
