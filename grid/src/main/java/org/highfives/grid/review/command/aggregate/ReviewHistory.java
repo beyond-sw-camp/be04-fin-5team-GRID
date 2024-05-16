@@ -52,4 +52,5 @@ public class ReviewHistory {
         this.reviewerId = reviewerId;
         this.revieweeId = revieweeId;
     }
+
 }

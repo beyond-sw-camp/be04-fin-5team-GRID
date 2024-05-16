@@ -7,6 +7,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service(value = "QueryReviewService")
 public class ReviewServiceImpl implements ReviewService {
 
@@ -24,10 +27,16 @@ public class ReviewServiceImpl implements ReviewService {
 
 
     @Override
-    public ReviewHistoryAndScoreDTO findHistoryAndScoreById(int historyId) {
+    public List<ReviewHistoryAndScoreDTO> findHistoryAndScoreById(int historyId) {
 
-        ReviewHistoryAndScore reviewHistoryAndScore =  reviewMapper.findHistoryAndScoreById(historyId);
+        List<ReviewHistoryAndScore> reviewHistoryAndScore =  reviewMapper.findHistoryAndScoreById(historyId);
 
-        return mapper.map(reviewHistoryAndScore, ReviewHistoryAndScoreDTO.class);
+        List<ReviewHistoryAndScoreDTO> scoreList= new ArrayList<>();
+
+        for (ReviewHistoryAndScore reviewHistoryAndScoreDTO : reviewHistoryAndScore) {
+            scoreList.add(mapper.map(reviewHistoryAndScoreDTO, ReviewHistoryAndScoreDTO.class));
+        }
+
+        return scoreList;
     }
 }

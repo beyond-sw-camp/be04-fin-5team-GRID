@@ -15,10 +15,10 @@ public class ResponseReviewHistoryAndScoreVO {
     private int statusCode;
     private String message;
     private String href;
-    private ReviewHistoryAndScoreDTO result;
+    private List<ReviewHistoryAndScoreDTO> result;
 
     @Builder
-    public ResponseReviewHistoryAndScoreVO(int statusCode, String message, String href, ReviewHistoryAndScoreDTO result) {
+    public ResponseReviewHistoryAndScoreVO(int statusCode, String message, String href, List<ReviewHistoryAndScoreDTO> result) {
         this.statusCode = statusCode;
         this.message = message;
         this.href = href;

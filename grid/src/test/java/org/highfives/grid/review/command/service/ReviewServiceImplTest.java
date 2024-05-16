@@ -112,7 +112,7 @@ class ReviewServiceImplTest {
         // Given
 
         ReviewDTO reviewDTO = ReviewDTO.builder()
-                .score(400)
+                .score(85)
                 .reviewId(1)
                 .historyId(1)
                 .build();

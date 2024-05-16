@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController(value = "QueryReviewController")
 @RequestMapping("/review")
 public class ReviewController {
@@ -25,7 +27,7 @@ public class ReviewController {
     @GetMapping("history-score/{historyId}")
     public ResponseEntity<ResponseReviewHistoryAndScoreVO> findHistoryAndScoreById(@PathVariable int historyId) {
 
-        ReviewHistoryAndScoreDTO reviewHistoryAndScoreDTO = reviewService.findHistoryAndScoreById(historyId);
+        List<ReviewHistoryAndScoreDTO> reviewHistoryAndScoreDTO = reviewService.findHistoryAndScoreById(historyId);
 
         ResponseReviewHistoryAndScoreVO responseReviewHistoryAndScoreVO = ResponseReviewHistoryAndScoreVO.builder()
                 .href("/review/history-score/{history_id}")
