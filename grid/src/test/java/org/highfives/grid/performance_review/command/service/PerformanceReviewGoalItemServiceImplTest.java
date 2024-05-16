@@ -38,7 +38,7 @@ class PerformanceReviewGoalItemServiceImplTest {
         assertNotNull(addGoalItem);
     }
 
-    @DisplayName("업적 평가 목표 힝목 수정")
+    @DisplayName("업적 평가 목표 항목 수정")
     @Test
     @Transactional
     public void modifyGoalItem() {

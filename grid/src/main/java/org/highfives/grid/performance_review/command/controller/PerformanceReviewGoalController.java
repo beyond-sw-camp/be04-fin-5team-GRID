@@ -95,6 +95,7 @@ public class PerformanceReviewGoalController {
                         .statusCode(404)
                         .message("변경할 리스트 없음")
                         .href("review-goal/detail/{goalId}")
+                        .goal(goal)
                         .itemList(null)
                         .build();
 
@@ -114,4 +115,75 @@ public class PerformanceReviewGoalController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST.value()).body(response);
         }
     }
+
+    // 업적 평가 목표 상신 상태로 변경
+    @PutMapping("/submit")
+    public ResponseEntity<ResponseGoalAndItemVO> modifyGoalStatusSubmit(
+            @RequestBody RequestGoalVO requestGoalVO) {
+
+        try{
+
+            // 목표 상태 상신으로 수정
+            PerformanceReviewGoalDTO goal = performanceReviewGoalService.modifyGoalStatusSubmit(requestGoalVO.getId());
+
+            // 목표 항목 변경
+            List<RequestGoalItemDTO> requsetList = requestGoalVO.getGoalItemList();
+
+            List<PerformanceReviewGoalItemDTO> responseList = new ArrayList<>();
+            // 목표 항목이 있으면
+            if(!requsetList.isEmpty()){
+                for (RequestGoalItemDTO request : requsetList) {
+                    // 목표 항목 변경
+                    PerformanceReviewGoalItemDTO item = modelMapper.map(request, PerformanceReviewGoalItemDTO.class);
+                    item.setGoalId(requestGoalVO.getId());
+
+                    //목표 항목에 id 없으면 추가, 있으면 수정
+                    PerformanceReviewGoalItemDTO resItem = new PerformanceReviewGoalItemDTO();
+                    if(item.getId() == null){
+                        resItem = performanceReviewGoalItemService.addGoalItem(item);
+                    } else{
+                        resItem = performanceReviewGoalItemService.modifyGoalItem(item);
+                    }
+                    System.out.println(resItem);
+                    responseList.add(resItem);
+                }
+
+                ResponseGoalAndItemVO response = ResponseGoalAndItemVO.builder()
+                        .statusCode(200)
+                        .message("평가 항목 추가 완료")
+                        .href("review-goal/detail/{goalId}")
+                        .goal(goal)
+                        .itemList(responseList)
+                        .build();
+
+                return ResponseEntity.status(HttpStatus.OK).body(response);
+            } else {
+                ResponseGoalAndItemVO response = ResponseGoalAndItemVO.builder()
+                        .statusCode(404)
+                        .message("변경할 리스트 없음")
+                        .href("review-goal/detail/{goalId}")
+                        .goal(goal)
+                        .itemList(null)
+                        .build();
+
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            }
+
+        } catch (Exception e) {
+            // 예외 처리
+            ResponseGoalAndItemVO response = ResponseGoalAndItemVO.builder()
+                    .statusCode(HttpStatus.BAD_REQUEST.value())
+                    .message(e.getMessage())
+                    .href("review-goal/detail/{goalId}")
+                    .goal(null)
+                    .itemList(null)
+                    .build();
+
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST.value()).body(response);
+        }
+    }
+
+    // 확인중
+    // 승인
+    // 반려
 }

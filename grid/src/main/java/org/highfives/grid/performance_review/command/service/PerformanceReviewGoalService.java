@@ -7,4 +7,6 @@ public interface PerformanceReviewGoalService {
     PerformanceReviewGoalDTO addNewGoal(PerformanceReviewGoalDTO performanceReviewGoalDTO);
 
     PerformanceReviewGoalDTO modifyGoalStatusInProgress(int id);
+
+    PerformanceReviewGoalDTO modifyGoalStatusSubmit(int id);
 }
