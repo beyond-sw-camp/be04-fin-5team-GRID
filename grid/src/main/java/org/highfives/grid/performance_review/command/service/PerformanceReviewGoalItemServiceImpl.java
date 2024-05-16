@@ -52,6 +52,7 @@ public class PerformanceReviewGoalItemServiceImpl implements PerformanceReviewGo
 
     // id가 있는 항목은 수정
     @Override
+    @Transactional
     public PerformanceReviewGoalItemDTO modifyGoalItem(PerformanceReviewGoalItemDTO performanceReviewGoalItemDTO) {
         System.out.println(performanceReviewGoalItemDTO);
 
