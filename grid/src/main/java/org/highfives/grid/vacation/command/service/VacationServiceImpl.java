@@ -133,6 +133,94 @@ public class VacationServiceImpl implements VacationService{
         }
     }
 
+    // 입사한지 1년이 지난 직원들에게 연차를 제공하는 메서드
+    @Override
+    @Transactional
+    public void giveAnnualVacationAfterYear() {
+        LocalDate firstDayOfYear = LocalDate.now().withDayOfYear(1);
+        String firstDayString = firstDayOfYear.toString();
+        LocalDate lastDayOfYear = LocalDate.now().withDayOfYear(LocalDate.now().lengthOfYear());
+        String lastDayString = lastDayOfYear.toString();
+        List<Employee> employees = userService.getAllUserinfo();
+
+        // 입사 후 1년이 지난 직원들이 사용안한 연차가 있다면 삭제하고 그 기록을 vacation_history에 저장
+        for (int i=1 ; i<employees.size() ; i++ ) {
+            int userId = employees.get(i).getId();
+            int day = countDays(userId);
+
+            if(day >= 365) {
+                if(vacationInfoRepository.findByEmployeeIdAndTypeId(userId, 1) != null) {
+                    if(vacationInfoRepository.findByEmployeeIdAndTypeId(userId, 1).getVacationNum() != 0) {
+                        vacationInfoRepository.deleteByTypeIdAndEmployeeId(1,userId);
+                        VacationHistory inputVacationHistory = new VacationHistory();
+
+                        inputVacationHistory.setChangeTime(firstDayString);
+                        inputVacationHistory.setChangeReason("사용기한 만료로 인한 연차 소멸");
+                        inputVacationHistory.setTypeId(1);
+                        inputVacationHistory.setChangeTypeId(2);
+                        inputVacationHistory.setEmployeeId(userId);
+
+                        vacationHistoryRepository.save(inputVacationHistory);
+                    } else {
+                        vacationInfoRepository.deleteByTypeIdAndEmployeeId(1,userId);
+                    }
+                }
+            }
+        }
+
+        // 입사 후 1년이 지난 직원들에게 연차를 제공하고 그 기록을 vacation_history에 저장
+        for (int i = 1; i < employees.size(); i++) {
+            int userId = employees.get(i).getId();
+            int day = countDays(userId);
+            int months = countMonths(userId);
+            double vacationNum = countVacation(day);
+
+            if(day >= 365) {
+                VacationInfo inputVacationInfo = new VacationInfo();
+
+                inputVacationInfo.setVacationNum(vacationNum);
+                inputVacationInfo.setAddTime(firstDayString);
+                inputVacationInfo.setEndTime(lastDayString);
+                inputVacationInfo.setEmployeeId(userId);
+                inputVacationInfo.setTypeId(1);
+
+                vacationInfoRepository.save(inputVacationInfo);
+
+                VacationHistory inputVacationHistory = new VacationHistory();
+
+                inputVacationHistory.setChangeTime(firstDayString);
+                inputVacationHistory.setChangeReason("연도 갱신에 따른 연차 자동 부여");
+                inputVacationHistory.setTypeId(1);
+                inputVacationHistory.setChangeTypeId(1);
+                inputVacationHistory.setEmployeeId(userId);
+
+                vacationHistoryRepository.save(inputVacationHistory);
+                // 1년이 안된 직원들은 작년에 얼마나 다녔는지에 따라 당해 연차를 제공
+            } else if (day < 365 && months >= 1) {
+                VacationInfo inputVacationInfo = new VacationInfo();
+
+                inputVacationInfo.setVacationNum(months);
+                inputVacationInfo.setAddTime(firstDayString);
+                inputVacationInfo.setEndTime(lastDayString);
+                inputVacationInfo.setEmployeeId(userId);
+                inputVacationInfo.setTypeId(1);
+
+                vacationInfoRepository.save(inputVacationInfo);
+
+                VacationHistory inputVacationHistory = new VacationHistory();
+
+                inputVacationHistory.setChangeTime(firstDayString);
+                inputVacationHistory.setChangeReason("연도 갱신에 따른 연차 자동 부여");
+                inputVacationHistory.setTypeId(1);
+                inputVacationHistory.setChangeTypeId(1);
+                inputVacationHistory.setEmployeeId(userId);
+
+                vacationHistoryRepository.save(inputVacationHistory);
+            }
+
+        }
+    }
+
 
     // 입사이후 총 몇일이 지났는지 계산하는 메서드
     private int countDays(int userId) {
