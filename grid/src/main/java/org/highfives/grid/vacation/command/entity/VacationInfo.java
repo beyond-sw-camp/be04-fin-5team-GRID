@@ -15,7 +15,7 @@ public class VacationInfo {
     private int id;
 
     @Column(nullable = false, name = "vacation_num")
-    private int vacationNum;
+    private double vacationNum;
 
     @Column(nullable = false, name = "add_time")
     private String addTime;

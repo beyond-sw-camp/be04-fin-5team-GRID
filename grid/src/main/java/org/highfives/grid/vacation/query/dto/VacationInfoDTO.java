@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class VacationInfoDTO {
     private int id;
-    private int vacationNum;
+    private double vacationNum;
     private String addTime;
     private String endTime;
     private int employeeId;

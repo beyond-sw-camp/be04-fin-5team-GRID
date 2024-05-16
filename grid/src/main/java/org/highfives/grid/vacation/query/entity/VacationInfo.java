@@ -6,7 +6,7 @@ import lombok.Data;
 public class VacationInfo {
 
     private int id;
-    private int vacationNum;
+    private double vacationNum;
     private String addTime;
     private String endTime;
     private int employeeId;
