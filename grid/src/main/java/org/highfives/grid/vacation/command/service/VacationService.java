@@ -15,4 +15,6 @@ public interface VacationService {
     void giveAnnualVacationAfterYear();
 
     void giveRegularVacation();
+
+    void giveHealthVacation();
 }
