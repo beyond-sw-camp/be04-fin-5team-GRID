@@ -1,8 +1,7 @@
 package org.highfives.grid.work.query.service;
 
 import org.highfives.grid.work.query.aggregate.RwApproval;
-import org.highfives.grid.work.query.dto.AdTimeDTO;
-import org.highfives.grid.work.query.dto.RwApprovalDTO;
+import org.highfives.grid.approval.common.dto.RwApprovalDTO;
 import org.highfives.grid.work.query.repository.RwApprovalMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;

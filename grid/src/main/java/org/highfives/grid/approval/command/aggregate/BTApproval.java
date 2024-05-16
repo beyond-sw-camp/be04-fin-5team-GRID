@@ -1,10 +1,7 @@
 package org.highfives.grid.approval.command.aggregate;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -46,5 +43,34 @@ public class BTApproval {
     private int cancelDocId;
 
     @Column(name = "requester_id")
-    private int reqeusterId;
+    private int requesterId;
+
+    @Builder
+    public BTApproval(String startTime, String endTime, String destination, String content, String writeTime, int cancelDocId, int requesterId) {
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.destination = destination;
+        this.content = content;
+        this.approvalStatus = ApprovalStatus.N;
+        this.writeTime = writeTime;
+        this.cancelYN = YN.N;
+        this.cancelDocId = cancelDocId;
+        this.requesterId = requesterId;
+    }
+
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
+    }
+
+    public void setDestination(String destination) {
+        this.destination = destination;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
 }

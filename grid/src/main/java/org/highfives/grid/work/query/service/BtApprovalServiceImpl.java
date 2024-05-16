@@ -1,6 +1,6 @@
 package org.highfives.grid.work.query.service;
 
-import org.highfives.grid.work.query.dto.BtApprovalDTO;
+import org.highfives.grid.approval.common.dto.BTApprovalDTO;
 import org.highfives.grid.work.query.repository.BtApprovalMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,13 +17,13 @@ public class BtApprovalServiceImpl implements BtApprovalService{
     }
 
     @Override
-    public List<BtApprovalDTO> findAllBt() {
+    public List<BTApprovalDTO> findAllBt() {
 
         return btApprovalMapper.selectAllBt();
     }
 
     @Override
-    public List<BtApprovalDTO> findBtByEmployeeId(int employeeId) {
+    public List<BTApprovalDTO> findBtByEmployeeId(int employeeId) {
         return btApprovalMapper.selectBtByEmployeeId();
     }
 }

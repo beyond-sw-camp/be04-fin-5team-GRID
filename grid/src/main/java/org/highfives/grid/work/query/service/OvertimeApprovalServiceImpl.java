@@ -1,6 +1,6 @@
 package org.highfives.grid.work.query.service;
 
-import org.highfives.grid.work.query.dto.OvertimeApprovalDTO;
+import org.highfives.grid.approval.common.dto.OvertimeApprovalDTO;
 import org.highfives.grid.work.query.repository.OvertimeApprovalMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

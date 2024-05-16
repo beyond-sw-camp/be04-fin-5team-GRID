@@ -32,5 +32,28 @@ public class OvertimeApproval {
     @Enumerated(EnumType.STRING)
     private ApprovalStatus approvalStatus;
 
-    
+    @Column(name = "write_time")
+    private String writeTime;
+
+    @Column(name = "cancel_yn")
+    @Enumerated(EnumType.STRING)
+    private YN cancelYN;
+
+    @Column(name = "cancel_document_id")
+    private int cancelDocId;
+
+    @Column(name = "requester_id")
+    private int requesterId;
+
+    @Column(name = "type_id")
+    private int typeId;
+
+    public OvertimeApproval(String startTime, String endTime, String content, String writeTime, int requesterId, int typeId) {
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.content = content;
+        this.writeTime = writeTime;
+        this.requesterId = requesterId;
+        this.typeId = typeId;
+    }
 }

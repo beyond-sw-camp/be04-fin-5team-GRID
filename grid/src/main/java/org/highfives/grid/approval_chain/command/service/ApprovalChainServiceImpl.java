@@ -42,7 +42,7 @@ public class ApprovalChainServiceImpl implements ApprovalChainService{
         for (ApprovalChainDTO approvalChain : chainList) {
             int approverId = approvalChainService.findLeaderByEmployeeId(employeeId, approvalChain.getId());
 
-            BTApprovalChain btApprovalChain = new BTApprovalChain(ChainStatus.대기, approvalId, approverId, approvalChain.getId());
+            BTApprovalChain btApprovalChain = new BTApprovalChain(ChainStatus.W, approvalId, approverId, approvalChain.getId());
             btApprovalChainRepository.save(btApprovalChain);
 
             btChainDTOList.add(mapper.map(btApprovalChain, BTApprovalChainDTO.class));

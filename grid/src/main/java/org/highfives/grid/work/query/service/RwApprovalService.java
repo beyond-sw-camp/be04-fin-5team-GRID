@@ -1,7 +1,6 @@
 package org.highfives.grid.work.query.service;
 
-import org.highfives.grid.work.query.aggregate.RwApproval;
-import org.highfives.grid.work.query.dto.RwApprovalDTO;
+import org.highfives.grid.approval.common.dto.RwApprovalDTO;
 
 import java.util.List;
 

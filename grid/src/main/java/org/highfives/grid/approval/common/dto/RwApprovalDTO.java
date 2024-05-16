@@ -1,4 +1,4 @@
-package org.highfives.grid.work.query.dto;
+package org.highfives.grid.approval.common.dto;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

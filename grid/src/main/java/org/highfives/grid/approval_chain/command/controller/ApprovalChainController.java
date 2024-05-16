@@ -28,7 +28,7 @@ public class ApprovalChainController {
         List<BTApprovalChainDTO> result = approvalChainService.addBTApprovalChain(btChainVO);
 
         ResAddApprovalChainVO response = new ResAddApprovalChainVO(
-            201, "Success to add new buisness trip approval chain.", "", result
+            201, "출장 결재 라인 생성 성공", "", result
         );
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
