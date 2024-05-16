@@ -6,6 +6,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@Setter
 @ToString
 @Entity
 @Table(name = "bt_approval")
@@ -43,24 +44,18 @@ public class BTApproval {
     private int cancelDocId;
 
     @Column(name = "requester_id")
-    private int reqeusterId;
+    private int requesterId;
 
     @Builder
-    public BTApproval(String startTime, String endTime, String destination, String content) {
+    public BTApproval(String startTime, String endTime, String destination, String content, String writeTime, int cancelDocId, int requesterId) {
         this.startTime = startTime;
         this.endTime = endTime;
         this.destination = destination;
         this.content = content;
-    }
-
-    public BTApproval(String startTime, String endTime, String destination, String content, ApprovalStatus approvalStatus, String writeTime, YN cancelYN, int reqeusterId) {
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.destination = destination;
-        this.content = content;
-        this.approvalStatus = approvalStatus;
+        this.approvalStatus = ApprovalStatus.N;
         this.writeTime = writeTime;
-        this.cancelYN = cancelYN;
-        this.reqeusterId = reqeusterId;
+        this.cancelYN = YN.N;
+        this.cancelDocId = cancelDocId;
+        this.requesterId = requesterId;
     }
 }

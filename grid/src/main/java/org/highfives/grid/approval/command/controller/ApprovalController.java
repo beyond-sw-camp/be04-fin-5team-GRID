@@ -2,6 +2,7 @@ package org.highfives.grid.approval.command.controller;
 
 import org.highfives.grid.approval.command.service.ApprovalService;
 import org.highfives.grid.approval.command.vo.BTApprovalVO;
+import org.highfives.grid.approval.command.vo.OvertimeApprovalVO;
 import org.highfives.grid.approval.command.vo.ResApprovalVO;
 import org.highfives.grid.approval.common.dto.BTApprovalDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +26,12 @@ public class ApprovalController {
 
         BTApprovalDTO result = approvalService.addBTApproval(btApprovalVO);
 
-        ResApprovalVO response = new ResApprovalVO(
-                201, "출장 결재 생성 성공", "", result
-        );
+        ResApprovalVO response = ResApprovalVO.builder()
+                .statusCode(201)
+                .message("출장 결재 생성 성공")
+                .href("")
+                .btResult(result)
+                .build();
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -35,15 +39,30 @@ public class ApprovalController {
     @PutMapping("/bt/{btApprovalId}")
     public ResponseEntity<ResApprovalVO> modifyBTApproval(@RequestBody BTApprovalVO btApprovalVO, @PathVariable int btApprovalId) {
 
-        BTApprovalDTO result = approvalService.modifyApproval(btApprovalVO, btApprovalId);
+        BTApprovalDTO result = approvalService.modifyBTApproval(btApprovalVO, btApprovalId);
 
         ResApprovalVO response = ResApprovalVO.builder()
                 .statusCode(200)
                 .message("출장 결재 수정 성공")
                 .href("")
-                .result(result)
+                .btResult(result)
                 .build();
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @PostMapping("/bt/{btApprovalId}")
+    public ResponseEntity<ResApprovalVO> cancelBTApproval(@PathVariable int btApprovalId) {
+
+        BTApprovalDTO result = approvalService.cancelBTApproval(btApprovalId);
+
+        ResApprovalVO response = ResApprovalVO.builder()
+                .statusCode(201)
+                .message("출장 결재 취소 결재 생성 성공")
+                .href("")
+                .btResult(result)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 }

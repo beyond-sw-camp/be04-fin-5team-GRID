@@ -43,8 +43,17 @@ public class OvertimeApproval {
     private int cancelDocId;
 
     @Column(name = "requester_id")
-    private int reqeusterId;
+    private int requesterId;
 
     @Column(name = "type_id")
     private int typeId;
+
+    public OvertimeApproval(String startTime, String endTime, String content, String writeTime, int requesterId, int typeId) {
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.content = content;
+        this.writeTime = writeTime;
+        this.requesterId = requesterId;
+        this.typeId = typeId;
+    }
 }
