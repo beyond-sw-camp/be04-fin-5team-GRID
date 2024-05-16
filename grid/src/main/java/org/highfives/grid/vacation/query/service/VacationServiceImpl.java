@@ -55,4 +55,25 @@ public class VacationServiceImpl implements VacationService{
         return histories.stream().map(history -> modelMapper.map(history, VacationHistoryDTO.class)).collect(Collectors.toList());
     }
 
+    @Override
+    public List<VacationInfoDTO> searchVacationInfoByName(String name) {
+        List<VacationInfo> vacations = vacationMapper.searchVacationInfoByName(name);
+
+        return vacations.stream().map(vacation -> modelMapper.map(vacation, VacationInfoDTO.class)).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<VacationInfoDTO> searchVacationInfoByDept(String dept) {
+        List<VacationInfo> vacations = vacationMapper.searchVacationInfoByDept(dept);
+
+        return vacations.stream().map(vacation -> modelMapper.map(vacation, VacationInfoDTO.class)).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<VacationHistoryDTO> searchVacationHistory(int typeId, int changeTypeId, int employeeId) {
+        List<VacationHistory> histories = vacationMapper.searchVacationHistories(typeId, changeTypeId, employeeId);
+
+        return histories.stream().map(history -> modelMapper.map(history, VacationHistoryDTO.class)).collect(Collectors.toList());
+    }
+
 }
