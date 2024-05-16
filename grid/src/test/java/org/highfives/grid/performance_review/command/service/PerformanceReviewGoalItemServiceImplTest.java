@@ -16,7 +16,7 @@ class PerformanceReviewGoalItemServiceImplTest {
     private PerformanceReviewGoalItemServiceImpl performanceReviewGoalItemService;
 
 
-    @DisplayName("업적 평가 목표 추가")
+    @DisplayName("업적 평가 목표 항목 추가")
     @Test
 
     public void addGoalItem() {
@@ -38,7 +38,7 @@ class PerformanceReviewGoalItemServiceImplTest {
         assertNotNull(addGoalItem);
     }
 
-    @DisplayName("업적 평가 목표 수정")
+    @DisplayName("업적 평가 목표 힝목 수정")
     @Test
     @Transactional
     public void modifyGoalItem() {
@@ -58,5 +58,16 @@ class PerformanceReviewGoalItemServiceImplTest {
         PerformanceReviewGoalItemDTO modifyGoalItem = performanceReviewGoalItemService.modifyGoalItem(performanceReviewGoalItemDTO);
 
         assertNotNull(modifyGoalItem);
+    }
+
+    @DisplayName("업적 평가 목표 항목 삭제 ")
+    @Test
+    @Transactional
+    public void removeGoalItem() {
+        int id = 5;
+
+        int removeId = performanceReviewGoalItemService.removeGoalItem(id);
+
+        assertEquals(5, removeId);
     }
 }

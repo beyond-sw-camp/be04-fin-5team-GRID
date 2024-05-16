@@ -1,4 +1,4 @@
-package org.highfives.grid.performance_review.command.aggregate;
+package org.highfives.grid.performance_review.command.aggregate.entity;
 
 import jakarta.persistence.*;
 import lombok.*;

@@ -4,15 +4,13 @@ import org.highfives.grid.performance_review.command.dto.PerformanceReviewGoalIt
 import org.highfives.grid.performance_review.command.dto.RequestGoalItemDTO;
 import org.highfives.grid.performance_review.command.service.PerformanceReviewGoalItemService;
 import org.highfives.grid.performance_review.command.vo.RequestGoalItemListVO;
+import org.highfives.grid.performance_review.command.vo.ResponseDelGoalItemVO;
 import org.highfives.grid.performance_review.command.vo.ResponseGoalItemListVO;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +28,7 @@ public class PerformanceReviewGoalItemController {
         this.modelMapper = modelMapper;
     }
 
+    // 업적 평가 목표 처음 생성
     @PostMapping
     public ResponseEntity<ResponseGoalItemListVO> addGoalItem(
             @RequestBody RequestGoalItemListVO requestGoalItemListVO) {
@@ -73,5 +72,19 @@ public class PerformanceReviewGoalItemController {
 
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ResponseDelGoalItemVO> removeGoalItem(@PathVariable int id){
+        int removeId = performanceReviewGoalItemService.removeGoalItem(id);
+
+        ResponseDelGoalItemVO response = ResponseDelGoalItemVO.builder()
+                .statusCode(200)
+                .message("평가 항목 삭제 완료")
+                .href("review-goal/detail/{goalId}")
+                .id(removeId)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

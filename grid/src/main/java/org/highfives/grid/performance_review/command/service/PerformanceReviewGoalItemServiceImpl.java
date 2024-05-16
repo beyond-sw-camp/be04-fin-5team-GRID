@@ -1,14 +1,12 @@
 package org.highfives.grid.performance_review.command.service;
 
-import org.highfives.grid.performance_review.command.aggregate.PerformanceReviewGoalItem;
+import org.highfives.grid.performance_review.command.aggregate.entity.PerformanceReviewGoalItem;
 import org.highfives.grid.performance_review.command.dto.PerformanceReviewGoalItemDTO;
 import org.highfives.grid.performance_review.command.repository.PerformanceReviewGoalItemRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Service(value = "commandGoalItemServiceImpl")
 public class PerformanceReviewGoalItemServiceImpl implements PerformanceReviewGoalItemService{
@@ -79,6 +77,14 @@ public class PerformanceReviewGoalItemServiceImpl implements PerformanceReviewGo
         return modelMapper.map(modifyGoalItem, PerformanceReviewGoalItemDTO.class);
     }
 
+    // 목표 항목 삭제
+    @Override
+    @Transactional
+    public int removeGoalItem(int id){
+        PerformanceReviewGoalItem findItem = performanceReviewGoalItemRepository.findById(id).orElseThrow();
+        performanceReviewGoalItemRepository.deleteById(id);
 
+        return id;
+    }
 
 }
