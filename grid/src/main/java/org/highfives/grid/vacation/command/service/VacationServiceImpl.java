@@ -7,6 +7,7 @@ import org.highfives.grid.user.service.UserService;
 import org.highfives.grid.vacation.command.entity.VacationHistory;
 import org.highfives.grid.vacation.command.entity.VacationInfo;
 import org.highfives.grid.vacation.command.entity.VacationPolicy;
+import org.highfives.grid.vacation.command.entity.VacationType;
 import org.highfives.grid.vacation.command.repository.VacationHistoryRepository;
 import org.highfives.grid.vacation.command.repository.VacationInfoRepository;
 import org.highfives.grid.vacation.command.repository.VacationPolicyRepository;
@@ -14,6 +15,7 @@ import org.highfives.grid.vacation.command.repository.VacationTypeRepository;
 import org.highfives.grid.vacation.command.vo.GiveVacation;
 import org.highfives.grid.vacation.command.vo.ModifyPolicy;
 import org.highfives.grid.vacation.command.vo.RegistPolicy;
+import org.highfives.grid.vacation.command.vo.RegistVacationType;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -353,6 +355,14 @@ public class VacationServiceImpl implements VacationService{
         String day = today.toString();
         inputVacationInfo.setAddTime(day);
         vacationInfoRepository.save(inputVacationInfo);
+    }
+
+    @Override
+    @Transactional
+    public void registVacationType(RegistVacationType typeInfo) {
+        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+        VacationType vacationType = modelMapper.map(typeInfo, VacationType.class);
+        vacationTypeRepository.save(vacationType);
     }
 
 

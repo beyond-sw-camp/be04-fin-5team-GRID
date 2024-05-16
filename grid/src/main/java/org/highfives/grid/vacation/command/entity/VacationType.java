@@ -14,6 +14,6 @@ public class VacationType {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(nullable = false, name = "name")
-    private String name;
+    @Column(nullable = false, name = "type_name")
+    private String typeName;
 }
