@@ -37,11 +37,11 @@ public class PerformanceReviewGoalItemServiceImpl implements PerformanceReviewGo
                 performanceReviewGoalItemDTO.getGoalId()
         );
 
-        performanceReviewGoalItemRepository.save(performanceReviewGoalItem);
+        PerformanceReviewGoalItem saveGoalItem = performanceReviewGoalItemRepository.save(performanceReviewGoalItem);
 
-        PerformanceReviewGoalItem saveGoalItem = performanceReviewGoalItemRepository.findByGoal(
-                performanceReviewGoalItem.getGoal()
-        );
+//        PerformanceReviewGoalItem saveGoalItem = performanceReviewGoalItemRepository.findByGoal(
+//                performanceReviewGoalItem.getGoal()
+//        );
 
         System.out.println(saveGoalItem);
 

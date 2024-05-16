@@ -58,20 +58,29 @@ public class PerformanceReviewGoalServiceImpl implements PerformanceReviewGoalSe
 
     // 작성 중인 상태로 변경
     @Override
+    @Transactional
     public PerformanceReviewGoalDTO modifyGoalStatusInProgress(int id) {
-        PerformanceReviewGoal performanceReviewGoal = performanceReviewGoalRepository.findById(id).orElseThrow();
+        PerformanceReviewGoal performanceReviewGoal = performanceReviewGoalRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("해당 ID의 목표를 찾을 수 없습니다."));
 
-        LocalDateTime currentTime = LocalDateTime.now();
-        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String now = dateFormat.format(currentTime);
+        // 상신, 승인 상태가 아닐 때 변경
+        if(!performanceReviewGoal.getApprovalStatus().equals(String.valueOf(GoalApprovalStatus.S))
+            && !performanceReviewGoal.getApprovalStatus().equals(String.valueOf(GoalApprovalStatus.A))
+        ){
+            LocalDateTime currentTime = LocalDateTime.now();
+            DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            String now = dateFormat.format(currentTime);
 
-        performanceReviewGoal.setApprovalStatus(String.valueOf(GoalApprovalStatus.IP));
-        performanceReviewGoal.setWriteTime(now);
+            performanceReviewGoal.setWriteTime(now);
+            performanceReviewGoal.setApprovalStatus(String.valueOf(GoalApprovalStatus.IP));
 
-        PerformanceReviewGoal modifyGoal = performanceReviewGoalRepository.findById(id).orElseThrow();
-        PerformanceReviewGoalDTO modifyGoalDTO = modelMapper.map(modifyGoal, PerformanceReviewGoalDTO.class);
+            PerformanceReviewGoal modifyGoal = performanceReviewGoalRepository.findById(id).orElseThrow();
+            PerformanceReviewGoalDTO modifyGoalDTO = modelMapper.map(modifyGoal, PerformanceReviewGoalDTO.class);
 
-        return modifyGoalDTO;
+            return modifyGoalDTO;
+        }  else {
+            throw new RuntimeException("목표의 현재 상태가 상신 또는 승인 상태입니다.");
+        }
     }
 }
 
