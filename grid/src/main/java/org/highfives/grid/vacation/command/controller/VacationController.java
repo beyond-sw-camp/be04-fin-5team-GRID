@@ -46,4 +46,12 @@ public class VacationController {
     public void registVacationType(@RequestBody RegistVacationType typeInfo) {
         vacationService.registVacationType(typeInfo);
     }
+
+    @GetMapping("/test")
+    public void test() {
+//        vacationService.giveAnnualVacationBeforeYear();
+//        vacationService.giveAnnualVacationAfterYear();
+        vacationService.giveRegularVacation();
+        vacationService.giveHealthVacation();
+    }
 }

@@ -36,7 +36,7 @@ public class Employee {
     private String callNumber;
 
     @Column(name = "zip_code")
-    private int zipCode;
+    private String zipCode;
 
     @Column(name = "address")
     private String address;

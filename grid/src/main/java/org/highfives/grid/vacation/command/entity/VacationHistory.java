@@ -1,13 +1,15 @@
 package org.highfives.grid.vacation.command.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 
-@Data
 @Entity
 @DynamicInsert
 @Table(name = "vacation_history")
+@Getter
+@ToString
+@RequiredArgsConstructor
 public class VacationHistory {
 
     @Id
@@ -28,4 +30,14 @@ public class VacationHistory {
 
     @Column(nullable = false, name = "employee_id")
     private int employeeId;
+
+    @Builder
+    public VacationHistory(int id, String changeTime, String changeReason, int typeId, int changeTypeId, int employeeId) {
+        this.id = id;
+        this.changeTime = changeTime;
+        this.changeReason = changeReason;
+        this.typeId = typeId;
+        this.changeTypeId = changeTypeId;
+        this.employeeId = employeeId;
+    }
 }

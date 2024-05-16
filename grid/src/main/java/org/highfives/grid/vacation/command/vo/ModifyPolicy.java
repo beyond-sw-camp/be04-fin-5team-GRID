@@ -1,8 +1,11 @@
 package org.highfives.grid.vacation.command.vo;
 
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
+@RequiredArgsConstructor
+@AllArgsConstructor
 public class ModifyPolicy {
     private String content;
 }

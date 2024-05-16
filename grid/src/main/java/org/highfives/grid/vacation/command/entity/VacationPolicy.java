@@ -1,13 +1,15 @@
 package org.highfives.grid.vacation.command.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 
-@Data
 @Entity
 @DynamicInsert
 @Table(name = "vacation_policy")
+@Getter
+@ToString
+@RequiredArgsConstructor
 public class VacationPolicy {
 
     @Id
@@ -19,4 +21,15 @@ public class VacationPolicy {
 
     @Column(nullable = false, name = "type_id")
     private int typeId;
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    @Builder
+    public VacationPolicy(int id, String content, int typeId) {
+        this.id = id;
+        this.content = content;
+        this.typeId = typeId;
+    }
 }
