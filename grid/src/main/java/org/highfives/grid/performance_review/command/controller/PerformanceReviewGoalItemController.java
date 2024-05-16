@@ -24,4 +24,9 @@ public class PerformanceReviewGoalItemController {
         this.modelMapper = modelMapper;
     }
 
+//    @PostMapping
+//    public ResponseEntity<ResponsePerformanceReviewGoalItemVO> addGoalItem(
+//            @RequestBody PerformanceReviewGoalItemDTO performanceReviewGoalItemDTO) {
+//
+//    }
 }

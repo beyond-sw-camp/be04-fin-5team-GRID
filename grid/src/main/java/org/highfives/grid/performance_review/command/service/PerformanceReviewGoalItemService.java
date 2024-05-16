@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface PerformanceReviewGoalItemService {
     PerformanceReviewGoalItemDTO addGoalItem(PerformanceReviewGoalItemDTO performanceReviewGoalItemDTO);
+
+    PerformanceReviewGoalItemDTO modifyGoalItem(PerformanceReviewGoalItemDTO performanceReviewGoalItemDTO);
 }
