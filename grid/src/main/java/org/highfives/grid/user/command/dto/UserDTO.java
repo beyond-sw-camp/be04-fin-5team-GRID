@@ -1,10 +1,7 @@
 package org.highfives.grid.user.command.dto;
 
 import lombok.*;
-import org.highfives.grid.user.command.aggregate.Gender;
-import org.highfives.grid.user.command.aggregate.JoinType;
-import org.highfives.grid.user.command.aggregate.WorkType;
-import org.highfives.grid.user.command.aggregate.YN;
+import org.highfives.grid.user.command.aggregate.*;
 
 @Getter
 @Setter
@@ -34,6 +31,7 @@ public class UserDTO {
     private int salary;
     private YN absenceYn;
     private String absenceContent;
+    private Role role;
     private int dutiesId;
     private int positionId;
     private int teamId;
@@ -46,7 +44,7 @@ public class UserDTO {
 
     public UserDTO(String email, String pwd, String name, String employeeNumber, Gender gender,
                    String phoneNumber, String joinTime, JoinType joinType, WorkType workType,
-                   String contractStartTime, int dutiesId, int positionId, int teamId, int departmentId) {
+                   String contractStartTime, Role role, int dutiesId, int positionId, int teamId, int departmentId) {
         this.email = email;
         this.pwd = pwd;
         this.name = name;
@@ -57,6 +55,7 @@ public class UserDTO {
         this.joinType = joinType;
         this.workType = workType;
         this.contractStartTime = contractStartTime;
+        this.role = role;
         this.dutiesId = dutiesId;
         this.positionId = positionId;
         this.teamId = teamId;

@@ -11,6 +11,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -51,9 +52,12 @@ public class WebSecurityConfig {
 //                                    .requestMatchers(new AntPathRequestMatcher("/**")).hasRole("ENTERPRISE")
                                     .requestMatchers(new AntPathRequestMatcher("/actuator/**")).permitAll()
                                     .anyRequest().authenticated()
-                );
-        http.addFilter(getAuthenticationFilter(authenticationManager));
+                )
+                .authenticationManager(authenticationManager)
+                .sessionManagement((session) -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
+        http.addFilter(getAuthenticationFilter(authenticationManager));
 
         return http.build();
     }

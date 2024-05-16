@@ -1,11 +1,13 @@
 package org.highfives.grid.user.command.service;
 
 import org.highfives.grid.user.command.aggregate.Employee;
+import org.highfives.grid.user.command.aggregate.PrincipalDetails;
 import org.highfives.grid.user.command.aggregate.YN;
 import org.highfives.grid.user.command.dto.UserDTO;
 import org.highfives.grid.user.command.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -225,7 +227,10 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return null;
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+
+        Employee tokenInfo = userRepository.findByEmail(email);
+
+        return new PrincipalDetails(tokenInfo, true, true);
     }
 }

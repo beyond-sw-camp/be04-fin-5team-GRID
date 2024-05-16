@@ -60,6 +60,9 @@ public class Employee {
     @Column
     private String absenceContent;
     @Column
+    @Enumerated(EnumType.STRING)
+    private Role role;
+    @Column
     private int dutiesId;
     @Column
     private int positionId;
@@ -92,7 +95,8 @@ public class Employee {
                     Gender gender, String phoneNumber, String callNumber, String zipCode, String address,
                     String assignedTask, String joinTime, JoinType joinType, String resignTime, YN resignYn,
                     WorkType workType, String contractStartTime, String contractEndTime, int salary,
-                    YN absenceYn, String absenceContent, int dutiesId, int positionId, int teamId, int departmentId) {
+                    YN absenceYn, String absenceContent, Role role,
+                    int dutiesId, int positionId, int teamId, int departmentId) {
         this.id = id;
         this.email = email;
         this.pwd = pwd;
@@ -114,6 +118,7 @@ public class Employee {
         this.salary = salary;
         this.absenceYn = absenceYn;
         this.absenceContent = absenceContent;
+        this.role = role;
         this.dutiesId = dutiesId;
         this.positionId = positionId;
         this.teamId = teamId;
