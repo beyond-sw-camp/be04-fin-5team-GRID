@@ -11,6 +11,7 @@ import org.highfives.grid.vacation.command.repository.VacationHistoryRepository;
 import org.highfives.grid.vacation.command.repository.VacationInfoRepository;
 import org.highfives.grid.vacation.command.repository.VacationPolicyRepository;
 import org.highfives.grid.vacation.command.repository.VacationTypeRepository;
+import org.highfives.grid.vacation.command.vo.GiveVacation;
 import org.highfives.grid.vacation.command.vo.ModifyPolicy;
 import org.highfives.grid.vacation.command.vo.RegistPolicy;
 import org.modelmapper.ModelMapper;
@@ -341,6 +342,17 @@ public class VacationServiceImpl implements VacationService{
                 vacationHistoryRepository.save(inputVacationHistory);
             }
         }
+    }
+
+    @Override
+    @Transactional
+    public void giveVacationByManager(GiveVacation vacationInfo) {
+        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+        VacationInfo inputVacationInfo = modelMapper.map(vacationInfo, VacationInfo.class);
+        LocalDate today = LocalDate.now();
+        String day = today.toString();
+        inputVacationInfo.setAddTime(day);
+        vacationInfoRepository.save(inputVacationInfo);
     }
 
 

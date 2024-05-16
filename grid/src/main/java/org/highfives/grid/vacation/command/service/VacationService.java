@@ -1,5 +1,6 @@
 package org.highfives.grid.vacation.command.service;
 
+import org.highfives.grid.vacation.command.vo.GiveVacation;
 import org.highfives.grid.vacation.command.vo.ModifyPolicy;
 import org.highfives.grid.vacation.command.vo.RegistPolicy;
 
@@ -17,4 +18,6 @@ public interface VacationService {
     void giveRegularVacation();
 
     void giveHealthVacation();
+
+    void giveVacationByManager(GiveVacation vacationInfo);
 }
