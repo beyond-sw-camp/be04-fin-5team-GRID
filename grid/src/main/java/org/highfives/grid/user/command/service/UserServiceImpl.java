@@ -17,6 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import static org.highfives.grid.user.command.aggregate.YN.Y;
+
 @Service("UserCommandService")
 public class UserServiceImpl implements UserService{
 
@@ -112,7 +114,7 @@ public class UserServiceImpl implements UserService{
             String resignTime = simpleDateFormat.format(new Date());
 
             Employee userInfo = userRepository.findByEmployeeNumber(eNum);
-            userInfo.setResignYn(YN.Y);
+            userInfo.setResignYn(Y);
             userInfo.setResignTime(resignTime);
 
             userRepository.save(userInfo);
@@ -230,6 +232,10 @@ public class UserServiceImpl implements UserService{
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
         Employee tokenInfo = userRepository.findByEmail(email);
+
+        if (tokenInfo.getResignYn() == Y) {
+            throw new RuntimeException("Resigned User");
+        }
 
         return new PrincipalDetails(tokenInfo, true, true);
     }
