@@ -6,7 +6,6 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-@Setter
 @ToString
 @Entity
 @Table(name = "bt_approval")
@@ -57,5 +56,21 @@ public class BTApproval {
         this.cancelYN = YN.N;
         this.cancelDocId = cancelDocId;
         this.requesterId = requesterId;
+    }
+
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
+    }
+
+    public void setDestination(String destination) {
+        this.destination = destination;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 }
