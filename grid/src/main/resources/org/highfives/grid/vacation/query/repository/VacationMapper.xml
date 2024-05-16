@@ -63,4 +63,40 @@
         EMPLOYEE_ID
         FROM VACATION_HISTORY
     </select>
+    <select id="searchVacationInfoByName" parameterType="org.highfives.grid.vacation.query.vo.NameSearch" resultMap="vacationInfoResultMap">
+        SELECT
+        VI.ID,
+        VI.VACATION_NUM,
+        VI.ADD_TIME,
+        VI.END_TIME,
+        VI.EMPLOYEE_ID,
+        VI.TYPE_ID
+        FROM VACATION_INFO VI
+        JOIN EMPLOYEE EM ON VI.EMPLOYEE_ID = EM.ID
+        WHERE EM.EMPLOYEE_NAME LIKE CONCAT('%',#{NAME},'%')
+    </select>
+    <select id="searchVacationInfoByDept" parameterType="org.highfives.grid.vacation.query.vo.DeptSearch" resultMap="vacationInfoResultMap">
+        SELECT
+        VI.ID,
+        VI.VACATION_NUM,
+        VI.ADD_TIME,
+        VI.END_TIME,
+        VI.EMPLOYEE_ID,
+        VI.TYPE_ID
+        FROM VACATION_INFO VI
+        JOIN EMPLOYEE EM ON VI.EMPLOYEE_ID = EM.ID
+        JOIN DEPARTMENT DE ON EM.DEPARTMENT_ID = DE.ID
+        WHERE DE.DEPARTMENT_NAME LIKE CONCAT('%',#{DEPT},'%')
+    </select>
+    <select id="searchVacationHistories" parameterType="org.highfives.grid.vacation.query.vo.HistorySearch" resultMap="vacationHistoryResultMap">
+        SELECT
+        ID,
+        CHANGE_TIME,
+        CHANGE_REASON,
+        TYPE_ID,
+        CHANGE_TYPE_ID,
+        EMPLOYEE_ID
+        FROM VACATION_HISTORY
+        WHERE TYPE_ID = #{typeId} AND EMPLOYEE_ID = #{employeeId} AND CHANGE_TYPE_ID = #{changeTypeId}
+    </select>
 </mapper>
