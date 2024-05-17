@@ -3,6 +3,7 @@ package org.highfives.grid.approval.command.vo;
 import lombok.*;
 import org.highfives.grid.approval.common.dto.BTApprovalDTO;
 import org.highfives.grid.approval.common.dto.OvertimeApprovalDTO;
+import org.highfives.grid.approval.common.dto.RWApprovalDTO;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,6 +22,8 @@ public class ResApprovalVO {
 
     private OvertimeApprovalDTO overtimeResult;
 
+    private RWApprovalDTO rwResult;
+
     @Builder
     public ResApprovalVO(int statusCode, String message, String href, BTApprovalDTO btResult) {
         this.statusCode = statusCode;
@@ -35,5 +38,13 @@ public class ResApprovalVO {
         this.message = message;
         this.href = href;
         this.overtimeResult = overtimeResult;
+    }
+
+    @Builder
+    public ResApprovalVO(int statusCode, String message, String href, RWApprovalDTO rwResult) {
+        this.statusCode = statusCode;
+        this.message = message;
+        this.href = href;
+        this.rwResult = rwResult;
     }
 }
