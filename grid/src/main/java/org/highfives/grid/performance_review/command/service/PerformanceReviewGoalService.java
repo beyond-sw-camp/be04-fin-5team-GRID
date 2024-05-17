@@ -9,4 +9,10 @@ public interface PerformanceReviewGoalService {
     PerformanceReviewGoalDTO modifyGoalStatusInProgress(int id);
 
     PerformanceReviewGoalDTO modifyGoalStatusSubmit(int id);
+
+    PerformanceReviewGoalDTO modifyGoalStatusRead(int id);
+
+    PerformanceReviewGoalDTO modifyGoalStatusApproval(int id);
+
+    PerformanceReviewGoalDTO modifyGoalStatusDenied(int id);
 }

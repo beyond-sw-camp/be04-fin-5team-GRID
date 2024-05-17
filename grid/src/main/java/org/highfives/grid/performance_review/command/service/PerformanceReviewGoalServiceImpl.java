@@ -109,5 +109,83 @@ public class PerformanceReviewGoalServiceImpl implements PerformanceReviewGoalSe
             throw new RuntimeException("목표의 현재 상태가 상신 또는 승인 상태입니다.");
         }
     }
+
+    // 확인 중인 상태로 변경
+    @Override
+    @Transactional
+    public PerformanceReviewGoalDTO modifyGoalStatusRead(int id) {
+        PerformanceReviewGoal performanceReviewGoal = performanceReviewGoalRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("해당 ID의 목표를 찾을 수 없습니다."));
+
+        // 상신 상태일 때 변경
+        if(performanceReviewGoal.getApprovalStatus().equals(String.valueOf(GoalApprovalStatus.S))){
+
+            LocalDateTime currentTime = LocalDateTime.now();
+            DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            String now = dateFormat.format(currentTime);
+
+            performanceReviewGoal.setApprovalTime(now);
+            performanceReviewGoal.setApprovalStatus(String.valueOf(GoalApprovalStatus.R));
+
+            PerformanceReviewGoal modifyGoal = performanceReviewGoalRepository.findById(id).orElseThrow();
+            PerformanceReviewGoalDTO modifyGoalDTO = modelMapper.map(modifyGoal, PerformanceReviewGoalDTO.class);
+
+            return modifyGoalDTO;
+        }  else {
+            throw new RuntimeException("목표의 현재 상태가 상신이 아닙니다.");
+        }
+    }
+
+    // 승인 상태로 변경
+    @Override
+    public PerformanceReviewGoalDTO modifyGoalStatusApproval(int id) {
+        PerformanceReviewGoal performanceReviewGoal = performanceReviewGoalRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("해당 ID의 목표를 찾을 수 없습니다."));
+
+        // 상신 또는 확인 중 상태일 때 변경
+        if(performanceReviewGoal.getApprovalStatus().equals(String.valueOf(GoalApprovalStatus.S))
+            || performanceReviewGoal.getApprovalStatus().equals(String.valueOf(GoalApprovalStatus.R))){
+
+            LocalDateTime currentTime = LocalDateTime.now();
+            DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            String now = dateFormat.format(currentTime);
+
+            performanceReviewGoal.setApprovalTime(now);
+            performanceReviewGoal.setApprovalStatus(String.valueOf(GoalApprovalStatus.A));
+
+            PerformanceReviewGoal modifyGoal = performanceReviewGoalRepository.findById(id).orElseThrow();
+            PerformanceReviewGoalDTO modifyGoalDTO = modelMapper.map(modifyGoal, PerformanceReviewGoalDTO.class);
+
+            return modifyGoalDTO;
+        }  else {
+            throw new RuntimeException("목표의 현재 상태가 상신 또는 확인 중이 아닙니다.");
+        }
+    }
+
+    // 반려 상태로 변경
+    @Override
+    public PerformanceReviewGoalDTO modifyGoalStatusDenied(int id) {
+        PerformanceReviewGoal performanceReviewGoal = performanceReviewGoalRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("해당 ID의 목표를 찾을 수 없습니다."));
+
+        // 상신 또는 확인 중 상태일 때 변경
+        if(performanceReviewGoal.getApprovalStatus().equals(String.valueOf(GoalApprovalStatus.S))
+            || performanceReviewGoal.getApprovalStatus().equals(String.valueOf(GoalApprovalStatus.R))){
+
+            LocalDateTime currentTime = LocalDateTime.now();
+            DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            String now = dateFormat.format(currentTime);
+
+            performanceReviewGoal.setApprovalTime(now);
+            performanceReviewGoal.setApprovalStatus(String.valueOf(GoalApprovalStatus.D));
+
+            PerformanceReviewGoal modifyGoal = performanceReviewGoalRepository.findById(id).orElseThrow();
+            PerformanceReviewGoalDTO modifyGoalDTO = modelMapper.map(modifyGoal, PerformanceReviewGoalDTO.class);
+
+            return modifyGoalDTO;
+        }  else {
+            throw new RuntimeException("목표의 현재 상태가 상신 또는 확인 중이 아닙니다.");
+        }
+    }
 }
 

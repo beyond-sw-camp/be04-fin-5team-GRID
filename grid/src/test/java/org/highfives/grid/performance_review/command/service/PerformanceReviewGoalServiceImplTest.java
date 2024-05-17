@@ -62,8 +62,41 @@ class PerformanceReviewGoalServiceImplTest {
     @Test
     @Transactional
     public void modifyGoalStatusSubmit(){
-        int id = 3;
+        int id = 4;
         PerformanceReviewGoalDTO modifyGoalDTO = performanceReviewGoalService.modifyGoalStatusSubmit(id);
+
+        System.out.println(modifyGoalDTO);
+        assertNotNull(modifyGoalDTO);
+    }
+
+    @DisplayName("업적 평가 목표 상태 확인 중으로 변경")
+    @Test
+    @Transactional
+    public void modifyGoalStatusRead(){
+        int id = 2;
+        PerformanceReviewGoalDTO modifyGoalDTO = performanceReviewGoalService.modifyGoalStatusRead(id);
+
+        System.out.println(modifyGoalDTO);
+        assertNotNull(modifyGoalDTO);
+    }
+
+    @DisplayName("업적 평가 목표 상태 승인으로 변경")
+    @Test
+    @Transactional
+    public void modifyGoalStatusApproval(){
+        int id = 2;
+        PerformanceReviewGoalDTO modifyGoalDTO = performanceReviewGoalService.modifyGoalStatusApproval(id);
+
+        System.out.println(modifyGoalDTO);
+        assertNotNull(modifyGoalDTO);
+    }
+
+    @DisplayName("업적 평가 목표 상태 반려로 변경")
+    @Test
+    @Transactional
+    public void modifyGoalStatusDenied(){
+        int id = 2;
+        PerformanceReviewGoalDTO modifyGoalDTO = performanceReviewGoalService.modifyGoalStatusDenied(id);
 
         System.out.println(modifyGoalDTO);
         assertNotNull(modifyGoalDTO);
