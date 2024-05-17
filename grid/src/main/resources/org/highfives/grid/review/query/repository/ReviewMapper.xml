@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.highfives.grid.review.query.repository.ReviewMapper">
+
+    <resultMap id="ReviewHistoryAndScoreResultMap" type="org.highfives.grid.review.query.aggregate.ReviewHistoryAndScore">
+        <id property="id" column="HISTORY_ID"/>
+        <result property="content" column="CONTENT"/>
+        <result property="reviewStatus" column="REVIEW_STATUS"/>
+        <result property="writeTime" column="WRITE_TIME"/>
+        <result property="year" column="YEAR"/>
+        <result property="quarter" column="QUARTER"/>
+        <result property="reviewerId" column="REVIEWER_ID"/>
+        <result property="revieweeId" column="REVIEWEE_ID"/>
+        <collection property="reviewInfo" ofType="org.highfives.grid.review.query.aggregate.Review" javaType="java.util.List">
+            <id property="id" column="MEMBER_REVIEW_ID"/>
+            <id property="historyId" column="HISTORY_ID"/>
+            <id property="reviewId" column="REVIEW_ID"/>
+            <result property="score" column="SCORE"/>
+        </collection>
+    </resultMap>
+
+    <select id="findHistoryAndScoreById" resultMap="ReviewHistoryAndScoreResultMap" parameterType="int">
+        SELECT
+        A.ID AS HISTORY_ID,
+        A.CONTENT,
+        A.WRITE_TIME ,
+        A.YEAR,
+        A.QUARTER,
+        A.REVIEWER_ID,
+        A.REVIEWEE_ID,
+        B.ID AS MEMBER_REVIEW_ID,
+        B.HISTORY_ID,
+        B.REVIEW_ID,
+        B.SCORE
+        FROM
+        MEMBER_REVIEW_HISTORY A
+        JOIN
+        MEMBER_REVIEW B ON A.ID = B.HISTORY_ID
+        WHERE A.ID = #{historyId}
+        AND A.REVIEWEE_ID = #{revieweeId}
+    </select>
+
+    <resultMap id="ReviewHistoryResultMap" type="org.highfives.grid.review.query.aggregate.ReviewHistory">
+        <id property="id" column="HISTORY_ID"/>
+        <result property="content" column="CONTENT"/>
+        <result property="reviewStatus" column="REVIEW_STATUS"/>
+        <result property="writeTime" column="WRITE_TIME"/>
+        <result property="year" column="YEAR"/>
+        <result property="quarter" column="QUARTER"/>
+        <result property="reviewerId" column="REVIEWER_ID"/>
+        <result property="revieweeId" column="REVIEWEE_ID"/>
+    </resultMap>
+
+    <select id="findAssignedReviewByReviewerId" resultMap="ReviewHistoryResultMap" parameterType="int">
+        SELECT
+        A.ID AS HISTORY_ID,
+        A.CONTENT,
+        A.WRITE_TIME ,
+        A.YEAR,
+        A.QUARTER,
+        A.REVIEWER_ID,
+        A.REVIEWEE_ID
+        FROM
+        MEMBER_REVIEW_HISTORY A
+        WHERE A.REVIEWER_ID = #{reviewerId}
+    </select>
+
+</mapper>

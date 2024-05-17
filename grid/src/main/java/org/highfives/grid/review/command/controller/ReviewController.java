@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController(value = "Command")
+@RestController(value = "CommandReviewController")
 @RequestMapping("/review")
 public class ReviewController {
 
@@ -26,7 +26,7 @@ public class ReviewController {
         this.reviewService = reviewService;
     }
 
-    /* 설명. 평가 결과 조회 기능(Review) */
+    /* 설명. 평가 조회 기능(Review) */
     @GetMapping("/{id}")
     public ResponseEntity<ResponseReviewVO> findReviewById(@PathVariable int id) {
 
