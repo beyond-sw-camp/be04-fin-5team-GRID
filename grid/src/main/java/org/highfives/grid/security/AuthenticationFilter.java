@@ -10,9 +10,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.highfives.grid.user.command.aggregate.PrincipalDetails;
 import org.highfives.grid.user.command.aggregate.RefreshToken;
 import org.highfives.grid.user.command.aggregate.Role;
-import org.highfives.grid.user.command.repository.RefreshTokenRepository;
+import org.highfives.grid.user.command.repository.TokenReissueRepository;
 import org.highfives.grid.user.command.vo.ReqLogin;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,14 +26,14 @@ import java.util.ArrayList;
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final Environment environment;
-    private final RefreshTokenRepository refreshTokenRepository;
+    private final TokenReissueRepository tokenReissueRepository;
 
     public AuthenticationFilter(AuthenticationManager authenticationManager,
                                 Environment environment,
-                                RefreshTokenRepository refreshTokenRepository) {
+                                TokenReissueRepository tokenReissueRepository) {
         super(authenticationManager);
         this.environment = environment;
-        this.refreshTokenRepository = refreshTokenRepository;
+        this.tokenReissueRepository = tokenReissueRepository;
     }
 
     @Override
@@ -79,7 +78,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
         // 생성한 refresh 토큰 redis에 저장
         RefreshToken redisToken = new RefreshToken(refreshToken, userId);
-        refreshTokenRepository.save(redisToken);
+        tokenReissueRepository.save(redisToken);
 
         // 생성한 토큰 헤더에 저장
         response.addHeader("access", accessToken);

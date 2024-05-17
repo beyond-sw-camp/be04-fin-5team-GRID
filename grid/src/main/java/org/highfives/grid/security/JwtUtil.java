@@ -8,7 +8,6 @@ import io.jsonwebtoken.security.SecurityException;
 import jakarta.servlet.http.Cookie;
 import lombok.extern.slf4j.Slf4j;
 import org.highfives.grid.user.command.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -73,67 +72,53 @@ public class JwtUtil {
     /* 설명. Token 검증 */
     public boolean validateToken(String token) {
         try {
-            if (isTokenExpired(token)) {
-                log.info("Expired JWT Token");
-                throw new ExpiredJwtException(null, null, "Expired JWT Token");
+            // 토큰이 만료되었거나, 구조가 올바르지 않거나, 지원되지 않는 형식이거나, 클레임이 비어있는 경우
+            if (isTokenExpired(token) || !isTokenStructureValid(token) || !isTokenSupported(token) || isTokenClaimsEmpty(token)) {
+                return false; // 토큰이 유효하지 않음
             }
-            if (!isTokenStructureValid(token)) {
-                log.info("Invalid JWT Token structure");
-                throw new MalformedJwtException("Invalid JWT Token structure");
-            }
-            if (isTokenUnsupported(token)) {
-                log.info("Unsupported JWT Token");
-                throw new UnsupportedJwtException("Unsupported JWT Token");
-            }
-            if (isTokenClaimsEmpty(token)) {
-                log.info("JWT claims string is empty");
-                throw new IllegalArgumentException("JWT claims string is empty");
-            }
-            return true;
-        } catch (ExpiredJwtException e) {
-            throw new ExpiredJwtException(null, null, "Expired JWT Token");
-        } catch (MalformedJwtException | SecurityException e) {
-            throw new MalformedJwtException("Invalid JWT Token structure");
-        } catch (UnsupportedJwtException e) {
-            throw new UnsupportedJwtException("Unsupported JWT Token");
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("JWT claims string is empty");
+            return true; // 토큰이 유효함
+        } catch (JwtException | IllegalArgumentException e) {
+            log.error("JWT Token validation error: {}", e.getMessage());
+            return false; // 예외 발생 시 토큰이 유효하지 않음
         }
     }
 
+    // 토큰의 만료 시간 확인
     private boolean isTokenExpired(String token) {
-        try {
-            Claims claims = parseClaims(token);
-            return claims.getExpiration().before(new Date());
-        } catch (ExpiredJwtException e) {
-            return true;
+        Claims claims = parseClaims(token);
+        if (claims.getExpiration().before(new Date())) {
+            throw new ExpiredJwtException(null, null, "JWT Token Expired");
         }
+        return false; // 토큰이 만료되지 않음
     }
 
+    // 토큰의 구조가 올바른지 확인
     private boolean isTokenStructureValid(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-            return true;
+            return true; // 토큰의 구조가 올바름
         } catch (MalformedJwtException | SecurityException e) {
-            return false;
+            return false; // 토큰의 구조가 올바르지 않음
         }
     }
 
-    private boolean isTokenUnsupported(String token) {
+    // 토큰이 지원되는 형식인지 확인
+    private boolean isTokenSupported(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-            return false;
+            return true; // 토큰이 지원되는 형식임
         } catch (UnsupportedJwtException e) {
-            return true;
+            return false; // 토큰이 지원되지 않는 형식임
         }
     }
 
+    // 토큰에 클레임이 비어있는지 확인
     private boolean isTokenClaimsEmpty(String token) {
         try {
             Claims claims = parseClaims(token);
-            return claims == null || claims.isEmpty();
+            return claims == null || claims.isEmpty(); // 클레임이 비어있으면 true 반환
         } catch (IllegalArgumentException e) {
-            return false;
+            return false; // 토큰 파싱 중 예외 발생 시 클레임이 비어있지 않음
         }
     }
 
@@ -175,31 +160,23 @@ public class JwtUtil {
         String expiration = null;
 
         if( category.equals("refresh")){
-            expiration = environment.getProperty("application.security.jwt.refresh-token.expiration_time");
+            expiration = refreshTokenExpTime;
             claims.put("category", "refresh");
-
-            return Jwts.builder()
-                    .setClaims(claims)
-                    .setIssuedAt(new Date(System.currentTimeMillis()))
-                    .setExpiration(new Date(System.currentTimeMillis() + Long.parseLong(expiration)))
-                    .signWith(SignatureAlgorithm.HS512,
-                            environment.getProperty("application.security.jwt.secretKey"))
-                    .compact();
         }
         else if (category.equals("access")){
-            expiration = environment.getProperty("application.security.jwt.expiration_time");
+            expiration = accessTokenExpTime;
             claims.put("category", "access");
-
-            return Jwts.builder()
-                    .setClaims(claims)
-                    .setIssuedAt(new Date(System.currentTimeMillis()))
-                    .setExpiration(new Date(System.currentTimeMillis() + Long.parseLong(expiration)))
-                    .signWith(SignatureAlgorithm.HS512,
-                            environment.getProperty("application.security.jwt.secretKey"))
-                    .compact();
+        } else {
+            throw new RuntimeException("Invalid token category");
         }
 
-        throw new RuntimeException("토큰을 생성할 수 없습니다.");
+        return Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + Long.parseLong(expiration)))
+                .signWith(SignatureAlgorithm.HS512,
+                        environment.getProperty("application.security.jwt.secretKey"))
+                .compact();
     }
 
     public Cookie createCookie(String key, String value) {

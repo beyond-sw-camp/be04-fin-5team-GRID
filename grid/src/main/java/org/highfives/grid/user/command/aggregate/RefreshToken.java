@@ -14,5 +14,4 @@ public class RefreshToken {
     private String  refreshToken;
     private int userId;
 
-
 }

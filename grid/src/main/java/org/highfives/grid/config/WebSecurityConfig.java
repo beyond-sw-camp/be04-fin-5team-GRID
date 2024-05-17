@@ -4,7 +4,7 @@ import jakarta.servlet.Filter;
 import org.highfives.grid.security.AuthenticationFilter;
 import org.highfives.grid.security.JwtFilter;
 import org.highfives.grid.security.JwtUtil;
-import org.highfives.grid.user.command.repository.RefreshTokenRepository;
+import org.highfives.grid.user.command.repository.TokenReissueRepository;
 import org.highfives.grid.user.command.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -26,19 +26,19 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 public class WebSecurityConfig {
 
     private final UserService userService;
-    private final RefreshTokenRepository refreshTokenRepository;
+    private final TokenReissueRepository tokenReissueRepository;
     private final Environment environment;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final JwtUtil jwtUtil;
 
     @Autowired
     public WebSecurityConfig(UserService userService,
-                             RefreshTokenRepository refreshTokenRepository,
+                             TokenReissueRepository tokenReissueRepository,
                              Environment environment,
                              BCryptPasswordEncoder bCryptPasswordEncoder,
                              JwtUtil jwtUtil) {
         this.userService = userService;
-        this.refreshTokenRepository = refreshTokenRepository;
+        this.tokenReissueRepository = tokenReissueRepository;
         this.environment = environment;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.jwtUtil = jwtUtil;
@@ -74,7 +74,7 @@ public class WebSecurityConfig {
     }
     private Filter getAuthenticationFilter(AuthenticationManager authenticationManager) {
 
-        return new AuthenticationFilter(authenticationManager, environment, refreshTokenRepository);
+        return new AuthenticationFilter(authenticationManager, environment, tokenReissueRepository);
     }
 
 }
