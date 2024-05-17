@@ -10,9 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @RestController("UserCommandController")
 @RequestMapping("/users")
@@ -28,6 +26,8 @@ public class UserController {
     // 신규 유저 등록 (단일)
     @PostMapping
     public ResponseEntity<ResUserVO> addNewUser(@RequestBody UserDTO givenInfo) {
+
+        System.out.println("givenInfo = " + givenInfo);
 
         if(duplicateInfoCheck(givenInfo) != null)
             return duplicateInfoCheck(givenInfo);
@@ -132,6 +132,14 @@ public class UserController {
                         "/users/list", null);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @PutMapping("/password")
+    public ResponseEntity<ResUserVO> findPwd(@RequestBody String pwd) {
+
+        userService.findPwd(pwd);
+
+        return null;
     }
 
     @GetMapping("/duplication")

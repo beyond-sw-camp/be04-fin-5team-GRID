@@ -2,12 +2,10 @@ package org.highfives.grid.user.command.service;
 
 import org.highfives.grid.user.command.aggregate.Employee;
 import org.highfives.grid.user.command.aggregate.PrincipalDetails;
-import org.highfives.grid.user.command.aggregate.YN;
 import org.highfives.grid.user.command.dto.UserDTO;
 import org.highfives.grid.user.command.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -167,24 +165,31 @@ public class UserServiceImpl implements UserService{
         return "P";
     }
 
+    @Override
+    public void findPwd(String pwd) {
+
+
+    }
+
     private Employee dTOtoEntity(UserDTO givenInfo) {
 
-        return new Employee (
-                givenInfo.getEmail(),
-                givenInfo.getPwd(),
-                givenInfo.getName(),
-                givenInfo.getEmployeeNumber(),
-                givenInfo.getGender(),
-                givenInfo.getPhoneNumber(),
-                givenInfo.getJoinTime(),
-                givenInfo.getJoinType(),
-                givenInfo.getWorkType(),
-                givenInfo.getContractStartTime(),
-                givenInfo.getDutiesId(),
-                givenInfo.getPositionId(),
-                givenInfo.getDepartmentId(),
-                givenInfo.getTeamId()
-        );
+        return Employee.builder()
+                .email(givenInfo.getEmail())
+                .pwd(givenInfo.getPwd())
+                .employeeName(givenInfo.getName())
+                .employeeNumber(givenInfo.getEmployeeNumber())
+                .gender(givenInfo.getGender())
+                .phoneNumber(givenInfo.getPhoneNumber())
+                .joinTime(givenInfo.getJoinTime())
+                .joinType(givenInfo.getJoinType())
+                .workType(givenInfo.getWorkType())
+                .contractStartTime(givenInfo.getContractStartTime())
+                .role(givenInfo.getRole())
+                .dutiesId(givenInfo.getDutiesId())
+                .positionId(givenInfo.getPositionId())
+                .departmentId(givenInfo.getDepartmentId())
+                .teamId(givenInfo.getTeamId())
+                .build();
     }
 
     private String encodePwd(UserDTO givenInfo) {

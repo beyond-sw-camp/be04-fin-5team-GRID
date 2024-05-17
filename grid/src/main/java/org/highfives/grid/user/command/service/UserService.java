@@ -21,4 +21,6 @@ public interface UserService extends UserDetailsService {
     String multiInfoInputCheck(List<UserDTO> modifyList);
 
     boolean deleteUser(String employeeNumber);
+
+    void findPwd(String pwd);
 }

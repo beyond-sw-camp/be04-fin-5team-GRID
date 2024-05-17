@@ -3,15 +3,16 @@ package org.highfives.grid.security;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.highfives.grid.user.command.aggregate.PrincipalDetails;
+import org.highfives.grid.user.command.aggregate.RefreshToken;
 import org.highfives.grid.user.command.aggregate.Role;
+import org.highfives.grid.user.command.repository.RefreshTokenRepository;
 import org.highfives.grid.user.command.vo.ReqLogin;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,17 +22,19 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
+
 
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final Environment environment;
-
+    private final RefreshTokenRepository refreshTokenRepository;
 
     public AuthenticationFilter(AuthenticationManager authenticationManager,
-                                Environment environment) {
+                                Environment environment,
+                                RefreshTokenRepository refreshTokenRepository) {
         super(authenticationManager);
         this.environment = environment;
+        this.refreshTokenRepository = refreshTokenRepository;
     }
 
     @Override
@@ -57,47 +60,30 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
                                             HttpServletResponse response, FilterChain chain,
                                             Authentication auth) throws IOException, ServletException {
 
+        JwtUtil jwtUtil = new JwtUtil(environment.getProperty("application.security.jwt.secretKey"),
+                environment.getProperty("application.security.jwt.secretKey"),
+                environment.getProperty("application.security.jwt.secretKey"),
+                null, environment);
+
         // Authentication 객체로부터 유저 정보를 읽어와 Claims 에 담는 부분
         int userId = ((PrincipalDetails)auth.getPrincipal()).getEmployee().getId();
-        Role hasRole = ((PrincipalDetails)auth.getPrincipal()).getEmployee().getRole();
-        String email = ((PrincipalDetails)auth.getPrincipal()).getEmployee().getEmail();
+        Role role = ((PrincipalDetails)auth.getPrincipal()).getEmployee().getRole();
 
         Claims claims = Jwts.claims().setSubject(((PrincipalDetails)auth.getPrincipal()).getEmployee().getEmail());
         claims.put("id", userId);
-        claims.put("auth", hasRole);
-        claims.put("email", email);
+        claims.put("auth", role);
 
         // 토큰 생성(Refresh, Access)
-        String refreshToken = createJwt("refresh", claims);
-        String accessToken = createJwt("access", claims);
+        String accessToken = jwtUtil.createJwt(claims, "access");
+        String refreshToken = jwtUtil.createJwt(claims, "refresh");
+
+        // 생성한 refresh 토큰 redis에 저장
+        RefreshToken redisToken = new RefreshToken(refreshToken, userId);
+        refreshTokenRepository.save(redisToken);
 
         // 생성한 토큰 헤더에 저장
         response.addHeader("access", accessToken);
-        response.addCookie(createCookie("refresh", refreshToken));
+        response.addCookie(jwtUtil.createCookie("refresh", refreshToken));
     }
 
-    private String createJwt(String category, Claims claims) {
-
-        String expiration = null;
-        if( category.equals("refresh"))
-            expiration = environment.getProperty("application.security.jwt.refresh-token.expiration_time");
-        if( category.equals("access"))
-            expiration = environment.getProperty("application.security.jwt.expiration_time");
-
-        return  Jwts.builder()
-                .claim("category", category)
-                .setClaims(claims)
-                .setExpiration(new Date(System.currentTimeMillis() + Long.parseLong(expiration)))
-                .signWith(SignatureAlgorithm.HS512, environment.getProperty("application.security.jwt.secretKey"))
-                .compact();
-    }
-
-    private Cookie createCookie(String key, String value) {
-
-        Cookie cookie = new Cookie(key, value);
-        cookie.setMaxAge(24*60*60);
-        cookie.setHttpOnly(true);
-
-        return cookie;
-    }
 }

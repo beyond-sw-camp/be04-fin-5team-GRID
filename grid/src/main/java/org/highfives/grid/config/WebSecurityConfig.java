@@ -4,6 +4,7 @@ import jakarta.servlet.Filter;
 import org.highfives.grid.security.AuthenticationFilter;
 import org.highfives.grid.security.JwtFilter;
 import org.highfives.grid.security.JwtUtil;
+import org.highfives.grid.user.command.repository.RefreshTokenRepository;
 import org.highfives.grid.user.command.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -25,17 +26,22 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 public class WebSecurityConfig {
 
     private final UserService userService;
+    private final RefreshTokenRepository refreshTokenRepository;
     private final Environment environment;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-    private JwtUtil jwtUtil;
+    private final JwtUtil jwtUtil;
 
     @Autowired
     public WebSecurityConfig(UserService userService,
+                             RefreshTokenRepository refreshTokenRepository,
                              Environment environment,
-                             BCryptPasswordEncoder bCryptPasswordEncoder) {
+                             BCryptPasswordEncoder bCryptPasswordEncoder,
+                             JwtUtil jwtUtil) {
         this.userService = userService;
+        this.refreshTokenRepository = refreshTokenRepository;
         this.environment = environment;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.jwtUtil = jwtUtil;
     }
 
     @Bean
@@ -51,9 +57,9 @@ public class WebSecurityConfig {
 
         http.authorizeHttpRequests((authz) ->
                             authz
-                                    .requestMatchers(new AntPathRequestMatcher("/user", "POST")).permitAll()
-                                    .requestMatchers(new AntPathRequestMatcher("/**")).permitAll()
-//                                    .requestMatchers(new AntPathRequestMatcher("/**")).hasRole("ENTERPRISE")
+                                    .requestMatchers(new AntPathRequestMatcher("/users", "POST")).hasRole("ADMIN")
+                                    .requestMatchers(new AntPathRequestMatcher("/users", "GET")).hasAnyRole("ADMIN", "USER")
+                                    .requestMatchers(new AntPathRequestMatcher("/reissue")).permitAll()
                                     .requestMatchers(new AntPathRequestMatcher("/actuator/**")).permitAll()
                                     .anyRequest().authenticated()
                 )
@@ -62,13 +68,13 @@ public class WebSecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         http.addFilter(getAuthenticationFilter(authenticationManager));
-        http.addFilterBefore(new JwtFilter(userService, jwtUtil), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new JwtFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
     private Filter getAuthenticationFilter(AuthenticationManager authenticationManager) {
 
-        return new AuthenticationFilter(authenticationManager, environment);
+        return new AuthenticationFilter(authenticationManager, environment, refreshTokenRepository);
     }
 
 }
