@@ -98,7 +98,6 @@ public class ApprovalServiceImpl implements ApprovalService {
         oApprovalRepository.save(overtimeApproval);
 
         ReqAddApprovalChainVO request = new ReqAddApprovalChainVO(2, overtimeApproval.getId(), overtimeApproval.getRequesterId());
-        System.out.println(request);
         approvalChainService.addOApprovalChain(request);
 
         return mapper.map(overtimeApproval, OvertimeApprovalDTO.class);
@@ -120,6 +119,9 @@ public class ApprovalServiceImpl implements ApprovalService {
                 .build();
 
         rwApprovalRepository.save(rwApproval);
+
+        ReqAddApprovalChainVO request = new ReqAddApprovalChainVO(3, rwApproval.getId(), rwApproval.getRequesterId());
+        approvalChainService.addRWApprovalChain(request);
 
         return mapper.map(rwApproval, RWApprovalDTO.class);
     }
