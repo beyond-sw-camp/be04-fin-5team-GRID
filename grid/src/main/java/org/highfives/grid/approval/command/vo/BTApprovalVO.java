@@ -17,5 +17,7 @@ public class BTApprovalVO {
 
     private String content;
 
+    private String writeTime;
+
     private int requesterId;
 }

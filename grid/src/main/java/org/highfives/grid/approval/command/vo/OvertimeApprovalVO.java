@@ -17,5 +17,7 @@ public class OvertimeApprovalVO {
 
     private int typeId;
 
+    private String writeTime;
+
     private int requesterId;
 }

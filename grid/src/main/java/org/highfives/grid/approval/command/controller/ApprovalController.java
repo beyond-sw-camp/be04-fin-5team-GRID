@@ -11,7 +11,6 @@ import org.highfives.grid.approval.common.dto.RWApprovalDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 @RestController(value = "CommandApprovalController")
@@ -156,6 +155,7 @@ public class ApprovalController {
                 .href("")
                 .rwResult(result)
                 .build();
+
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 }

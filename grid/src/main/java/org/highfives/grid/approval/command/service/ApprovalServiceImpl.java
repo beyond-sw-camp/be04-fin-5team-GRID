@@ -21,6 +21,7 @@ import java.time.format.DateTimeFormatter;
 @Service(value = "CommandApprovalService")
 public class ApprovalServiceImpl implements ApprovalService {
 
+    private static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private final ModelMapper mapper;
     private final BTApprovalRepository btApprovalRepository;
     private final OApprovalRepository oApprovalRepository;
@@ -38,16 +39,15 @@ public class ApprovalServiceImpl implements ApprovalService {
     @Transactional
     public BTApprovalDTO addBTApproval(BTApprovalVO btApprovalVO) {
 
-        String startTime = btApprovalVO.getStartTime();
-        String endTime = btApprovalVO.getEndTime();
-        String destination = btApprovalVO.getDestination();
-        String content = btApprovalVO.getContent();
-        int requesterId = btApprovalVO.getRequesterId();
+        BTApproval btApproval = BTApproval.builder()
+                .startTime(btApprovalVO.getStartTime())
+                .endTime(btApprovalVO.getEndTime())
+                .destination(btApprovalVO.getDestination())
+                .content(btApprovalVO.getContent())
+                .writeTime(LocalDateTime.now().format(dateFormat))
+                .requesterId(btApprovalVO.getRequesterId())
+                .build();
 
-        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String now = LocalDateTime.now().format(dateFormat);
-
-        BTApproval btApproval = new BTApproval(startTime, endTime, destination, content, now, 0, requesterId);
         btApprovalRepository.save(btApproval);
 
         return mapper.map(btApproval, BTApprovalDTO.class);
@@ -60,7 +60,6 @@ public class ApprovalServiceImpl implements ApprovalService {
         String startTime = overtimeApprovalVO.getStartTime();
         String endTime = overtimeApprovalVO.getEndTime();
 
-        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String now = LocalDateTime.now().format(dateFormat);
 
         LocalDateTime startDate = LocalDateTime.parse(startTime, dateFormat);
@@ -85,7 +84,7 @@ public class ApprovalServiceImpl implements ApprovalService {
                 .startTime(overtimeApprovalVO.getStartTime())
                 .endTime(overtimeApprovalVO.getEndTime())
                 .content(overtimeApprovalVO.getContent())
-                .writeTime(now)
+                .writeTime(LocalDateTime.now().format(dateFormat))
                 .requesterId(overtimeApprovalVO.getRequesterId())
                 .build();
 
@@ -97,23 +96,11 @@ public class ApprovalServiceImpl implements ApprovalService {
     @Override
     public RWApprovalDTO addRWApproval(RWApprovalVO rwApprovalVO) {
 
-        String startTime = rwApprovalVO.getStartTime();
-        String endTime = rwApprovalVO.getEndTime();
-        String content = rwApprovalVO.getContent();
-        int requesterId = rwApprovalVO.getRequesterId();
-
-        String originName = rwApprovalVO.getOriginName();
-        String renameName = rwApprovalVO.getRenameName();
-        String path = rwApprovalVO.getPath();
-
-        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String now = LocalDateTime.now().format(dateFormat);
-
         RWApproval rwApproval = RWApproval.builder()
                 .startTime(rwApprovalVO.getStartTime())
                 .endTime(rwApprovalVO.getEndTime())
                 .content(rwApprovalVO.getContent())
-                .writeTime(now)
+                .writeTime(LocalDateTime.now().format(dateFormat))
                 .requesterId(rwApprovalVO.getRequesterId())
                 .originName(rwApprovalVO.getOriginName())
                 .renameName(rwApprovalVO.getRenameName())
@@ -136,6 +123,7 @@ public class ApprovalServiceImpl implements ApprovalService {
             btApproval.setEndTime(btApprovalVO.getEndTime());
             btApproval.setDestination(btApprovalVO.getDestination());
             btApproval.setContent(btApprovalVO.getContent());
+            btApproval.setWriteTime(btApprovalVO.getWriteTime());
         }
 
         btApprovalRepository.save(btApproval);
@@ -152,6 +140,7 @@ public class ApprovalServiceImpl implements ApprovalService {
             overtimeApproval.setStartTime(overtimeApprovalVO.getStartTime());
             overtimeApproval.setEndTime(overtimeApprovalVO.getEndTime());
             overtimeApproval.setContent(overtimeApprovalVO.getContent());
+            overtimeApproval.setWriteTime(overtimeApprovalVO.getWriteTime());
         }
 
         oApprovalRepository.save(overtimeApproval);
@@ -171,6 +160,7 @@ public class ApprovalServiceImpl implements ApprovalService {
             rwApproval.setOriginName(rwApprovalVO.getOriginName());
             rwApproval.setRenameName(rwApprovalVO.getRenameName());
             rwApproval.setPath(rwApprovalVO.getPath());
+            rwApproval.setWriteTime(rwApprovalVO.getWriteTime());
         }
 
         rwApprovalRepository.save(rwApproval);
@@ -184,15 +174,12 @@ public class ApprovalServiceImpl implements ApprovalService {
 
         BTApproval btApproval = btApprovalRepository.findById(btApprovalId).orElseThrow();
 
-        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String now = LocalDateTime.now().format(dateFormat);
-
         BTApproval cancelApproval = BTApproval.builder()
                 .startTime(btApproval.getStartTime())
                 .endTime(btApproval.getEndTime())
                 .content(btApproval.getContent() + " \n취소")
                 .destination(btApproval.getDestination())
-                .writeTime(now)
+                .writeTime(LocalDateTime.now().format(dateFormat))
                 .requesterId(btApproval.getRequesterId())
                 .cancelDocId(btApprovalId)
                 .build();
@@ -207,14 +194,11 @@ public class ApprovalServiceImpl implements ApprovalService {
 
         OvertimeApproval overtimeApproval = oApprovalRepository.findById(overtimeApprovalId).orElseThrow();
 
-        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String now = LocalDateTime.now().format(dateFormat);
-
         OvertimeApproval cancelApproval = OvertimeApproval.builder()
                 .startTime(overtimeApproval.getStartTime())
                 .endTime(overtimeApproval.getEndTime())
                 .content(overtimeApproval.getContent() + " \n취소")
-                .writeTime(now)
+                .writeTime(LocalDateTime.now().format(dateFormat))
                 .cancelDocId(overtimeApprovalId)
                 .requesterId(overtimeApproval.getRequesterId())
                 .build();
@@ -229,14 +213,11 @@ public class ApprovalServiceImpl implements ApprovalService {
 
         RWApproval rwApproval = rwApprovalRepository.findById(rwApprovalId).orElseThrow();
 
-        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String now = LocalDateTime.now().format(dateFormat);
-
         RWApproval cancelApproval = RWApproval.builder()
                 .startTime(rwApproval.getStartTime())
                 .endTime(rwApproval.getEndTime())
                 .content(rwApproval.getContent() + " \n취소")
-                .writeTime(now)
+                .writeTime(LocalDateTime.now().format(dateFormat))
                 .requesterId(rwApproval.getRequesterId())
                 .originName(rwApproval.getOriginName())
                 .renameName(rwApproval.getRenameName())
@@ -246,6 +227,6 @@ public class ApprovalServiceImpl implements ApprovalService {
 
         rwApprovalRepository.save(cancelApproval);
 
-        return mapper.map(rwApproval, RWApprovalDTO.class);
+        return mapper.map(cancelApproval, RWApprovalDTO.class);
     }
 }
