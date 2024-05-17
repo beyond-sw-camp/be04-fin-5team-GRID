@@ -8,6 +8,9 @@ import org.highfives.grid.vacation.query.entity.VacationHistory;
 import org.highfives.grid.vacation.query.entity.VacationInfo;
 import org.highfives.grid.vacation.query.entity.VacationPolicy;
 import org.highfives.grid.vacation.query.repository.VacationMapper;
+import org.highfives.grid.vacation.query.vo.ResVacationHistoryVO;
+import org.highfives.grid.vacation.query.vo.ResVacationInfoVO;
+import org.highfives.grid.vacation.query.vo.ResVacationPolicyVO;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,52 +31,87 @@ public class VacationServiceImpl implements VacationService {
     }
 
     @Override
-    public List<VacationInfoDTO> getAllVacations() {
+    public ResVacationInfoVO getAllVacations() {
         List<VacationInfo> vacations = vacationMapper.selectAllVacationInfo();
 
-        return vacations.stream().map(vacation -> modelMapper.map(vacation, VacationInfoDTO.class)).collect(Collectors.toList());
+        ResVacationInfoVO resVacationInfoVO = new ResVacationInfoVO();
+        resVacationInfoVO.setStatusCode(200);
+        resVacationInfoVO.setMessage("조회 성공");
+        resVacationInfoVO.setResult(vacations.stream().map(vacation -> modelMapper.map(vacation, VacationInfoDTO.class)).collect(Collectors.toList()));
+
+        return resVacationInfoVO;
     }
 
     @Override
-    public List<VacationInfoDTO> getUserVacations(int employeeId) {
+    public ResVacationInfoVO getUserVacations(int employeeId) {
         List<VacationInfo> vacations = vacationMapper.selectUserVacationInfo(employeeId);
 
-        return vacations.stream().map(vacation -> modelMapper.map(vacation, VacationInfoDTO.class)).collect(Collectors.toList());
+        ResVacationInfoVO resVacationInfoVO = new ResVacationInfoVO();
+        resVacationInfoVO.setStatusCode(200);
+        resVacationInfoVO.setMessage("조회 성공");
+        resVacationInfoVO.setResult(vacations.stream().map(vacation -> modelMapper.map(vacation, VacationInfoDTO.class)).collect(Collectors.toList()));
+
+        return resVacationInfoVO;
     }
 
     @Override
-    public List<VacationPolicyDTO> getVacationPolicy(int typeId) {
+    public ResVacationPolicyVO getVacationPolicy(int typeId) {
         List<VacationPolicy> policies = vacationMapper.selectAllPolicy(typeId);
 
-        return policies.stream().map(policy -> modelMapper.map(policy, VacationPolicyDTO.class)).collect(Collectors.toList());
+        ResVacationPolicyVO resVacationPolicyVO = new ResVacationPolicyVO();
+        resVacationPolicyVO.setStatusCode(200);
+        resVacationPolicyVO.setMessage("조회 성공");
+        resVacationPolicyVO.setResult(policies.stream().map(policy -> modelMapper.map(policy, VacationPolicyDTO.class)).collect(Collectors.toList()));
+
+        return resVacationPolicyVO;
     }
 
     @Override
-    public List<VacationHistoryDTO> getAllVacationHistory() {
+    public ResVacationHistoryVO getAllVacationHistory() {
         List<VacationHistory> histories = vacationMapper.selectAllHistories();
 
-        return histories.stream().map(history -> modelMapper.map(history, VacationHistoryDTO.class)).collect(Collectors.toList());
+        ResVacationHistoryVO resVacationHistoryVO = new ResVacationHistoryVO();
+        resVacationHistoryVO.setStatusCode(200);
+        resVacationHistoryVO.setMessage("조회 성공");
+        resVacationHistoryVO.setResult(histories.stream().map(history -> modelMapper.map(history, VacationHistoryDTO.class)).collect(Collectors.toList()));
+
+        return resVacationHistoryVO;
     }
 
     @Override
-    public List<VacationInfoDTO> searchVacationInfoByName(String name) {
+    public ResVacationInfoVO searchVacationInfoByName(String name) {
         List<VacationInfo> vacations = vacationMapper.searchVacationInfoByName(name);
 
-        return vacations.stream().map(vacation -> modelMapper.map(vacation, VacationInfoDTO.class)).collect(Collectors.toList());
+        ResVacationInfoVO resVacationInfoVO = new ResVacationInfoVO();
+        resVacationInfoVO.setStatusCode(200);
+        resVacationInfoVO.setMessage("조회 성공");
+        resVacationInfoVO.setResult(vacations.stream().map(vacation -> modelMapper.map(vacation, VacationInfoDTO.class)).collect(Collectors.toList()));
+
+        return resVacationInfoVO;
     }
 
     @Override
-    public List<VacationInfoDTO> searchVacationInfoByDept(String dept) {
+    public ResVacationInfoVO searchVacationInfoByDept(String dept) {
         List<VacationInfo> vacations = vacationMapper.searchVacationInfoByDept(dept);
 
-        return vacations.stream().map(vacation -> modelMapper.map(vacation, VacationInfoDTO.class)).collect(Collectors.toList());
+        ResVacationInfoVO resVacationInfoVO = new ResVacationInfoVO();
+        resVacationInfoVO.setStatusCode(200);
+        resVacationInfoVO.setMessage("조회 성공");
+        resVacationInfoVO.setResult(vacations.stream().map(vacation -> modelMapper.map(vacation, VacationInfoDTO.class)).collect(Collectors.toList()));
+
+        return resVacationInfoVO;
     }
 
     @Override
-    public List<VacationHistoryDTO> searchVacationHistory(int typeId, int changeTypeId, int employeeId) {
+    public ResVacationHistoryVO searchVacationHistory(int typeId, int changeTypeId, int employeeId) {
         List<VacationHistory> histories = vacationMapper.searchVacationHistories(typeId, changeTypeId, employeeId);
 
-        return histories.stream().map(history -> modelMapper.map(history, VacationHistoryDTO.class)).collect(Collectors.toList());
+        ResVacationHistoryVO resVacationHistoryVO = new ResVacationHistoryVO();
+        resVacationHistoryVO.setStatusCode(200);
+        resVacationHistoryVO.setMessage("조회 성공");
+        resVacationHistoryVO.setResult(histories.stream().map(history -> modelMapper.map(history, VacationHistoryDTO.class)).collect(Collectors.toList()));
+
+        return resVacationHistoryVO;
     }
 
 }

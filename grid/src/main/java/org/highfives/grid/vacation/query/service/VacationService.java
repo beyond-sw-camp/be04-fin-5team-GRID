@@ -1,24 +1,22 @@
 package org.highfives.grid.vacation.query.service;
 
-import org.highfives.grid.vacation.query.dto.VacationHistoryDTO;
-import org.highfives.grid.vacation.query.dto.VacationInfoDTO;
-import org.highfives.grid.vacation.query.dto.VacationPolicyDTO;
-import org.highfives.grid.vacation.query.entity.VacationPolicy;
+import org.highfives.grid.vacation.query.vo.ResVacationHistoryVO;
+import org.highfives.grid.vacation.query.vo.ResVacationInfoVO;
+import org.highfives.grid.vacation.query.vo.ResVacationPolicyVO;
 
-import java.util.List;
 
 public interface VacationService {
-    List<VacationInfoDTO> getAllVacations();
+    ResVacationInfoVO getAllVacations();
 
-    List<VacationInfoDTO> getUserVacations(int employeeId);
+    ResVacationInfoVO getUserVacations(int employeeId);
 
-    List<VacationPolicyDTO> getVacationPolicy(int typeId);
+    ResVacationPolicyVO getVacationPolicy(int typeId);
 
-    List<VacationHistoryDTO> getAllVacationHistory();
+    ResVacationHistoryVO getAllVacationHistory();
 
-    List<VacationInfoDTO> searchVacationInfoByName(String name);
+    ResVacationInfoVO searchVacationInfoByName(String name);
 
-    List<VacationInfoDTO> searchVacationInfoByDept(String dept);
+    ResVacationInfoVO searchVacationInfoByDept(String dept);
 
-    List<VacationHistoryDTO> searchVacationHistory(int typeId, int changeTypeId, int employeeId);
+    ResVacationHistoryVO searchVacationHistory(int typeId, int changeTypeId, int employeeId);
 }
