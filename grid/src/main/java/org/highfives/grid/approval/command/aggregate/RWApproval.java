@@ -65,4 +65,28 @@ public class RWApproval {
         this.renameName = renameName;
         this.path = path;
     }
+
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public void setOriginName(String originName) {
+        this.originName = originName;
+    }
+
+    public void setRenameName(String renameName) {
+        this.renameName = renameName;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
 }

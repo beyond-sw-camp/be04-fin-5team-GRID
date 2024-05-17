@@ -14,6 +14,7 @@ public interface ApprovalService {
     RwApprovalDTO addRWApproval(RWApprovalVO rwApprovalVO);
     BTApprovalDTO modifyBTApproval(BTApprovalVO btApprovalVO, int btApprovalId);
     OvertimeApprovalDTO modifyOvertimeApproval(OvertimeApprovalVO overtimeApprovalVO, int overtimeApprovalId);
+    RwApprovalDTO modifyRWApproval(RWApprovalVO rwApprovalVO, int rwApprovalId);
     BTApprovalDTO cancelBTApproval(int btApprovalId);
     OvertimeApprovalDTO cancelOvertimeApproval(int overtimeApprovalId);
 }

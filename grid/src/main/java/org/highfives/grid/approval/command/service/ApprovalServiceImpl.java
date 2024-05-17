@@ -160,6 +160,25 @@ public class ApprovalServiceImpl implements ApprovalService {
     }
 
     @Override
+    public RwApprovalDTO modifyRWApproval(RWApprovalVO rwApprovalVO, int rwApprovalId) {
+
+        RWApproval rwApproval = rwApprovalRepository.findById(rwApprovalId).orElseThrow();
+
+        if(rwApproval.getApprovalStatus() == ApprovalStatus.N) {
+            rwApproval.setStartTime(rwApprovalVO.getStartTime());
+            rwApproval.setEndTime(rwApprovalVO.getEndTime());
+            rwApproval.setContent(rwApprovalVO.getContent());
+            rwApproval.setOriginName(rwApprovalVO.getOriginName());
+            rwApproval.setRenameName(rwApprovalVO.getRenameName());
+            rwApproval.setPath(rwApprovalVO.getPath());
+        }
+
+        rwApprovalRepository.save(rwApproval);
+
+        return mapper.map(rwApproval, RwApprovalDTO.class);
+    }
+
+    @Override
     @Transactional
     public BTApprovalDTO cancelBTApproval(int btApprovalId) {
 

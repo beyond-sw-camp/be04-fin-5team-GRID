@@ -99,6 +99,21 @@ public class ApprovalController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    @PutMapping("/rw/{rwApprovalId}")
+    public ResponseEntity<ResApprovalVO> modifyRWApproval(@RequestBody RWApprovalVO rwApprovalVO, @PathVariable int rwApprovalId) {
+
+        RwApprovalDTO result = approvalService.modifyRWApproval(rwApprovalVO, rwApprovalId);
+
+        ResApprovalVO response = ResApprovalVO.builder()
+                .statusCode(200)
+                .message("단축 근무 결재 수정 성공")
+                .href("")
+                .rwResult(result)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
     @PostMapping("/bt/{btApprovalId}")
     public ResponseEntity<ResApprovalVO> cancelBTApproval(@PathVariable int btApprovalId) {
 
