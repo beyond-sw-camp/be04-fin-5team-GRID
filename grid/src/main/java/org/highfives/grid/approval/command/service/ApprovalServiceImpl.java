@@ -3,10 +3,13 @@ package org.highfives.grid.approval.command.service;
 import org.highfives.grid.approval.command.aggregate.*;
 import org.highfives.grid.approval.command.repository.BTApprovalRepository;
 import org.highfives.grid.approval.command.repository.OApprovalRepository;
+import org.highfives.grid.approval.command.repository.RWApprovalRepository;
 import org.highfives.grid.approval.command.vo.BTApprovalVO;
 import org.highfives.grid.approval.command.vo.OvertimeApprovalVO;
+import org.highfives.grid.approval.command.vo.RWApprovalVO;
 import org.highfives.grid.approval.common.dto.BTApprovalDTO;
 import org.highfives.grid.approval.common.dto.OvertimeApprovalDTO;
+import org.highfives.grid.approval.common.dto.RwApprovalDTO;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,12 +24,14 @@ public class ApprovalServiceImpl implements ApprovalService {
     private final ModelMapper mapper;
     private final BTApprovalRepository btApprovalRepository;
     private final OApprovalRepository oApprovalRepository;
+    private final RWApprovalRepository rwApprovalRepository;
 
     @Autowired
-    public ApprovalServiceImpl(ModelMapper mapper, BTApprovalRepository btApprovalRepository, OApprovalRepository oApprovalRepository) {
+    public ApprovalServiceImpl(ModelMapper mapper, BTApprovalRepository btApprovalRepository, OApprovalRepository oApprovalRepository, RWApprovalRepository rwApprovalRepository) {
         this.mapper = mapper;
         this.btApprovalRepository = btApprovalRepository;
         this.oApprovalRepository = oApprovalRepository;
+        this.rwApprovalRepository = rwApprovalRepository;
     }
 
     @Override
@@ -54,8 +59,6 @@ public class ApprovalServiceImpl implements ApprovalService {
 
         String startTime = overtimeApprovalVO.getStartTime();
         String endTime = overtimeApprovalVO.getEndTime();
-        String content = overtimeApprovalVO.getContent();
-        int requesterId = overtimeApprovalVO.getRequesterId();
 
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String now = LocalDateTime.now().format(dateFormat);
@@ -89,6 +92,37 @@ public class ApprovalServiceImpl implements ApprovalService {
         oApprovalRepository.save(overtimeApproval);
 
         return mapper.map(overtimeApproval, OvertimeApprovalDTO.class);
+    }
+
+    @Override
+    public RwApprovalDTO addRWApproval(RWApprovalVO rwApprovalVO) {
+
+        String startTime = rwApprovalVO.getStartTime();
+        String endTime = rwApprovalVO.getEndTime();
+        String content = rwApprovalVO.getContent();
+        int requesterId = rwApprovalVO.getRequesterId();
+
+        String originName = rwApprovalVO.getOriginName();
+        String renameName = rwApprovalVO.getRenameName();
+        String path = rwApprovalVO.getPath();
+
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String now = LocalDateTime.now().format(dateFormat);
+
+        RWApproval rwApproval = RWApproval.builder()
+                .startTime(rwApprovalVO.getStartTime())
+                .endTime(rwApprovalVO.getEndTime())
+                .content(rwApprovalVO.getContent())
+                .writeTime(now)
+                .requesterId(rwApprovalVO.getRequesterId())
+                .originName(rwApprovalVO.getOriginName())
+                .renameName(rwApprovalVO.getRenameName())
+                .path(rwApprovalVO.getPath())
+                .build();
+
+        rwApprovalRepository.save(rwApproval);
+
+        return mapper.map(rwApproval, RwApprovalDTO.class);
     }
 
     @Override

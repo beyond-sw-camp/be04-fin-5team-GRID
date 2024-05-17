@@ -1,10 +1,7 @@
 package org.highfives.grid.approval.command.aggregate;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -54,5 +51,18 @@ public class RWApproval {
     @Column(name = "path")
     private String path;
 
-
+    @Builder
+    public RWApproval(String startTime, String endTime, String content, String writeTime, int cancelDocId, int requesterId, String originName, String renameName, String path) {
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.content = content;
+        this.approvalStatus = ApprovalStatus.N;
+        this.writeTime = writeTime;
+        this.cancelYN = YN.N;
+        this.cancelDocId = cancelDocId;
+        this.requesterId = requesterId;
+        this.originName = originName;
+        this.renameName = renameName;
+        this.path = path;
+    }
 }

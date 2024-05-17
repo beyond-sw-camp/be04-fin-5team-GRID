@@ -3,9 +3,11 @@ package org.highfives.grid.approval.command.controller;
 import org.highfives.grid.approval.command.service.ApprovalService;
 import org.highfives.grid.approval.command.vo.BTApprovalVO;
 import org.highfives.grid.approval.command.vo.OvertimeApprovalVO;
+import org.highfives.grid.approval.command.vo.RWApprovalVO;
 import org.highfives.grid.approval.command.vo.ResApprovalVO;
 import org.highfives.grid.approval.common.dto.BTApprovalDTO;
 import org.highfives.grid.approval.common.dto.OvertimeApprovalDTO;
+import org.highfives.grid.approval.common.dto.RwApprovalDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,6 +49,21 @@ public class ApprovalController {
                 .message("시간 외 근무 결재 생성 성공")
                 .href("")
                 .overtimeResult(result)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PostMapping("/rw")
+    public ResponseEntity<ResApprovalVO> addRWApproval(@RequestBody RWApprovalVO rwApprovalVO) {
+
+        RwApprovalDTO result = approvalService.addRWApproval(rwApprovalVO);
+
+        ResApprovalVO response = ResApprovalVO.builder()
+                .statusCode(201)
+                .message("단축 근무 결재 생성 성공")
+                .href("")
+                .rwResult(result)
                 .build();
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
