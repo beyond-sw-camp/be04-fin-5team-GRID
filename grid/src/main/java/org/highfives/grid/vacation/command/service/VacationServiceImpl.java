@@ -17,7 +17,6 @@ import org.highfives.grid.vacation.command.vo.ModifyPolicy;
 import org.highfives.grid.vacation.command.vo.RegistPolicy;
 import org.highfives.grid.vacation.command.vo.RegistVacationType;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -399,6 +398,67 @@ public class VacationServiceImpl implements VacationService{
 
 
         return annuals;
+    }
+
+    @Override
+    @Transactional
+    public void plusVacationNum(int employeeId, int typeId) {
+        VacationInfo vacationInfo = new VacationInfo();
+        if(typeId == 5 || typeId == 6) {
+            vacationInfo = vacationInfoRepository.findByEmployeeIdAndTypeId(employeeId, 1);
+        } else {
+            vacationInfo = vacationInfoRepository.findByEmployeeIdAndTypeId(employeeId, typeId);
+        }
+        LocalDate today = LocalDate.now();
+        String vacationTypeName = vacationTypeRepository.findById((long) typeId).get().getTypeName();
+
+        if(typeId == 5) {
+            vacationInfo.setVacationNum(vacationInfo.getVacationNum()+0.5);
+        } else if(typeId == 6) {
+            vacationInfo.setVacationNum(vacationInfo.getVacationNum()+0.25);
+        } else
+            vacationInfo.setVacationNum(vacationInfo.getVacationNum()+1);
+
+        VacationHistory inputVacationHistory = VacationHistory.builder()
+                        .changeTime(today.toString())
+                        .changeReason(vacationTypeName + " 사용취소로 인한 " + vacationTypeName + " 개수 증가")
+                        .typeId(typeId)
+                        .changeTypeId(4)
+                        .employeeId(employeeId)
+                        .build();
+
+        vacationHistoryRepository.save(inputVacationHistory);
+
+    }
+
+    @Override
+    @Transactional
+    public void minusVacationNum(int employeeId, int typeId) {
+        VacationInfo vacationInfo = new VacationInfo();
+        if(typeId == 5 || typeId == 6) {
+            vacationInfo = vacationInfoRepository.findByEmployeeIdAndTypeId(employeeId, 1);
+        } else {
+            vacationInfo = vacationInfoRepository.findByEmployeeIdAndTypeId(employeeId, typeId);
+        }
+        LocalDate today = LocalDate.now();
+        String vacationTypeName = vacationTypeRepository.findById((long) typeId).get().getTypeName();
+
+        if(typeId == 5) {
+            vacationInfo.setVacationNum(vacationInfo.getVacationNum()-0.5);
+        } else if(typeId == 6) {
+            vacationInfo.setVacationNum(vacationInfo.getVacationNum()-0.25);
+        } else
+            vacationInfo.setVacationNum(vacationInfo.getVacationNum()-1);
+
+        VacationHistory inputVacationHistory = VacationHistory.builder()
+                .changeTime(today.toString())
+                .changeReason(vacationTypeName + " 사용으로 인한 " + vacationTypeName + " 개수 감소")
+                .typeId(typeId)
+                .changeTypeId(3)
+                .employeeId(employeeId)
+                .build();
+
+        vacationHistoryRepository.save(inputVacationHistory);
     }
 
     // 입사이후 총 몇달이 지났는지 계산하는 메서드

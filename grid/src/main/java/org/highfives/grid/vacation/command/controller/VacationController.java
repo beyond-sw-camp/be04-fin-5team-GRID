@@ -7,6 +7,7 @@ import org.highfives.grid.vacation.command.vo.RegistPolicy;
 import org.highfives.grid.vacation.command.vo.RegistVacationType;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController(value = "VacationCommandController")
@@ -23,35 +24,57 @@ public class VacationController {
     }
 
     @PutMapping("/policy/{id}")
-    public void modifyVacationPolicy(@RequestBody ModifyPolicy policyInfo, @PathVariable int id) {
+    public ResponseEntity<Object> modifyVacationPolicy(@RequestBody ModifyPolicy policyInfo, @PathVariable int id) {
         vacationService.modifyVacationPolicy(policyInfo, id);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/policy/{id}")
-    public void deleteVacationPolicy(@PathVariable int id) {
+    public ResponseEntity<Object> deleteVacationPolicy(@PathVariable int id) {
         vacationService.deleteVacationPolicy(id);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/policy")
-    public void registVacationPolicy(@RequestBody RegistPolicy policyInfo) {
+    public ResponseEntity<Object> registVacationPolicy(@RequestBody RegistPolicy policyInfo) {
         vacationService.registVacationPolicy(policyInfo);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/payments")
-    public void giveVacationByManager(@RequestBody GiveVacation vacationInfo) {
+    public ResponseEntity<Object> giveVacationByManager(@RequestBody GiveVacation vacationInfo) {
         vacationService.giveVacationByManager(vacationInfo);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/type")
-    public void registVacationType(@RequestBody RegistVacationType typeInfo) {
+    public ResponseEntity<Object> registVacationType(@RequestBody RegistVacationType typeInfo) {
         vacationService.registVacationType(typeInfo);
+        return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/test")
-    public void test() {
-//        vacationService.giveAnnualVacationBeforeYear();
-//        vacationService.giveAnnualVacationAfterYear();
-        vacationService.giveRegularVacation();
-        vacationService.giveHealthVacation();
+    @GetMapping("/annual_vacation")
+    public ResponseEntity<Object> giveAnnualVacation() {
+        vacationService.giveAnnualVacationAfterYear();
+        return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/month_vacation")
+    public ResponseEntity<Object> giveMonthVacation() {
+        vacationService.giveAnnualVacationBeforeYear();
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/regular_vacation")
+    public ResponseEntity<Object> giveRegularVacation() {
+        vacationService.giveRegularVacation();
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/health_vacation")
+    public ResponseEntity<Object> giveHealthVacation() {
+        vacationService.giveHealthVacation();
+        return ResponseEntity.ok().build();
+    }
+
 }

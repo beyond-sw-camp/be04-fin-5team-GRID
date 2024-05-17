@@ -35,6 +35,10 @@ public class VacationInfo {
         this.addTime = addTime;
     }
 
+    public void setVacationNum(double vacationNum) {
+        this.vacationNum = vacationNum;
+    }
+
     @Builder
     public VacationInfo(int id, double vacationNum, String addTime, String endTime, int employeeId, int typeId) {
         this.id = id;
