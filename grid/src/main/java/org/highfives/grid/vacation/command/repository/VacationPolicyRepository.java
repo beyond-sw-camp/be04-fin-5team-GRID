@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface VacationPolicyRepository extends JpaRepository<VacationPolicy, Long> {
+public interface VacationPolicyRepository extends JpaRepository<VacationPolicy, Integer> {
 }

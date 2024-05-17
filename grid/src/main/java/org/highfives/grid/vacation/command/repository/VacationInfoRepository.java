@@ -7,8 +7,8 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface VacationInfoRepository extends JpaRepository<VacationInfo, Long> {
-    Optional<VacationInfo> findByEmployeeId(Long employeeId);
+public interface VacationInfoRepository extends JpaRepository<VacationInfo, Integer> {
+    VacationInfo findByEmployeeId(int employeeId);
 
     void deleteByTypeIdAndEmployeeId(int typeId, int employeeId);
 
