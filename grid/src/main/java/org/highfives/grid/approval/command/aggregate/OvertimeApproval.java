@@ -1,10 +1,7 @@
 package org.highfives.grid.approval.command.aggregate;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -45,15 +42,15 @@ public class OvertimeApproval {
     @Column(name = "requester_id")
     private int requesterId;
 
-    @Column(name = "type_id")
-    private int typeId;
-
-    public OvertimeApproval(String startTime, String endTime, String content, String writeTime, int requesterId, int typeId) {
+    @Builder
+    public OvertimeApproval(String startTime, String endTime, String content, String writeTime, int cancelDocId, int requesterId) {
         this.startTime = startTime;
         this.endTime = endTime;
         this.content = content;
+        this.approvalStatus = ApprovalStatus.N;
         this.writeTime = writeTime;
+        this.cancelYN = YN.N;
+        this.cancelDocId = cancelDocId;
         this.requesterId = requesterId;
-        this.typeId = typeId;
     }
 }

@@ -26,6 +26,4 @@ public class OvertimeApprovalDTO {
     private int cancelDocId;
 
     private int requesterId;
-
-    private int typeId;
 }

@@ -1,9 +1,8 @@
 package org.highfives.grid.approval.command.service;
 
-import org.highfives.grid.approval.command.aggregate.ApprovalStatus;
-import org.highfives.grid.approval.command.aggregate.BTApproval;
-import org.highfives.grid.approval.command.aggregate.OvertimeApproval;
+import org.highfives.grid.approval.command.aggregate.*;
 import org.highfives.grid.approval.command.repository.BTApprovalRepository;
+import org.highfives.grid.approval.command.repository.OApprovalRepository;
 import org.highfives.grid.approval.command.vo.BTApprovalVO;
 import org.highfives.grid.approval.command.vo.OvertimeApprovalVO;
 import org.highfives.grid.approval.common.dto.BTApprovalDTO;
@@ -13,19 +12,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Service(value = "CommandApprovalService")
 public class ApprovalServiceImpl implements ApprovalService {
 
     private final ModelMapper mapper;
     private final BTApprovalRepository btApprovalRepository;
+    private final OApprovalRepository oApprovalRepository;
 
     @Autowired
-    public ApprovalServiceImpl(ModelMapper mapper, BTApprovalRepository btApprovalRepository) {
+    public ApprovalServiceImpl(ModelMapper mapper, BTApprovalRepository btApprovalRepository, OApprovalRepository oApprovalRepository) {
         this.mapper = mapper;
         this.btApprovalRepository = btApprovalRepository;
+        this.oApprovalRepository = oApprovalRepository;
     }
 
     @Override
@@ -38,9 +39,8 @@ public class ApprovalServiceImpl implements ApprovalService {
         String content = btApprovalVO.getContent();
         int requesterId = btApprovalVO.getRequesterId();
 
-        Date currentTime = new Date();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String now = dateFormat.format(currentTime);
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String now = LocalDateTime.now().format(dateFormat);
 
         BTApproval btApproval = new BTApproval(startTime, endTime, destination, content, now, 0, requesterId);
         btApprovalRepository.save(btApproval);
@@ -49,17 +49,46 @@ public class ApprovalServiceImpl implements ApprovalService {
     }
 
     @Override
+    @Transactional
     public OvertimeApprovalDTO addOvertimeApproval(OvertimeApprovalVO overtimeApprovalVO) {
 
         String startTime = overtimeApprovalVO.getStartTime();
         String endTime = overtimeApprovalVO.getEndTime();
         String content = overtimeApprovalVO.getContent();
-        int typeId = overtimeApprovalVO.getTypeId();
         int requesterId = overtimeApprovalVO.getRequesterId();
 
-        OvertimeApproval overtimeApproval = new OvertimeApproval()
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String now = LocalDateTime.now().format(dateFormat);
 
-        return null;
+        LocalDateTime startDate = LocalDateTime.parse(startTime, dateFormat);
+        LocalDateTime endDate = LocalDateTime.parse(endTime, dateFormat);
+
+//        int startDay = startDate.toLocalDate().getDayOfWeek().getValue();
+//        int endDay = endDate.toLocalDate().getDayOfWeek().getValue();
+//
+//        LocalTime startHour = startDate.toLocalTime();
+//        LocalTime endHour = endDate.toLocalTime();
+//
+//         9시부터 6시까지 제외
+//         start < end
+//        if (startDay > 5 && endDay > 5) {
+//            0시부터 6시 사이
+//            startHour
+//            22시부터 24시 사이
+//            나머지
+//        }
+
+        OvertimeApproval overtimeApproval = OvertimeApproval.builder()
+                .startTime(overtimeApprovalVO.getStartTime())
+                .endTime(overtimeApprovalVO.getEndTime())
+                .content(overtimeApprovalVO.getContent())
+                .writeTime(now)
+                .requesterId(overtimeApprovalVO.getRequesterId())
+                .build();
+
+        oApprovalRepository.save(overtimeApproval);
+
+        return mapper.map(overtimeApproval, OvertimeApprovalDTO.class);
     }
 
     @Override
@@ -86,9 +115,8 @@ public class ApprovalServiceImpl implements ApprovalService {
 
         BTApproval btApproval = btApprovalRepository.findById(btApprovalId).orElseThrow();
 
-        Date currentTime = new Date();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String now = dateFormat.format(currentTime);
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String now = LocalDateTime.now().format(dateFormat);
 
         BTApproval cancelApproval = BTApproval.builder()
                 .startTime(btApproval.getStartTime())
