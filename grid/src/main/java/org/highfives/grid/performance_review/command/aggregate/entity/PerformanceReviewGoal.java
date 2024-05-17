@@ -1,4 +1,4 @@
-package org.highfives.grid.performance_review.command.aggregate;
+package org.highfives.grid.performance_review.command.aggregate.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -23,17 +23,20 @@ public class PerformanceReviewGoal {
     private String reviewName;
 
     @Column(name = "approval_status")
+    @Setter
     private String approvalStatus;
 
     @Column(name = "writer_id")
     private  int writerId;
 
     @Column(name = "write_time")
+    @Setter
     private  String writeTime;
 
     @Column(name = "approver_id")
     private int approverId;
 
     @Column(name = "approval_time")
+    @Setter
     private String approvalTime;
 }

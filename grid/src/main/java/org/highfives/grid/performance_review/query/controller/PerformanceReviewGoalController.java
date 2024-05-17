@@ -56,7 +56,7 @@ public class PerformanceReviewGoalController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    // 한 팀장의 작성한 평가 목표 목록 조회
+    // 목표 하나 상세 조회
     @GetMapping("/detail/{id}")
     public ResponseEntity<ResponseDetailGoalVO> findDetailGoalById(@PathVariable int id){
         DetailGoalDTO findDetailGoal = performanceReviewGoalService.findDetailGoalById(id);
