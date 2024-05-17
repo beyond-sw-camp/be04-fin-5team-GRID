@@ -1,13 +1,16 @@
 package org.highfives.grid.user.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 
-@Data
+
 @Entity
 @DynamicInsert
 @Table(name = "employee")
+@Getter
+@RequiredArgsConstructor
+@ToString
 public class Employee {
 
     @Id
@@ -85,4 +88,33 @@ public class Employee {
 
     @Column(nullable = false, name = "department_id")
     private int departmentId;
+
+    @Builder
+    public Employee(int id, String email, String pwd, String employeeName, String employeeNumber, String gender, String phoneNumber, String callNumber, String zipCode, String address, String assignedTask, String joinTime, String joinType, String resignTime, String resignYn, String workType, String contractStartTime, String contractEndTime, int salary, String absenceYn, String absenceContent, int dutiesId, int positionId, int teamId, int departmentId) {
+        this.id = id;
+        this.email = email;
+        this.pwd = pwd;
+        this.employeeName = employeeName;
+        this.employeeNumber = employeeNumber;
+        this.gender = gender;
+        this.phoneNumber = phoneNumber;
+        this.callNumber = callNumber;
+        this.zipCode = zipCode;
+        this.address = address;
+        this.assignedTask = assignedTask;
+        this.joinTime = joinTime;
+        this.joinType = joinType;
+        this.resignTime = resignTime;
+        this.resignYn = resignYn;
+        this.workType = workType;
+        this.contractStartTime = contractStartTime;
+        this.contractEndTime = contractEndTime;
+        this.salary = salary;
+        this.absenceYn = absenceYn;
+        this.absenceContent = absenceContent;
+        this.dutiesId = dutiesId;
+        this.positionId = positionId;
+        this.teamId = teamId;
+        this.departmentId = departmentId;
+    }
 }
