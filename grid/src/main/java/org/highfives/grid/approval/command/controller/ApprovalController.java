@@ -67,6 +67,21 @@ public class ApprovalController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    @PutMapping("/overtime/{overtimeApprovalId}")
+    public ResponseEntity<ResApprovalVO> modifyOvertimeApproval(@RequestBody OvertimeApprovalVO overtimeApprovalVO, @PathVariable int overtimeApprovalId) {
+
+        OvertimeApprovalDTO result = approvalService.modifyOvertimeApproval(overtimeApprovalVO, overtimeApprovalId);
+
+        ResApprovalVO response = ResApprovalVO.builder()
+                .statusCode(200)
+                .message("시간 외 결재 수정 성공")
+                .href("")
+                .overtimeResult(result)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
     @PostMapping("/bt/{btApprovalId}")
     public ResponseEntity<ResApprovalVO> cancelBTApproval(@PathVariable int btApprovalId) {
 

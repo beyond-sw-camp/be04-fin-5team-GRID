@@ -53,4 +53,16 @@ public class OvertimeApproval {
         this.cancelDocId = cancelDocId;
         this.requesterId = requesterId;
     }
+
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
 }

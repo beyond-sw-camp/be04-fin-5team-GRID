@@ -110,6 +110,22 @@ public class ApprovalServiceImpl implements ApprovalService {
     }
 
     @Override
+    public OvertimeApprovalDTO modifyOvertimeApproval(OvertimeApprovalVO overtimeApprovalVO, int overtimeApprovalId) {
+
+        OvertimeApproval overtimeApproval = oApprovalRepository.findById(overtimeApprovalId).orElseThrow();
+
+        if(overtimeApproval.getApprovalStatus() == ApprovalStatus.N) {
+            overtimeApproval.setStartTime(overtimeApprovalVO.getStartTime());
+            overtimeApproval.setEndTime(overtimeApprovalVO.getEndTime());
+            overtimeApproval.setContent(overtimeApprovalVO.getContent());
+        }
+
+        oApprovalRepository.save(overtimeApproval);
+
+        return mapper.map(overtimeApproval, OvertimeApprovalDTO.class);
+    }
+
+    @Override
     @Transactional
     public BTApprovalDTO cancelBTApproval(int btApprovalId) {
 
@@ -121,7 +137,7 @@ public class ApprovalServiceImpl implements ApprovalService {
         BTApproval cancelApproval = BTApproval.builder()
                 .startTime(btApproval.getStartTime())
                 .endTime(btApproval.getEndTime())
-                .content(btApproval.getContent())
+                .content(btApproval.getContent() + "\n취소")
                 .destination(btApproval.getDestination())
                 .writeTime(now)
                 .requesterId(btApproval.getRequesterId())
@@ -132,6 +148,4 @@ public class ApprovalServiceImpl implements ApprovalService {
 
         return mapper.map(cancelApproval, BTApprovalDTO.class);
     }
-
-
 }
