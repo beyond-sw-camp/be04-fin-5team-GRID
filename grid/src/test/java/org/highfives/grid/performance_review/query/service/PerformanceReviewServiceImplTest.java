@@ -1,5 +1,6 @@
 package org.highfives.grid.performance_review.query.service;
 
+import org.highfives.grid.performance_review.query.dto.DetailPerformanceReviewDTO;
 import org.highfives.grid.performance_review.query.dto.PerformanceReviewDTO;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,6 +32,16 @@ class PerformanceReviewServiceImplTest {
         int id = 5;
         List<PerformanceReviewDTO> findReview = performanceReviewService.findPerformanceReviewByApproverId(id);
 
+        assertNotNull(findReview);
+    }
+
+    @DisplayName("1번 평가 상세 조회")
+    @Test
+    public void findDetailReviewById(){
+        int id = 1;
+        DetailPerformanceReviewDTO findReview = performanceReviewService.findDetailPerformanceReviewById(id);
+
+        System.out.println(findReview);
         assertNotNull(findReview);
     }
 }

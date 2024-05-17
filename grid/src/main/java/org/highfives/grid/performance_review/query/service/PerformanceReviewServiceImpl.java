@@ -1,6 +1,8 @@
 package org.highfives.grid.performance_review.query.service;
 
+import org.highfives.grid.performance_review.query.dto.DetailPerformanceReviewDTO;
 import org.highfives.grid.performance_review.query.dto.PerformanceReviewDTO;
+import org.highfives.grid.performance_review.query.dto.ReviewItemDTO;
 import org.highfives.grid.performance_review.query.repository.PerformanceReviewMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,5 +33,19 @@ public class PerformanceReviewServiceImpl implements PerformanceReviewService{
 
         System.out.println(findReviewList);
         return findReviewList;
+    }
+
+    @Override
+    public DetailPerformanceReviewDTO findDetailPerformanceReviewById(int id) {
+        System.out.println(id);
+        DetailPerformanceReviewDTO findReview = performanceReviewMapper.selectDetailReviewById(id);
+
+        List<ReviewItemDTO> findReviewItem = performanceReviewMapper.selectReviewItemByReviewId(id);
+        System.out.println(findReviewItem);
+        System.out.println(findReview);
+
+        findReview.setReviewItemList(findReviewItem);
+
+        return findReview;
     }
 }
