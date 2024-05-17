@@ -1,9 +1,7 @@
 package org.highfives.grid.user.command.aggregate;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 @Entity
 @Table(name="employee")
@@ -21,57 +19,61 @@ public class Employee {
     @Column
     private String pwd;
     @Column
-    private String name;
+    private String employeeName;
     @Column
     private String employeeNumber;
     @Column
+    @Enumerated(EnumType.STRING)
     private Gender gender;
     @Column
     private String phoneNumber;
     @Column
     private String callNumber;
-    @Column(name = "zip_code")
+    @Column
     private String zipCode;
     @Column
     private String address;
-    @Column(name = "assigned_task")
+    @Column
     private String assignedTask;
-    @Column(name = "join_time")
+    @Column
     private String joinTime;
-    @Column(name = "join_type")
+    @Column
+    @Enumerated(EnumType.STRING)
     private JoinType joinType;
-    @Column(name = "resign_time")
+    @Column
     private String resignTime;
-    @Column(name = "resign_yn")
+    @Column
+    @Enumerated(EnumType.STRING)
     private YN resignYn;
-    @Column(name = "work_type")
+    @Column
+    @Enumerated(EnumType.STRING)
     private WorkType workType;
-    @Column(name = "contract_start_time")
+    @Column
     private String contractStartTime;
-    @Column(name = "contract_end_time")
+    @Column
     private String contractEndTime;
     @Column
     private int salary;
-    @Column(name = "absence_yn")
+    @Column
+    @Enumerated(EnumType.STRING)
     private YN absenceYn;
-    @Column(name = "absence_content")
+    @Column
     private String absenceContent;
-    @Column(name = "duties_id")
+    @Column
     private int dutiesId;
-    @Column(name = "position_id")
+    @Column
     private int positionId;
-    @Column(name = "team_id")
+    @Column
     private int teamId;
-    @Column(name = "department_id")
+    @Column
     private int departmentId;
 
-
-    public Employee(String email, String pwd, String name, String employeeNumber, Gender gender,
+    public Employee(String email, String pwd, String employeeName, String employeeNumber, Gender gender,
                    String phoneNumber, String joinTime, JoinType joinType, WorkType workType,
                    String contractStartTime, int dutiesId, int positionId, int teamId, int departmentId) {
         this.email = email;
         this.pwd = pwd;
-        this.name = name;
+        this.employeeName = employeeName;
         this.employeeNumber = employeeNumber;
         this.gender = gender;
         this.phoneNumber = phoneNumber;
@@ -83,5 +85,46 @@ public class Employee {
         this.positionId = positionId;
         this.teamId = teamId;
         this.departmentId = departmentId;
+    }
+
+    @Builder
+    public Employee(int id, String email, String pwd, String employeeName, String employeeNumber,
+                    Gender gender, String phoneNumber, String callNumber, String zipCode, String address,
+                    String assignedTask, String joinTime, JoinType joinType, String resignTime, YN resignYn,
+                    WorkType workType, String contractStartTime, String contractEndTime, int salary,
+                    YN absenceYn, String absenceContent, int dutiesId, int positionId, int teamId, int departmentId) {
+        this.id = id;
+        this.email = email;
+        this.pwd = pwd;
+        this.employeeName = employeeName;
+        this.employeeNumber = employeeNumber;
+        this.gender = gender;
+        this.phoneNumber = phoneNumber;
+        this.callNumber = callNumber;
+        this.zipCode = zipCode;
+        this.address = address;
+        this.assignedTask = assignedTask;
+        this.joinTime = joinTime;
+        this.joinType = joinType;
+        this.resignTime = resignTime;
+        this.resignYn = resignYn;
+        this.workType = workType;
+        this.contractStartTime = contractStartTime;
+        this.contractEndTime = contractEndTime;
+        this.salary = salary;
+        this.absenceYn = absenceYn;
+        this.absenceContent = absenceContent;
+        this.dutiesId = dutiesId;
+        this.positionId = positionId;
+        this.teamId = teamId;
+        this.departmentId = departmentId;
+    }
+
+    public void setResignTime(String resignTime) {
+        this.resignTime = resignTime;
+    }
+
+    public void setResignYn(YN resignYn) {
+        this.resignYn = resignYn;
     }
 }

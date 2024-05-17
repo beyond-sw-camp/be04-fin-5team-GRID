@@ -22,5 +22,4 @@ public class GridApplication {
   public BCryptPasswordEncoder bCryptPasswordEncoder() {
     return new BCryptPasswordEncoder();
   }
-
 }
