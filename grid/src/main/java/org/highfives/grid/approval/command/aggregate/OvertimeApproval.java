@@ -65,4 +65,8 @@ public class OvertimeApproval {
     public void setContent(String content) {
         this.content = content;
     }
+
+    public void setWriteTime(String writeTime) {
+        this.writeTime = writeTime;
+    }
 }

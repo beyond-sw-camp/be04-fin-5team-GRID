@@ -89,4 +89,8 @@ public class RWApproval {
     public void setPath(String path) {
         this.path = path;
     }
+
+    public void setWriteTime(String writeTime) {
+        this.writeTime = writeTime;
+    }
 }
