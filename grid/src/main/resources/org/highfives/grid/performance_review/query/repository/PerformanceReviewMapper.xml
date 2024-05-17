@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.highfives.grid.performance_review.query.repository.PerformanceReviewMapper">
+
+    <!--  평가 목록  -->
+    <resultMap id="performanceReviewResultMap" type="org.highfives.grid.performance_review.query.dto.PerformanceReviewDTO">
+        <id property="id" column="ID"/>
+        <result property="type" column="TYPE"/>
+        <result property="year" column="YEAR"/>
+        <result property="reviewName" column="REVIEW_NAME"/>
+        <result property="approvalStatus" column="APPROVAL_STATUS"/>
+        <result property="writeTime" column="WRITE_TIME"/>
+        <result property="approvalTime" column="APPROVAL_TIME"/>
+        <association property="writer" javaType="org.highfives.grid.performance_review.query.dto.WriterDTO">
+            <id property="id" column="WRITER_ID"/>
+            <result property="employeeName" column="WRITER_NAME"/>
+        </association>
+        <association property="approver" javaType="org.highfives.grid.performance_review.query.dto.ApproverDTO">
+            <id property="id" column="APPROVER_ID"/>
+            <result property="employeeName" column="APPROVER_NAME"/>
+        </association>
+    </resultMap>
+
+    <select id="selectReviewByWriterId" resultMap="performanceReviewResultMap" parameterType="int">
+        SELECT
+        A.id as 'ID'
+        , A.type as 'TYPE'
+        , A.year as 'YEAR'
+        , A.review_name as 'REVIEW_NAME'
+        , A.approval_status as 'APPROVAL_STATUS'
+        , writer.id as 'WRITER_ID'
+        , writer.employee_name as 'WRITER_NAME'
+        , A.write_time as 'WRITE_TIME'
+        , approver.id as 'APPROVER_ID'
+        , approver.employee_name as 'APPROVER_NAME'
+        , A.approval_time as 'APPROVAL_TIME'
+        FROM performance_review as A
+        JOIN (SELECT * FROM employee WHERE duties_id = 4) as writer
+        ON A.writer_id = writer.id
+        JOIN (SELECT * FROM employee WHERE duties_id = 3) as approver
+        ON A.approver_id = approver.id
+        WHERE A.writer_id = #{employeeId}
+    </select>
+</mapper>
