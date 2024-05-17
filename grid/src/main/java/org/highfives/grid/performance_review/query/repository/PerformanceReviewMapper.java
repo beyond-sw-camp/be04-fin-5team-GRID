@@ -8,4 +8,6 @@ import java.util.List;
 @Mapper
 public interface PerformanceReviewMapper {
     List<PerformanceReviewDTO> selectReviewByWriterId(int employeeId);
+
+    List<PerformanceReviewDTO> selectReviewByArroverId(int employeeId);
 }

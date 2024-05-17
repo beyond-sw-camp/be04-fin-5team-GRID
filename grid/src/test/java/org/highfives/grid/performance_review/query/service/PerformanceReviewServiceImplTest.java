@@ -24,4 +24,13 @@ class PerformanceReviewServiceImplTest {
 
         assertNotNull(findReview);
     }
+
+    @DisplayName("6번 직원의 작성한 평가항목 조회")
+    @Test
+    public void findReviewByApproverId() {
+        int id = 5;
+        List<PerformanceReviewDTO> findReview = performanceReviewService.findPerformanceReviewByApproverId(id);
+
+        assertNotNull(findReview);
+    }
 }

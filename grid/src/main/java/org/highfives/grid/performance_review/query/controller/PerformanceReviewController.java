@@ -25,6 +25,7 @@ public class PerformanceReviewController {
         this.performanceReviewService = performanceReviewService;
     }
 
+    // 팀원의 작성한 평가 목록 조회
     @GetMapping("member/{employeeId}")
     public ResponseEntity<ResponsePerformanceReviewVO> findPerformanceReviewByWriterId(@PathVariable int employeeId){
         List<PerformanceReviewDTO> findReview = performanceReviewService.findPerformanceReviewByWriterId(employeeId);
@@ -37,7 +38,21 @@ public class PerformanceReviewController {
                         .build();
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
 
+    // 팀장의 요청 받음 평가 목록 조회
+    @GetMapping("leader/{employeeId}")
+    public ResponseEntity<ResponsePerformanceReviewVO> findPerformanceReviewByApproverId(@PathVariable int employeeId){
+        List<PerformanceReviewDTO> findReview = performanceReviewService.findPerformanceReviewByApproverId(employeeId);
+
+        ResponsePerformanceReviewVO response =
+                new ResponsePerformanceReviewVO().builder()
+                        .statusCode(200)
+                        .message("평가 목록 조회 성공")
+                        .findReviewList(findReview)
+                        .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
 }

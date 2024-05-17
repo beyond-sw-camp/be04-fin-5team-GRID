@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface PerformanceReviewService {
     List<PerformanceReviewDTO> findPerformanceReviewByWriterId(int employeeId);
+
+    List<PerformanceReviewDTO> findPerformanceReviewByApproverId(int employeeId);
 }
