@@ -96,4 +96,19 @@ public class ApprovalController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+
+    @PostMapping("/overtime/{overtimeApprovalId}")
+    public ResponseEntity<ResApprovalVO> cancelOvertimeApproval(@PathVariable int overtimeApprovalId) {
+
+        OvertimeApprovalDTO result = approvalService.cancelOvertimeApproval(overtimeApprovalId);
+
+        ResApprovalVO response = ResApprovalVO.builder()
+                .statusCode(201)
+                .message("시간 외 근무 결재 취소 결재 생성 성공")
+                .href("")
+                .overtimeResult(result)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
 }

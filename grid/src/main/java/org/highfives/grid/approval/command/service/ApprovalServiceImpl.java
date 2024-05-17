@@ -148,4 +148,26 @@ public class ApprovalServiceImpl implements ApprovalService {
 
         return mapper.map(cancelApproval, BTApprovalDTO.class);
     }
+
+    @Override
+    public OvertimeApprovalDTO cancelOvertimeApproval(int overtimeApprovalId) {
+
+        OvertimeApproval overtimeApproval = oApprovalRepository.findById(overtimeApprovalId).orElseThrow();
+
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String now = LocalDateTime.now().format(dateFormat);
+
+        OvertimeApproval cancelApproval = OvertimeApproval.builder()
+                .startTime(overtimeApproval.getStartTime())
+                .endTime(overtimeApproval.getEndTime())
+                .content(overtimeApproval.getContent() + "\n취소")
+                .writeTime(now)
+                .cancelDocId(overtimeApprovalId)
+                .requesterId(overtimeApproval.getRequesterId())
+                .build();
+
+        oApprovalRepository.save(cancelApproval);
+
+        return mapper.map(cancelApproval, OvertimeApprovalDTO.class);
+    }
 }
