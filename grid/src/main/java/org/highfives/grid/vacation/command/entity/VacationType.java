@@ -6,7 +6,7 @@ import org.hibernate.annotations.DynamicInsert;
 
 @Entity
 @DynamicInsert
-@Table( name = "vacation_type")
+@Table(name = "vacation_type")
 @Getter
 @ToString
 @RequiredArgsConstructor

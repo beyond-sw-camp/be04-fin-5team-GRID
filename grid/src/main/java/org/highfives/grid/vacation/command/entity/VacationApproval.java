@@ -25,19 +25,19 @@ public class VacationApproval {
     @Column(nullable = false, name = "end_time")
     private String endTime;
 
-    @Column(nullable = false, name="approval_status")
+    @Column(nullable = false, name = "approval_status")
     private String approvalStatus;
 
-    @Column(nullable = false, name="info_id")
+    @Column(nullable = false, name = "info_id")
     private int infoId;
 
-    @Column(nullable = false, name="write_time")
+    @Column(nullable = false, name = "write_time")
     private String writeTime;
 
-    @Column(nullable = false, name="cancel_yn")
+    @Column(nullable = false, name = "cancel_yn")
     private String cancelYn;
 
-    @Column(nullable = false, name="requester_id")
+    @Column(nullable = false, name = "requester_id")
     private int requesterId;
 
     @Builder

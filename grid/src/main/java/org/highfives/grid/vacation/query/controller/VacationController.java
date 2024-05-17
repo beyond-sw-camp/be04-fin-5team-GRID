@@ -23,7 +23,7 @@ public class VacationController {
 
     @GetMapping("/all")
     public ResponseEntity<List<VacationInfoDTO>> getAllVacations() {
-        List<VacationInfoDTO> vacations =  vacationService.getAllVacations();
+        List<VacationInfoDTO> vacations = vacationService.getAllVacations();
         return ResponseEntity.status(HttpStatus.OK).body(vacations);
     }
 
@@ -46,7 +46,7 @@ public class VacationController {
     }
 
     @GetMapping("/history/search")
-    public ResponseEntity<List<VacationHistoryDTO>> searchVacationHistories(@RequestParam("typeId") int typeId, @RequestParam("changeTypeId") int changeTypeId, @RequestParam("employeeId") int employeeId ) {
+    public ResponseEntity<List<VacationHistoryDTO>> searchVacationHistories(@RequestParam("typeId") int typeId, @RequestParam("changeTypeId") int changeTypeId, @RequestParam("employeeId") int employeeId) {
         List<VacationHistoryDTO> histories = vacationService.searchVacationHistory(typeId, changeTypeId, employeeId);
         return ResponseEntity.status(HttpStatus.OK).body(histories);
 

@@ -16,7 +16,7 @@ public class VacationChangeType {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(nullable = false, name="name")
+    @Column(nullable = false, name = "name")
     private String name;
 
     @Builder

@@ -7,26 +7,18 @@ import org.highfives.grid.user.repository.UserRepository;
 import org.highfives.grid.user.service.UserService;
 import org.highfives.grid.vacation.command.entity.VacationPolicy;
 import org.highfives.grid.vacation.command.entity.VacationType;
-import org.highfives.grid.vacation.command.repository.VacationHistoryRepository;
 import org.highfives.grid.vacation.command.repository.VacationInfoRepository;
 import org.highfives.grid.vacation.command.repository.VacationPolicyRepository;
 import org.highfives.grid.vacation.command.repository.VacationTypeRepository;
-import org.highfives.grid.vacation.command.service.VacationService;
 import org.highfives.grid.vacation.command.vo.GiveVacation;
 import org.highfives.grid.vacation.command.vo.ModifyPolicy;
 import org.highfives.grid.vacation.command.vo.RegistPolicy;
 import org.highfives.grid.vacation.command.vo.RegistVacationType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.Period;
-import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootTest
@@ -34,23 +26,19 @@ class VacationServiceTest {
 
     private VacationPolicyRepository vacationPolicyRepository;
     private VacationInfoRepository vacationInfoRepository;
-    private VacationHistoryRepository vacationHistoryRepository;
     private VacationTypeRepository vacationTypeRepository;
     private VacationService vacationService;
     private UserRepository userRepository;
     private UserService userService;
-    private ModelMapper modelMapper;
 
     @Autowired
-    public VacationServiceTest(VacationPolicyRepository vacationPolicyRepository, VacationInfoRepository vacationInfoRepository, VacationHistoryRepository vacationHistoryRepository, VacationTypeRepository vacationTypeRepository, VacationService vacationService, UserRepository userRepository, UserService userService, ModelMapper modelMapper) {
+    public VacationServiceTest(VacationPolicyRepository vacationPolicyRepository, VacationInfoRepository vacationInfoRepository, VacationTypeRepository vacationTypeRepository, VacationService vacationService, UserRepository userRepository, UserService userService) {
         this.vacationPolicyRepository = vacationPolicyRepository;
         this.vacationInfoRepository = vacationInfoRepository;
-        this.vacationHistoryRepository = vacationHistoryRepository;
         this.vacationTypeRepository = vacationTypeRepository;
         this.vacationService = vacationService;
         this.userRepository = userRepository;
         this.userService = userService;
-        this.modelMapper = modelMapper;
     }
 
     @Test
@@ -134,20 +122,14 @@ class VacationServiceTest {
                 .build();
         userRepository.save(employee);
         int size = userService.getAllUserinfo().size();
-        System.out.println("1111111111");
-        System.out.println(size);
-        System.out.println("1111111111");
-        int id = userService.getAllUserinfo().get(size-1).getId();
-        System.out.println("2222222222");
-        System.out.println(id);
-        System.out.println("2222222222");
+        int id = userService.getAllUserinfo().get(size - 1).getId();
 
         //when
         vacationService.giveAnnualVacationBeforeYear();
         System.out.println(vacationInfoRepository.findAll().toString());
 
         //then
-        Assertions.assertThat(vacationInfoRepository.findByEmployeeIdAndTypeId(id,2).getVacationNum()).isEqualTo(1);
+        Assertions.assertThat(vacationInfoRepository.findByEmployeeIdAndTypeId(id, 2).getVacationNum()).isEqualTo(1);
 
     }
 
@@ -183,13 +165,13 @@ class VacationServiceTest {
                 .build();
         userRepository.save(employee);
         int size = userService.getAllUserinfo().size();
-        int id = userService.getAllUserinfo().get(size-1).getId();
+        int id = userService.getAllUserinfo().get(size - 1).getId();
 
         //when
         vacationService.giveAnnualVacationAfterYear();
 
         //then
-        Assertions.assertThat(vacationInfoRepository.findByEmployeeIdAndTypeId(id,1).getVacationNum()).isEqualTo(16);
+        Assertions.assertThat(vacationInfoRepository.findByEmployeeIdAndTypeId(id, 1).getVacationNum()).isEqualTo(16);
     }
 
     @Test
@@ -224,13 +206,13 @@ class VacationServiceTest {
                 .build();
         userRepository.save(employee);
         int size = userService.getAllUserinfo().size();
-        int id = userService.getAllUserinfo().get(size-1).getId();
+        int id = userService.getAllUserinfo().get(size - 1).getId();
 
         //when
         vacationService.giveRegularVacation();
 
         //then
-        Assertions.assertThat(vacationInfoRepository.findByEmployeeIdAndTypeId(id,4).getVacationNum()).isEqualTo(4);
+        Assertions.assertThat(vacationInfoRepository.findByEmployeeIdAndTypeId(id, 4).getVacationNum()).isEqualTo(4);
     }
 
     @Test
@@ -265,13 +247,13 @@ class VacationServiceTest {
                 .build();
         userRepository.save(employee);
         int size = userService.getAllUserinfo().size();
-        int id = userService.getAllUserinfo().get(size-1).getId();
+        int id = userService.getAllUserinfo().get(size - 1).getId();
 
         //when
         vacationService.giveHealthVacation();
 
         //then
-        Assertions.assertThat(vacationInfoRepository.findByEmployeeIdAndTypeId(id,3).getVacationNum()).isEqualTo(1);
+        Assertions.assertThat(vacationInfoRepository.findByEmployeeIdAndTypeId(id, 3).getVacationNum()).isEqualTo(1);
     }
 
     @Test
@@ -289,7 +271,7 @@ class VacationServiceTest {
         vacationService.giveVacationByManager(giveVacation);
 
         //then
-        Assertions.assertThat(vacationInfoRepository.findByEmployeeIdAndTypeId(1,2).getVacationNum()).isEqualTo(100);
+        Assertions.assertThat(vacationInfoRepository.findByEmployeeIdAndTypeId(1, 2).getVacationNum()).isEqualTo(100);
 
     }
 
@@ -325,10 +307,10 @@ class VacationServiceTest {
         int employeeId = 1;
 
         //when
-        vacationService.plusVacationNum(1,5);
+        vacationService.plusVacationNum(1, 5);
 
         //then
-        Assertions.assertThat(vacationInfoRepository.findByEmployeeIdAndTypeId(1,1).getVacationNum()).isEqualTo(15.5);
+        Assertions.assertThat(vacationInfoRepository.findByEmployeeIdAndTypeId(1, 1).getVacationNum()).isEqualTo(15.5);
     }
 
     @Test
@@ -340,9 +322,9 @@ class VacationServiceTest {
         int employeeId = 1;
 
         //when
-        vacationService.minusVacationNum(1,5);
+        vacationService.minusVacationNum(1, 5);
 
         //then
-        Assertions.assertThat(vacationInfoRepository.findByEmployeeIdAndTypeId(1,1).getVacationNum()).isEqualTo(14.5);
+        Assertions.assertThat(vacationInfoRepository.findByEmployeeIdAndTypeId(1, 1).getVacationNum()).isEqualTo(14.5);
     }
 }

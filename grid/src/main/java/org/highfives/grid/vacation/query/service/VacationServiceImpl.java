@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 @Service(value = "VacationQueryService")
 @Slf4j
-public class VacationServiceImpl implements VacationService{
+public class VacationServiceImpl implements VacationService {
     private VacationMapper vacationMapper;
     private ModelMapper modelMapper;
 
