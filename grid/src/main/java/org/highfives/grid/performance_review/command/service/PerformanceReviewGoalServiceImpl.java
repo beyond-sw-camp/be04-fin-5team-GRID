@@ -63,9 +63,9 @@ public class PerformanceReviewGoalServiceImpl implements PerformanceReviewGoalSe
         PerformanceReviewGoal performanceReviewGoal = performanceReviewGoalRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("해당 ID의 목표를 찾을 수 없습니다."));
 
-        // 상신, 승인 상태가 아닐 때 변경
-        if(!performanceReviewGoal.getApprovalStatus().equals(String.valueOf(GoalApprovalStatus.S))
-            && !performanceReviewGoal.getApprovalStatus().equals(String.valueOf(GoalApprovalStatus.A))
+        // 작성 중, 반려 상태 일 때 변경
+        if(performanceReviewGoal.getApprovalStatus().equals(String.valueOf(GoalApprovalStatus.IP))
+            || performanceReviewGoal.getApprovalStatus().equals(String.valueOf(GoalApprovalStatus.D))
         ){
             LocalDateTime currentTime = LocalDateTime.now();
             DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -79,7 +79,7 @@ public class PerformanceReviewGoalServiceImpl implements PerformanceReviewGoalSe
 
             return modifyGoalDTO;
         }  else {
-            throw new RuntimeException("목표의 현재 상태가 상신 또는 승인 상태입니다.");
+            throw new RuntimeException("목표의 현재 상태가 작성 중, 반려 상태가 아닙니다.");
         }
     }
 
@@ -90,9 +90,9 @@ public class PerformanceReviewGoalServiceImpl implements PerformanceReviewGoalSe
         PerformanceReviewGoal performanceReviewGoal = performanceReviewGoalRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("해당 ID의 목표를 찾을 수 없습니다."));
 
-        // 상신, 승인 상태가 아닐 때 변경
-        if(!performanceReviewGoal.getApprovalStatus().equals(String.valueOf(GoalApprovalStatus.S))
-                && !performanceReviewGoal.getApprovalStatus().equals(String.valueOf(GoalApprovalStatus.A))
+        // 작성 중, 반려 상태 일 때 변경
+        if(performanceReviewGoal.getApprovalStatus().equals(String.valueOf(GoalApprovalStatus.IP))
+                || performanceReviewGoal.getApprovalStatus().equals(String.valueOf(GoalApprovalStatus.D))
         ){
             LocalDateTime currentTime = LocalDateTime.now();
             DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -106,7 +106,7 @@ public class PerformanceReviewGoalServiceImpl implements PerformanceReviewGoalSe
 
             return modifyGoalDTO;
         }  else {
-            throw new RuntimeException("목표의 현재 상태가 상신 또는 승인 상태입니다.");
+            throw new RuntimeException("목표의 현재 상태가 작성 중, 반려 상태가 아닙니다.");
         }
     }
 
