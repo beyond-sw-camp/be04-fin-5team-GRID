@@ -9,7 +9,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class RwApprovalDTO {
+public class RWApprovalDTO {
 
     private int id;
 

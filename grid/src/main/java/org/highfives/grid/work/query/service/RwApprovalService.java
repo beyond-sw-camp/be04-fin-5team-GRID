@@ -1,12 +1,12 @@
 package org.highfives.grid.work.query.service;
 
-import org.highfives.grid.approval.common.dto.RwApprovalDTO;
+import org.highfives.grid.approval.common.dto.RWApprovalDTO;
 
 import java.util.List;
 
 public interface RwApprovalService {
 
-    List<RwApprovalDTO> findAllRw();
+    List<RWApprovalDTO> findAllRw();
 
-    List<RwApprovalDTO> findRwByEmployeeId(int employeeId);
+    List<RWApprovalDTO> findRwByEmployeeId(int employeeId);
 }

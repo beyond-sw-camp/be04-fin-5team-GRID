@@ -9,7 +9,7 @@ import org.highfives.grid.approval.command.vo.OvertimeApprovalVO;
 import org.highfives.grid.approval.command.vo.RWApprovalVO;
 import org.highfives.grid.approval.common.dto.BTApprovalDTO;
 import org.highfives.grid.approval.common.dto.OvertimeApprovalDTO;
-import org.highfives.grid.approval.common.dto.RwApprovalDTO;
+import org.highfives.grid.approval.common.dto.RWApprovalDTO;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -95,7 +95,7 @@ public class ApprovalServiceImpl implements ApprovalService {
     }
 
     @Override
-    public RwApprovalDTO addRWApproval(RWApprovalVO rwApprovalVO) {
+    public RWApprovalDTO addRWApproval(RWApprovalVO rwApprovalVO) {
 
         String startTime = rwApprovalVO.getStartTime();
         String endTime = rwApprovalVO.getEndTime();
@@ -122,7 +122,7 @@ public class ApprovalServiceImpl implements ApprovalService {
 
         rwApprovalRepository.save(rwApproval);
 
-        return mapper.map(rwApproval, RwApprovalDTO.class);
+        return mapper.map(rwApproval, RWApprovalDTO.class);
     }
 
     @Override
@@ -160,7 +160,7 @@ public class ApprovalServiceImpl implements ApprovalService {
     }
 
     @Override
-    public RwApprovalDTO modifyRWApproval(RWApprovalVO rwApprovalVO, int rwApprovalId) {
+    public RWApprovalDTO modifyRWApproval(RWApprovalVO rwApprovalVO, int rwApprovalId) {
 
         RWApproval rwApproval = rwApprovalRepository.findById(rwApprovalId).orElseThrow();
 
@@ -175,7 +175,7 @@ public class ApprovalServiceImpl implements ApprovalService {
 
         rwApprovalRepository.save(rwApproval);
 
-        return mapper.map(rwApproval, RwApprovalDTO.class);
+        return mapper.map(rwApproval, RWApprovalDTO.class);
     }
 
     @Override
@@ -190,7 +190,7 @@ public class ApprovalServiceImpl implements ApprovalService {
         BTApproval cancelApproval = BTApproval.builder()
                 .startTime(btApproval.getStartTime())
                 .endTime(btApproval.getEndTime())
-                .content(btApproval.getContent() + "\n취소")
+                .content(btApproval.getContent() + " \n취소")
                 .destination(btApproval.getDestination())
                 .writeTime(now)
                 .requesterId(btApproval.getRequesterId())
@@ -213,7 +213,7 @@ public class ApprovalServiceImpl implements ApprovalService {
         OvertimeApproval cancelApproval = OvertimeApproval.builder()
                 .startTime(overtimeApproval.getStartTime())
                 .endTime(overtimeApproval.getEndTime())
-                .content(overtimeApproval.getContent() + "\n취소")
+                .content(overtimeApproval.getContent() + " \n취소")
                 .writeTime(now)
                 .cancelDocId(overtimeApprovalId)
                 .requesterId(overtimeApproval.getRequesterId())
@@ -222,5 +222,30 @@ public class ApprovalServiceImpl implements ApprovalService {
         oApprovalRepository.save(cancelApproval);
 
         return mapper.map(cancelApproval, OvertimeApprovalDTO.class);
+    }
+
+    @Override
+    public RWApprovalDTO cancelRWApproval(int rwApprovalId) {
+
+        RWApproval rwApproval = rwApprovalRepository.findById(rwApprovalId).orElseThrow();
+
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String now = LocalDateTime.now().format(dateFormat);
+
+        RWApproval cancelApproval = RWApproval.builder()
+                .startTime(rwApproval.getStartTime())
+                .endTime(rwApproval.getEndTime())
+                .content(rwApproval.getContent() + " \n취소")
+                .writeTime(now)
+                .requesterId(rwApproval.getRequesterId())
+                .originName(rwApproval.getOriginName())
+                .renameName(rwApproval.getRenameName())
+                .path(rwApproval.getPath())
+                .cancelDocId(rwApprovalId)
+                .build();
+
+        rwApprovalRepository.save(cancelApproval);
+
+        return mapper.map(rwApproval, RWApprovalDTO.class);
     }
 }
