@@ -3,9 +3,16 @@ package org.highfives.grid.user.command.repository;
 import org.highfives.grid.user.command.aggregate.RefreshToken;
 import org.springframework.data.repository.CrudRepository;
 
-public interface TokenReissueRepository extends CrudRepository<RefreshToken, String> {
+import java.util.Optional;
 
-    void deleteByRefreshToken(String token);
+public interface TokenReissueRepository extends CrudRepository<RefreshToken, Integer> {
 
-    Boolean existsByRefreshToken(String refreshToken);
+    Optional<RefreshToken> findByAccessToken(String accessToken);
+
+    @Override
+    Optional<RefreshToken> findById(Integer integer);
+
+    void deleteById(int s);
+
 }
+

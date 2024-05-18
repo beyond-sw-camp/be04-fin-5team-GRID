@@ -3,6 +3,8 @@ package org.highfives.grid.user.command.service;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.SecurityException;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.highfives.grid.security.JwtUtil;
 import org.highfives.grid.user.command.aggregate.RefreshToken;
 import org.highfives.grid.user.command.repository.TokenReissueRepository;
@@ -12,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
+@Slf4j
 public class TokenReissueServiceImpl implements TokenReissueService{
 
     private final JwtUtil jwtUtil;
@@ -55,6 +58,15 @@ public class TokenReissueServiceImpl implements TokenReissueService{
     }
 
     @Override
+    @Transactional
+    public void deleteOldToken(String accessToken) {
+
+        tokenReissueRepository.findById(jwtUtil.getUserId(accessToken))
+                .ifPresent(tokenReissueRepository::delete);
+    }
+
+    @Override
+    @Transactional
     public HttpServletResponse reissueToken(String refresh, HttpServletResponse response) {
 
         int id = jwtUtil.getUserId(refresh);
@@ -71,7 +83,7 @@ public class TokenReissueServiceImpl implements TokenReissueService{
         String newRefresh = jwtUtil.createJwt(claims, "refresh");
 
         // 생성한 refresh 토큰 redis에 저장
-        RefreshToken redisToken = new RefreshToken(newRefresh, id);
+        RefreshToken redisToken = new RefreshToken(id, newRefresh);
         tokenReissueRepository.save(redisToken);
 
         //response

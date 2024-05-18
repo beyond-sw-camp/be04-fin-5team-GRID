@@ -60,8 +60,8 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
                                             Authentication auth) throws IOException, ServletException {
 
         JwtUtil jwtUtil = new JwtUtil(environment.getProperty("application.security.jwt.secretKey"),
-                environment.getProperty("application.security.jwt.secretKey"),
-                environment.getProperty("application.security.jwt.secretKey"),
+                environment.getProperty("application.security.jwt.expiration_time"),
+                environment.getProperty("application.security.jwt.refresh-token.expiration_time"),
                 null, environment);
 
         // Authentication 객체로부터 유저 정보를 읽어와 Claims 에 담는 부분
@@ -77,7 +77,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         String refreshToken = jwtUtil.createJwt(claims, "refresh");
 
         // 생성한 refresh 토큰 redis에 저장
-        RefreshToken redisToken = new RefreshToken(refreshToken, userId);
+        RefreshToken redisToken = new RefreshToken(userId, refreshToken);
         tokenReissueRepository.save(redisToken);
 
         // 생성한 토큰 헤더에 저장

@@ -35,6 +35,7 @@ public class TokenReissueController {
         }
         tokenReissueService.checkValidation(refresh);
         tokenReissueService.checkRefreshToken(refresh);
+        tokenReissueService.deleteOldToken(refresh);
         response = tokenReissueService.reissueToken(refresh, response);
 
         return new ResponseEntity<>(HttpStatus.OK);

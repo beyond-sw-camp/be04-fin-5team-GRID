@@ -2,6 +2,7 @@ package org.highfives.grid.config;
 
 import jakarta.servlet.Filter;
 import org.highfives.grid.security.AuthenticationFilter;
+import org.highfives.grid.security.GridLogoutFilter;
 import org.highfives.grid.security.JwtFilter;
 import org.highfives.grid.security.JwtUtil;
 import org.highfives.grid.user.command.repository.TokenReissueRepository;
@@ -19,6 +20,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
@@ -69,6 +71,7 @@ public class WebSecurityConfig {
 
         http.addFilter(getAuthenticationFilter(authenticationManager));
         http.addFilterBefore(new JwtFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new GridLogoutFilter(tokenReissueRepository, jwtUtil), LogoutFilter.class);
 
         return http.build();
     }

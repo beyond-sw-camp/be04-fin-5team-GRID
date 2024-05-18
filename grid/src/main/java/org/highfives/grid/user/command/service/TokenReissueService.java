@@ -9,4 +9,6 @@ public interface TokenReissueService {
     ResponseEntity<?> checkRefreshToken(String refresh);
 
     HttpServletResponse reissueToken(String refresh, HttpServletResponse response);
+
+    void deleteOldToken(String accessToken);
 }

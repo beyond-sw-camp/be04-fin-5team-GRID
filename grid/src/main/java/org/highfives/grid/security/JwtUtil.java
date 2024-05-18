@@ -161,10 +161,12 @@ public class JwtUtil {
 
         if( category.equals("refresh")){
             expiration = refreshTokenExpTime;
+            System.out.println("expiration refresh = " + expiration);
             claims.put("category", "refresh");
         }
         else if (category.equals("access")){
             expiration = accessTokenExpTime;
+            System.out.println("expiration access = " + expiration);
             claims.put("category", "access");
         } else {
             throw new RuntimeException("Invalid token category");
@@ -184,6 +186,7 @@ public class JwtUtil {
         Cookie cookie = new Cookie(key, value);
         cookie.setMaxAge(24*60*60);
         cookie.setHttpOnly(true);
+        cookie.setPath("/");
 
         return cookie;
     }

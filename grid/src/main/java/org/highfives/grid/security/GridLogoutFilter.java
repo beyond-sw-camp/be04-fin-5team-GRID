@@ -1,5 +1,6 @@
 package org.highfives.grid.security;
 
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
@@ -7,10 +8,12 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.highfives.grid.user.command.aggregate.RefreshToken;
 import org.highfives.grid.user.command.repository.TokenReissueRepository;
 import org.springframework.web.filter.GenericFilterBean;
 
 import java.io.IOException;
+import java.util.Optional;
 
 public class GridLogoutFilter extends GenericFilterBean {
 
@@ -29,20 +32,24 @@ public class GridLogoutFilter extends GenericFilterBean {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
 
+        System.out.println(" 동작함?? " );
         //요청 경로가 logout이고, 요청 메소드가 POST인 경우 (true)가 아니면, 필터체인을 실행하지 않고 다음 로그아웃 로직 실행
         if(!checkPathMethod(request)){
             filterChain.doFilter(request, response);
             return;
         }
 
+        System.out.println(" 동작함??2 " );
         String refreshToken = getRefreshToken(request);
 
         if(!validationCheck(refreshToken, response)) return;
-        if(isRefresh(refreshToken, response)) return;
-        if(isTokenSaved(refreshToken, response)) return;
-
+        System.out.println(" 동작함??3 " );
+        if(!isRefresh(refreshToken, response)) return;
+        System.out.println(" 동작함??4 " );
+        if(!isTokenSaved(refreshToken, response)) return;
+        System.out.println(" 동작함??5 " );
         proceedLogout(refreshToken, response);
-
+        System.out.println(" 동작함??6 " );
     }
 
     private boolean checkPathMethod(HttpServletRequest request) {
@@ -64,6 +71,7 @@ public class GridLogoutFilter extends GenericFilterBean {
         for (Cookie cookie : cookies) {
             if (cookie.getName().equals("refresh")) {
                 refreshToken = cookie.getValue();
+
             }
         }
 
@@ -73,7 +81,7 @@ public class GridLogoutFilter extends GenericFilterBean {
     private boolean validationCheck(String refreshToken, HttpServletResponse response) {
         if(!jwtUtil.validateToken(refreshToken)) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-
+            System.out.println("Validation check failed");
             return false;   // 잘못된 토큰
         }
         return true;        // 정상적인 토큰
@@ -84,7 +92,7 @@ public class GridLogoutFilter extends GenericFilterBean {
         String category = jwtUtil.getCategory(refreshToken);
         if (!category.equals("refresh")) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-
+            System.out.println("Not a refresh token");
             return false;
         }
         return true;
@@ -92,10 +100,13 @@ public class GridLogoutFilter extends GenericFilterBean {
 
     private boolean isTokenSaved(String refreshToken, HttpServletResponse response) {
 
-        Boolean isExist = tokenReissueRepository.existsByRefreshToken(refreshToken);
+        int userId = jwtUtil.getUserId(refreshToken);
+
+        boolean isExist = tokenReissueRepository.existsById(userId);
+
         if (!isExist) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-
+            System.out.println("Token not saved in repository");
             return false;
         }
         return isExist;
@@ -103,7 +114,16 @@ public class GridLogoutFilter extends GenericFilterBean {
 
     private void proceedLogout(String refreshToken, HttpServletResponse response) {
 
-        tokenReissueRepository.deleteByRefreshToken(refreshToken);
+        int id = jwtUtil.getUserId(refreshToken);
+        //refresh 토큰이 있는지 조회
+        Optional<RefreshToken> findToken = tokenReissueRepository.findById(id);
+        System.out.println("id = " + id);
+        System.out.println("findToken = " + findToken);
+
+        if(findToken.isPresent()){
+            tokenReissueRepository.deleteById(findToken.get().getId());
+        }
+        else System.out.println("empty");
 
         //Refresh 토큰 Cookie 값 0
         Cookie cookie = new Cookie("refresh", null);
