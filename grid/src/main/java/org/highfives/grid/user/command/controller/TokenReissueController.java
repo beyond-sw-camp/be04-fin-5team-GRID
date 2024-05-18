@@ -20,7 +20,7 @@ public class TokenReissueController {
         this.tokenReissueService = tokenReissueService;
     }
 
-    @PostMapping("/reissue")
+    @PostMapping("/tokens/re-auth")
     public ResponseEntity<?> reissue(HttpServletRequest request, HttpServletResponse response) {
 
         //get refresh token
