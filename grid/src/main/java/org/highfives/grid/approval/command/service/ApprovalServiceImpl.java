@@ -4,12 +4,15 @@ import org.highfives.grid.approval.command.aggregate.*;
 import org.highfives.grid.approval.command.repository.BTApprovalRepository;
 import org.highfives.grid.approval.command.repository.OApprovalRepository;
 import org.highfives.grid.approval.command.repository.RWApprovalRepository;
+import org.highfives.grid.approval.command.repository.VApprovalRepository;
 import org.highfives.grid.approval.command.vo.BTApprovalVO;
 import org.highfives.grid.approval.command.vo.OvertimeApprovalVO;
 import org.highfives.grid.approval.command.vo.RWApprovalVO;
+import org.highfives.grid.approval.command.vo.VacationApprovalVO;
 import org.highfives.grid.approval.common.dto.BTApprovalDTO;
 import org.highfives.grid.approval.common.dto.OvertimeApprovalDTO;
 import org.highfives.grid.approval.common.dto.RWApprovalDTO;
+import org.highfives.grid.approval.common.dto.VacationApprovalDTO;
 import org.highfives.grid.approval_chain.command.service.ApprovalChainService;
 import org.highfives.grid.approval_chain.command.vo.ReqAddApprovalChainVO;
 import org.modelmapper.ModelMapper;
@@ -28,14 +31,16 @@ public class ApprovalServiceImpl implements ApprovalService {
     private final BTApprovalRepository btApprovalRepository;
     private final OApprovalRepository oApprovalRepository;
     private final RWApprovalRepository rwApprovalRepository;
+    private final VApprovalRepository vApprovalRepository;
     private final ApprovalChainService approvalChainService;
 
     @Autowired
-    public ApprovalServiceImpl(ModelMapper mapper, BTApprovalRepository btApprovalRepository, OApprovalRepository oApprovalRepository, RWApprovalRepository rwApprovalRepository, ApprovalChainService approvalChainService) {
+    public ApprovalServiceImpl(ModelMapper mapper, BTApprovalRepository btApprovalRepository, OApprovalRepository oApprovalRepository, RWApprovalRepository rwApprovalRepository, VApprovalRepository vApprovalRepository, ApprovalChainService approvalChainService) {
         this.mapper = mapper;
         this.btApprovalRepository = btApprovalRepository;
         this.oApprovalRepository = oApprovalRepository;
         this.rwApprovalRepository = rwApprovalRepository;
+        this.vApprovalRepository = vApprovalRepository;
         this.approvalChainService = approvalChainService;
     }
 
@@ -124,6 +129,26 @@ public class ApprovalServiceImpl implements ApprovalService {
         approvalChainService.addRWApprovalChain(request);
 
         return mapper.map(rwApproval, RWApprovalDTO.class);
+    }
+
+    @Override
+    public VacationApprovalDTO addVacationApproval(VacationApprovalVO vacationApprovalVO) {
+
+        VacationApproval vacationApproval = VacationApproval.builder()
+                .startTime(vacationApprovalVO.getStartTime())
+                .endTime(vacationApprovalVO.getEndTime())
+                .content(vacationApprovalVO.getContent())
+                .writeTime(LocalDateTime.now().format(dateFormat))
+                .requesterId(vacationApprovalVO.getRequesterId())
+                .infoId(vacationApprovalVO.getInfoId())
+                .build();
+
+        vApprovalRepository.save(vacationApproval);
+
+        ReqAddApprovalChainVO request = new ReqAddApprovalChainVO(4, vacationApproval.getId(), vacationApprovalVO.getRequesterId());
+        approvalChainService.addVApprovalChain(request);
+
+        return mapper.map(vacationApproval, VacationApprovalDTO.class);
     }
 
     @Override

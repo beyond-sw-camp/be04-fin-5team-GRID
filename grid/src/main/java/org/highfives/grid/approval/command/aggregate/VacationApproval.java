@@ -1,10 +1,7 @@
 package org.highfives.grid.approval.command.aggregate;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -42,6 +39,22 @@ public class VacationApproval {
     @Column(name = "cancel_document_id")
     private int cancelDocId;
 
+    @Column(name = "requester_id")
+    private int requesterId;
+
     @Column(name = "info_id")
     private int infoId;
+
+    @Builder
+    public VacationApproval(String startTime, String endTime, String content, String writeTime, int cancelDocId, int requesterId, int infoId) {
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.content = content;
+        this.approvalStatus = ApprovalStatus.N;
+        this.writeTime = writeTime;
+        this.cancelYN = YN.N;
+        this.cancelDocId = cancelDocId;
+        this.requesterId = requesterId;
+        this.infoId = infoId;
+    }
 }

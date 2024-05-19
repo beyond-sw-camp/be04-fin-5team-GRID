@@ -1,13 +1,11 @@
 package org.highfives.grid.approval.command.controller;
 
 import org.highfives.grid.approval.command.service.ApprovalService;
-import org.highfives.grid.approval.command.vo.BTApprovalVO;
-import org.highfives.grid.approval.command.vo.OvertimeApprovalVO;
-import org.highfives.grid.approval.command.vo.RWApprovalVO;
-import org.highfives.grid.approval.command.vo.ResApprovalVO;
+import org.highfives.grid.approval.command.vo.*;
 import org.highfives.grid.approval.common.dto.BTApprovalDTO;
 import org.highfives.grid.approval.common.dto.OvertimeApprovalDTO;
 import org.highfives.grid.approval.common.dto.RWApprovalDTO;
+import org.highfives.grid.approval.common.dto.VacationApprovalDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -64,6 +62,21 @@ public class ApprovalController {
                 .message("단축 근무 결재 생성 성공")
                 .href("")
                 .rwResult(result)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PostMapping("/vacation")
+    public ResponseEntity<ResApprovalVO> addVacationApproval(@RequestBody VacationApprovalVO vacationApprovalVO) {
+
+        VacationApprovalDTO result = approvalService.addVacationApproval(vacationApprovalVO);
+
+        ResApprovalVO response = ResApprovalVO.builder()
+                .statusCode(201)
+                .message("휴가 결재 생성 성공")
+                .href("")
+                .vacationResult(result)
                 .build();
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
