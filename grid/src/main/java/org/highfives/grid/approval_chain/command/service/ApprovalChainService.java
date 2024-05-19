@@ -16,4 +16,5 @@ public interface ApprovalChainService {
     List<RWApprovalChainDTO> addRWApprovalChain(ReqAddApprovalChainVO rwChainVO);
     List<VApprovalChainDTO> addVApprovalChain(ReqAddApprovalChainVO vacationChainVO);
     BTApprovalChainDTO addBTApprovalComment(CommentVO commentVO);
+    OApprovalChainDTO addOApprovalComment(CommentVO commentVO);
 }

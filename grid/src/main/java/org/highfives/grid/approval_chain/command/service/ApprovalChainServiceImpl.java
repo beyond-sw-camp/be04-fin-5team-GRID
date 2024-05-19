@@ -141,4 +141,18 @@ public class ApprovalChainServiceImpl implements ApprovalChainService{
 
         return mapper.map(btApprovalChain, BTApprovalChainDTO.class);
     }
+
+    @Override
+    public OApprovalChainDTO addOApprovalComment(CommentVO commentVO) {
+
+        OApprovalChain oApprovalChain = oApprovalChainRepository.findById(commentVO.getChainId()).orElseThrow();
+
+        oApprovalChain.setComment(commentVO.getComment());
+
+        oApprovalChainRepository.save(oApprovalChain);
+
+        return mapper.map(oApprovalChain, OApprovalChainDTO.class);
+    }
+
+
 }

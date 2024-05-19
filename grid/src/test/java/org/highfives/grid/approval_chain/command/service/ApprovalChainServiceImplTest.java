@@ -36,4 +36,15 @@ class ApprovalChainServiceImplTest {
                 () -> approvalChainService.addBTApprovalComment(comment)
         );
     }
+
+    @DisplayName("시간 외 근무 결재 댓글 생성")
+    @ParameterizedTest
+    @MethodSource("comment")
+    @Transactional
+    void addOApprovalComment(CommentVO comment) {
+
+        Assertions.assertDoesNotThrow(
+                () -> approvalChainService.addOApprovalComment(comment)
+        );
+    }
 }
