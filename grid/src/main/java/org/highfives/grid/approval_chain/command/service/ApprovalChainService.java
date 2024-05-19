@@ -1,5 +1,6 @@
 package org.highfives.grid.approval_chain.command.service;
 
+import org.highfives.grid.approval.command.vo.CommentVO;
 import org.highfives.grid.approval_chain.command.vo.ReqAddApprovalChainVO;
 import org.highfives.grid.approval_chain.common.dto.BTApprovalChainDTO;
 import org.highfives.grid.approval_chain.common.dto.OApprovalChainDTO;
@@ -14,4 +15,5 @@ public interface ApprovalChainService {
     List<OApprovalChainDTO> addOApprovalChain(ReqAddApprovalChainVO overtimeChainVO);
     List<RWApprovalChainDTO> addRWApprovalChain(ReqAddApprovalChainVO rwChainVO);
     List<VApprovalChainDTO> addVApprovalChain(ReqAddApprovalChainVO vacationChainVO);
+    BTApprovalChainDTO addBTApprovalComment(CommentVO commentVO);
 }

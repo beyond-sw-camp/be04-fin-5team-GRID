@@ -1,5 +1,6 @@
 package org.highfives.grid.approval_chain.command.service;
 
+import org.highfives.grid.approval.command.vo.CommentVO;
 import org.highfives.grid.approval_chain.command.aggregate.*;
 import org.highfives.grid.approval_chain.command.repository.BTApprovalChainRepository;
 import org.highfives.grid.approval_chain.command.repository.OApprovalChainRepository;
@@ -127,5 +128,17 @@ public class ApprovalChainServiceImpl implements ApprovalChainService{
         }
 
         return vChainDTOList;
+    }
+
+    @Override
+    public BTApprovalChainDTO addBTApprovalComment(CommentVO commentVO) {
+
+        BTApprovalChain btApprovalChain = btApprovalChainRepository.findById(commentVO.getChainId()).orElseThrow();
+
+        btApprovalChain.setComment(commentVO.getComment());
+
+        btApprovalChainRepository.save(btApprovalChain);
+
+        return mapper.map(btApprovalChain, BTApprovalChainDTO.class);
     }
 }
