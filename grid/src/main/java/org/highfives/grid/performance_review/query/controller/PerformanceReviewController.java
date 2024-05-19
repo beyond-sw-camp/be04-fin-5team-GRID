@@ -36,6 +36,7 @@ public class PerformanceReviewController {
                 new ResponsePerformanceReviewVO().builder()
                         .statusCode(200)
                         .message("평가 목록 조회 성공")
+                        .href("")
                         .findReviewList(findReview)
                         .build();
 
@@ -51,6 +52,7 @@ public class PerformanceReviewController {
                 new ResponsePerformanceReviewVO().builder()
                         .statusCode(200)
                         .message("평가 목록 조회 성공")
+                        .href("")
                         .findReviewList(findReview)
                         .build();
 
