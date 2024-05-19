@@ -131,6 +131,7 @@ public class ApprovalChainServiceImpl implements ApprovalChainService{
     }
 
     @Override
+    @Transactional
     public BTApprovalChainDTO addBTApprovalComment(CommentVO commentVO) {
 
         BTApprovalChain btApprovalChain = btApprovalChainRepository.findById(commentVO.getChainId()).orElseThrow();
@@ -143,6 +144,7 @@ public class ApprovalChainServiceImpl implements ApprovalChainService{
     }
 
     @Override
+    @Transactional
     public OApprovalChainDTO addOApprovalComment(CommentVO commentVO) {
 
         OApprovalChain oApprovalChain = oApprovalChainRepository.findById(commentVO.getChainId()).orElseThrow();
@@ -154,5 +156,16 @@ public class ApprovalChainServiceImpl implements ApprovalChainService{
         return mapper.map(oApprovalChain, OApprovalChainDTO.class);
     }
 
+    @Override
+    @Transactional
+    public RWApprovalChainDTO addRWApprovalComment(CommentVO commentVO) {
 
+        RWApprovalChain rwApprovalChain = rwApprovalChainRepository.findById(commentVO.getChainId()).orElseThrow();
+
+        rwApprovalChain.setComment(commentVO.getComment());
+
+        rwApprovalChainRepository.save(rwApprovalChain);
+
+        return mapper.map(rwApprovalChain, RWApprovalChainDTO.class);
+    }
 }

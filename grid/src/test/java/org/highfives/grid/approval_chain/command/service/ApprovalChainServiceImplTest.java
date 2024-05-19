@@ -47,4 +47,15 @@ class ApprovalChainServiceImplTest {
                 () -> approvalChainService.addOApprovalComment(comment)
         );
     }
+
+    @DisplayName("단축 근무 결재 댓글 생성")
+    @ParameterizedTest
+    @MethodSource("comment")
+    @Transactional
+    void addRWApprovalComment(CommentVO comment) {
+
+        Assertions.assertDoesNotThrow(
+                () -> approvalChainService.addRWApprovalComment(comment)
+        );
+    }
 }
