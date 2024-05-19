@@ -1,17 +1,12 @@
 package org.highfives.grid.approval_chain.command.service;
 
-import org.highfives.grid.approval_chain.command.aggregate.BTApprovalChain;
-import org.highfives.grid.approval_chain.command.aggregate.ChainStatus;
-import org.highfives.grid.approval_chain.command.aggregate.OApprovalChain;
-import org.highfives.grid.approval_chain.command.aggregate.RWApprovalChain;
+import org.highfives.grid.approval_chain.command.aggregate.*;
 import org.highfives.grid.approval_chain.command.repository.BTApprovalChainRepository;
 import org.highfives.grid.approval_chain.command.repository.OApprovalChainRepository;
 import org.highfives.grid.approval_chain.command.repository.RWApprovalChainRepository;
+import org.highfives.grid.approval_chain.command.repository.VApprovalChainRepository;
 import org.highfives.grid.approval_chain.command.vo.ReqAddApprovalChainVO;
-import org.highfives.grid.approval_chain.common.dto.ApprovalChainDTO;
-import org.highfives.grid.approval_chain.common.dto.BTApprovalChainDTO;
-import org.highfives.grid.approval_chain.common.dto.OApprovalChainDTO;
-import org.highfives.grid.approval_chain.common.dto.RWApprovalChainDTO;
+import org.highfives.grid.approval_chain.common.dto.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,14 +22,16 @@ public class ApprovalChainServiceImpl implements ApprovalChainService{
     private final BTApprovalChainRepository btApprovalChainRepository;
     private final OApprovalChainRepository oApprovalChainRepository;
     private final RWApprovalChainRepository rwApprovalChainRepository;
+    private final VApprovalChainRepository vApprovalChainRepository;
     private final org.highfives.grid.approval_chain.query.service.ApprovalChainService approvalChainService;
 
     @Autowired
-    public ApprovalChainServiceImpl(ModelMapper mapper, BTApprovalChainRepository btApprovalChainRepository, OApprovalChainRepository oApprovalChainRepository, RWApprovalChainRepository rwApprovalChainRepository, org.highfives.grid.approval_chain.query.service.ApprovalChainService approvalChainService) {
+    public ApprovalChainServiceImpl(ModelMapper mapper, BTApprovalChainRepository btApprovalChainRepository, OApprovalChainRepository oApprovalChainRepository, RWApprovalChainRepository rwApprovalChainRepository, VApprovalChainRepository vApprovalChainRepository, org.highfives.grid.approval_chain.query.service.ApprovalChainService approvalChainService) {
         this.mapper = mapper;
         this.btApprovalChainRepository = btApprovalChainRepository;
         this.oApprovalChainRepository = oApprovalChainRepository;
         this.rwApprovalChainRepository = rwApprovalChainRepository;
+        this.vApprovalChainRepository = vApprovalChainRepository;
         this.approvalChainService = approvalChainService;
     }
 
@@ -105,5 +102,30 @@ public class ApprovalChainServiceImpl implements ApprovalChainService{
         }
 
         return rwChainDTOList;
+    }
+
+    @Override
+    @Transactional
+    public List<VApprovalChainDTO> addVApprovalChain(ReqAddApprovalChainVO vacationChainVO) {
+
+        List<ApprovalChainDTO> chainList = approvalChainService.findChainListByTypeId(vacationChainVO.getTypeId());
+        List<VApprovalChainDTO> vChainDTOList = new ArrayList<>();
+
+        for (ApprovalChainDTO approvalChain : chainList) {
+            int approverId = approvalChainService.findLeaderByEmployeeId(vacationChainVO.getEmployeeId(), approvalChain.getId());
+
+            VApprovalChain vApprovalChain = VApprovalChain.builder()
+                    .approvalStatus(ChainStatus.W)
+                    .approvalId(vacationChainVO.getApprovalId())
+                    .employeeId(approverId)
+                    .chainId(approvalChain.getId())
+                    .build();
+
+            vApprovalChainRepository.save(vApprovalChain);
+
+            vChainDTOList.add(mapper.map(vApprovalChain, VApprovalChainDTO.class));
+        }
+
+        return vChainDTOList;
     }
 }

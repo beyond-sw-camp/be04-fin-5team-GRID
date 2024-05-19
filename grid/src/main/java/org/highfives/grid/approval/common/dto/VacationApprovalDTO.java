@@ -9,7 +9,7 @@ import org.highfives.grid.approval.command.aggregate.YN;
 @Getter
 @Setter
 @ToString
-public class BTApprovalDTO {
+public class VacationApprovalDTO {
 
     private int id;
 
@@ -17,17 +17,15 @@ public class BTApprovalDTO {
 
     private String endTime;
 
-    private String destination;
-
     private String content;
 
     private ApprovalStatus approvalStatus;
 
     private String writeTime;
 
-    private YN cancelYn;
+    private YN cancelYN;
 
     private int cancelDocId;
 
-    private int requesterId;
+    private int infoId;
 }
