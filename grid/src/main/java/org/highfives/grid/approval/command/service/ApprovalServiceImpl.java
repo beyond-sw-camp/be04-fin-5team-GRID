@@ -4,12 +4,15 @@ import org.highfives.grid.approval.command.aggregate.*;
 import org.highfives.grid.approval.command.repository.BTApprovalRepository;
 import org.highfives.grid.approval.command.repository.OApprovalRepository;
 import org.highfives.grid.approval.command.repository.RWApprovalRepository;
+import org.highfives.grid.approval.command.repository.VApprovalRepository;
 import org.highfives.grid.approval.command.vo.BTApprovalVO;
 import org.highfives.grid.approval.command.vo.OvertimeApprovalVO;
 import org.highfives.grid.approval.command.vo.RWApprovalVO;
+import org.highfives.grid.approval.command.vo.VacationApprovalVO;
 import org.highfives.grid.approval.common.dto.BTApprovalDTO;
 import org.highfives.grid.approval.common.dto.OvertimeApprovalDTO;
 import org.highfives.grid.approval.common.dto.RWApprovalDTO;
+import org.highfives.grid.approval.common.dto.VacationApprovalDTO;
 import org.highfives.grid.approval_chain.command.service.ApprovalChainService;
 import org.highfives.grid.approval_chain.command.vo.ReqAddApprovalChainVO;
 import org.modelmapper.ModelMapper;
@@ -28,14 +31,16 @@ public class ApprovalServiceImpl implements ApprovalService {
     private final BTApprovalRepository btApprovalRepository;
     private final OApprovalRepository oApprovalRepository;
     private final RWApprovalRepository rwApprovalRepository;
+    private final VApprovalRepository vApprovalRepository;
     private final ApprovalChainService approvalChainService;
 
     @Autowired
-    public ApprovalServiceImpl(ModelMapper mapper, BTApprovalRepository btApprovalRepository, OApprovalRepository oApprovalRepository, RWApprovalRepository rwApprovalRepository, ApprovalChainService approvalChainService) {
+    public ApprovalServiceImpl(ModelMapper mapper, BTApprovalRepository btApprovalRepository, OApprovalRepository oApprovalRepository, RWApprovalRepository rwApprovalRepository, VApprovalRepository vApprovalRepository, ApprovalChainService approvalChainService) {
         this.mapper = mapper;
         this.btApprovalRepository = btApprovalRepository;
         this.oApprovalRepository = oApprovalRepository;
         this.rwApprovalRepository = rwApprovalRepository;
+        this.vApprovalRepository = vApprovalRepository;
         this.approvalChainService = approvalChainService;
     }
 
@@ -43,6 +48,7 @@ public class ApprovalServiceImpl implements ApprovalService {
     @Transactional
     public BTApprovalDTO addBTApproval(BTApprovalVO btApprovalVO) {
 
+        // start < end
         BTApproval btApproval = BTApproval.builder()
                 .startTime(btApprovalVO.getStartTime())
                 .endTime(btApprovalVO.getEndTime())
@@ -64,6 +70,7 @@ public class ApprovalServiceImpl implements ApprovalService {
     @Transactional
     public OvertimeApprovalDTO addOvertimeApproval(OvertimeApprovalVO overtimeApprovalVO) {
 
+        // start < end
         String startTime = overtimeApprovalVO.getStartTime();
         String endTime = overtimeApprovalVO.getEndTime();
 
@@ -107,6 +114,7 @@ public class ApprovalServiceImpl implements ApprovalService {
     @Transactional
     public RWApprovalDTO addRWApproval(RWApprovalVO rwApprovalVO) {
 
+        // start < end
         RWApproval rwApproval = RWApproval.builder()
                 .startTime(rwApprovalVO.getStartTime())
                 .endTime(rwApprovalVO.getEndTime())
@@ -127,9 +135,33 @@ public class ApprovalServiceImpl implements ApprovalService {
     }
 
     @Override
+    public VacationApprovalDTO addVacationApproval(VacationApprovalVO vacationApprovalVO) {
+
+        // start < end
+        VacationApproval vacationApproval = VacationApproval.builder()
+                .startTime(vacationApprovalVO.getStartTime())
+                .endTime(vacationApprovalVO.getEndTime())
+                .content(vacationApprovalVO.getContent())
+                .writeTime(LocalDateTime.now().format(dateFormat))
+                .requesterId(vacationApprovalVO.getRequesterId())
+                .infoId(vacationApprovalVO.getInfoId())
+                .build();
+
+        // info의 employeeId와 일치 확인?
+
+        vApprovalRepository.save(vacationApproval);
+
+        ReqAddApprovalChainVO request = new ReqAddApprovalChainVO(4, vacationApproval.getId(), vacationApprovalVO.getRequesterId());
+        approvalChainService.addVApprovalChain(request);
+
+        return mapper.map(vacationApproval, VacationApprovalDTO.class);
+    }
+
+    @Override
     @Transactional
     public BTApprovalDTO modifyBTApproval(BTApprovalVO btApprovalVO, int btApprovalId) {
 
+        // start < end
         BTApproval btApproval = btApprovalRepository.findById(btApprovalId).orElseThrow();
 
         if (btApproval.getApprovalStatus() == ApprovalStatus.N){
@@ -137,7 +169,7 @@ public class ApprovalServiceImpl implements ApprovalService {
             btApproval.setEndTime(btApprovalVO.getEndTime());
             btApproval.setDestination(btApprovalVO.getDestination());
             btApproval.setContent(btApprovalVO.getContent());
-            btApproval.setWriteTime(btApprovalVO.getWriteTime());
+            btApproval.setWriteTime(LocalDateTime.now().format(dateFormat));
         }
 
         btApprovalRepository.save(btApproval);
@@ -149,13 +181,14 @@ public class ApprovalServiceImpl implements ApprovalService {
     @Transactional
     public OvertimeApprovalDTO modifyOvertimeApproval(OvertimeApprovalVO overtimeApprovalVO, int overtimeApprovalId) {
 
+        // start < end
         OvertimeApproval overtimeApproval = oApprovalRepository.findById(overtimeApprovalId).orElseThrow();
 
-        if(overtimeApproval.getApprovalStatus() == ApprovalStatus.N) {
+        if (overtimeApproval.getApprovalStatus() == ApprovalStatus.N) {
             overtimeApproval.setStartTime(overtimeApprovalVO.getStartTime());
             overtimeApproval.setEndTime(overtimeApprovalVO.getEndTime());
             overtimeApproval.setContent(overtimeApprovalVO.getContent());
-            overtimeApproval.setWriteTime(overtimeApprovalVO.getWriteTime());
+            overtimeApproval.setWriteTime(LocalDateTime.now().format(dateFormat));
         }
 
         oApprovalRepository.save(overtimeApproval);
@@ -167,16 +200,17 @@ public class ApprovalServiceImpl implements ApprovalService {
     @Transactional
     public RWApprovalDTO modifyRWApproval(RWApprovalVO rwApprovalVO, int rwApprovalId) {
 
+        // start < end
         RWApproval rwApproval = rwApprovalRepository.findById(rwApprovalId).orElseThrow();
 
-        if(rwApproval.getApprovalStatus() == ApprovalStatus.N) {
+        if (rwApproval.getApprovalStatus() == ApprovalStatus.N) {
             rwApproval.setStartTime(rwApprovalVO.getStartTime());
             rwApproval.setEndTime(rwApprovalVO.getEndTime());
             rwApproval.setContent(rwApprovalVO.getContent());
             rwApproval.setOriginName(rwApprovalVO.getOriginName());
             rwApproval.setRenameName(rwApprovalVO.getRenameName());
             rwApproval.setPath(rwApprovalVO.getPath());
-            rwApproval.setWriteTime(rwApprovalVO.getWriteTime());
+            rwApproval.setWriteTime(LocalDateTime.now().format(dateFormat));
         }
 
         rwApprovalRepository.save(rwApproval);
@@ -186,23 +220,54 @@ public class ApprovalServiceImpl implements ApprovalService {
 
     @Override
     @Transactional
+    public VacationApprovalDTO modifyVacationApproval(VacationApprovalVO vacationApprovalVO, int vacationApprovalId) {
+
+        // start < end
+        VacationApproval vacationApproval = vApprovalRepository.findById(vacationApprovalId).orElseThrow();
+
+        if (vacationApproval.getApprovalStatus() == ApprovalStatus.N) {
+            vacationApproval.setStartTime(vacationApprovalVO.getStartTime());
+            vacationApproval.setEndTime(vacationApprovalVO.getEndTime());
+            vacationApproval.setContent(vacationApprovalVO.getContent());
+            vacationApproval.setInfoId(vacationApprovalVO.getInfoId());
+            vacationApproval.setWriteTime(LocalDateTime.now().format(dateFormat));
+        }
+
+        vApprovalRepository.save(vacationApproval);
+
+        return mapper.map(vacationApproval, VacationApprovalDTO.class);
+    }
+
+    @Override
+    @Transactional
     public BTApprovalDTO cancelBTApproval(int btApprovalId) {
 
         BTApproval btApproval = btApprovalRepository.findById(btApprovalId).orElseThrow();
 
-        BTApproval cancelApproval = BTApproval.builder()
-                .startTime(btApproval.getStartTime())
-                .endTime(btApproval.getEndTime())
-                .content(btApproval.getContent() + " \n취소")
-                .destination(btApproval.getDestination())
-                .writeTime(LocalDateTime.now().format(dateFormat))
-                .requesterId(btApproval.getRequesterId())
-                .cancelDocId(btApprovalId)
-                .build();
+        // N인 경우에는 회수
+        if (btApproval.getApprovalStatus() == ApprovalStatus.N) {
+            btApproval.setCancelYN(YN.Y);
 
-        btApprovalRepository.save(cancelApproval);
+            btApprovalRepository.save(btApproval);
 
-        return mapper.map(cancelApproval, BTApprovalDTO.class);
+            return mapper.map(btApproval, BTApprovalDTO.class);
+
+        // 이외의 경우에는 취소 결재 생성
+        } else {
+            BTApproval cancelApproval = BTApproval.builder()
+                    .startTime(btApproval.getStartTime())
+                    .endTime(btApproval.getEndTime())
+                    .content(btApproval.getContent() + " \n취소")
+                    .destination(btApproval.getDestination())
+                    .writeTime(LocalDateTime.now().format(dateFormat))
+                    .requesterId(btApproval.getRequesterId())
+                    .cancelDocId(btApprovalId)
+                    .build();
+
+            btApprovalRepository.save(cancelApproval);
+
+            return mapper.map(cancelApproval, BTApprovalDTO.class);
+        }
     }
 
     @Override
@@ -211,18 +276,27 @@ public class ApprovalServiceImpl implements ApprovalService {
 
         OvertimeApproval overtimeApproval = oApprovalRepository.findById(overtimeApprovalId).orElseThrow();
 
-        OvertimeApproval cancelApproval = OvertimeApproval.builder()
-                .startTime(overtimeApproval.getStartTime())
-                .endTime(overtimeApproval.getEndTime())
-                .content(overtimeApproval.getContent() + " \n취소")
-                .writeTime(LocalDateTime.now().format(dateFormat))
-                .cancelDocId(overtimeApprovalId)
-                .requesterId(overtimeApproval.getRequesterId())
-                .build();
+        if (overtimeApproval.getApprovalStatus() == ApprovalStatus.N) {
+            overtimeApproval.setCancelYN(YN.Y);
 
-        oApprovalRepository.save(cancelApproval);
+            oApprovalRepository.save(overtimeApproval);
 
-        return mapper.map(cancelApproval, OvertimeApprovalDTO.class);
+            return mapper.map(overtimeApproval, OvertimeApprovalDTO.class);
+
+        } else {
+            OvertimeApproval cancelApproval = OvertimeApproval.builder()
+                    .startTime(overtimeApproval.getStartTime())
+                    .endTime(overtimeApproval.getEndTime())
+                    .content(overtimeApproval.getContent() + " \n취소")
+                    .writeTime(LocalDateTime.now().format(dateFormat))
+                    .requesterId(overtimeApproval.getRequesterId())
+                    .cancelDocId(overtimeApprovalId)
+                    .build();
+
+            oApprovalRepository.save(cancelApproval);
+
+            return mapper.map(cancelApproval, OvertimeApprovalDTO.class);
+        }
     }
 
     @Override
@@ -231,20 +305,59 @@ public class ApprovalServiceImpl implements ApprovalService {
 
         RWApproval rwApproval = rwApprovalRepository.findById(rwApprovalId).orElseThrow();
 
-        RWApproval cancelApproval = RWApproval.builder()
-                .startTime(rwApproval.getStartTime())
-                .endTime(rwApproval.getEndTime())
-                .content(rwApproval.getContent() + " \n취소")
-                .writeTime(LocalDateTime.now().format(dateFormat))
-                .requesterId(rwApproval.getRequesterId())
-                .originName(rwApproval.getOriginName())
-                .renameName(rwApproval.getRenameName())
-                .path(rwApproval.getPath())
-                .cancelDocId(rwApprovalId)
-                .build();
+        if (rwApproval.getApprovalStatus() == ApprovalStatus.N) {
+            rwApproval.setCancelYN(YN.Y);
 
-        rwApprovalRepository.save(cancelApproval);
+            rwApprovalRepository.save(rwApproval);
 
-        return mapper.map(cancelApproval, RWApprovalDTO.class);
+            return mapper.map(rwApproval, RWApprovalDTO.class);
+
+        } else {
+            RWApproval cancelApproval = RWApproval.builder()
+                    .startTime(rwApproval.getStartTime())
+                    .endTime(rwApproval.getEndTime())
+                    .content(rwApproval.getContent() + " \n취소")
+                    .writeTime(LocalDateTime.now().format(dateFormat))
+                    .requesterId(rwApproval.getRequesterId())
+                    .originName(rwApproval.getOriginName())
+                    .renameName(rwApproval.getRenameName())
+                    .path(rwApproval.getPath())
+                    .cancelDocId(rwApprovalId)
+                    .build();
+
+            rwApprovalRepository.save(cancelApproval);
+
+            return mapper.map(cancelApproval, RWApprovalDTO.class);
+        }
+    }
+
+    @Override
+    @Transactional
+    public VacationApprovalDTO cancelVacationApproval(int vacationApprovalId) {
+
+        VacationApproval vacationApproval = vApprovalRepository.findById(vacationApprovalId).orElseThrow();
+
+        if (vacationApproval.getApprovalStatus() == ApprovalStatus.N) {
+            vacationApproval.setCancelYN(YN.Y);
+
+            vApprovalRepository.save(vacationApproval);
+
+            return mapper.map(vacationApproval, VacationApprovalDTO.class);
+
+        } else {
+            VacationApproval cancelApproval = VacationApproval.builder()
+                    .startTime(vacationApproval.getStartTime())
+                    .endTime(vacationApproval.getEndTime())
+                    .content(vacationApproval.getContent() + " \n취소")
+                    .writeTime(LocalDateTime.now().format(dateFormat))
+                    .requesterId(vacationApproval.getRequesterId())
+                    .infoId(vacationApproval.getInfoId())
+                    .cancelDocId(vacationApprovalId)
+                    .build();
+
+            vApprovalRepository.save(cancelApproval);
+
+            return mapper.map(cancelApproval, VacationApprovalDTO.class);
+        }
     }
 }
