@@ -77,4 +77,8 @@ public class VacationApproval {
     public void setInfoId(int infoId) {
         this.infoId = infoId;
     }
+
+    public void setCancelYN(YN cancelYN) {
+        this.cancelYN = cancelYN;
+    }
 }
