@@ -127,6 +127,22 @@ public class ApprovalController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    @PutMapping("/vacation/{vacationApprovalId}")
+    public ResponseEntity<ResApprovalVO> modifyVacationApproval(@RequestBody VacationApprovalVO vacationApprovalVO, @PathVariable int vacationApprovalId) {
+
+        VacationApprovalDTO result = approvalService.modifyVacationApproval(vacationApprovalVO, vacationApprovalId);
+
+        ResApprovalVO response = ResApprovalVO.builder()
+                .statusCode(200)
+                .message("휴가 결재 수정 성공")
+                .href("")
+                .vacationResult(result)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+
     @PostMapping("/bt/{btApprovalId}")
     public ResponseEntity<ResApprovalVO> cancelBTApproval(@PathVariable int btApprovalId) {
 

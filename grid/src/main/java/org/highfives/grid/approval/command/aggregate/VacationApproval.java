@@ -57,4 +57,24 @@ public class VacationApproval {
         this.requesterId = requesterId;
         this.infoId = infoId;
     }
+
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public void setWriteTime(String writeTime) {
+        this.writeTime = writeTime;
+    }
+
+    public void setInfoId(int infoId) {
+        this.infoId = infoId;
+    }
 }

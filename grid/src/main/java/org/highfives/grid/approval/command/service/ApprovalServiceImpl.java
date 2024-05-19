@@ -162,7 +162,7 @@ public class ApprovalServiceImpl implements ApprovalService {
             btApproval.setEndTime(btApprovalVO.getEndTime());
             btApproval.setDestination(btApprovalVO.getDestination());
             btApproval.setContent(btApprovalVO.getContent());
-            btApproval.setWriteTime(btApprovalVO.getWriteTime());
+            btApproval.setWriteTime(LocalDateTime.now().format(dateFormat));
         }
 
         btApprovalRepository.save(btApproval);
@@ -176,11 +176,11 @@ public class ApprovalServiceImpl implements ApprovalService {
 
         OvertimeApproval overtimeApproval = oApprovalRepository.findById(overtimeApprovalId).orElseThrow();
 
-        if(overtimeApproval.getApprovalStatus() == ApprovalStatus.N) {
+        if (overtimeApproval.getApprovalStatus() == ApprovalStatus.N) {
             overtimeApproval.setStartTime(overtimeApprovalVO.getStartTime());
             overtimeApproval.setEndTime(overtimeApprovalVO.getEndTime());
             overtimeApproval.setContent(overtimeApprovalVO.getContent());
-            overtimeApproval.setWriteTime(overtimeApprovalVO.getWriteTime());
+            overtimeApproval.setWriteTime(LocalDateTime.now().format(dateFormat));
         }
 
         oApprovalRepository.save(overtimeApproval);
@@ -194,19 +194,38 @@ public class ApprovalServiceImpl implements ApprovalService {
 
         RWApproval rwApproval = rwApprovalRepository.findById(rwApprovalId).orElseThrow();
 
-        if(rwApproval.getApprovalStatus() == ApprovalStatus.N) {
+        if (rwApproval.getApprovalStatus() == ApprovalStatus.N) {
             rwApproval.setStartTime(rwApprovalVO.getStartTime());
             rwApproval.setEndTime(rwApprovalVO.getEndTime());
             rwApproval.setContent(rwApprovalVO.getContent());
             rwApproval.setOriginName(rwApprovalVO.getOriginName());
             rwApproval.setRenameName(rwApprovalVO.getRenameName());
             rwApproval.setPath(rwApprovalVO.getPath());
-            rwApproval.setWriteTime(rwApprovalVO.getWriteTime());
+            rwApproval.setWriteTime(LocalDateTime.now().format(dateFormat));
         }
 
         rwApprovalRepository.save(rwApproval);
 
         return mapper.map(rwApproval, RWApprovalDTO.class);
+    }
+
+    @Override
+    @Transactional
+    public VacationApprovalDTO modifyVacationApproval(VacationApprovalVO vacationApprovalVO, int vacationApprovalId) {
+
+        VacationApproval vacationApproval = vApprovalRepository.findById(vacationApprovalId).orElseThrow();
+
+        if (vacationApproval.getApprovalStatus() == ApprovalStatus.N) {
+            vacationApproval.setStartTime(vacationApprovalVO.getStartTime());
+            vacationApproval.setEndTime(vacationApprovalVO.getEndTime());
+            vacationApproval.setContent(vacationApprovalVO.getContent());
+            vacationApproval.setInfoId(vacationApprovalVO.getInfoId());
+            vacationApproval.setWriteTime(LocalDateTime.now().format(dateFormat));
+        }
+
+        vApprovalRepository.save(vacationApproval);
+
+        return mapper.map(vacationApproval, VacationApprovalDTO.class);
     }
 
     @Override
