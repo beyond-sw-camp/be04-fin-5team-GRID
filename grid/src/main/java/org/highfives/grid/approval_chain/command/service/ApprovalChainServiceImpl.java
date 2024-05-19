@@ -168,4 +168,19 @@ public class ApprovalChainServiceImpl implements ApprovalChainService{
 
         return mapper.map(rwApprovalChain, RWApprovalChainDTO.class);
     }
+
+    @Override
+    @Transactional
+    public VApprovalChainDTO addVApprovalComment(CommentVO commentVO) {
+
+        VApprovalChain vApprovalChain = vApprovalChainRepository.findById(commentVO.getChainId()).orElseThrow();
+
+        vApprovalChain.setComment(vApprovalChain.getComment());
+
+        vApprovalChainRepository.save(vApprovalChain);
+
+        return mapper.map(vApprovalChain, VApprovalChainDTO.class);
+    }
+
+
 }
