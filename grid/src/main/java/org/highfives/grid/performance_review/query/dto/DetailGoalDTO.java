@@ -17,4 +17,3 @@ public class DetailGoalDTO {
     private String approvalTime;
     private List<GoalItemDTO> goalItemList;
 }
-

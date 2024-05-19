@@ -85,6 +85,7 @@
         <result property="salary" column="salary"/>
         <result property="absenceYn" column="absence_yn"/>
         <result property="absenceContent" column="absence_content"/>
+        <result property="role" column="role"/>
         <result property="dutiesId" column="duties_id"/>
         <result property="positionId" column="position_id"/>
         <result property="teamId" column="team_id"/>

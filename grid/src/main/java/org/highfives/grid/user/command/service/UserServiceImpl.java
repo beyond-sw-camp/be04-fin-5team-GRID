@@ -1,20 +1,21 @@
 package org.highfives.grid.user.command.service;
 
-import org.highfives.grid.review.command.exception.NotFoundException;
 import org.highfives.grid.user.command.aggregate.Employee;
-import org.highfives.grid.user.command.aggregate.YN;
+import org.highfives.grid.user.command.aggregate.PrincipalDetails;
 import org.highfives.grid.user.command.dto.UserDTO;
 import org.highfives.grid.user.command.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.*;
+
+import static org.highfives.grid.user.command.aggregate.YN.Y;
 
 @Service("UserCommandService")
 public class UserServiceImpl implements UserService{
@@ -111,7 +112,7 @@ public class UserServiceImpl implements UserService{
             String resignTime = simpleDateFormat.format(new Date());
 
             Employee userInfo = userRepository.findByEmployeeNumber(eNum);
-            userInfo.setResignYn(YN.Y);
+            userInfo.setResignYn(Y);
             userInfo.setResignTime(resignTime);
 
             userRepository.save(userInfo);
@@ -164,24 +165,31 @@ public class UserServiceImpl implements UserService{
         return "P";
     }
 
+    @Override
+    public void findPwd(String pwd) {
+
+
+    }
+
     private Employee dTOtoEntity(UserDTO givenInfo) {
 
-        return new Employee (
-                givenInfo.getEmail(),
-                givenInfo.getPwd(),
-                givenInfo.getName(),
-                givenInfo.getEmployeeNumber(),
-                givenInfo.getGender(),
-                givenInfo.getPhoneNumber(),
-                givenInfo.getJoinTime(),
-                givenInfo.getJoinType(),
-                givenInfo.getWorkType(),
-                givenInfo.getContractStartTime(),
-                givenInfo.getDutiesId(),
-                givenInfo.getPositionId(),
-                givenInfo.getDepartmentId(),
-                givenInfo.getTeamId()
-        );
+        return Employee.builder()
+                .email(givenInfo.getEmail())
+                .pwd(givenInfo.getPwd())
+                .employeeName(givenInfo.getName())
+                .employeeNumber(givenInfo.getEmployeeNumber())
+                .gender(givenInfo.getGender())
+                .phoneNumber(givenInfo.getPhoneNumber())
+                .joinTime(givenInfo.getJoinTime())
+                .joinType(givenInfo.getJoinType())
+                .workType(givenInfo.getWorkType())
+                .contractStartTime(givenInfo.getContractStartTime())
+                .role(givenInfo.getRole())
+                .dutiesId(givenInfo.getDutiesId())
+                .positionId(givenInfo.getPositionId())
+                .departmentId(givenInfo.getDepartmentId())
+                .teamId(givenInfo.getTeamId())
+                .build();
     }
 
     private String encodePwd(UserDTO givenInfo) {
@@ -223,5 +231,17 @@ public class UserServiceImpl implements UserService{
                 .teamId(givenInfo.getTeamId())
                 .departmentId(givenInfo.getDepartmentId())
                 .build();
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+
+        Employee tokenInfo = userRepository.findByEmail(email);
+
+        if (tokenInfo.getResignYn() == Y) {
+            throw new RuntimeException("Resigned User");
+        }
+
+        return new PrincipalDetails(tokenInfo, true, true);
     }
 }
