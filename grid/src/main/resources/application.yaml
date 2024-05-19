@@ -1,4 +1,19 @@
 spring:
+  batch:
+    job:
+      enabled: true
+  mail:
+    host: smtp.your-email-provider.com
+    port: 587
+    username: your-email@example.com
+    password: your-email-password
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
   jpa:
     generate-ddl: false
     show-sql: true
@@ -9,9 +24,9 @@ spring:
 
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://localhost:3306/erp
-    username: root
-    password: root
+    url: jdbc:mariadb://localhost:3306/grid
+    username: grid
+    password: grid
 
 application:
   security:
