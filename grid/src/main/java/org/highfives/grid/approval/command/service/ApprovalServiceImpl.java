@@ -10,6 +10,8 @@ import org.highfives.grid.approval.command.vo.RWApprovalVO;
 import org.highfives.grid.approval.common.dto.BTApprovalDTO;
 import org.highfives.grid.approval.common.dto.OvertimeApprovalDTO;
 import org.highfives.grid.approval.common.dto.RWApprovalDTO;
+import org.highfives.grid.approval_chain.command.service.ApprovalChainService;
+import org.highfives.grid.approval_chain.command.vo.ReqAddApprovalChainVO;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,13 +28,15 @@ public class ApprovalServiceImpl implements ApprovalService {
     private final BTApprovalRepository btApprovalRepository;
     private final OApprovalRepository oApprovalRepository;
     private final RWApprovalRepository rwApprovalRepository;
+    private final ApprovalChainService approvalChainService;
 
     @Autowired
-    public ApprovalServiceImpl(ModelMapper mapper, BTApprovalRepository btApprovalRepository, OApprovalRepository oApprovalRepository, RWApprovalRepository rwApprovalRepository) {
+    public ApprovalServiceImpl(ModelMapper mapper, BTApprovalRepository btApprovalRepository, OApprovalRepository oApprovalRepository, RWApprovalRepository rwApprovalRepository, ApprovalChainService approvalChainService) {
         this.mapper = mapper;
         this.btApprovalRepository = btApprovalRepository;
         this.oApprovalRepository = oApprovalRepository;
         this.rwApprovalRepository = rwApprovalRepository;
+        this.approvalChainService = approvalChainService;
     }
 
     @Override
@@ -49,6 +53,9 @@ public class ApprovalServiceImpl implements ApprovalService {
                 .build();
 
         btApprovalRepository.save(btApproval);
+
+        ReqAddApprovalChainVO request = new ReqAddApprovalChainVO(1, btApproval.getId(), btApproval.getRequesterId());
+        approvalChainService.addBTApprovalChain(request);
 
         return mapper.map(btApproval, BTApprovalDTO.class);
     }
@@ -90,10 +97,14 @@ public class ApprovalServiceImpl implements ApprovalService {
 
         oApprovalRepository.save(overtimeApproval);
 
+        ReqAddApprovalChainVO request = new ReqAddApprovalChainVO(2, overtimeApproval.getId(), overtimeApproval.getRequesterId());
+        approvalChainService.addOApprovalChain(request);
+
         return mapper.map(overtimeApproval, OvertimeApprovalDTO.class);
     }
 
     @Override
+    @Transactional
     public RWApprovalDTO addRWApproval(RWApprovalVO rwApprovalVO) {
 
         RWApproval rwApproval = RWApproval.builder()
@@ -108,6 +119,9 @@ public class ApprovalServiceImpl implements ApprovalService {
                 .build();
 
         rwApprovalRepository.save(rwApproval);
+
+        ReqAddApprovalChainVO request = new ReqAddApprovalChainVO(3, rwApproval.getId(), rwApproval.getRequesterId());
+        approvalChainService.addRWApprovalChain(request);
 
         return mapper.map(rwApproval, RWApprovalDTO.class);
     }
@@ -132,6 +146,7 @@ public class ApprovalServiceImpl implements ApprovalService {
     }
 
     @Override
+    @Transactional
     public OvertimeApprovalDTO modifyOvertimeApproval(OvertimeApprovalVO overtimeApprovalVO, int overtimeApprovalId) {
 
         OvertimeApproval overtimeApproval = oApprovalRepository.findById(overtimeApprovalId).orElseThrow();
@@ -149,6 +164,7 @@ public class ApprovalServiceImpl implements ApprovalService {
     }
 
     @Override
+    @Transactional
     public RWApprovalDTO modifyRWApproval(RWApprovalVO rwApprovalVO, int rwApprovalId) {
 
         RWApproval rwApproval = rwApprovalRepository.findById(rwApprovalId).orElseThrow();
@@ -190,6 +206,7 @@ public class ApprovalServiceImpl implements ApprovalService {
     }
 
     @Override
+    @Transactional
     public OvertimeApprovalDTO cancelOvertimeApproval(int overtimeApprovalId) {
 
         OvertimeApproval overtimeApproval = oApprovalRepository.findById(overtimeApprovalId).orElseThrow();
@@ -209,6 +226,7 @@ public class ApprovalServiceImpl implements ApprovalService {
     }
 
     @Override
+    @Transactional
     public RWApprovalDTO cancelRWApproval(int rwApprovalId) {
 
         RWApproval rwApproval = rwApprovalRepository.findById(rwApprovalId).orElseThrow();

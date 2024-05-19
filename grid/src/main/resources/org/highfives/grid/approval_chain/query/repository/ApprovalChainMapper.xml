@@ -34,7 +34,7 @@
     <select id="findDeptLeaderByEmployeeId" resultType="java.lang.Integer" parameterType="int">
         SELECT
                leader_id
-          FROM team
+          FROM department
          WHERE id = (SELECT
                             department_id
                        FROM employee
