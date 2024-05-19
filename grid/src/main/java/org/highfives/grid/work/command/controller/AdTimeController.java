@@ -1,8 +1,8 @@
 package org.highfives.grid.work.command.controller;
 
-import org.highfives.grid.work.command.dto.AdTimeDTO;
 import org.highfives.grid.work.command.service.AdTimeService;
 import org.highfives.grid.work.command.vo.ResponseAdTimeVO;
+import org.highfives.grid.work.common.dto.AdTimeDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

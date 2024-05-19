@@ -1,8 +1,7 @@
 package org.highfives.grid.work.query.service;
 
+import org.highfives.grid.approval.common.dto.RWApprovalDTO;
 import org.highfives.grid.work.query.aggregate.RwApproval;
-import org.highfives.grid.work.query.dto.AdTimeDTO;
-import org.highfives.grid.work.query.dto.RwApprovalDTO;
 import org.highfives.grid.work.query.repository.RwApprovalMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,15 +25,15 @@ public class RwApprovalServiceImpl implements RwApprovalService{
     }
 
     @Override
-    public List<RwApprovalDTO> findAllRw() {
+    public List<RWApprovalDTO> findAllRw() {
 
         try{
             List<RwApproval> rwApprovalList = rwApprovalMapper.selectAllRw();
 
             // 조회된 requestId로 employee 조회 추가 필요
 
-            List<RwApprovalDTO> findRwApprovalDTOList = rwApprovalList.stream()
-                    .map(data -> modelMapper.map(data, RwApprovalDTO.class))
+            List<RWApprovalDTO> findRwApprovalDTOList = rwApprovalList.stream()
+                    .map(data -> modelMapper.map(data, RWApprovalDTO.class))
                     .collect(Collectors.toList());
 
             return findRwApprovalDTOList;
@@ -46,14 +45,14 @@ public class RwApprovalServiceImpl implements RwApprovalService{
     }
 
     @Override
-    public List<RwApprovalDTO> findRwByEmployeeId(int employeeId) {
+    public List<RWApprovalDTO> findRwByEmployeeId(int employeeId) {
 
         List<RwApproval> rwApprovalList = rwApprovalMapper.selectRwByEmployeeId(employeeId);
 
         // 조회된 requestId로 employee 조회 추가 필요
 
-        List<RwApprovalDTO> findRwApprovalDTOList = rwApprovalList.stream()
-                .map(data -> modelMapper.map(data, RwApprovalDTO.class))
+        List<RWApprovalDTO> findRwApprovalDTOList = rwApprovalList.stream()
+                .map(data -> modelMapper.map(data, RWApprovalDTO.class))
                 .collect(Collectors.toList());
 
         return findRwApprovalDTOList;

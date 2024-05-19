@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.highfives.grid.work.query.dto.BtApprovalDTO;
+import org.highfives.grid.approval.common.dto.BTApprovalDTO;
 
 import java.util.List;
 
@@ -15,5 +15,5 @@ import java.util.List;
 public class ResponseBtListVO {
     private String message;
 
-    private List<BtApprovalDTO> btList;
+    private List<BTApprovalDTO> btList;
 }

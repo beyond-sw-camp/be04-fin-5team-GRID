@@ -1,6 +1,6 @@
 package org.highfives.grid.work.query.controller;
 
-import org.highfives.grid.work.query.dto.RwApprovalDTO;
+import org.highfives.grid.approval.common.dto.RWApprovalDTO;
 import org.highfives.grid.work.query.service.RwApprovalService;
 import org.highfives.grid.work.query.vo.ResponseRwListVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ public class RwApprovalController {
     /* 설명. 승인된 근무 단축 전체 조회 */
     @GetMapping("/all")
     public ResponseEntity<ResponseRwListVO> findAllRw() {
-        List<RwApprovalDTO> finRwList = rwApprovalService.findAllRw();
+        List<RWApprovalDTO> finRwList = rwApprovalService.findAllRw();
 
         return getResponseRwListVOResponseEntity(finRwList);
     }
@@ -35,12 +35,12 @@ public class RwApprovalController {
     /* 설명. 승인된 근무 단축 직원별 조회 */
     @GetMapping("/{employeeId}")
     public ResponseEntity<ResponseRwListVO> findRwByEmployeeId(@PathVariable int employeeId) {
-        List<RwApprovalDTO> finRwList = rwApprovalService.findRwByEmployeeId(employeeId);
+        List<RWApprovalDTO> finRwList = rwApprovalService.findRwByEmployeeId(employeeId);
 
         return getResponseRwListVOResponseEntity(finRwList);
     }
 
-    private ResponseEntity<ResponseRwListVO> getResponseRwListVOResponseEntity(List<RwApprovalDTO> finRwList) {
+    private ResponseEntity<ResponseRwListVO> getResponseRwListVOResponseEntity(List<RWApprovalDTO> finRwList) {
         ResponseRwListVO response;
 
         if(!finRwList.isEmpty()){

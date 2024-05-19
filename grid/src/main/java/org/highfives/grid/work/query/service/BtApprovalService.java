@@ -1,11 +1,11 @@
 package org.highfives.grid.work.query.service;
 
-import org.highfives.grid.work.query.dto.BtApprovalDTO;
+import org.highfives.grid.approval.common.dto.BTApprovalDTO;
 
 import java.util.List;
 
 public interface BtApprovalService {
-    List<BtApprovalDTO> findAllBt();
+    List<BTApprovalDTO> findAllBt();
 
-    List<BtApprovalDTO> findBtByEmployeeId(int employeeId);
+    List<BTApprovalDTO> findBtByEmployeeId(int employeeId);
 }

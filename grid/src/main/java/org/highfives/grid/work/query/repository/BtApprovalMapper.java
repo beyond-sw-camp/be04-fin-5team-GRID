@@ -1,13 +1,13 @@
 package org.highfives.grid.work.query.repository;
 
 import org.apache.ibatis.annotations.Mapper;
-import org.highfives.grid.work.query.dto.BtApprovalDTO;
+import org.highfives.grid.approval.common.dto.BTApprovalDTO;
 
 import java.util.List;
 
 @Mapper
 public interface BtApprovalMapper {
-    List<BtApprovalDTO> selectAllBt();
+    List<BTApprovalDTO> selectAllBt();
 
-    List<BtApprovalDTO> selectBtByEmployeeId();
+    List<BTApprovalDTO> selectBtByEmployeeId();
 }

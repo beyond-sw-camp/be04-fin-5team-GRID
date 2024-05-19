@@ -1,8 +1,8 @@
 package org.highfives.grid.work.command.service;
 
 import org.highfives.grid.work.command.aggregate.AdTime;
-import org.highfives.grid.work.command.dto.AdTimeDTO;
 import org.highfives.grid.work.command.repository.AdTimeRepository;
+import org.highfives.grid.work.common.dto.AdTimeDTO;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

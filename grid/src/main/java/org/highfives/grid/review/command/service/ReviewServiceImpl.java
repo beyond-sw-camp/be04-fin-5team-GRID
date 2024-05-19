@@ -15,6 +15,7 @@ import org.highfives.grid.review.command.aggregate.Review;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -60,6 +61,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
+    @Transactional
     public ReviewDTO addReview(ReviewDTO reviewDTO) {
 
         Review review = Review.builder()
@@ -74,6 +76,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
+    @Transactional
     public ReviewDTO modifyReview(ReviewDTO reviewDTO) {
 
         ReviewDTO currentData = findReviewById(reviewDTO.getId());
@@ -110,6 +113,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
+    @Transactional
     public ReviewListDTO addReviewList(ReviewListDTO reviewListDTO) {
 
         ReviewList reviewList = ReviewList.builder()
@@ -120,6 +124,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
+    @Transactional
     public ReviewListDTO modifyReviewList(ReviewListDTO reviewListDTO) {
 
         ReviewList reviewList = ReviewList.builder()
@@ -140,6 +145,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
+    @Transactional
     public void deleteReviewList(int id) {
 
         reviewListRepository.deleteById(id);
@@ -147,6 +153,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
+    @Transactional
     public ReviewHistoryDTO addReviewHistory(ReviewHistoryDTO historyDTO) {
 
         ReviewHistory reviewHistory = ReviewHistory.builder()
@@ -165,6 +172,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
+    @Transactional
     public ReviewHistoryDTO modifyReviewHistory(ReviewHistoryDTO historyDTO) {
         ReviewHistory reviewHistory = reviewHistoryRepository.findById(historyDTO.getId()).orElseThrow(() -> new IllegalArgumentException());
 
@@ -190,6 +198,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
+    @Transactional
     public void deleteReviewHistory(int id) {
 
         reviewHistoryRepository.deleteById(id);

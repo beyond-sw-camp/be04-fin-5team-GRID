@@ -1,6 +1,6 @@
 package org.highfives.grid.work.command.service;
 
-import org.highfives.grid.work.command.dto.AdTimeDTO;
+import org.highfives.grid.work.common.dto.AdTimeDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;

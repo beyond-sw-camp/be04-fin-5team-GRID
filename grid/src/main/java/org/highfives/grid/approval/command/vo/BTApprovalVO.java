@@ -1,20 +1,23 @@
-package org.highfives.grid.work.query.dto;
+package org.highfives.grid.approval.command.vo;
 
 import lombok.*;
 
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 @ToString
-public class BtApprovalDTO {
-    private int id;
+public class BTApprovalVO {
+
     private String startTime;
+
     private String endTime;
+
     private String destination;
+
     private String content;
-    private String approvalStatus;
+
     private String writeTime;
-    private String cancelYn;
+
     private int requesterId;
-    private int cancelDocumentId;
 }

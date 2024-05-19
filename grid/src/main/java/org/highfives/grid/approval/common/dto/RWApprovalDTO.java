@@ -1,4 +1,4 @@
-package org.highfives.grid.work.query.dto;
+package org.highfives.grid.approval.common.dto;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -9,17 +9,29 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class RwApprovalDTO {
+public class RWApprovalDTO {
+
     private int id;
+
     private String startTime;
+
     private String endTime;
+
     private String content;
+
     private String approvalStatus;
-    private int requesterId;
+
     private String writeTime;
+
     private String cancelYn;
-    private String originName;
-    private String renameName;
+
     private int cancelDocumentId;
+
+    private int requesterId;
+
+    private String originName;
+
+    private String renameName;
+
     private String path;
 }
