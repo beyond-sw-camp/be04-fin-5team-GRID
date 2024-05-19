@@ -187,4 +187,19 @@ public class ApprovalController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+
+    @PostMapping("/vacation/{vacationApprovalId}")
+    public ResponseEntity<ResApprovalVO> cancelVacationApproval(@PathVariable int vacationApprovalId) {
+
+        VacationApprovalDTO result = approvalService.cancelVacationApproval(vacationApprovalId);
+
+        ResApprovalVO response = ResApprovalVO.builder()
+                .statusCode(201)
+                .message("휴가 결재 취소 결재 생성 성공")
+                .href("")
+                .vacationResult(result)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
 }

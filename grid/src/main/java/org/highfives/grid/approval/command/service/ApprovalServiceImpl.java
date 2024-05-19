@@ -260,8 +260,8 @@ public class ApprovalServiceImpl implements ApprovalService {
                 .endTime(overtimeApproval.getEndTime())
                 .content(overtimeApproval.getContent() + " \n취소")
                 .writeTime(LocalDateTime.now().format(dateFormat))
-                .cancelDocId(overtimeApprovalId)
                 .requesterId(overtimeApproval.getRequesterId())
+                .cancelDocId(overtimeApprovalId)
                 .build();
 
         oApprovalRepository.save(cancelApproval);
@@ -290,5 +290,26 @@ public class ApprovalServiceImpl implements ApprovalService {
         rwApprovalRepository.save(cancelApproval);
 
         return mapper.map(cancelApproval, RWApprovalDTO.class);
+    }
+
+    @Override
+    @Transactional
+    public VacationApprovalDTO cancelVacationApproval(int vacationApprovalId) {
+
+        VacationApproval vacationApproval = vApprovalRepository.findById(vacationApprovalId).orElseThrow();
+
+        VacationApproval cancelApproval = VacationApproval.builder()
+                .startTime(vacationApproval.getStartTime())
+                .endTime(vacationApproval.getEndTime())
+                .content(vacationApproval.getContent() + " \n취소")
+                .writeTime(LocalDateTime.now().format(dateFormat))
+                .requesterId(vacationApproval.getRequesterId())
+                .infoId(vacationApproval.getInfoId())
+                .cancelDocId(vacationApprovalId)
+                .build();
+
+        vApprovalRepository.save(cancelApproval);
+
+        return mapper.map(cancelApproval, VacationApprovalDTO.class);
     }
 }
