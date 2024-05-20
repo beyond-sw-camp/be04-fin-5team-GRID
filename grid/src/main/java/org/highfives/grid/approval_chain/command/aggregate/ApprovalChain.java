@@ -22,8 +22,8 @@ public class ApprovalChain {
     @Column(name = "duty")
     private String duty;
 
-    @Column(name = "priority")
-    private int priority;
+    @Column(name = "stage")
+    private int stage;
 
     @Column(name = "type_id")
     private int typeId;
