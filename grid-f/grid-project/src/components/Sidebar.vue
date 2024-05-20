@@ -1,0 +1,157 @@
+<template>
+  <aside class="sidebar">
+    <div class="profile">
+      <img src="@/assets/logo.png" alt="Profile Picture" class="profile-pic" />
+      <div class="profile-info">
+        <h3>{{employee.name}}이름</h3>
+        <p>{{employee.email}}이메일 </p>
+      </div>
+    </div>
+    <nav class="menu">
+      <ul>
+        <li>
+          <span @click="toggleMenu('workManagement')">근태 관리</span>
+          <ul v-show="activeMenus.workManagement">
+            <li>근무 관리</li>
+            <li>근무 정보</li>
+            <li>휴가 정책</li>
+            <li>휴가 보유 정보 목록</li>
+            <li>휴가 기록 목록</li>
+          </ul>
+        </li>
+        <li>
+          <span @click="toggleMenu('paymentManagement')">결재 관리</span>
+          <ul v-show="activeMenus.paymentManagement">
+            <li>결재 문서 작성</li>
+            <li>결재 문서 목록</li>
+          </ul>
+        </li>
+        <li>
+          <span @click="toggleMenu('hrManagement')">인사 관리</span>
+          <ul v-show="activeMenus.hrManagement">
+            <li>인사 정보</li>
+          </ul>
+        </li>
+        <li>
+          <span @click="toggleMenu('departmentManagement')">부서 관리</span>
+          <ul v-show="activeMenus.departmentManagement">
+            <li>부서 정보</li>
+          </ul>
+        </li>
+        <li>
+          <span @click="toggleMenu('departmentEvaluation')">부서 평가</span>
+          <ul v-show="activeMenus.departmentEvaluation">
+            <li>본인 평가 목록</li>
+            <li>동료 평가 작성</li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+  </aside>
+</template>
+
+<script setup>
+import axios from 'axios';
+import { useRouter } from 'vue-router';
+import { ref, onMounted,reactive } from 'vue';
+
+
+const employee = ref([]);
+const error = ref([]);
+
+const fetchEmployee = async () => {
+  try {
+    const response = await axios.get('http://localhost:8080/users/240201'); // Ensure {id} is replaced with an actual ID
+    employee.value = response.data;
+    console.log('Employee data:', employee.value);
+  } catch (err) {
+    console.error('Error fetching employee:', err);
+    error.value = 'Failed to fetch employee data.';
+  }
+};
+
+onMounted(() => {
+  fetchEmployee();
+});
+
+
+const activeMenus = reactive({
+  workManagement: false,
+  paymentManagement: false,
+  hrManagement: false,
+  departmentManagement: false,
+  departmentEvaluation: false,
+});
+
+const toggleMenu = (menu) => {
+  activeMenus[menu] = !activeMenus[menu];
+};
+</script>
+
+<style scoped>
+.sidebar {
+  width: 250px;
+  background: #fff;
+  border-right: 1px solid #e5e5e5;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.profile {
+  padding: 20px;
+  text-align: center;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.profile-pic {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.profile-info {
+  margin-top: 10px;
+}
+
+.profile-info h3 {
+  margin: 10px 0 5px;
+  font-size: 18px;
+}
+
+.profile-info p {
+  margin: 0;
+  color: #888;
+  font-size: 14px;
+}
+
+.menu {
+  padding: 10px 0;
+}
+
+.menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.menu li {
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.menu li span {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.menu li ul {
+  padding-left: 20px;
+  margin-top: 10px;
+}
+
+.menu li ul li {
+  padding: 5px 0;
+}
+</style>
