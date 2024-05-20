@@ -43,6 +43,9 @@ public class PerformanceReview {
     @Setter
     private String approvalTime;
 
+    @Column(name = "goal_id")
+    private int goalId;
+
     public PerformanceReview(String type, int year, String reviewName, String approvalStatus, int writerId, String writeTime, int approverId) {
         this.type = type;
         this.year = year;

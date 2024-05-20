@@ -3,10 +3,11 @@ package org.highfives.grid.performance_review.command.service;
 import org.highfives.grid.performance_review.command.aggregate.PerformanceReviewStatus;
 import org.highfives.grid.performance_review.command.aggregate.entity.PerformanceReview;
 import org.highfives.grid.performance_review.command.dto.PerformanceReviewDTO;
+import org.highfives.grid.performance_review.command.dto.PerformanceReviewGoalDTO;
 import org.highfives.grid.performance_review.command.repository.PerformanceReviewRepository;
 import org.highfives.grid.user.query.dto.LeaderInfoDTO;
 import org.highfives.grid.user.query.service.UserService;
-import org.highfives.grid.user.query.service.UserServiceImpl;
+import org.highfives.grid.performance_review.query.service.PerformanceReviewGoalService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,14 +25,15 @@ public class PerformanceReviewServiceImpl implements PerformanceReviewService{
 
     private final UserService userService;
 
+    private final PerformanceReviewGoalService performanceReviewGoalService;
+
     @Autowired
-    public PerformanceReviewServiceImpl(PerformanceReviewRepository performanceReviewRepository, ModelMapper modelMapper, UserService userService) {
+    public PerformanceReviewServiceImpl(PerformanceReviewRepository performanceReviewRepository, ModelMapper modelMapper, UserService userService, PerformanceReviewGoalService performanceReviewGoalService) {
         this.performanceReviewRepository = performanceReviewRepository;
         this.modelMapper = modelMapper;
         this.userService = userService;
+        this.performanceReviewGoalService = performanceReviewGoalService;
     }
-
-
 
     @Override
     @Transactional
@@ -44,6 +46,9 @@ public class PerformanceReviewServiceImpl implements PerformanceReviewService{
         LocalDateTime currentTime = LocalDateTime.now();
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String now = dateFormat.format(currentTime);
+
+        // 평가 목표 조회
+//        PerformanceReviewGoalDTO performanceReviewGoalDTO = performanceReviewGoalService.
 
         PerformanceReview performanceReview = new PerformanceReview(
                 performanceReviewDTO.getType(),
