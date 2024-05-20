@@ -1,8 +1,15 @@
 <template>
-  <form>
-    <input type="file" name="photo" id="photo" />
-  </form>
+  <div>
+    <RouterView/>
+  </div>
 </template>
 
+<script setup>
+import {RouterView} from 'vue-router';
 
-<style scoped></style>
+
+</script>
+
+<style scoped>
+
+</style>
