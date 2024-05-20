@@ -1,4 +1,4 @@
-package org.highfives.grid.approval.command.vo;
+package org.highfives.grid.approval_chain.command.vo;
 
 import lombok.*;
 

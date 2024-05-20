@@ -1,6 +1,6 @@
 package org.highfives.grid.approval_chain.command.service;
 
-import org.highfives.grid.approval.command.vo.CommentVO;
+import org.highfives.grid.approval_chain.command.vo.CommentVO;
 import org.highfives.grid.approval_chain.command.aggregate.*;
 import org.highfives.grid.approval_chain.command.repository.BTApprovalChainRepository;
 import org.highfives.grid.approval_chain.command.repository.OApprovalChainRepository;
@@ -181,6 +181,4 @@ public class ApprovalChainServiceImpl implements ApprovalChainService{
 
         return mapper.map(vApprovalChain, VApprovalChainDTO.class);
     }
-
-
 }

@@ -1,6 +1,6 @@
 package org.highfives.grid.approval_chain.command.service;
 
-import org.highfives.grid.approval.command.vo.CommentVO;
+import org.highfives.grid.approval_chain.command.vo.CommentVO;
 import org.highfives.grid.approval_chain.command.vo.ReqAddApprovalChainVO;
 import org.highfives.grid.approval_chain.common.dto.BTApprovalChainDTO;
 import org.highfives.grid.approval_chain.common.dto.OApprovalChainDTO;

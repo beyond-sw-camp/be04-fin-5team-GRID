@@ -1,7 +1,7 @@
 package org.highfives.grid.approval_chain.command.service;
 
 import jakarta.transaction.Transactional;
-import org.highfives.grid.approval.command.vo.CommentVO;
+import org.highfives.grid.approval_chain.command.vo.CommentVO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
