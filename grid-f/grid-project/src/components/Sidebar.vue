@@ -62,7 +62,7 @@ const error = ref([]);
 
 const fetchEmployee = async () => {
   try {
-    const response = await axios.get(`http://localhost:8080/users/240201`); // ${employeeNumber}
+    const response = await axios.get(`http://localhost:8080/users/240201`); // ${employeeNumber}로 수정예정
     employee.value = response.data.result;
     console.log('Employee data:', employee.value);
   } catch (err) {
@@ -96,6 +96,13 @@ const toggleMenu = (menu) => {
   border-right: 1px solid #e5e5e5;
   height: 100vh;
   overflow-y: auto;
+  
+}
+.sidebar{
+   -ms-overflow-style: none;
+}
+.sidebar::-webkit-scrollbar{
+  display:none;
 }
 
 .profile {
