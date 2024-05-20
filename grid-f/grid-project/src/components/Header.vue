@@ -8,9 +8,13 @@
     </div>
     <input class="search" type="text" placeholder="Search" />
     <div class="icons">
-      <button class="icon-button">Button 1</button>
-      <button class="icon-button">Button 2</button>
-      <img class="profile" src="@/assets/logo.png" alt="Profile Picture" />
+      <button class="icon-button">
+        <img src="@/assets/icon1.png" alt="Button 1" class="icon-image" />
+      </button>
+      <button class="icon-button">
+        <img src="@/assets/icon2.png" alt="Button 2" class="icon-image" />
+      </button>
+      <img class="profile" src="@/assets/profile.png" alt="Profile Picture" />
     </div>
   </header>
 </template>
@@ -51,17 +55,25 @@
   align-items: center;
 }
 
-.icons i {
-  font-size: 18px;
-  margin: 0 10px;
-  cursor: pointer;
-  
-}
-
 .profile {
   width: 40px;
   height: 40px;
   border-radius: 50%;
   cursor: pointer;
+}
+
+.icon-button {
+  background: none;
+  border: none;
+  margin: 0 5px;
+  padding: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.icon-image {
+  width: 24px;
+  height: 24px;
 }
 </style>

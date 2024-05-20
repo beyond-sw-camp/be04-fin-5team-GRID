@@ -1,10 +1,11 @@
 <template>
   <aside class="sidebar">
     <div class="profile">
-      <img src="@/assets/logo.png" alt="Profile Picture" class="profile-pic" />
+      <!-- 추후 이미지 파일 업로드로 받아오기. -->
+      <img src="@/assets/profile.png" alt="Profile Picture" class="profile-pic" />
       <div class="profile-info">
-        <h3>{{employee.name}}이름</h3>
-        <p>{{employee.email}}이메일 </p>
+        <h3>{{employee.name}}</h3>
+        <p>{{employee.email}} </p>
       </div>
     </div>
     <nav class="menu">
@@ -61,8 +62,8 @@ const error = ref([]);
 
 const fetchEmployee = async () => {
   try {
-    const response = await axios.get('http://localhost:8080/users/240201'); // Ensure {id} is replaced with an actual ID
-    employee.value = response.data;
+    const response = await axios.get(`http://localhost:8080/users/240201`); // ${employeeNumber}
+    employee.value = response.data.result;
     console.log('Employee data:', employee.value);
   } catch (err) {
     console.error('Error fetching employee:', err);
