@@ -1,5 +1,6 @@
 package org.highfives.grid.approval.command.controller;
 
+import org.highfives.grid.approval.command.aggregate.YN;
 import org.highfives.grid.approval.command.service.ApprovalService;
 import org.highfives.grid.approval.command.vo.*;
 import org.highfives.grid.approval.common.dto.BTApprovalDTO;
@@ -193,13 +194,25 @@ public class ApprovalController {
 
         VacationApprovalDTO result = approvalService.cancelVacationApproval(vacationApprovalId);
 
-        ResApprovalVO response = ResApprovalVO.builder()
-                .statusCode(201)
-                .message("휴가 결재 취소 결재 생성 성공")
-                .href("")
-                .vacationResult(result)
-                .build();
+        if (result.getCancelYN() == YN.Y) {
+            ResApprovalVO response = ResApprovalVO.builder()
+                    .statusCode(201)
+                    .message("휴가 결재 회수 성공")
+                    .href("")
+                    .vacationResult(result)
+                    .build();
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+
+        } else {
+            ResApprovalVO response = ResApprovalVO.builder()
+                    .statusCode(201)
+                    .message("휴가 결재 취소 결재 생성 성공")
+                    .href("")
+                    .vacationResult(result)
+                    .build();
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        }
     }
 }

@@ -1,5 +1,6 @@
 package org.highfives.grid.approval_chain.command.service;
 
+import org.highfives.grid.approval_chain.command.vo.CommentVO;
 import org.highfives.grid.approval_chain.command.aggregate.*;
 import org.highfives.grid.approval_chain.command.repository.BTApprovalChainRepository;
 import org.highfives.grid.approval_chain.command.repository.OApprovalChainRepository;
@@ -127,5 +128,57 @@ public class ApprovalChainServiceImpl implements ApprovalChainService{
         }
 
         return vChainDTOList;
+    }
+
+    @Override
+    @Transactional
+    public BTApprovalChainDTO addBTApprovalComment(CommentVO commentVO) {
+
+        BTApprovalChain btApprovalChain = btApprovalChainRepository.findById(commentVO.getChainId()).orElseThrow();
+
+        btApprovalChain.setComment(commentVO.getComment());
+
+        btApprovalChainRepository.save(btApprovalChain);
+
+        return mapper.map(btApprovalChain, BTApprovalChainDTO.class);
+    }
+
+    @Override
+    @Transactional
+    public OApprovalChainDTO addOApprovalComment(CommentVO commentVO) {
+
+        OApprovalChain oApprovalChain = oApprovalChainRepository.findById(commentVO.getChainId()).orElseThrow();
+
+        oApprovalChain.setComment(commentVO.getComment());
+
+        oApprovalChainRepository.save(oApprovalChain);
+
+        return mapper.map(oApprovalChain, OApprovalChainDTO.class);
+    }
+
+    @Override
+    @Transactional
+    public RWApprovalChainDTO addRWApprovalComment(CommentVO commentVO) {
+
+        RWApprovalChain rwApprovalChain = rwApprovalChainRepository.findById(commentVO.getChainId()).orElseThrow();
+
+        rwApprovalChain.setComment(commentVO.getComment());
+
+        rwApprovalChainRepository.save(rwApprovalChain);
+
+        return mapper.map(rwApprovalChain, RWApprovalChainDTO.class);
+    }
+
+    @Override
+    @Transactional
+    public VApprovalChainDTO addVApprovalComment(CommentVO commentVO) {
+
+        VApprovalChain vApprovalChain = vApprovalChainRepository.findById(commentVO.getChainId()).orElseThrow();
+
+        vApprovalChain.setComment(vApprovalChain.getComment());
+
+        vApprovalChainRepository.save(vApprovalChain);
+
+        return mapper.map(vApprovalChain, VApprovalChainDTO.class);
     }
 }

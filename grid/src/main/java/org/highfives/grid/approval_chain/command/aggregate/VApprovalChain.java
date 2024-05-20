@@ -42,4 +42,8 @@ public class VApprovalChain {
         this.employeeId = employeeId;
         this.chainId = chainId;
     }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
 }
