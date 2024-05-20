@@ -1,6 +1,5 @@
 package org.highfives.grid.security;
 
-import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
@@ -35,6 +34,7 @@ public class GridLogoutFilter extends GenericFilterBean {
         if (getRefreshToken(request) == null) {
             filterChain.doFilter(request, response);
             return ;
+
         }
 
         System.out.println(" 동작함?? " );
@@ -55,6 +55,7 @@ public class GridLogoutFilter extends GenericFilterBean {
         System.out.println(" 동작함??5 " );
         proceedLogout(refreshToken, response);
         System.out.println(" 동작함??6 " );
+
     }
 
     private boolean checkPathMethod(HttpServletRequest request) {

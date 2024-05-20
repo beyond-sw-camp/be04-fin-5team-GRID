@@ -52,7 +52,6 @@ public class UserController {
         if(userDTO != null){
             ResFindUserVO response =
                 new ResFindUserVO(200, "Success to find user", "/users/list", userDTO);
-
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } else {
             ResFindUserVO response =

@@ -65,6 +65,7 @@ public class UserServiceImpl implements UserService{
         LeaderInfoDTO result = new LeaderInfoDTO();
         LeaderInfoDTO info = userMapper.getDepInfo(id);
         result.setDepName(info.getDepName());
+        result.setDepLeaderId(info.getDepLeaderId());
 
         info = userMapper.getDepLeaderInfo(info.getDepLeaderId());
         result.setDepLeaderName(info.getDepLeaderName());
@@ -72,6 +73,7 @@ public class UserServiceImpl implements UserService{
 
         info = userMapper.getTeamInfo(id);
         result.setTeamName(info.getTeamName());
+        result.setTeamLeaderId(info.getTeamLeaderId());
 
         info = userMapper.getTeamLeaderInfo(info.getTeamLeaderId());
         result.setTeamLeaderName(info.getTeamLeaderName());
