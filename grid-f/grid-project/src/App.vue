@@ -14,12 +14,14 @@
     <Header/>
   </div>
 
-  <div id="sidebar">
-    <Sidebar/> 
+  <div>
+    <div id="sidebar">
+      <Sidebar/> 
+    </div>
+    <!-- <div class="content">
+      <RouterView />
+    </div> -->
   </div>
-  <!-- <div class="content">
-    <RouterView />
-  </div> -->
   <div class="footer">
     <Footer/>
   </div>

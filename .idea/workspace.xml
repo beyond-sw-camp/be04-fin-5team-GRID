@@ -2,19 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7837fe4e-431b-475c-a191-e2b790314043" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/grid/application.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/grid/src/main/java/org/highfives/grid/aprroval_chain/command/dto/ApprovalChainDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/grid/src/main/java/org/highfives/grid/aprroval_chain/command/dto/ApprovalTypeDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/grid/src/main/java/org/highfives/grid/aprroval_chain/command/entity/ApprovalChain.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/grid/src/main/java/org/highfives/grid/aprroval_chain/command/entity/ApprovalType.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/grid/src/main/java/org/highfives/grid/aprroval_chain/command/repository/ApprovalChainRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/grid/src/main/java/org/highfives/grid/aprroval_chain/command/repository/ApprovalTypeRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/grid/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/grid/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/grid/src/main/java/org/highfives/grid/aprroval_chain/controller/ApprovalChainController.java" beforeDir="false" afterPath="$PROJECT_DIR$/grid/src/main/java/org/highfives/grid/aprroval_chain/query/controller/ApprovalChainController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/grid-f/grid-project/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/grid-f/grid-project/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/grid-f/grid-project/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/grid-f/grid-project/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/grid-f/grid-project/src/App.vue" beforeDir="false" afterPath="$PROJECT_DIR$/grid-f/grid-project/src/App.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,9 +28,9 @@
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "feature/approval-chain",
+    "git-widget-placeholder": "develop",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/Playdata/Documents/be04-fin-5team-GRID/grid",
+    "last_opened_file_path": "C:/Users/Playdata/Desktop/GRID/grid",
     "nodejs_package_manager_path": "npm",
     "vue.rearranger.settings.migration": "true"
   }
@@ -55,6 +45,7 @@
       <updated>1715053254071</updated>
       <workItem from="1715053255265" duration="18000" />
       <workItem from="1715129695760" duration="9000" />
+      <workItem from="1716163022997" duration="190000" />
     </task>
     <servers />
   </component>
