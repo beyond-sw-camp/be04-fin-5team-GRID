@@ -1,60 +1,53 @@
 <template>
-  <head>
-  <title>Vue.js with Bootstrap</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-  <header class="header">
-    <div class="logo">
-            <img src="@/assets/logo.png" @click="main()" class="logoimage">
+  <div>
+    <header class="header">
+      <div class="logo">
+        <img src="@/assets/logo.png" @click="main()" class="logoimage">
+      </div>
+      <input class="search" type="text" placeholder="Search" />
+      <div class="icons">
+        <button class="icon-button">
+          <img src="@/assets/icon1.png" alt="Button 1" class="icon-image" />
+        </button>
+        <button class="icon-button" type="button" data-bs-toggle="offcanvas" data-bs-target="#demo">
+          <img src="@/assets/icon2.png" alt="Button 2" class="icon-image" />
+        </button>
+        <img class="profile" src="@/assets/profile.png" alt="Profile Picture" />
+      </div>
+    </header>
+
+    <div class="offcanvas offcanvas-end" id="demo">
+      <div class="offcanvas-header">
+        <h1 class="offcanvas-title">부서 리스트</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+      </div>
+      <div class="offcanvas-body" style="position: relative;">
+        <draggable v-model="departments" @end="handleDragEnd" tag="ul" class="list-group">
+          <template #item="{ element }">
+            <li class="list-group-item">{{ element.departmentName }}</li>
+          </template>
+        </draggable>
+      </div>
     </div>
-    <div>
-
-    </div>
-    <input class="search" type="text" placeholder="Search" />
-    
-    <div class="icons">
-      <button class="icon-button">
-        <img src="@/assets/icon1.png" alt="Button 1" class="icon-image" />
-      </button>
-
-      <button class="icon-button" type="button" data-bs-toggle="offcanvas" data-bs-target="#demo">
-        <img src="@/assets/icon2.png" alt="Button 2" class="icon-image" />
-      </button>
-      <img class="profile" src="@/assets/profile.png" alt="Profile Picture" />
-
-</div>
-
-<div class="offcanvas offcanvas-end" id="demo">
-  <div class="offcanvas-header">
-    <h1 class="offcanvas-title">부서 리스트</h1>
-    <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
   </div>
-  <div class="offcanvas-body">
-    <draggable-tree :data="departments" @update="handleUpdate">
-      <template #default="{ node }">
-        <div class="department-item">{{ node.name }}</div>
-      </template>
-    </draggable-tree>
-    <button class="btn btn-secondary" type="button">A Button</button>
-  </div>
-</div>
-    
-  </header>
 </template>
 
 <script setup>
-    import { ref, onMounted } from 'vue';
-    import axios from 'axios';
-    import 'bootstrap/dist/js/bootstrap.bundle.min.js';
-    import {DraggableTree} from 'vue-draggable-nested-tree'
-
+import { ref, onMounted } from 'vue';
+import axios from 'axios';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import draggable from 'vuedraggable';
 
 const departments = ref([]);
 
 const fetchDepartments = async () => {
   try {
     const response = await axios.get('http://localhost:8080/department/find-all');
-    departments.value = response.data;
+    departments.value = response.data.result.map(department => ({
+      id: department.id,
+      departmentName: department.departmentName,
+      // 필요한 다른 속성들도 추가
+    }));
   } catch (error) {
     console.error('부서 정보를 가져오는 데 실패했습니다:', error);
   }
@@ -62,7 +55,13 @@ const fetchDepartments = async () => {
 
 const handleDragEnd = async () => {
   try {
-    await axios.post('/api/departments/reorder', departments.value);
+    const updatedDepartments = departments.value.map((department, index) => ({
+      id: department.id,
+      departmentName: department.departmentName,
+      order: index + 1, // 서버가 기대하는 순서 값을 추가
+    }));
+
+    await axios.put('http://localhost:8080/department', { departments: updatedDepartments });
   } catch (error) {
     console.error('부서 순서를 업데이트하는 데 실패했습니다:', error);
   }
@@ -72,6 +71,7 @@ onMounted(fetchDepartments);
 </script>
 
 <style scoped>
+/* 스타일 코드는 그대로 유지됩니다. */
 .header {
   background: #002366;
   color: white;
@@ -124,5 +124,9 @@ onMounted(fetchDepartments);
 .icon-image {
   width: 24px;
   height: 24px;
+}
+
+.list-group-item {
+  cursor: move; /* 드래그 가능한 커서를 추가 */
 }
 </style>

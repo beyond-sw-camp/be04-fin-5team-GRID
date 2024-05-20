@@ -32,6 +32,11 @@ public class GridLogoutFilter extends GenericFilterBean {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
 
+        if (getRefreshToken(request) == null) {
+            filterChain.doFilter(request, response);
+            return ;
+        }
+
         System.out.println(" 동작함?? " );
         //요청 경로가 logout이고, 요청 메소드가 POST인 경우 (true)가 아니면, 필터체인을 실행하지 않고 다음 로그아웃 로직 실행
         if(!checkPathMethod(request)){
@@ -68,13 +73,14 @@ public class GridLogoutFilter extends GenericFilterBean {
         String refreshToken = null;
 
         Cookie[] cookies = request.getCookies();
-        for (Cookie cookie : cookies) {
-            if (cookie.getName().equals("refresh")) {
-                refreshToken = cookie.getValue();
+        if(cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("refresh")) {
+                    refreshToken = cookie.getValue();
 
+                }
             }
         }
-
         return refreshToken;
     }
 
