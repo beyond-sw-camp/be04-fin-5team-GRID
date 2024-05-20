@@ -1,5 +1,6 @@
 package org.highfives.grid.approval_chain.command.controller;
 
+import org.highfives.grid.approval_chain.command.vo.ChainStatusVO;
 import org.highfives.grid.approval_chain.command.vo.CommentVO;
 import org.highfives.grid.approval_chain.command.service.ApprovalChainService;
 import org.highfives.grid.approval_chain.command.vo.ResApprovalChainVO;
@@ -81,5 +82,11 @@ public class ApprovalChainController {
                 .build();
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @PutMapping("/status")
+    public void modifyChainStatus(@RequestBody ChainStatusVO chainStatusVO) {
+
+        approvalChainService.modifyChainStatus(chainStatusVO);
     }
 }
