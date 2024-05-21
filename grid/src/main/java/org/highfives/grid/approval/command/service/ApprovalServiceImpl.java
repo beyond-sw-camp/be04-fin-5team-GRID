@@ -381,4 +381,17 @@ public class ApprovalServiceImpl implements ApprovalService {
 
         return mapper.map(btApproval, BTApprovalDTO.class);
     }
+
+    @Override
+    @Transactional
+    public OvertimeApprovalDTO viewOvertimeApproval(int overtimeApprovalId) {
+
+        OvertimeApproval overtimeApproval = oApprovalRepository.findById(overtimeApprovalId).orElseThrow();
+        overtimeApproval.setApprovalStatus(ApprovalStatus.V);
+
+        oApprovalRepository.save(overtimeApproval);
+
+        return mapper.map(overtimeApproval, OvertimeApprovalDTO.class);
+    }
+
 }
