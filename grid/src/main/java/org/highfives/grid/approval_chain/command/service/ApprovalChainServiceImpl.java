@@ -322,6 +322,7 @@ public class ApprovalChainServiceImpl implements ApprovalChainService{
                 userService.changeGender(canceledRWApproval.getRequesterId());
                 // 성별 남자의 경우 false 반환 -> 예외 처리
             }
+
         } else {
             rwApproval.setApprovalStatus(ApprovalStatus.D);
         }
@@ -343,6 +344,12 @@ public class ApprovalChainServiceImpl implements ApprovalChainService{
 
         if (chainStatusVO.getChainStatus() == ChainStatus.A) {
             vacationApproval.setApprovalStatus(ApprovalStatus.A);
+
+            if(vacationApproval.getCancelDocId() > 0) {
+                VacationApproval canceledVApproval = vApprovalRepository.findById(vacationApproval.getCancelDocId()).orElseThrow();
+                canceledVApproval.setCancelYN(YN.Y);
+            }
+
         } else {
             vacationApproval.setApprovalStatus(ApprovalStatus.D);
         }
