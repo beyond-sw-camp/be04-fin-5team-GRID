@@ -42,7 +42,7 @@ public class PerformanceReviewController {
 
     // 업적 평가 저장
     @PutMapping("/in-progress")
-    public ResponseEntity<ResponseModifyPerformanceReviewVO> modifyPerformanceReview(
+    public ResponseEntity<ResponseModifyPerformanceReviewVO> modifyPerformanceReviewStatusInProgress(
             @RequestBody RequestPerformanceReviewVO requestPerformanceReviewVO){
 
         System.out.println(requestPerformanceReviewVO);
@@ -50,7 +50,25 @@ public class PerformanceReviewController {
 
         ResponseModifyPerformanceReviewVO response = ResponseModifyPerformanceReviewVO.builder()
                 .statusCode(200)
-                .message("평가 수정 완료")
+                .message("평가 저장 완료")
+                .href("performance-review/detail/{id}")
+                .modifyPerformanceReviewDTO(modifyPerformanceReviewDTO)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    // 업적 평가 상신(제출)
+    @PutMapping("/submit")
+    public ResponseEntity<ResponseModifyPerformanceReviewVO> modifyPerformanceReviewStatusSubmit(
+            @RequestBody RequestPerformanceReviewVO requestPerformanceReviewVO){
+
+        System.out.println(requestPerformanceReviewVO);
+        ModifyPerformanceReviewDTO modifyPerformanceReviewDTO = performanceReviewService.modifyPerformanceReviewStatusSubmit(requestPerformanceReviewVO);
+
+        ResponseModifyPerformanceReviewVO response = ResponseModifyPerformanceReviewVO.builder()
+                .statusCode(200)
+                .message("평가 상신 완료")
                 .href("performance-review/detail/{id}")
                 .modifyPerformanceReviewDTO(modifyPerformanceReviewDTO)
                 .build();
