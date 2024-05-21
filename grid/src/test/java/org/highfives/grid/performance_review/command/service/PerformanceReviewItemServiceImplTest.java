@@ -56,4 +56,13 @@ class PerformanceReviewItemServiceImplTest {
         assertNotNull(modifyItem);
     }
 
+    @DisplayName("reviewId로 평가 항목 조회")
+    @Test
+    public void findPerformanceReviewItemByReviewId(){
+        int id = 1;
+
+        List<PerformanceReviewItemDTO> performanceReviewItemDTOList = performanceReviewItemService.findByReviewId(id);
+
+        assertNotNull(performanceReviewItemDTOList);
+    }
 }

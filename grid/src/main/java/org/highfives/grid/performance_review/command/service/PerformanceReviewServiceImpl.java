@@ -272,6 +272,11 @@ public class PerformanceReviewServiceImpl implements PerformanceReviewService{
                 modifyItemList
         );
 
+        // 연말 평가를 확정하면 종합 평가 생성
+//        if(performanceReview.getType().equals('F')) {
+//
+//        }
+
         return modifyPerformanceReviewDTO;
     }
 }
