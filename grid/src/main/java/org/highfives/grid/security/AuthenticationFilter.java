@@ -20,6 +20,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
 
@@ -81,9 +82,12 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         RefreshToken redisToken = new RefreshToken(userId, refreshToken);
         tokenReissueRepository.save(redisToken);
 
-        // 생성한 토큰 헤더에 저장
-        response.addHeader("access", accessToken);
+        // 생성한 토큰 data/쿠키에 저장
         response.addCookie(jwtUtil.createCookie("refresh", refreshToken));
+        response.setContentType("application/json");
+        PrintWriter out = response.getWriter();
+        out.print("{\"access\": \"" + accessToken + "\"}");
+        out.flush();
     }
 
 }

@@ -23,7 +23,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public UserDTO findUserByEmployeeNum(int eNum) {
+    public UserDTO findUserByEmployeeNum(String eNum) {
 
         try {
             UserDTO result = userMapper.getUserInfo(eNum);

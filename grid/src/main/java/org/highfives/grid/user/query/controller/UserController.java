@@ -45,7 +45,7 @@ public class UserController {
 
     // 사번으로 직원 조회
     @GetMapping("/{employeeNumber}")
-    public ResponseEntity<ResFindUserVO> findUserByEmployeeNum(@PathVariable("employeeNumber") int eNum) {
+    public ResponseEntity<ResFindUserVO> findUserByEmployeeNum(@PathVariable("employeeNumber") String eNum) {
 
         UserDTO userDTO = userService.findUserByEmployeeNum(eNum);
 

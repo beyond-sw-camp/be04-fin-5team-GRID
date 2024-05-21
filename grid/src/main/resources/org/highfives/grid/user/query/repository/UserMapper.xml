@@ -108,7 +108,7 @@
     </select>
 
     <!-- 사원 번호로 유저 조회 쿼리    -->
-    <select id="getUserInfo" parameterType="_int" resultMap="userInfo">
+    <select id="getUserInfo" parameterType="string" resultMap="userInfo">
         SELECT
         E.id,
         E.email,

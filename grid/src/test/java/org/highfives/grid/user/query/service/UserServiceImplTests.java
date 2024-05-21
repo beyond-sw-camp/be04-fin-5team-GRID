@@ -36,7 +36,7 @@ class UserServiceImplTests {
     @Test
     void findUserByEmployeeNumberTest() {
         Assertions.assertDoesNotThrow(
-                () -> userService.findUserByEmployeeNum(1)
+                () -> userService.findUserByEmployeeNum("1")
         );
     }
 }

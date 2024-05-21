@@ -7,11 +7,23 @@ const router = createRouter({
     routes: [
         {
             path: '/',
-            component: () => import('../views/Login.vue')
+            component: () => import('../views/Login/Login.vue')
         },
         {
-            path: '/2',
-            component: () => import('../views/Login2.vue')
+            path: '/find/id',
+            component: () => import('../views/Login/FindId.vue')
+        },
+        {
+            path: '/find/pwd',
+            component: () => import('../views/Login/FindPwd.vue')
+        },
+        {
+            path: '/find/id/result',
+            component: () => import('../views/Login/FindIdResult.vue')
+        },
+        {
+            path: '/find/pwd/result',
+            component: () => import('../views/Login/FindPwdResult.vue')
         }
 
     ]

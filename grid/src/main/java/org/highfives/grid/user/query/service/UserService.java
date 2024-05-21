@@ -10,5 +10,5 @@ public interface UserService {
 
     LeaderInfoDTO findLeaderInfo(int id);
 
-    UserDTO findUserByEmployeeNum(int eNum);
+    UserDTO findUserByEmployeeNum(String eNum);
 }
