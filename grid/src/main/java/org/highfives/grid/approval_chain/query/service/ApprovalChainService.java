@@ -10,8 +10,7 @@ import java.util.Map;
 public interface ApprovalChainService {
 
     List<ApprovalChainDTO> findChainListByTypeId(int approvalId);
-
     int findLeaderByEmployeeId(int employeeId, int chainId);
-
     ChainDTO findBTChainByApprovalAndChainId(int chainId, int approvalId);
+    ChainDTO findOChainByApprovalAndChainId(int chainId, int approvalId);
 }

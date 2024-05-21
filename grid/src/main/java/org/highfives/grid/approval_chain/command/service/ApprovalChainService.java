@@ -25,4 +25,6 @@ public interface ApprovalChainService {
     VApprovalChainDTO addVApprovalComment(CommentVO commentVO);
     BTApprovalChainDTO modifyBTChainStatus(ChainStatusVO chainStatusVO);
     BTApprovalDTO modifyBTApprovalStatus(int btApprovalId, ApprovalStatus approvalStatus);
+    OApprovalChainDTO modifyOChainStatus(ChainStatusVO chainStatusVO);
+
 }

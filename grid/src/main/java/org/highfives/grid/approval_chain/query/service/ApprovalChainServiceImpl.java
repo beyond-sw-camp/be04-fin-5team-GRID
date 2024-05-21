@@ -55,4 +55,17 @@ public class ApprovalChainServiceImpl implements ApprovalChainService {
 
         return chain;
     }
+
+    @Override
+    public ChainDTO findOChainByApprovalAndChainId(int chainId, int approvalId) {
+
+        Map<String, Integer> params = new HashMap<>();
+
+        params.put("chainId", chainId);
+        params.put("approvalId", approvalId);
+
+        ChainDTO chain = approvalChainMapper.findOChainByApprovalAndChainId(params);
+
+        return chain;
+    }
 }

@@ -1,5 +1,6 @@
 package org.highfives.grid.approval_chain.command.controller;
 
+import org.highfives.grid.approval_chain.command.aggregate.OApprovalChain;
 import org.highfives.grid.approval_chain.command.vo.ChainStatusVO;
 import org.highfives.grid.approval_chain.command.vo.CommentVO;
 import org.highfives.grid.approval_chain.command.service.ApprovalChainService;
@@ -91,13 +92,24 @@ public class ApprovalChainController {
 
         switch (chainStatusVO.getTypeId()) {
             case 1:
-                BTApprovalChainDTO result = approvalChainService.modifyBTChainStatus(chainStatusVO);
+                BTApprovalChainDTO btResult = approvalChainService.modifyBTChainStatus(chainStatusVO);
 
                 response = ResApprovalChainVO.builder()
                         .statusCode(200)
                         .message("출장 결재 성공")
                         .href("")
-                        .btChainResult(result)
+                        .btChainResult(btResult)
+                        .build();
+                break;
+
+            case 2:
+                OApprovalChainDTO oResult = approvalChainService.modifyOChainStatus(chainStatusVO);
+
+                response = ResApprovalChainVO.builder()
+                        .statusCode(200)
+                        .message("시간 외 근무 결재 성공")
+                        .href("")
+                        .oChainResult(oResult)
                         .build();
                 break;
         }

@@ -54,18 +54,33 @@
 
     <select id="findBTChainByApprovalAndChainId" resultMap="chainMap" parameterType="map">
         SELECT
-               a.stage,
-               b.id,
-               b.approval_time,
-               b.approval_status,
-               b.comment,
-               b.approval_id,
-               b.employee_id,
-               b.chain_id
+                a.stage,
+                b.id,
+                b.approval_time,
+                b.approval_status,
+                b.comment,
+                b.approval_id,
+                b.employee_id,
+                b.chain_id
           FROM approval_chain a
           JOIN bt_approval_chain b
             ON a.id = b.chain_id
          WHERE b.chain_id = #{chainId} and b.approval_id = #{approvalId};
     </select>
 
+    <select id="findOChainByApprovalAndChainId" resultMap="chainMap" parameterType="map">
+        SELECT
+                a.stage,
+                b.id,
+                b.approval_time,
+                b.approval_status,
+                b.comment,
+                b.approval_id,
+                b.employee_id,
+                b.chain_id
+         FROM approval_chain a
+         JOIN o_approval_chain b
+           ON a.id = b.chain_id
+        WHERE b.chain_id = #{chainId} and b.approval_id = #{approvalId};
+    </select>
 </mapper>
