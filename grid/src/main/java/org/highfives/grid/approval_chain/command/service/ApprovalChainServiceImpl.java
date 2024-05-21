@@ -222,6 +222,15 @@ public class ApprovalChainServiceImpl implements ApprovalChainService{
                 if (chainStatusVO.getChainStatus() == ChainStatus.A) {
                     // 결재 상태가 승인으로 변경되는 함수 호출
                     modifyBTApprovalStatus(btChain.getApprovalId(), ApprovalStatus.A);
+
+                    BTApproval btApproval = btApprovalRepository.findById(chainStatusVO.getApprovalId()).orElseThrow();
+
+                    if (btApproval.getCancelDocId() > 0) {
+
+                        BTApproval canceledBTApproval = btApprovalRepository.findById(btApproval.getCancelDocId()).orElseThrow();
+                        canceledBTApproval.setCancelYN(YN.Y);
+                    }
+
                 } else {
                     // 결재 상태가 반려로 변경되는 함수 호출
                     modifyBTApprovalStatus(btChain.getApprovalId(), ApprovalStatus.D);
@@ -271,6 +280,7 @@ public class ApprovalChainServiceImpl implements ApprovalChainService{
 
         if (chainStatusVO.getChainStatus() == ChainStatus.A) {
             overtimeApproval.setApprovalStatus(ApprovalStatus.A);
+
         } else {
             // W는 예외 처리
             overtimeApproval.setApprovalStatus(ApprovalStatus.D);
