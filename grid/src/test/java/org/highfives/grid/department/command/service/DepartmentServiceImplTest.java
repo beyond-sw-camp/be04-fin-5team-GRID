@@ -44,14 +44,16 @@ class DepartmentServiceImplTest {
 
         // Given
         DepartmentDTO departmentDTO = new DepartmentDTO();
-        departmentDTO.setName("테스트");
+        departmentDTO.setDepartmentName("테스트");
+        departmentDTO.setDepartmentCode("0100");
 
         // When
         DepartmentDTO departmentDTOList = departmentService.registDepartment(departmentDTO);
 
         // Then
 
-        assertThat(departmentDTOList.getName()).isEqualTo("테스트");
+        assertThat(departmentDTOList.getDepartmentName()).isEqualTo("테스트");
+        assertThat(departmentDTOList.getDepartmentCode()).isEqualTo("0100");
     }
 
     @Test
@@ -62,7 +64,7 @@ class DepartmentServiceImplTest {
         // Given
         DepartmentDTO departmentDTO = DepartmentDTO.builder()
                 .id(8)
-                .name("update")
+                .departmentName("update")
                 .highDepartment("update2")
                 .departmentStatus("N")
                 .leaderId(1)
@@ -73,7 +75,7 @@ class DepartmentServiceImplTest {
 
         // Then
 
-        assertThat(departmentDTOList.getName()).isEqualTo("update");
+        assertThat(departmentDTOList.getDepartmentName()).isEqualTo("update");
         assertThat(departmentDTOList.getHighDepartment()).isEqualTo("update2");
         assertThat(departmentDTOList.getLeaderId()).isEqualTo(1);
 

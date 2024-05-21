@@ -6,7 +6,7 @@
 
     <resultMap id="DepartmentResultMap" type="org.highfives.grid.department.query.aggregate.Department">
         <id column="id" property="id"/>
-        <result column="name" property="name"/>
+        <result column="department_name" property="departmentName"/>
         <result column="member_cnt" property="memberCnt"/>
         <result column="department_status" property="departmentStatus"/>
         <result column="start_time" property="startTime"/>
@@ -18,7 +18,7 @@
     <select id="findAllDepartment" resultMap="DepartmentResultMap">
         SELECT
               A.ID
-            , A.NAME
+            , A.DEPARTMENT_NAME
             , A.MEMBER_CNT
             , A.DEPARTMENT_STATUS
             , A.START_TIME
