@@ -16,12 +16,18 @@
                     <div class="outBox" :class="{ 'existence': isExistence }">
                         <div class="inputBox">
                             <input type="text" v-model="inputValue">
-                            <label for="sampleId">이메일 또는 휴대전화</label>
+                            <label for="sampleId">이메일</label>
                         </div>
                     </div>
                 </div>
                 <div class="password">
-                    <div class="input-group" id="pwd-input">
+                    <div class="outBox" :class="{ 'existence': isPwdExistence }">
+                        <div class="inputBox">
+                            <input type="password" v-model="inputPwd">
+                            <label for="samplePwd">비밀번호</label>
+                        </div>
+                    </div>
+                    <!-- <div class="input-group" id="pwd-input">
                         <span class="input-group-text">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                 class="bi bi-key" viewBox="0 0 16 16">
@@ -31,12 +37,10 @@
                             </svg>
                         </span>
                         <input type="password" class="form-control" placeholder="비밀번호">
-                    </div>
+                    </div> -->
                 </div>
-                <div class="button">
-                    <div class="d-grid gap-3">
-                        <button type="button" class="btn btn-block">Sign in</button>
-                    </div>
+                <div class="button d-grid gap-3" style="max-width: 68%;">
+                    <button type="button" class="btn btn-block" @click="Login">Sign in</button>
                 </div>
                 <div class="line">
                     <hr>
@@ -66,81 +70,47 @@
 <script setup>
 
 import { ref, watch } from 'vue';
+import axios from 'axios';
 
 const inputValue = ref('');
+const inputPwd = ref('');
 const isExistence = ref(false);
+const isPwdExistence = ref(false);
+
+async function Login() {
+    try {
+        console.log(`${inputValue.value}`);
+        console.log(`${inputPwd.value}`);
+        const response = await axios.post('http://localhost:8080/login', 
+            {   email: inputValue.value, 
+                pwd: inputPwd.value
+            });
+        console.log(response);
+        console.log(response.headers);
+        if(response.status == 200) {
+            localStorage.setItem('token', response.headers.access);    
+            alert('로그인 되었습니다');
+            // 이후 이동할 경로 (rotuer 추가)
+        }
+    } catch (e) {
+        alert('아이디 또는 비밀번호를 확인해주세요.');
+    }
+
+    
+};
+
 
 watch(inputValue, (newValue) => {
     isExistence.value = newValue !== '';
 });
 
+watch(inputPwd, (newValue) => {
+    isPwdExistence.value = newValue !== '';
+});
+
 </script>
 
 <style scoped>
-.outBox {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    max-width: 320px;
-
-    
-}
-
-.outBox .inputBox {
-    position: relative;
-    height: 50px;
-    border-color: rgb(230, 232, 232);
-}
-
-.inputBox input[type="text"] {
-    padding: 0 10px;
-    width: 100%;
-    height: 50px;
-    font-size: 14px;
-    border-radius: 8px;
-    box-sizing: border-box; 
-    border-color: rgb(230, 232, 232);
-    outline: none;
-}
-
-.outBox input[type="text"] {
-    padding: 0 10px;
-    width: 100%;
-    height: 50px;
-    font-size: 14px;
-    border-radius: 8px;
-    border-color: rgb(230, 232, 232);
-    box-sizing: border-box; 
-
-    outline: none;
-}
-
-.outBox .inputBox label {
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    padding: 0 6px;
-    color: #999;
-    font-size: 14px;
-    font-weight: normal;
-    background: #fff;
-    transform: scale(1) translate(4px, -18px);
-    transition: all 0.15s;
-    border-radius: 20px;
-    pointer-events: none;
-}
-
-.outBox .inputBox input[type="text"]:focus,
-.outBox.existence .inputBox input[type="text"] {
-    border: 2px solid #002366;
-}
-
-.outBox .inputBox input[type="text"]:focus+label,
-.outBox.existence .inputBox label {
-    color: #002366;
-    transform: scale(0.85) translate(-10px, -48px);
-}
-
 @font-face {
     font-family: 'IBMPlexSansKR-Regular';
     src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_20-07@1.0/IBMPlexSansKR-Regular.woff') format('woff');
@@ -168,7 +138,6 @@ body {
     display: flex;
 
     margin: 0;
-    border: solid 1px black;
 }
 
 .left {
@@ -192,13 +161,14 @@ body {
     width: 50%;
     display: flex;
     flex-direction: column;
+    justify-content: center;
 }
 
 .email {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    margin: 15% auto 0;
+    margin: 12% auto 1%;
     width: 85%;
     font-weight: bold;
 }
@@ -244,6 +214,7 @@ hr {
 }
 
 .find-id {
+    font-size: 14px;
     width: 85%;
     margin: 1% auto 0;
     display: flex;
@@ -251,6 +222,7 @@ hr {
 }
 
 .find-pwd {
+    font-size: 14px;
     width: 85%;
     margin: 1% auto 0;
     display: flex;
@@ -302,5 +274,120 @@ hr {
 #find-pwd2 {
     font-weight: bold;
     color: #002366;
+}
+
+.outBox {
+    margin: 0 auto;
+    padding: 0;
+    width: 100%;
+    max-width: 80%;
+}
+
+.outBox .inputBox {
+    position: relative;
+    height: 38px;
+}
+
+.inputBox input[type="text"] {
+    padding: 0 10px;
+    width: 100%;
+    height: 38px;
+    font-size: 14px;
+    border-radius: 8px;
+    box-sizing: border-box;
+    border-color: rgb(255, 255, 255);
+    outline: none;
+}
+
+.outBox input[type="text"] {
+    padding: 0 10px;
+    width: 100%;
+    height: 38px;
+    font-size: 14px;
+    border-radius: 8px;
+    border: 1px solid rgb(220, 220, 220);
+    box-sizing: border-box;
+    outline: none;
+}
+
+.inputBox input[type="password"] {
+    padding: 0 10px;
+    width: 100%;
+    height: 20px;
+    font-size: 14px;
+    border-radius: 8px;
+    box-sizing: border-box;
+    outline: none;
+}
+
+.outBox input[type="password"] {
+    padding: 0 10px;
+    width: 100%;
+    height: 38px;
+    font-size: 14px;
+    border-radius: 8px;
+    border: 1px solid rgb(220, 220, 220);
+    box-sizing: border-box;
+    outline: none;
+}
+
+.outBox .inputBox label {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    padding: 0 6px;
+    font-size: 14px;
+    color: darkgray;
+    font-weight: normal;
+    background: #fff;
+    transform: scale(1) translate(4px, -10px);
+    transition: all 0.15s;
+    border-radius: 20px;
+    pointer-events: none;
+}
+
+.outBox .inputBox input[type="text"]:focus,
+.outBox.existence .inputBox input[type="text"] {
+    border: 2px solid #002366;
+}
+
+.outBox .inputBox input[type="text"]:focus+label,
+.outBox.existence .inputBox label {
+    color: #002366;
+    transform: scale(0.85) translate(8px, -33px);
+}
+
+.outBox .inputBox input[type="text"]:focus,
+.outBox.existence .inputBox input[type="text"] {
+    border: 2px solid #002366;
+}
+
+.outBox .inputBox input[type="text"]:focus+label,
+.outBox.existence .inputBox label {
+    color: #002366;
+    transform: scale(0.85) translate(8px, -33px);
+}
+
+
+.outBox .inputBox input[type="password"]:focus,
+.outBox.existence .inputBox input[type="password"] {
+    border: 2px solid #002366;
+}
+
+.outBox .inputBox input[type="password"]:focus+label,
+.outBox.existence .inputBox label {
+    color: #002366;
+    transform: scale(0.85) translate(8px, -33px);
+}
+
+.outBox .inputBox input[type="password"]:focus,
+.outBox.existence .inputBox input[type="password"] {
+    border: 2px solid #002366;
+}
+
+.outBox .inputBox input[type="password"]:focus+label,
+.outBox.existence .inputBox label {
+    color: #002366;
+    transform: scale(0.85) translate(8px, -33px);
 }
 </style>

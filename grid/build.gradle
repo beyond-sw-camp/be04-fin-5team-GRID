@@ -24,9 +24,9 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
-	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	testImplementation 'org.springframework.security:spring-security-test'
-  
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
 	implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5'
 	implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.4.4'
   	implementation 'org.modelmapper:modelmapper:3.2.0'
