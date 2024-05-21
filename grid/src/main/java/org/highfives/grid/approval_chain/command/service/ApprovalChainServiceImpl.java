@@ -265,9 +265,7 @@ public class ApprovalChainServiceImpl implements ApprovalChainService{
     public OApprovalChainDTO modifyOChainStatus(ChainStatusVO chainStatusVO) {
 
         // 현재 승인 상태 체크에 사용
-        ChainDTO oChain = approvalChainService.findOChainByApprovalAndChainId(chainStatusVO.getChainId(), chainStatusVO.getApprovalId());
-
-        OApprovalChain approvalChain = oApprovalChainRepository.findById(oChain.getId()).orElseThrow();
+        OApprovalChain approvalChain = oApprovalChainRepository.findByApprovalId(chainStatusVO.getApprovalId());
         OvertimeApproval overtimeApproval = oApprovalRepository.findById(chainStatusVO.getApprovalId()).orElseThrow();
 
         approvalChain.setApprovalStatus(chainStatusVO.getChainStatus());
@@ -284,5 +282,11 @@ public class ApprovalChainServiceImpl implements ApprovalChainService{
         oApprovalRepository.save(overtimeApproval);
 
         return mapper.map(approvalChain, OApprovalChainDTO.class);
+    }
+
+    @Override
+    public RWApprovalChainDTO modifyRWChainStatus(ChainStatusVO chainStatusVO) {
+
+        return null;
     }
 }

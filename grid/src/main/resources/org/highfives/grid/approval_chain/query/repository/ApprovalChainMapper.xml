@@ -11,7 +11,7 @@
         <id property="typeId" column="type_id"/>
     </resultMap>
 
-    <resultMap id="chainMap" type="org.highfives.grid.approval_chain.common.dto.ChainDTO">
+    <resultMap id="btChainMap" type="org.highfives.grid.approval_chain.common.dto.ChainDTO">
         <id property="stage" column="stage"/>
         <id property="id" column="id"/>
         <id property="approvalTime" column="approval_time"/>
@@ -52,7 +52,7 @@
                       WHERE id = #{employeeId});
     </select>
 
-    <select id="findBTChainByApprovalAndChainId" resultMap="chainMap" parameterType="map">
+    <select id="findBTChainByApprovalAndChainId" resultMap="btChainMap" parameterType="map">
         SELECT
                 a.stage,
                 b.id,
@@ -66,21 +66,5 @@
           JOIN bt_approval_chain b
             ON a.id = b.chain_id
          WHERE b.chain_id = #{chainId} and b.approval_id = #{approvalId};
-    </select>
-
-    <select id="findOChainByApprovalAndChainId" resultMap="chainMap" parameterType="map">
-        SELECT
-                a.stage,
-                b.id,
-                b.approval_time,
-                b.approval_status,
-                b.comment,
-                b.approval_id,
-                b.employee_id,
-                b.chain_id
-         FROM approval_chain a
-         JOIN o_approval_chain b
-           ON a.id = b.chain_id
-        WHERE b.chain_id = #{chainId} and b.approval_id = #{approvalId};
     </select>
 </mapper>
