@@ -1,9 +1,6 @@
 package org.highfives.grid.approval_chain.command.service;
 
-import org.highfives.grid.approval.command.aggregate.ApprovalStatus;
-import org.highfives.grid.approval.command.aggregate.BTApproval;
-import org.highfives.grid.approval.command.aggregate.OvertimeApproval;
-import org.highfives.grid.approval.command.aggregate.RWApproval;
+import org.highfives.grid.approval.command.aggregate.*;
 import org.highfives.grid.approval.command.repository.BTApprovalRepository;
 import org.highfives.grid.approval.command.repository.OApprovalRepository;
 import org.highfives.grid.approval.command.repository.RWApprovalRepository;
@@ -304,5 +301,26 @@ public class ApprovalChainServiceImpl implements ApprovalChainService{
         rwApprovalRepository.save(rwApproval);
 
         return mapper.map(approvalChain, RWApprovalChainDTO.class);
+    }
+
+    @Override
+    public VApprovalChainDTO modifyVChainStatus(ChainStatusVO chainStatusVO) {
+
+        VApprovalChain approvalChain = vApprovalChainRepository.findByApprovalId(chainStatusVO.getApprovalId());
+        VacationApproval vacationApproval = vApprovalRepository.findById(chainStatusVO.getApprovalId()).orElseThrow();
+
+        approvalChain.setApprovalStatus(chainStatusVO.getChainStatus());
+        approvalChain.setApprovalTime(LocalDateTime.now().format(dateFormat));
+
+        if (chainStatusVO.getChainStatus() == ChainStatus.A) {
+            vacationApproval.setApprovalStatus(ApprovalStatus.A);
+        } else {
+            vacationApproval.setApprovalStatus(ApprovalStatus.D);
+        }
+
+        vApprovalChainRepository.save(approvalChain);
+        vApprovalRepository.save(vacationApproval);
+
+        return mapper.map(approvalChain, VApprovalChainDTO.class);
     }
 }
