@@ -91,6 +91,7 @@ public class WebSecurityConfig {
                                     .requestMatchers(new AntPathRequestMatcher("/users/**")).permitAll()
                                     .requestMatchers(new AntPathRequestMatcher("/**")).permitAll()
                                     .requestMatchers(new AntPathRequestMatcher("/login")).permitAll()
+
                                     .requestMatchers(new AntPathRequestMatcher("/reissue")).permitAll()
                                     .requestMatchers(new AntPathRequestMatcher("/actuator/**")).permitAll()
                                     .anyRequest().authenticated()

@@ -13,7 +13,7 @@ public class ApprovalChainDTO {
 
     private String duty;
 
-    private int priority;
+    private int stage;
 
     private int typeId;
 }

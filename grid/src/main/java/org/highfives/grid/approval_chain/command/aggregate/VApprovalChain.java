@@ -8,8 +8,8 @@ import lombok.*;
 @Getter
 @ToString
 @Entity
-@Table(name = "rw_approval_chain")
-public class RWApprovalChain {
+@Table(name = "v_approval_chain")
+public class VApprovalChain {
 
     @Id
     @Column(name = "id")
@@ -36,7 +36,7 @@ public class RWApprovalChain {
     private int chainId;
 
     @Builder
-    public RWApprovalChain(ChainStatus approvalStatus, int approvalId, int employeeId, int chainId) {
+    public VApprovalChain(ChainStatus approvalStatus, int approvalId, int employeeId, int chainId) {
         this.approvalStatus = approvalStatus;
         this.approvalId = approvalId;
         this.employeeId = employeeId;

@@ -69,4 +69,8 @@ public class OvertimeApproval {
     public void setWriteTime(String writeTime) {
         this.writeTime = writeTime;
     }
+
+    public void setCancelYN(YN cancelYN) {
+        this.cancelYN = cancelYN;
+    }
 }

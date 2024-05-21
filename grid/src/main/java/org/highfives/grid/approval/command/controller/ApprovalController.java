@@ -1,13 +1,12 @@
 package org.highfives.grid.approval.command.controller;
 
+import org.highfives.grid.approval.command.aggregate.YN;
 import org.highfives.grid.approval.command.service.ApprovalService;
-import org.highfives.grid.approval.command.vo.BTApprovalVO;
-import org.highfives.grid.approval.command.vo.OvertimeApprovalVO;
-import org.highfives.grid.approval.command.vo.RWApprovalVO;
-import org.highfives.grid.approval.command.vo.ResApprovalVO;
+import org.highfives.grid.approval.command.vo.*;
 import org.highfives.grid.approval.common.dto.BTApprovalDTO;
 import org.highfives.grid.approval.common.dto.OvertimeApprovalDTO;
 import org.highfives.grid.approval.common.dto.RWApprovalDTO;
+import org.highfives.grid.approval.common.dto.VacationApprovalDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -69,6 +68,21 @@ public class ApprovalController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    @PostMapping("/vacation")
+    public ResponseEntity<ResApprovalVO> addVacationApproval(@RequestBody VacationApprovalVO vacationApprovalVO) {
+
+        VacationApprovalDTO result = approvalService.addVacationApproval(vacationApprovalVO);
+
+        ResApprovalVO response = ResApprovalVO.builder()
+                .statusCode(201)
+                .message("휴가 결재 생성 성공")
+                .href("")
+                .vacationResult(result)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
     @PutMapping("/bt/{btApprovalId}")
     public ResponseEntity<ResApprovalVO> modifyBTApproval(@RequestBody BTApprovalVO btApprovalVO, @PathVariable int btApprovalId) {
 
@@ -114,6 +128,22 @@ public class ApprovalController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    @PutMapping("/vacation/{vacationApprovalId}")
+    public ResponseEntity<ResApprovalVO> modifyVacationApproval(@RequestBody VacationApprovalVO vacationApprovalVO, @PathVariable int vacationApprovalId) {
+
+        VacationApprovalDTO result = approvalService.modifyVacationApproval(vacationApprovalVO, vacationApprovalId);
+
+        ResApprovalVO response = ResApprovalVO.builder()
+                .statusCode(200)
+                .message("휴가 결재 수정 성공")
+                .href("")
+                .vacationResult(result)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+
     @PostMapping("/bt/{btApprovalId}")
     public ResponseEntity<ResApprovalVO> cancelBTApproval(@PathVariable int btApprovalId) {
 
@@ -157,5 +187,32 @@ public class ApprovalController {
                 .build();
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PostMapping("/vacation/{vacationApprovalId}")
+    public ResponseEntity<ResApprovalVO> cancelVacationApproval(@PathVariable int vacationApprovalId) {
+
+        VacationApprovalDTO result = approvalService.cancelVacationApproval(vacationApprovalId);
+
+        if (result.getCancelYN() == YN.Y) {
+            ResApprovalVO response = ResApprovalVO.builder()
+                    .statusCode(201)
+                    .message("휴가 결재 회수 성공")
+                    .href("")
+                    .vacationResult(result)
+                    .build();
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+
+        } else {
+            ResApprovalVO response = ResApprovalVO.builder()
+                    .statusCode(201)
+                    .message("휴가 결재 취소 결재 생성 성공")
+                    .href("")
+                    .vacationResult(result)
+                    .build();
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        }
     }
 }
