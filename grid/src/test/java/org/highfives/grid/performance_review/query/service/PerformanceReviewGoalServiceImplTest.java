@@ -43,4 +43,16 @@ class PerformanceReviewGoalServiceImplTest {
 
         assertNotNull(findGoal);
     }
+
+    @DisplayName("8번 직원의 2024 업적 평가 목표 조회")
+    @Test
+    public void findGoalByWriterIdAndYear(){
+        int writerId = 8;
+        int year = 2024;
+
+        PerformanceReviewGoalDTO performanceReviewGoalDTO = performanceReviewGoalService.findGoalByWriterIdAndYear(writerId, year);
+
+
+        assertNotNull(performanceReviewGoalDTO);
+    }
 }
