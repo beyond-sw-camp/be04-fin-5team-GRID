@@ -75,4 +75,22 @@ public class PerformanceReviewController {
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
+    // 업적 평가 확인중
+    @PutMapping("/read")
+    public ResponseEntity<ResponseModifyPerformanceReviewVO> modifyPerformanceReviewStatusRead(
+            @RequestBody RequestPerformanceReviewVO requestPerformanceReviewVO){
+
+        System.out.println(requestPerformanceReviewVO);
+        ModifyPerformanceReviewDTO modifyPerformanceReviewDTO = performanceReviewService.modifyPerformanceReviewStatusRead(requestPerformanceReviewVO);
+
+        ResponseModifyPerformanceReviewVO response = ResponseModifyPerformanceReviewVO.builder()
+                .statusCode(200)
+                .message("평가 확인 중 저장 완료")
+                .href("performance-review/detail/{id}")
+                .modifyPerformanceReviewDTO(modifyPerformanceReviewDTO)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
 }

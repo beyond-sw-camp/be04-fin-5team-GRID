@@ -163,4 +163,40 @@ public class PerformanceReviewServiceImpl implements PerformanceReviewService{
 
         return modifyPerformanceReviewDTO;
     }
+
+    // 업적 평가 확인중(결재자)
+    @Override
+    public ModifyPerformanceReviewDTO modifyPerformanceReviewStatusRead(RequestPerformanceReviewVO requestPerformanceReviewVO) {
+        // 변경된 평가 항목 수정
+        List<PerformanceReviewItemDTO> performanceReviewItemDTOList =
+                requestPerformanceReviewVO.getPerformanceReviewItemList();
+
+        List<PerformanceReviewItemDTO> modifyItemList = new ArrayList<>();
+        for (PerformanceReviewItemDTO performanceReviewItemDTO : performanceReviewItemDTOList) {
+            PerformanceReviewItemDTO modifyItem =  performanceReviewItemService.modifyItem(performanceReviewItemDTO);
+            modifyItemList.add(modifyItem);
+        }
+
+        // 평가 상태 수정
+        PerformanceReview performanceReview = performanceReviewRepository.findById(requestPerformanceReviewVO.getReviewId())
+                .orElseThrow(IllegalArgumentException::new);
+
+        // 현재 작성 시간
+        LocalDateTime currentTime = LocalDateTime.now();
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String now = dateFormat.format(currentTime);
+
+        if(performanceReview != null){
+
+            performanceReview.setApprovalStatus(String.valueOf(PerformanceReviewStatus.R));
+            performanceReview.setApprovalTime(now);
+        }
+
+        ModifyPerformanceReviewDTO modifyPerformanceReviewDTO = new ModifyPerformanceReviewDTO(
+                modelMapper.map(performanceReview, PerformanceReviewDTO.class),
+                modifyItemList
+        );
+
+        return modifyPerformanceReviewDTO;
+    }
 }
