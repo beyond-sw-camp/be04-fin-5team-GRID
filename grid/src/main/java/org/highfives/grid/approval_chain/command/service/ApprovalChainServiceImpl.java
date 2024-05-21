@@ -3,6 +3,7 @@ package org.highfives.grid.approval_chain.command.service;
 import org.highfives.grid.approval.command.aggregate.ApprovalStatus;
 import org.highfives.grid.approval.command.aggregate.BTApproval;
 import org.highfives.grid.approval.command.aggregate.OvertimeApproval;
+import org.highfives.grid.approval.command.aggregate.RWApproval;
 import org.highfives.grid.approval.command.repository.BTApprovalRepository;
 import org.highfives.grid.approval.command.repository.OApprovalRepository;
 import org.highfives.grid.approval.command.repository.RWApprovalRepository;
@@ -287,6 +288,21 @@ public class ApprovalChainServiceImpl implements ApprovalChainService{
     @Override
     public RWApprovalChainDTO modifyRWChainStatus(ChainStatusVO chainStatusVO) {
 
-        return null;
+        RWApprovalChain approvalChain = rwApprovalChainRepository.findByApprovalId(chainStatusVO.getApprovalId());
+        RWApproval rwApproval = rwApprovalRepository.findById(chainStatusVO.getApprovalId()).orElseThrow();
+
+        approvalChain.setApprovalStatus(chainStatusVO.getChainStatus());
+        approvalChain.setApprovalTime(LocalDateTime.now().format(dateFormat));
+
+        if (chainStatusVO.getChainStatus() == ChainStatus.A) {
+            rwApproval.setApprovalStatus(ApprovalStatus.A);
+        } else {
+            rwApproval.setApprovalStatus(ApprovalStatus.D);
+        }
+
+        rwApprovalChainRepository.save(approvalChain);
+        rwApprovalRepository.save(rwApproval);
+
+        return mapper.map(approvalChain, RWApprovalChainDTO.class);
     }
 }

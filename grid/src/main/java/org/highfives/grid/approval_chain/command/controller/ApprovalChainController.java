@@ -1,6 +1,7 @@
 package org.highfives.grid.approval_chain.command.controller;
 
 import org.highfives.grid.approval_chain.command.aggregate.OApprovalChain;
+import org.highfives.grid.approval_chain.command.aggregate.RWApprovalChain;
 import org.highfives.grid.approval_chain.command.vo.ChainStatusVO;
 import org.highfives.grid.approval_chain.command.vo.CommentVO;
 import org.highfives.grid.approval_chain.command.service.ApprovalChainService;
@@ -110,6 +111,17 @@ public class ApprovalChainController {
                         .message("시간 외 근무 결재 성공")
                         .href("")
                         .oChainResult(oResult)
+                        .build();
+                break;
+
+            case 3:
+                RWApprovalChainDTO rwResult = approvalChainService.modifyRWChainStatus(chainStatusVO);
+
+                response = ResApprovalChainVO.builder()
+                        .statusCode(200)
+                        .message("단축 근무 결재 성공")
+                        .href("")
+                        .rwChainResult(rwResult)
                         .build();
                 break;
         }
