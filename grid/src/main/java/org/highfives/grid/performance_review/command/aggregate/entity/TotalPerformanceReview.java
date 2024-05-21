@@ -6,7 +6,6 @@ import lombok.*;
 @Entity
 @Table(name = "total_performance_review")
 @NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @ToString
 public class TotalPerformanceReview {
@@ -39,4 +38,15 @@ public class TotalPerformanceReview {
 
     @Column(name = "reviewer_id")
     private int reviewerId;
+
+    public TotalPerformanceReview(int year, String reviewName, int totalId, double totalScore, int midtermId, int finalId, int revieweeId, int reviewerId) {
+        this.year = year;
+        this.reviewName = reviewName;
+        this.totalId = totalId;
+        this.totalScore = totalScore;
+        this.midtermId = midtermId;
+        this.finalId = finalId;
+        this.revieweeId = revieweeId;
+        this.reviewerId = reviewerId;
+    }
 }

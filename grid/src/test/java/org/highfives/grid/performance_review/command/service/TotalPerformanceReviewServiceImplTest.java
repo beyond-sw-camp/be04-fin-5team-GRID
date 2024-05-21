@@ -52,5 +52,8 @@ class TotalPerformanceReviewServiceImplTest {
         ));
 
         TotalPerformanceReviewDTO total = totalPerformanceReviewService.addTotalReview(performanceReviewDTOList);
+
+        System.out.println(total);
+        assertNotNull(total);
     }
 }
