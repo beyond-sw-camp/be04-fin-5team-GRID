@@ -52,4 +52,8 @@ public class BTApprovalChain {
     public void setApprovalStatus(ChainStatus approvalStatus) {
         this.approvalStatus = approvalStatus;
     }
+
+    public void setApprovalTime(String approvalTime) {
+        this.approvalTime = approvalTime;
+    }
 }

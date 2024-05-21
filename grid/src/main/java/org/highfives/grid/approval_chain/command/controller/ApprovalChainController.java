@@ -91,13 +91,46 @@ public class ApprovalChainController {
 
         switch (chainStatusVO.getTypeId()) {
             case 1:
-                BTApprovalChainDTO result = approvalChainService.modifyBTChainStatus(chainStatusVO);
+                BTApprovalChainDTO btResult = approvalChainService.modifyBTChainStatus(chainStatusVO);
 
                 response = ResApprovalChainVO.builder()
                         .statusCode(200)
                         .message("출장 결재 성공")
                         .href("")
-                        .btChainResult(result)
+                        .btChainResult(btResult)
+                        .build();
+                break;
+
+            case 2:
+                OApprovalChainDTO oResult = approvalChainService.modifyOChainStatus(chainStatusVO);
+
+                response = ResApprovalChainVO.builder()
+                        .statusCode(200)
+                        .message("시간 외 근무 결재 성공")
+                        .href("")
+                        .oChainResult(oResult)
+                        .build();
+                break;
+
+            case 3:
+                RWApprovalChainDTO rwResult = approvalChainService.modifyRWChainStatus(chainStatusVO);
+
+                response = ResApprovalChainVO.builder()
+                        .statusCode(200)
+                        .message("단축 근무 결재 성공")
+                        .href("")
+                        .rwChainResult(rwResult)
+                        .build();
+                break;
+
+            case 4:
+                VApprovalChainDTO vResult = approvalChainService.modifyVChainStatus(chainStatusVO);
+
+                response = ResApprovalChainVO.builder()
+                        .statusCode(200)
+                        .message("휴가 결재 성공")
+                        .href("")
+                        .vChainResult(vResult)
                         .build();
                 break;
         }

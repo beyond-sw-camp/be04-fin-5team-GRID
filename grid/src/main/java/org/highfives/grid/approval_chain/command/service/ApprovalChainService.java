@@ -1,5 +1,7 @@
 package org.highfives.grid.approval_chain.command.service;
 
+import org.highfives.grid.approval.command.aggregate.ApprovalStatus;
+import org.highfives.grid.approval.common.dto.BTApprovalDTO;
 import org.highfives.grid.approval_chain.command.vo.ChainStatusVO;
 import org.highfives.grid.approval_chain.command.vo.CommentVO;
 import org.highfives.grid.approval_chain.command.vo.ReqAddApprovalChainVO;
@@ -22,4 +24,8 @@ public interface ApprovalChainService {
     RWApprovalChainDTO addRWApprovalComment(CommentVO commentVO);
     VApprovalChainDTO addVApprovalComment(CommentVO commentVO);
     BTApprovalChainDTO modifyBTChainStatus(ChainStatusVO chainStatusVO);
+    BTApprovalDTO modifyBTApprovalStatus(int btApprovalId, ApprovalStatus approvalStatus);
+    OApprovalChainDTO modifyOChainStatus(ChainStatusVO chainStatusVO);
+    RWApprovalChainDTO modifyRWChainStatus(ChainStatusVO chainStatusVO);
+    VApprovalChainDTO modifyVChainStatus(ChainStatusVO chainStatusVO);
 }
