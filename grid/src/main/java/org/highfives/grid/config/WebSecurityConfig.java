@@ -59,9 +59,11 @@ public class WebSecurityConfig {
 
         http.authorizeHttpRequests((authz) ->
                             authz
-//                                    .requestMatchers(new AntPathRequestMatcher("/users/*", "POST")).hasRole("ADMIN")
-//                                    .requestMatchers(new AntPathRequestMatcher("/users/*", "GET")).hasAnyRole("ADMIN", "USER")
-                                    .requestMatchers(new AntPathRequestMatcher("/users/**")).permitAll()
+                                    .requestMatchers(new AntPathRequestMatcher("/users", "POST")).hasRole("ADMIN")
+//                                    .requestMatchers(new AntPathRequestMatcher("/users", "GET")).hasAnyRole("ADMIN", "USER")
+                                    .requestMatchers(new AntPathRequestMatcher("/users/*", "GET")).permitAll()
+                                    .requestMatchers(new AntPathRequestMatcher("/department/**")).permitAll()
+
                                     .requestMatchers(new AntPathRequestMatcher("/reissue")).permitAll()
                                     .requestMatchers(new AntPathRequestMatcher("/actuator/**")).permitAll()
                                     .anyRequest().authenticated()
