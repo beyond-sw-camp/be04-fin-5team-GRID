@@ -16,4 +16,6 @@ public interface PerformanceReviewService {
     ModifyPerformanceReviewDTO modifyPerformanceReviewStatusRead(RequestPerformanceReviewVO requestPerformanceReviewVO);
 
     ModifyPerformanceReviewDTO modifyPerformanceReviewStatusComplete(RequestPerformanceReviewVO requestPerformanceReviewVO);
+
+    ModifyPerformanceReviewDTO modifyPerformanceReviewStatusValid(RequestPerformanceReviewVO requestPerformanceReviewVO);
 }
