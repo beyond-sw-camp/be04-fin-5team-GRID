@@ -1,9 +1,17 @@
 package org.highfives.grid.performance_review.command.service;
 
+import org.highfives.grid.performance_review.command.aggregate.entity.PerformanceReviewGoalItem;
+import org.highfives.grid.performance_review.command.aggregate.entity.PerformanceReviewItem;
+import org.highfives.grid.performance_review.command.dto.PerformanceReviewGoalItemDTO;
+import org.highfives.grid.performance_review.command.dto.PerformanceReviewItemDTO;
 import org.highfives.grid.performance_review.command.repository.PerformanceReviewItemRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service(value = "commandPerformanceReviewItemServiceImpl")
 public class PerformanceReviewItemServiceImpl implements PerformanceReviewItemService{
@@ -11,17 +19,44 @@ public class PerformanceReviewItemServiceImpl implements PerformanceReviewItemSe
     private final PerformanceReviewItemRepository performanceReviewItemRepository;
     private final ModelMapper modelMapper;
 
-//    private final
+    private final PerformanceReviewGoalItemService performanceReviewGoalItemService;
 
 
     @Autowired
-    public PerformanceReviewItemServiceImpl(PerformanceReviewItemRepository performanceReviewItemRepository, ModelMapper modelMapper) {
+    public PerformanceReviewItemServiceImpl(PerformanceReviewItemRepository performanceReviewItemRepository,
+                                            ModelMapper modelMapper,
+                                            PerformanceReviewGoalItemService performanceReviewGoalItemService) {
         this.performanceReviewItemRepository = performanceReviewItemRepository;
         this.modelMapper = modelMapper;
+        this.performanceReviewGoalItemService = performanceReviewGoalItemService;
     }
 
-//    @Override
-//    public PerformanceReviewItemDTO addReviewItem(PerformanceReviewItemDTO performanceReviewItemDTO) {
-//        return null;
-//    }
+    @Override
+    @Transactional
+    public List<PerformanceReviewItemDTO> addNewItems(int goalId, int reviewId) {
+        List<PerformanceReviewGoalItemDTO> performanceReviewGoalItemList = performanceReviewGoalItemService.findByGoalId(goalId);
+        System.out.println(performanceReviewGoalItemList);
+
+        List<PerformanceReviewItemDTO> addReviewList = new ArrayList<>();
+        for (PerformanceReviewGoalItemDTO performanceReviewGoalItem : performanceReviewGoalItemList) {
+            PerformanceReviewItem performanceReviewItem = new PerformanceReviewItem(
+                    performanceReviewGoalItem.getGoal(),
+                    performanceReviewGoalItem.getMetric(),
+                    performanceReviewGoalItem.getWeight(),
+                    3,
+                    (float) (75*performanceReviewGoalItem.getWeight()*0.01),
+                    3,
+                    (float) (75*performanceReviewGoalItem.getWeight()*0.01),
+                    reviewId
+            );
+
+            PerformanceReviewItem addItem = performanceReviewItemRepository.save(performanceReviewItem);
+            addReviewList
+                    .add(modelMapper
+                            .map(addItem, PerformanceReviewItemDTO.class));
+        }
+
+        return addReviewList;
+    }
+
 }

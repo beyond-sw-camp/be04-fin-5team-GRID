@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Entity
-@Table(name = "performance_review")
+@Table(name = "performance_review_item")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -54,4 +54,15 @@ public class PerformanceReviewItem {
 
     @Column(name = "review_id")
     private int reviewId;
+
+    public PerformanceReviewItem(String goal, String metric, int weight, int selfId, float selfScore, int superiorId, float superiorScore, int reviewId) {
+        this.goal = goal;
+        this.metric = metric;
+        this.weight = weight;
+        this.selfId = selfId;
+        this.selfScore = selfScore;
+        this.superiorId = superiorId;
+        this.superiorScore = superiorScore;
+        this.reviewId = reviewId;
+    }
 }

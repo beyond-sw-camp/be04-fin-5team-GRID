@@ -8,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service(value = "commandGoalItemServiceImpl")
 public class PerformanceReviewGoalItemServiceImpl implements PerformanceReviewGoalItemService{
 
@@ -45,7 +48,7 @@ public class PerformanceReviewGoalItemServiceImpl implements PerformanceReviewGo
 
         System.out.println(saveGoalItem);
 
-        return modelMapper.map(saveGoalItem, PerformanceReviewGoalItemDTO.class);
+        return modelMapper.map(saveGoalItem, org.highfives.grid.performance_review.command.dto.PerformanceReviewGoalItemDTO.class);
     }
 
     // id가 있는 항목은 수정
@@ -74,7 +77,7 @@ public class PerformanceReviewGoalItemServiceImpl implements PerformanceReviewGo
 
         System.out.println(modifyGoalItem);
 
-        return modelMapper.map(modifyGoalItem, PerformanceReviewGoalItemDTO.class);
+        return modelMapper.map(modifyGoalItem, org.highfives.grid.performance_review.command.dto.PerformanceReviewGoalItemDTO.class);
     }
 
     // 목표 항목 삭제
@@ -85,6 +88,21 @@ public class PerformanceReviewGoalItemServiceImpl implements PerformanceReviewGo
         performanceReviewGoalItemRepository.deleteById(id);
 
         return id;
+    }
+
+    // 목표 항목 조회(평가 항목 추가 용도)
+    @Override
+    public List<PerformanceReviewGoalItemDTO> findByGoalId(int goalId) {
+        List<PerformanceReviewGoalItem> findItemList = performanceReviewGoalItemRepository.findByGoalId(goalId);
+
+        List<PerformanceReviewGoalItemDTO> performanceReviewGoalItemDTOList = new ArrayList<>();
+        for (PerformanceReviewGoalItem performanceReviewGoalItem : findItemList) {
+            performanceReviewGoalItemDTOList.add(
+                    modelMapper.map(performanceReviewGoalItem, PerformanceReviewGoalItemDTO.class)
+            );
+
+        }
+        return performanceReviewGoalItemDTOList;
     }
 
 }
