@@ -143,7 +143,6 @@ public class ApprovalController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-
     @PostMapping("/bt/{btApprovalId}")
     public ResponseEntity<ResApprovalVO> cancelBTApproval(@PathVariable int btApprovalId) {
 
@@ -244,5 +243,20 @@ public class ApprovalController {
                 .build();
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PutMapping("/bt-status/{approvalId}")
+    public ResponseEntity<ResApprovalVO> viewBTApproval(@PathVariable int approvalId) {
+
+        BTApprovalDTO result = approvalService.viewBTApproval(approvalId);
+
+        ResApprovalVO response = ResApprovalVO.builder()
+                .statusCode(200)
+                .message("출장 결재 열람 상태 변경 성공")
+                .href("")
+                .btResult(result)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

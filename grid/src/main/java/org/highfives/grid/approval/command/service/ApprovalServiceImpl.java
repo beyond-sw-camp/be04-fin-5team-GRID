@@ -369,4 +369,16 @@ public class ApprovalServiceImpl implements ApprovalService {
 
         return mapper.map(cancelApproval, VacationApprovalDTO.class);
     }
+
+    @Override
+    @Transactional
+    public BTApprovalDTO viewBTApproval(int btApprovalId) {
+
+        BTApproval btApproval = btApprovalRepository.findById(btApprovalId).orElseThrow();
+        btApproval.setApprovalStatus(ApprovalStatus.V);
+
+        btApprovalRepository.save(btApproval);
+
+        return mapper.map(btApproval, BTApprovalDTO.class);
+    }
 }
