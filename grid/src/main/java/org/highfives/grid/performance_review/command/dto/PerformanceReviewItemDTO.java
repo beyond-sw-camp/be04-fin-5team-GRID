@@ -17,9 +17,9 @@ public class PerformanceReviewItemDTO {
     private int weight;
     private String performance;
     private int selfId;
-    private float selfScore;
+    private double selfScore;
     private String selfComment;
     private int superiorId;
-    private float superiorScore;
+    private double superiorScore;
     private int reviewId;
 }

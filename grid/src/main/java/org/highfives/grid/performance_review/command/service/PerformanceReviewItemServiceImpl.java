@@ -44,9 +44,9 @@ public class PerformanceReviewItemServiceImpl implements PerformanceReviewItemSe
                     performanceReviewGoalItem.getMetric(),
                     performanceReviewGoalItem.getWeight(),
                     3,
-                    (float) (75*performanceReviewGoalItem.getWeight()*0.01),
+                    75*performanceReviewGoalItem.getWeight()*0.01,
                     3,
-                    (float) (75*performanceReviewGoalItem.getWeight()*0.01),
+                    75*performanceReviewGoalItem.getWeight()*0.01,
                     reviewId
             );
 
@@ -57,6 +57,34 @@ public class PerformanceReviewItemServiceImpl implements PerformanceReviewItemSe
         }
 
         return addReviewList;
+    }
+
+    @Override
+    public PerformanceReviewItemDTO modifyItem(PerformanceReviewItemDTO performanceReviewItemDTO) {
+        System.out.println(performanceReviewItemDTO);
+
+        PerformanceReviewItem performanceReviewItem = performanceReviewItemRepository.findById(performanceReviewItemDTO.getId())
+                .orElseThrow(IllegalArgumentException::new);
+
+        System.out.println(performanceReviewItem);
+
+        if (performanceReviewItem != null) {
+            performanceReviewItem.setActionItem(performanceReviewItemDTO.getActionItem());
+            performanceReviewItem.setDetailPlan(performanceReviewItemDTO.getDetailPlan());
+            performanceReviewItem.setPerformance(performanceReviewItemDTO.getPerformance());
+            performanceReviewItem.setSelfId(performanceReviewItemDTO.getSelfId());
+            performanceReviewItem.setSelfScore(performanceReviewItemDTO.getSelfScore());
+            performanceReviewItem.setSelfComment(performanceReviewItemDTO.getSelfComment());
+            performanceReviewItem.setSuperiorId(performanceReviewItemDTO.getSuperiorId());
+            performanceReviewItem.setSuperiorScore(performanceReviewItemDTO.getSuperiorScore());
+        }
+
+        PerformanceReviewItem modifyItem = performanceReviewItemRepository.findById(
+                performanceReviewItemDTO.getId()
+        ).orElseThrow(IllegalArgumentException::new);
+
+        System.out.println(modifyItem);
+        return modelMapper.map(modifyItem, PerformanceReviewItemDTO.class);
     }
 
 }

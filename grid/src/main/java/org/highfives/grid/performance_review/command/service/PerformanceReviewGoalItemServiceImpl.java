@@ -48,7 +48,7 @@ public class PerformanceReviewGoalItemServiceImpl implements PerformanceReviewGo
 
         System.out.println(saveGoalItem);
 
-        return modelMapper.map(saveGoalItem, org.highfives.grid.performance_review.command.dto.PerformanceReviewGoalItemDTO.class);
+        return modelMapper.map(saveGoalItem, PerformanceReviewGoalItemDTO.class);
     }
 
     // id가 있는 항목은 수정
@@ -77,7 +77,7 @@ public class PerformanceReviewGoalItemServiceImpl implements PerformanceReviewGo
 
         System.out.println(modifyGoalItem);
 
-        return modelMapper.map(modifyGoalItem, org.highfives.grid.performance_review.command.dto.PerformanceReviewGoalItemDTO.class);
+        return modelMapper.map(modifyGoalItem, PerformanceReviewGoalItemDTO.class);
     }
 
     // 목표 항목 삭제
