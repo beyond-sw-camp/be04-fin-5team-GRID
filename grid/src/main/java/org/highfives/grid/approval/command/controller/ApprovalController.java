@@ -1,5 +1,6 @@
 package org.highfives.grid.approval.command.controller;
 
+import org.highfives.grid.approval.command.aggregate.YN;
 import org.highfives.grid.approval.command.service.ApprovalService;
 import org.highfives.grid.approval.command.vo.*;
 import org.highfives.grid.approval.common.dto.BTApprovalDTO;

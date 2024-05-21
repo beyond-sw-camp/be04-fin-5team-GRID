@@ -1,11 +1,14 @@
 package org.highfives.grid.approval_chain.command.service;
 
+import org.highfives.grid.approval.command.aggregate.BTApproval;
+import org.highfives.grid.approval_chain.command.vo.CommentVO;
 import org.highfives.grid.approval_chain.command.aggregate.*;
 import org.highfives.grid.approval_chain.command.repository.BTApprovalChainRepository;
 import org.highfives.grid.approval_chain.command.repository.OApprovalChainRepository;
 import org.highfives.grid.approval_chain.command.repository.RWApprovalChainRepository;
 import org.highfives.grid.approval_chain.command.repository.VApprovalChainRepository;
 import org.highfives.grid.approval_chain.command.vo.ReqAddApprovalChainVO;
+import org.highfives.grid.approval_chain.command.vo.ChainStatusVO;
 import org.highfives.grid.approval_chain.common.dto.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -128,4 +131,102 @@ public class ApprovalChainServiceImpl implements ApprovalChainService{
 
         return vChainDTOList;
     }
+
+    @Override
+    @Transactional
+    public BTApprovalChainDTO addBTApprovalComment(CommentVO commentVO) {
+
+        BTApprovalChain btApprovalChain = btApprovalChainRepository.findById(commentVO.getChainId()).orElseThrow();
+
+        btApprovalChain.setComment(commentVO.getComment());
+
+        btApprovalChainRepository.save(btApprovalChain);
+
+        return mapper.map(btApprovalChain, BTApprovalChainDTO.class);
+    }
+
+    @Override
+    @Transactional
+    public OApprovalChainDTO addOApprovalComment(CommentVO commentVO) {
+
+        OApprovalChain oApprovalChain = oApprovalChainRepository.findById(commentVO.getChainId()).orElseThrow();
+
+        oApprovalChain.setComment(commentVO.getComment());
+
+        oApprovalChainRepository.save(oApprovalChain);
+
+        return mapper.map(oApprovalChain, OApprovalChainDTO.class);
+    }
+
+    @Override
+    @Transactional
+    public RWApprovalChainDTO addRWApprovalComment(CommentVO commentVO) {
+
+        RWApprovalChain rwApprovalChain = rwApprovalChainRepository.findById(commentVO.getChainId()).orElseThrow();
+
+        rwApprovalChain.setComment(commentVO.getComment());
+
+        rwApprovalChainRepository.save(rwApprovalChain);
+
+        return mapper.map(rwApprovalChain, RWApprovalChainDTO.class);
+    }
+
+    @Override
+    @Transactional
+    public VApprovalChainDTO addVApprovalComment(CommentVO commentVO) {
+
+        VApprovalChain vApprovalChain = vApprovalChainRepository.findById(commentVO.getChainId()).orElseThrow();
+
+        vApprovalChain.setComment(vApprovalChain.getComment());
+
+        vApprovalChainRepository.save(vApprovalChain);
+
+        return mapper.map(vApprovalChain, VApprovalChainDTO.class);
+    }
+
+    @Override
+    @Transactional
+    public BTApprovalChainDTO modifyBTChainStatus(ChainStatusVO chainStatusVO) {
+
+        // 이미 approval status가 승인이나 반려 상태인 경우 -> 예외 처리
+        // 이미 chain status가 승인이나 반려 상태인 경우 -> 예외 처리
+        ChainDTO btChain = approvalChainService.findBTChainByApprovalAndChainId(chainStatusVO.getChainId(), chainStatusVO.getApprovalId());
+
+        if (btChain.getStage() == 2) {  // 두번째 결재자
+            ChainDTO btChain2 = approvalChainService.findBTChainByApprovalAndChainId(chainStatusVO.getChainId() + 1, chainStatusVO.getApprovalId());
+
+            if (btChain2.getChainStatus() == ChainStatus.A) {   // 첫번째 결재자가 승인한 경우에만 결재(승인/반려) 가능
+                BTApprovalChain approvalChain = btApprovalChainRepository.findById(btChain.getId()).orElseThrow();
+                approvalChain.setApprovalStatus(chainStatusVO.getChainStatus());
+
+                btApprovalChainRepository.save(approvalChain);
+
+                if (chainStatusVO.getChainStatus() == ChainStatus.A) {
+                    // 결재 상태가 승인으로 변경되는 함수 호출
+                } else {
+                    // 결재 상태가 반려로 변경되는 함수 호출
+                }
+
+                return mapper.map(approvalChain, BTApprovalChainDTO.class);
+
+            }
+
+            return null;
+
+            // 첫번째 결재자가 승인 상태가 아닌 경우 -> 예외 처리
+        }
+
+        BTApprovalChain approvalChain = btApprovalChainRepository.findById(btChain.getId()).orElseThrow();
+        approvalChain.setApprovalStatus(chainStatusVO.getChainStatus());
+
+        btApprovalChainRepository.save(approvalChain);
+
+        if (chainStatusVO.getChainStatus() == ChainStatus.D) {
+            // 결재 상태가 반려로 변경되는 함수 호출
+        }
+
+        return mapper.map(approvalChain, BTApprovalChainDTO.class);
+    }
+
+
 }

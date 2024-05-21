@@ -246,6 +246,7 @@ public class ApprovalServiceImpl implements ApprovalService {
 
         // N인 경우에는 회수
         if (btApproval.getApprovalStatus() == ApprovalStatus.N) {
+            // 취소가 된 상태에서 취소?
             btApproval.setCancelYN(YN.Y);
 
             btApprovalRepository.save(btApproval);
