@@ -259,4 +259,34 @@ public class ApprovalController {
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
+    @PutMapping("/overtime-status/{approvalId}")
+    public ResponseEntity<ResApprovalVO> viewOvertimeApproval(@PathVariable int approvalId) {
+
+        OvertimeApprovalDTO result = approvalService.viewOvertimeApproval(approvalId);
+
+        ResApprovalVO response = ResApprovalVO.builder()
+                .statusCode(200)
+                .message("시간 외 근무 결재 열람 상태 변경 성공")
+                .href("")
+                .overtimeResult(result)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @PutMapping("/rw-status/{approvalId}")
+    public ResponseEntity<ResApprovalVO> viewRWApproval(@PathVariable int approvalId) {
+
+        RWApprovalDTO result = approvalService.viewRWApproval(approvalId);
+
+        ResApprovalVO response = ResApprovalVO.builder()
+                .statusCode(200)
+                .message("단축 근무 결재 열람 상태 변경 성공")
+                .href("")
+                .rwResult(result)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
 }

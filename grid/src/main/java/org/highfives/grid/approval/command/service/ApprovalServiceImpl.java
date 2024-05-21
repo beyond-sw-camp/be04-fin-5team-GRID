@@ -394,4 +394,14 @@ public class ApprovalServiceImpl implements ApprovalService {
         return mapper.map(overtimeApproval, OvertimeApprovalDTO.class);
     }
 
+    @Override
+    public RWApprovalDTO viewRWApproval(int rwApprovalId) {
+
+        RWApproval rwApproval = rwApprovalRepository.findById(rwApprovalId).orElseThrow();
+        rwApproval.setApprovalStatus(ApprovalStatus.V);
+
+        rwApprovalRepository.save(rwApproval);
+
+        return mapper.map(rwApproval, RWApprovalDTO.class);
+    }
 }
