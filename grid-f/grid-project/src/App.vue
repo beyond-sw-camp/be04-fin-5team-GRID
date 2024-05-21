@@ -2,12 +2,18 @@
   <div class="all">
       <div class="header">Header</div>
       <div class="sidebar">Sidebar</div>
-      <div class="content"><Policy /></div>
+      <div class="content"> <PolicyRegist /> </div>
   </div>
 </template>
 
 <script setup>
-  import Policy from "@/components/Vacation/VacationPolicy.vue";
+  import Policy from "@/components/Vacation/Policy/VacationPolicy.vue";
+  import PolicyModify from "@/components/Vacation/Policy/VacationPolicyModify.vue";
+  import PolicyRegist from "@/components/Vacation/Policy/VacationPolicyRegist.vue";
+  import Main from "@/components/Main/Main.vue";
+  import { RouterLink, RouterView, useRouter } from 'vue-router';
+
+  const router = useRouter();
 </script>
 
 
