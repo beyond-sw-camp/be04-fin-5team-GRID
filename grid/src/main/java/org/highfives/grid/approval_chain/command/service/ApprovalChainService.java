@@ -26,5 +26,5 @@ public interface ApprovalChainService {
     BTApprovalChainDTO modifyBTChainStatus(ChainStatusVO chainStatusVO);
     BTApprovalDTO modifyBTApprovalStatus(int btApprovalId, ApprovalStatus approvalStatus);
     OApprovalChainDTO modifyOChainStatus(ChainStatusVO chainStatusVO);
-
+    RWApprovalChainDTO modifyRWChainStatus(ChainStatusVO chainStatusVO);
 }

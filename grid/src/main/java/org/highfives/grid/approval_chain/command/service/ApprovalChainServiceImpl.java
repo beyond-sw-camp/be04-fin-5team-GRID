@@ -3,6 +3,7 @@ package org.highfives.grid.approval_chain.command.service;
 import org.highfives.grid.approval.command.aggregate.ApprovalStatus;
 import org.highfives.grid.approval.command.aggregate.BTApproval;
 import org.highfives.grid.approval.command.aggregate.OvertimeApproval;
+import org.highfives.grid.approval.command.aggregate.RWApproval;
 import org.highfives.grid.approval.command.repository.BTApprovalRepository;
 import org.highfives.grid.approval.command.repository.OApprovalRepository;
 import org.highfives.grid.approval.command.repository.RWApprovalRepository;
@@ -265,9 +266,7 @@ public class ApprovalChainServiceImpl implements ApprovalChainService{
     public OApprovalChainDTO modifyOChainStatus(ChainStatusVO chainStatusVO) {
 
         // 현재 승인 상태 체크에 사용
-        ChainDTO oChain = approvalChainService.findOChainByApprovalAndChainId(chainStatusVO.getChainId(), chainStatusVO.getApprovalId());
-
-        OApprovalChain approvalChain = oApprovalChainRepository.findById(oChain.getId()).orElseThrow();
+        OApprovalChain approvalChain = oApprovalChainRepository.findByApprovalId(chainStatusVO.getApprovalId());
         OvertimeApproval overtimeApproval = oApprovalRepository.findById(chainStatusVO.getApprovalId()).orElseThrow();
 
         approvalChain.setApprovalStatus(chainStatusVO.getChainStatus());
@@ -284,5 +283,26 @@ public class ApprovalChainServiceImpl implements ApprovalChainService{
         oApprovalRepository.save(overtimeApproval);
 
         return mapper.map(approvalChain, OApprovalChainDTO.class);
+    }
+
+    @Override
+    public RWApprovalChainDTO modifyRWChainStatus(ChainStatusVO chainStatusVO) {
+
+        RWApprovalChain approvalChain = rwApprovalChainRepository.findByApprovalId(chainStatusVO.getApprovalId());
+        RWApproval rwApproval = rwApprovalRepository.findById(chainStatusVO.getApprovalId()).orElseThrow();
+
+        approvalChain.setApprovalStatus(chainStatusVO.getChainStatus());
+        approvalChain.setApprovalTime(LocalDateTime.now().format(dateFormat));
+
+        if (chainStatusVO.getChainStatus() == ChainStatus.A) {
+            rwApproval.setApprovalStatus(ApprovalStatus.A);
+        } else {
+            rwApproval.setApprovalStatus(ApprovalStatus.D);
+        }
+
+        rwApprovalChainRepository.save(approvalChain);
+        rwApprovalRepository.save(rwApproval);
+
+        return mapper.map(approvalChain, RWApprovalChainDTO.class);
     }
 }
