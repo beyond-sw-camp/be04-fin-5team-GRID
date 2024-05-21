@@ -125,6 +125,9 @@ public class Employee {
         this.departmentId = departmentId;
     }
 
+    public void setGender(Gender gender) {
+        this.gender = gender;
+    }
     public void setResignTime(String resignTime) {
         this.resignTime = resignTime;
     }

@@ -23,4 +23,6 @@ public interface UserService extends UserDetailsService {
     boolean deleteUser(String employeeNumber);
 
     void findPwd(String pwd);
+
+    boolean changeGender(int userId);
 }

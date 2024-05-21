@@ -246,6 +246,7 @@ public class ApprovalServiceImpl implements ApprovalService {
 
         // N인 경우에는 회수
         if (btApproval.getApprovalStatus() == ApprovalStatus.N) {
+            // 취소가 된 상태에서 취소?
             btApproval.setCancelYN(YN.Y);
 
             btApprovalRepository.save(btApproval);
@@ -265,6 +266,9 @@ public class ApprovalServiceImpl implements ApprovalService {
                     .build();
 
             btApprovalRepository.save(cancelApproval);
+
+            ReqAddApprovalChainVO request = new ReqAddApprovalChainVO(1, cancelApproval.getId(), cancelApproval.getRequesterId());
+            approvalChainService.addBTApprovalChain(request);
 
             return mapper.map(cancelApproval, BTApprovalDTO.class);
         }
@@ -294,6 +298,9 @@ public class ApprovalServiceImpl implements ApprovalService {
                     .build();
 
             oApprovalRepository.save(cancelApproval);
+
+            ReqAddApprovalChainVO request = new ReqAddApprovalChainVO(2, cancelApproval.getId(), cancelApproval.getRequesterId());
+            approvalChainService.addOApprovalChain(request);
 
             return mapper.map(cancelApproval, OvertimeApprovalDTO.class);
         }
@@ -327,6 +334,9 @@ public class ApprovalServiceImpl implements ApprovalService {
 
             rwApprovalRepository.save(cancelApproval);
 
+            ReqAddApprovalChainVO request = new ReqAddApprovalChainVO(3, cancelApproval.getId(), cancelApproval.getRequesterId());
+            approvalChainService.addRWApprovalChain(request);
+
             return mapper.map(cancelApproval, RWApprovalDTO.class);
         }
     }
@@ -356,6 +366,9 @@ public class ApprovalServiceImpl implements ApprovalService {
                     .build();
 
             vApprovalRepository.save(cancelApproval);
+
+            ReqAddApprovalChainVO request = new ReqAddApprovalChainVO(4, cancelApproval.getId(), cancelApproval.getRequesterId());
+            approvalChainService.addVApprovalChain(request);
 
             return mapper.map(cancelApproval, VacationApprovalDTO.class);
         }

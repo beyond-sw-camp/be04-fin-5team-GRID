@@ -7,7 +7,7 @@
     <resultMap id="approvalChainMap" type="org.highfives.grid.approval_chain.common.dto.ApprovalChainDTO">
         <id property="id" column="id"/>
         <id property="duty" column="duty"/>
-        <id property="priority" column="priority"/>
+        <id property="stage" column="stage"/>
         <id property="typeId" column="type_id"/>
     </resultMap>
 
@@ -15,7 +15,7 @@
         SELECT
                 id
               , duty
-              , priority
+              , stage
               , type_id
         FROM approval_chain
         WHERE type_id = #{typeId}

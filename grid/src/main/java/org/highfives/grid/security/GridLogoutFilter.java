@@ -33,7 +33,8 @@ public class GridLogoutFilter extends GenericFilterBean {
 
         if (getRefreshToken(request) == null) {
             filterChain.doFilter(request, response);
-            return;
+            return ;
+
         }
 
         System.out.println(" 동작함?? " );
@@ -73,14 +74,14 @@ public class GridLogoutFilter extends GenericFilterBean {
         String refreshToken = null;
 
         Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
+        if(cookies != null) {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals("refresh")) {
                     refreshToken = cookie.getValue();
+
                 }
             }
         }
-
         return refreshToken;
     }
 
