@@ -18,12 +18,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service(value = "CommandApprovalChainService")
 public class ApprovalChainServiceImpl implements ApprovalChainService{
 
+    private static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private final ModelMapper mapper;
     private final BTApprovalChainRepository btApprovalChainRepository;
     private final BTApprovalRepository btApprovalRepository;
@@ -202,7 +205,9 @@ public class ApprovalChainServiceImpl implements ApprovalChainService{
 
             if (btChain2.getChainStatus() == ChainStatus.A) {   // 첫번째 결재자가 승인한 경우에만 결재(승인/반려) 가능
                 BTApprovalChain approvalChain = btApprovalChainRepository.findById(btChain.getId()).orElseThrow();
+
                 approvalChain.setApprovalStatus(chainStatusVO.getChainStatus());
+                approvalChain.setApprovalTime(LocalDateTime.now().format(dateFormat));
 
                 btApprovalChainRepository.save(approvalChain);
 
@@ -224,7 +229,9 @@ public class ApprovalChainServiceImpl implements ApprovalChainService{
         }
 
         BTApprovalChain approvalChain = btApprovalChainRepository.findById(btChain.getId()).orElseThrow();
+
         approvalChain.setApprovalStatus(chainStatusVO.getChainStatus());
+        approvalChain.setApprovalTime(LocalDateTime.now().format(dateFormat));
 
         btApprovalChainRepository.save(approvalChain);
 
