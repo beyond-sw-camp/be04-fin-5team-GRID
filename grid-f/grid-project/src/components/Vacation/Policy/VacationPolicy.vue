@@ -2,14 +2,14 @@
     <div class="policyAll">
         <div class="policyTitle">
             <img class = "policyIcon" src="@/assets/buttons/policy.png">
-            <h1>휴가 정책</h1>
+            <h1>휴가정책</h1>
             <button class = "policyRegist">등록하기</button>
         </div>
         <div class="policyContent">
             <div class="policyBox">
                 <div class="policyHeader">
                     <h3 class="policyName">연차</h3>
-                    <button class="policyModify">수정하기</button>
+                    <img class="policyModify" src="@/assets/buttons/edit.png" @click="modifyPolicy()">
                 </div>
                 <h5 class="policies">근로기준법 제 60조(연차 유급휴가)
                     <br> 1. 사용자는 1년간 80퍼센트 이상 출근한 근로자에게 15일의 유급휴가를 주어야 한다. <개정 2012. 2. 1.>
@@ -29,13 +29,20 @@
                 </h5>
             </div>
             <div class="policyBox">
-                <h3 class="policyName">보건 휴가</h3>
+                <div class="policyHeader">
+                    <h3 class="policyName">보건 휴가</h3>
+                    <img class="policyModify" src="@/assets/buttons/edit.png">
+                </div>
                 <h5 class="policies">1. 여성 직원은 매달 1일 보건휴가 1일이 자동으로 추가된다.
                     <br> 2. 사용하지 않은 보건휴가는 매달  말일 자동으로 소멸된다.
                 </h5>
             </div>
             <div class="policyBox">
-                <h3 class="policyName">정기 휴가</h3>
+                <div class = "policyHeader">
+                    <h3 class="policyName">정기 휴가</h3>
+                    <img class="policyModify" src="@/assets/buttons/edit.png">
+                </div>
+                
                 <h5 class="policies">1. 정기휴가는 입사이후 1년부터 기본 4일이 제공된다.
                     <br> 2. 받은후로부터 1년안에 사용해야하며, 사용하지 않은 정기휴가는 소멸되고 따로 보상받을 수 없다. 
                 </h5>
@@ -49,6 +56,11 @@
 </template>
 
 <script setup>
+import router from '@/router/router';
+
+function modifyPolicy() {
+    router.push('/policy/modify');
+}
 
 </script>
 
@@ -77,8 +89,8 @@
         margin-top: 0;
         margin-bottom: 2%;
         font-size: 20px;
-        grid-column-start: 2;
-        grid-column-end: 3;
+        grid-column-start: 1;
+        grid-column-end: 2;
     }
 
     .policyContent {
@@ -98,7 +110,7 @@
         padding: 10px; /* 내부 여백 추가 */
         margin-top: 10px;
         margin-bottom: 0;
-        background-color: aliceblue;
+        background-color: #F8F9FAFF;
     }
 
     .policyIcon {
@@ -115,6 +127,18 @@
         cursor: pointer;
         font-size: 12px;
         font-style: bold;
+    }
+
+    .policyHeader {
+        display: grid;
+        grid-template-columns: auto auto;
+        align-items: center;
+    }
+
+    .policyModify {
+        justify-self: end;
+        cursor: pointer;
+        width: 30px; /* 크기를 적절하게 조절 */
     }
     
 
