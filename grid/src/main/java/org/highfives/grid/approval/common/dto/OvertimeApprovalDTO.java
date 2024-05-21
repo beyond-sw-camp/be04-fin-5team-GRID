@@ -2,6 +2,7 @@ package org.highfives.grid.approval.common.dto;
 
 import lombok.*;
 import org.highfives.grid.approval.command.aggregate.ApprovalStatus;
+import org.highfives.grid.approval.command.aggregate.YN;
 
 @RequiredArgsConstructor
 @Getter
@@ -21,7 +22,7 @@ public class OvertimeApprovalDTO {
 
     private String writeTime;
 
-    private String cancelYn;
+    private YN cancelYn;
 
     private int cancelDocId;
 

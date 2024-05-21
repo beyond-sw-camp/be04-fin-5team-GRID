@@ -148,6 +148,15 @@ public class ApprovalController {
 
         BTApprovalDTO result = approvalService.cancelBTApproval(btApprovalId);
 
+        if (result.getCancelYn() == YN.Y) {
+            ResApprovalVO response = ResApprovalVO.builder()
+                    .statusCode(200)
+                    .message("출장 결재 회수 성공")
+                    .href("")
+                    .btResult(result)
+                    .build();
+        }
+
         ResApprovalVO response = ResApprovalVO.builder()
                 .statusCode(201)
                 .message("출장 결재 취소 결재 생성 성공")
@@ -162,6 +171,17 @@ public class ApprovalController {
     public ResponseEntity<ResApprovalVO> cancelOvertimeApproval(@PathVariable int overtimeApprovalId) {
 
         OvertimeApprovalDTO result = approvalService.cancelOvertimeApproval(overtimeApprovalId);
+
+        if (result.getCancelYn() == YN.Y) {
+            ResApprovalVO response = ResApprovalVO.builder()
+                    .statusCode(200)
+                    .message("시간 외 근무 결재 회수 성공")
+                    .href("")
+                    .overtimeResult(result)
+                    .build();
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        }
 
         ResApprovalVO response = ResApprovalVO.builder()
                 .statusCode(201)
@@ -178,6 +198,17 @@ public class ApprovalController {
 
         RWApprovalDTO result = approvalService.cancelRWApproval(rwApprovalId);
 
+        if (result.getCancelYn() == YN.Y) {
+            ResApprovalVO response = ResApprovalVO.builder()
+                    .statusCode(200)
+                    .message("단축 근무 결재 회수 성공")
+                    .href("")
+                    .rwResult(result)
+                    .build();
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        }
+
         ResApprovalVO response = ResApprovalVO.builder()
                 .statusCode(201)
                 .message("단축 근무 결재 취소 결재 생성 성공")
@@ -192,6 +223,17 @@ public class ApprovalController {
     public ResponseEntity<ResApprovalVO> cancelVacationApproval(@PathVariable int vacationApprovalId) {
 
         VacationApprovalDTO result = approvalService.cancelVacationApproval(vacationApprovalId);
+
+        if (result.getCancelYN() == YN.Y) {
+            ResApprovalVO response = ResApprovalVO.builder()
+                    .statusCode(200)
+                    .message("휴가 결재 회수 성공")
+                    .href("")
+                    .vacationResult(result)
+                    .build();
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        }
 
         ResApprovalVO response = ResApprovalVO.builder()
                 .statusCode(201)
