@@ -1,6 +1,9 @@
 package org.highfives.grid.approval_chain.command.service;
 
+import org.highfives.grid.approval.command.aggregate.ApprovalStatus;
 import org.highfives.grid.approval.command.aggregate.BTApproval;
+import org.highfives.grid.approval.command.repository.BTApprovalRepository;
+import org.highfives.grid.approval.common.dto.BTApprovalDTO;
 import org.highfives.grid.approval_chain.command.vo.CommentVO;
 import org.highfives.grid.approval_chain.command.aggregate.*;
 import org.highfives.grid.approval_chain.command.repository.BTApprovalChainRepository;
@@ -23,15 +26,17 @@ public class ApprovalChainServiceImpl implements ApprovalChainService{
 
     private final ModelMapper mapper;
     private final BTApprovalChainRepository btApprovalChainRepository;
+    private final BTApprovalRepository btApprovalRepository;
     private final OApprovalChainRepository oApprovalChainRepository;
     private final RWApprovalChainRepository rwApprovalChainRepository;
     private final VApprovalChainRepository vApprovalChainRepository;
     private final org.highfives.grid.approval_chain.query.service.ApprovalChainService approvalChainService;
 
     @Autowired
-    public ApprovalChainServiceImpl(ModelMapper mapper, BTApprovalChainRepository btApprovalChainRepository, OApprovalChainRepository oApprovalChainRepository, RWApprovalChainRepository rwApprovalChainRepository, VApprovalChainRepository vApprovalChainRepository, org.highfives.grid.approval_chain.query.service.ApprovalChainService approvalChainService) {
+    public ApprovalChainServiceImpl(ModelMapper mapper, BTApprovalChainRepository btApprovalChainRepository, BTApprovalRepository btApprovalRepository, OApprovalChainRepository oApprovalChainRepository, RWApprovalChainRepository rwApprovalChainRepository, VApprovalChainRepository vApprovalChainRepository, org.highfives.grid.approval_chain.query.service.ApprovalChainService approvalChainService) {
         this.mapper = mapper;
         this.btApprovalChainRepository = btApprovalChainRepository;
+        this.btApprovalRepository = btApprovalRepository;
         this.oApprovalChainRepository = oApprovalChainRepository;
         this.rwApprovalChainRepository = rwApprovalChainRepository;
         this.vApprovalChainRepository = vApprovalChainRepository;
@@ -203,8 +208,10 @@ public class ApprovalChainServiceImpl implements ApprovalChainService{
 
                 if (chainStatusVO.getChainStatus() == ChainStatus.A) {
                     // 결재 상태가 승인으로 변경되는 함수 호출
+                    modifyBTApprovalStatus(btChain.getApprovalId(), ApprovalStatus.A);
                 } else {
                     // 결재 상태가 반려로 변경되는 함수 호출
+                    modifyBTApprovalStatus(btChain.getApprovalId(), ApprovalStatus.D);
                 }
 
                 return mapper.map(approvalChain, BTApprovalChainDTO.class);
@@ -223,9 +230,19 @@ public class ApprovalChainServiceImpl implements ApprovalChainService{
 
         if (chainStatusVO.getChainStatus() == ChainStatus.D) {
             // 결재 상태가 반려로 변경되는 함수 호출
+            modifyBTApprovalStatus(btChain.getApprovalId(), ApprovalStatus.D);
         }
 
         return mapper.map(approvalChain, BTApprovalChainDTO.class);
+    }
+
+    @Override
+    public BTApprovalDTO modifyBTApprovalStatus(int btApprovalId, ApprovalStatus approvalStatus) {
+
+        BTApproval btApproval = btApprovalRepository.findById(btApprovalId).orElseThrow();
+        btApproval.setApprovalStatus(approvalStatus);
+
+        return mapper.map(btApproval, BTApprovalDTO.class);
     }
 
 
