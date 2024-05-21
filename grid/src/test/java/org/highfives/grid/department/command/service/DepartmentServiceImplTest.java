@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -125,9 +126,18 @@ class DepartmentServiceImplTest {
         List<DepartmentDTO> departmentDTOList = departmentService.modifyAllDepartment(updateList);
 
         // Then
-        for (DepartmentDTO dto : updateList) {
-            assertThat(dto.getDepartmentName()).isNotNull();
-            assertThat(dto.getId()).isNotSameAs(dto.getId() + 1);
+        assertThat(departmentDTOList).hasSize(updateList.size());
+
+        for (int i = 0; i < updateList.size(); i++) {
+            DepartmentDTO updatedDepartment = departmentDTOList.get(i);
+            DepartmentDTO expectedDepartment = updateList.get(i);
+
+            assertThat(updatedDepartment.getId()).isEqualTo(expectedDepartment.getId());
+            assertThat(updatedDepartment.getDepartmentName()).isEqualTo(expectedDepartment.getDepartmentName());
+            assertThat(updatedDepartment.getHighDepartment()).isEqualTo(expectedDepartment.getHighDepartment());
+            assertThat(updatedDepartment.getDepartmentStatus()).isEqualTo(expectedDepartment.getDepartmentStatus());
+            assertThat(updatedDepartment.getLeaderId()).isEqualTo(expectedDepartment.getLeaderId());
+            assertThat(updatedDepartment.getDepartmentCode()).isEqualTo(expectedDepartment.getDepartmentCode());
         }
 
     }
