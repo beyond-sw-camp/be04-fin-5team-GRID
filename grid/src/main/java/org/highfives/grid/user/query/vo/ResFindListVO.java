@@ -3,9 +3,10 @@ package org.highfives.grid.user.query.vo;
 
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 import java.util.List;
-
+@Getter
 @AllArgsConstructor
 public class ResFindListVO {
 

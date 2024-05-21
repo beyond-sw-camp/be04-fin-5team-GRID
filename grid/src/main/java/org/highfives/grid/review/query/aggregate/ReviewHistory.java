@@ -1,13 +1,12 @@
 package org.highfives.grid.review.query.aggregate;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
-import org.highfives.grid.review.command.aggregate.ReviewStatus;
+import lombok.*;
+import org.highfives.grid.review.query.aggregate.ReviewStatus;
 
 @Getter
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 @ToString
 public class ReviewHistory {
 
@@ -25,7 +24,6 @@ public class ReviewHistory {
 
     private int reviewerId;
 
-    @Column(name = "reviewee_id", nullable = false)
     private int revieweeId;
 
 }

@@ -1,10 +1,7 @@
 package org.highfives.grid.user.query.dto;
 
 import lombok.*;
-import org.highfives.grid.user.command.aggregate.Gender;
-import org.highfives.grid.user.command.aggregate.JoinType;
-import org.highfives.grid.user.command.aggregate.WorkType;
-import org.highfives.grid.user.command.aggregate.YN;
+import org.highfives.grid.user.command.aggregate.*;
 
 @Getter
 @Setter
@@ -33,8 +30,11 @@ public class UserDTO {
     private int salary;
     private YN absenceYn;
     private String absenceContent;
+    private Role role;
     private int dutiesId;
+    private String duties;
     private int positionId;
+    private String position;
     private int teamId;
     private int departmentId;
     private String profilePath;
@@ -45,8 +45,8 @@ public class UserDTO {
                    Gender gender, String phoneNumber, String callNumber, int zipCode, String address,
                    String assignedTask, String joinTime, JoinType joinType, String resignTime, YN resignYn,
                    WorkType workType, String contractStartTime, String contractEndTime, int salary, YN absenceYn,
-                   String absenceContent, int dutiesId, int positionId, int teamId, int departmentId,
-                   String profilePath, String sealPath) {
+                   String absenceContent, int dutiesId, String duties, int positionId, String position, Role role,
+                   int teamId, int departmentId, String profilePath, String sealPath) {
         this.id = id;
         this.email = email;
         this.pwd = pwd;
@@ -68,8 +68,11 @@ public class UserDTO {
         this.salary = salary;
         this.absenceYn = absenceYn;
         this.absenceContent = absenceContent;
+        this.role = role;
         this.dutiesId = dutiesId;
+        this.duties = duties;
         this.positionId = positionId;
+        this.position = position;
         this.teamId = teamId;
         this.departmentId = departmentId;
         this.profilePath = profilePath;

@@ -1,5 +1,6 @@
 package org.highfives.grid.department.command.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.highfives.grid.department.command.dto.DepartmentDTO;
 import org.highfives.grid.department.command.service.DepartmentService;
 import org.highfives.grid.department.command.vo.ResponseDepartmentVO;
@@ -8,8 +9,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@RestController("CommandDepartmentController")
+
+@RestController(value = "CommandDepartmentController")
 @RequestMapping("/department")
+@Slf4j
 public class DepartmentController {
 
     private final DepartmentService departmentService;
@@ -41,7 +44,7 @@ public class DepartmentController {
     public ResponseEntity<ResponseDepartmentVO> registDepartment(@RequestBody DepartmentDTO departmentDTO) {
 
         DepartmentDTO departmentList = departmentService.registDepartment(departmentDTO);
-
+        log.info("departmentList={}", departmentList);
         ResponseDepartmentVO responseDepartmentVO = ResponseDepartmentVO.builder()
                 .message("success")
                 .href("/{id}")
@@ -53,7 +56,7 @@ public class DepartmentController {
     }
 
     /* 설명. 부서 정보 수정 기능*/
-    @PutMapping("/update")
+    @PutMapping
     public ResponseEntity<ResponseDepartmentVO> modifyDepartment(@RequestBody DepartmentDTO departmentDTO) {
         DepartmentDTO departmentList = departmentService.modifyDepartment(departmentDTO);
 
@@ -67,8 +70,9 @@ public class DepartmentController {
         return ResponseEntity.status(HttpStatus.OK).body(responseDepartmentVO);
     }
 
+
     /* 설명. 부서 삭제 기능 */
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<ResponseDepartmentVO> deleteDepartment(@PathVariable int id) {
         departmentService.deleteDepartment(id);
 

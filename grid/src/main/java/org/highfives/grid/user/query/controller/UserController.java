@@ -5,6 +5,7 @@ import org.highfives.grid.user.query.dto.UserDTO;
 import org.highfives.grid.user.query.service.UserService;
 import org.highfives.grid.user.query.vo.ResFindLeaderVO;
 import org.highfives.grid.user.query.vo.ResFindListVO;
+import org.highfives.grid.user.query.vo.ResFindUserVO;
 import org.highfives.grid.user.query.vo.SimpleInfo;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,12 +30,13 @@ public class UserController {
     }
 
     // 전체 직원 조회
-    @GetMapping()
+    @GetMapping("/list")
     public ResponseEntity<ResFindListVO> findAllUsers() {
 
         List<UserDTO> resultDTOs = userService.findAllUsers();
         List<SimpleInfo> resultList = DTOtoSimpleInfo(resultDTOs);
 
+        System.out.println("resultDTOs = " + resultDTOs);
         ResFindListVO response =
                 new ResFindListVO(200, "Success to find user list", "/users/{id}", resultList);
 
@@ -42,6 +44,21 @@ public class UserController {
     }
 
     // 사번으로 직원 조회
+    @GetMapping("/{employeeNumber}")
+    public ResponseEntity<ResFindUserVO> findUserByEmployeeNum(@PathVariable("employeeNumber") int eNum) {
+
+        UserDTO userDTO = userService.findUserByEmployeeNum(eNum);
+
+        if(userDTO != null){
+            ResFindUserVO response =
+                new ResFindUserVO(200, "Success to find user", "/users/list", userDTO);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } else {
+            ResFindUserVO response =
+                    new ResFindUserVO(404, "No matching user", "/users/{employeeNumber}", null);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+    }
 
     // 직원 id로 부서장/팀장 정보 조회
     @GetMapping("/{id}/leaders")
@@ -50,9 +67,8 @@ public class UserController {
         LeaderInfoDTO info = userService.findLeaderInfo(id);
 
         ResFindLeaderVO response =
-                new ResFindLeaderVO(200, "Success to find Leader info",
-                        "/test", info);
-        System.out.println("response = " + response);
+                new ResFindLeaderVO(200, "Success to find Leader info", "/test", info);
+
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 

@@ -1,6 +1,7 @@
 package org.highfives.grid.review.command.aggregate;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
@@ -17,7 +18,12 @@ public class ReviewList {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "name", length = 255,nullable = false)
-    private String name;
+    @Column(name = "list_name", length = 255,nullable = false)
+    private String listName;
 
+    @Builder
+    public ReviewList(int id, String listName) {
+        this.id = id;
+        this.listName = listName;
+    }
 }
