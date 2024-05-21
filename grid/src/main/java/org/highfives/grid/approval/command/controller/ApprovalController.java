@@ -289,4 +289,19 @@ public class ApprovalController {
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
+    @PutMapping("/vacation-status/{approvalId}")
+    public ResponseEntity<ResApprovalVO> viewVacationApproval(@PathVariable int approvalId) {
+
+        VacationApprovalDTO result = approvalService.viewVacationApproval(approvalId);
+
+        ResApprovalVO response = ResApprovalVO.builder()
+                .statusCode(200)
+                .message("휴가 결재 열람 상태 변경 성공")
+                .href("")
+                .vacationResult(result)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
 }

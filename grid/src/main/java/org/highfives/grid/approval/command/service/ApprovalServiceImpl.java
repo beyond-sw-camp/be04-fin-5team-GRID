@@ -395,6 +395,7 @@ public class ApprovalServiceImpl implements ApprovalService {
     }
 
     @Override
+    @Transactional
     public RWApprovalDTO viewRWApproval(int rwApprovalId) {
 
         RWApproval rwApproval = rwApprovalRepository.findById(rwApprovalId).orElseThrow();
@@ -404,4 +405,18 @@ public class ApprovalServiceImpl implements ApprovalService {
 
         return mapper.map(rwApproval, RWApprovalDTO.class);
     }
+
+    @Override
+    @Transactional
+    public VacationApprovalDTO viewVacationApproval(int vacationApprovalId) {
+
+        VacationApproval vacationApproval = vApprovalRepository.findById(vacationApprovalId).orElseThrow();
+        vacationApproval.setApprovalStatus(ApprovalStatus.V);
+
+        vApprovalRepository.save(vacationApproval);
+
+        return mapper.map(vacationApproval, VacationApprovalDTO.class);
+    }
+
+
 }
