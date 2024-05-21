@@ -281,6 +281,12 @@ public class ApprovalChainServiceImpl implements ApprovalChainService{
         if (chainStatusVO.getChainStatus() == ChainStatus.A) {
             overtimeApproval.setApprovalStatus(ApprovalStatus.A);
 
+            if (overtimeApproval.getCancelDocId() > 0) {
+
+                OvertimeApproval canceledOApproval = oApprovalRepository.findById(overtimeApproval.getCancelDocId()).orElseThrow();
+                canceledOApproval.setCancelYN(YN.Y);
+            }
+
         } else {
             // W는 예외 처리
             overtimeApproval.setApprovalStatus(ApprovalStatus.D);
