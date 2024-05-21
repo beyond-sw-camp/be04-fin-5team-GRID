@@ -21,6 +21,5 @@ public interface ApprovalChainService {
     OApprovalChainDTO addOApprovalComment(CommentVO commentVO);
     RWApprovalChainDTO addRWApprovalComment(CommentVO commentVO);
     VApprovalChainDTO addVApprovalComment(CommentVO commentVO);
-    void modifyChainStatus(ChainStatusVO chainStatusVO);
     BTApprovalChainDTO modifyBTChainStatus(ChainStatusVO chainStatusVO);
 }

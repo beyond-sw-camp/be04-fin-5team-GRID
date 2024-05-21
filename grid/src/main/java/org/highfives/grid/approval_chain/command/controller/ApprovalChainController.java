@@ -85,8 +85,23 @@ public class ApprovalChainController {
     }
 
     @PutMapping("/status")
-    public void modifyChainStatus(@RequestBody ChainStatusVO chainStatusVO) {
+    public ResponseEntity<ResApprovalChainVO> modifyChainStatus(@RequestBody ChainStatusVO chainStatusVO) {
 
-        approvalChainService.modifyChainStatus(chainStatusVO);
+        ResApprovalChainVO response = new ResApprovalChainVO();
+
+        switch (chainStatusVO.getTypeId()) {
+            case 1:
+                BTApprovalChainDTO result = approvalChainService.modifyBTChainStatus(chainStatusVO);
+
+                response = ResApprovalChainVO.builder()
+                        .statusCode(200)
+                        .message("출장 결재 성공")
+                        .href("")
+                        .btChainResult(result)
+                        .build();
+                break;
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

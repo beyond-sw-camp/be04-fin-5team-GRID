@@ -186,17 +186,6 @@ public class ApprovalChainServiceImpl implements ApprovalChainService{
 
     @Override
     @Transactional
-    public void modifyChainStatus(ChainStatusVO chainStatusVO) {
-
-        switch (chainStatusVO.getTypeId()) {
-            case 1:
-                System.out.println(modifyBTChainStatus(chainStatusVO));;
-                break;
-        }
-    }
-
-    @Override
-    @Transactional
     public BTApprovalChainDTO modifyBTChainStatus(ChainStatusVO chainStatusVO) {
 
         // 이미 approval status가 승인이나 반려 상태인 경우 -> 예외 처리
@@ -219,7 +208,10 @@ public class ApprovalChainServiceImpl implements ApprovalChainService{
                 }
 
                 return mapper.map(approvalChain, BTApprovalChainDTO.class);
+
             }
+
+            return null;
 
             // 첫번째 결재자가 승인 상태가 아닌 경우 -> 예외 처리
         }
@@ -235,4 +227,6 @@ public class ApprovalChainServiceImpl implements ApprovalChainService{
 
         return mapper.map(approvalChain, BTApprovalChainDTO.class);
     }
+
+
 }
