@@ -1,9 +1,13 @@
 package org.highfives.grid.approval_chain.command.service;
 
 import jakarta.transaction.Transactional;
+import org.apache.ibatis.annotations.Arg;
+import org.highfives.grid.approval_chain.command.aggregate.ChainStatus;
+import org.highfives.grid.approval_chain.command.vo.ChainStatusVO;
 import org.highfives.grid.approval_chain.command.vo.CommentVO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -23,6 +27,15 @@ class ApprovalChainServiceImplTest {
                 Arguments.of(
                         new CommentVO("이러한 사유로 승인합니다.", 1),
                         new CommentVO("이러한 사유로 반려합니다.", 1))
+        );
+    }
+
+    static Stream<Arguments> chainStatus() {
+        return Stream.of(
+                Arguments.of(
+                    new ChainStatusVO(1, 1, 3, ChainStatus.A),
+                    new ChainStatusVO(1, 2, 3, ChainStatus.A)
+                )
         );
     }
 
@@ -67,6 +80,53 @@ class ApprovalChainServiceImplTest {
 
         Assertions.assertDoesNotThrow(
                 () -> approvalChainService.addVApprovalComment(comment)
+        );
+    }
+
+    @Test
+    void addBTApprovalChain() {
+    }
+
+    @Test
+    void addOApprovalChain() {
+    }
+
+    @Test
+    void addRWApprovalChain() {
+    }
+
+    @Test
+    void addVApprovalChain() {
+    }
+
+    @Test
+    void testAddBTApprovalComment() {
+    }
+
+    @Test
+    void testAddOApprovalComment() {
+    }
+
+    @Test
+    void testAddRWApprovalComment() {
+    }
+
+    @Test
+    void testAddVApprovalComment() {
+    }
+
+    @Test
+    void modifyChainStatus() {
+    }
+
+    @DisplayName("출장 결재 승인/반려")
+    @ParameterizedTest
+    @MethodSource("chainStatus")
+    @Transactional
+    void modifyBTChainStatus(ChainStatusVO chainStatus) {
+
+        Assertions.assertDoesNotThrow(
+                () -> approvalChainService.modifyBTChainStatus(chainStatus)
         );
     }
 }
