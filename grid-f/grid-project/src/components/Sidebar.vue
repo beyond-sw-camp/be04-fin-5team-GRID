@@ -90,13 +90,20 @@ const toggleMenu = (menu) => {
 </script>
 
 <style scoped>
+@font-face {
+    font-family: 'IBMPlexSansKR-Regular';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_20-07@1.0/IBMPlexSansKR-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
 .sidebar {
   width: 250px;
   background: #fff;
   border-right: 1px solid #e5e5e5;
   height: 100vh;
   overflow-y: auto;
-  
+  font-family: 'IBMPlexSansKR-Regular';
 }
 .sidebar{
    -ms-overflow-style: none;

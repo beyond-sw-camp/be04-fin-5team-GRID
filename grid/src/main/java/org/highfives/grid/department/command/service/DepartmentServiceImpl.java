@@ -55,6 +55,7 @@ public class DepartmentServiceImpl implements DepartmentService {
         Department department = Department.builder()
                 .departmentName(departmentDTO.getDepartmentName())
                 .departmentStatus("Y")
+                .highDepartment(departmentDTO.getHighDepartment())
                 .departmentCode(departmentDTO.getDepartmentCode())
                 .startTime(formattedDate)
                 .build();
