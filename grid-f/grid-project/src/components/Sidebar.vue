@@ -36,7 +36,7 @@
         <li>
           <span @click="toggleMenu('departmentManagement')">부서 관리</span>
           <ul v-show="activeMenus.departmentManagement">
-            <li>부서 정보</li>
+            <li @click="gotodepartmentInfo">부서 정보</li>
           </ul>
         </li>
         <li>
@@ -44,6 +44,7 @@
           <ul v-show="activeMenus.departmentEvaluation">
             <li>본인 평가 목록</li>
             <li>동료 평가 작성</li>
+            <li @click="goToAddTeamReview">평가 생성</li>
           </ul>
         </li>
       </ul>
@@ -55,6 +56,7 @@
 import axios from 'axios';
 import { useRouter } from 'vue-router';
 import { ref, onMounted,reactive } from 'vue';
+const router = useRouter();
 
 
 const employee = ref([]);
@@ -86,6 +88,14 @@ const activeMenus = reactive({
 const toggleMenu = (menu) => {
   activeMenus[menu] = !activeMenus[menu];
 };
+
+const gotodepartmentInfo = () => {
+  router.push('/department');
+}
+
+const goToAddTeamReview = () => {
+  router.push('/addteamreview');
+}
 </script>
 
 <style scoped>

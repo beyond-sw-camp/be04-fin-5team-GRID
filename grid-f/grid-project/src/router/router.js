@@ -16,6 +16,10 @@ const router = createRouter({
         {
             path: '/department',
             component: () => import('@/components/Department/Department.vue')
+        },        
+        {
+            path: '/addteamreview',
+            component: () => import('@/components/TeamReview/AddTeamReview.vue')
         }
 
     ]
