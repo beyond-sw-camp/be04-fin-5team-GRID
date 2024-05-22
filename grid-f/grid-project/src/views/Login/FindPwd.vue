@@ -138,31 +138,36 @@ async function sendMail() {
         return false;
     }
 
-    await axios.get(`http://localhost:8080/users/${inputValue2.value}/name`)
-        .then((response) => {
-            console.log(response.data.result);
-            if (response.status == 404) {
-                console.log(response);
-            }
-            if (response.data.result.employee_name == inputValue.value) {
-                try {
-                    axios.get(`http://localhost:8080/mails/pwd/${inputValue2.value}`)
-                        .then((response) => {
-                            if (response.status == 200) {
-                                const modalInstance = new bootstrap.Modal(myModal.value);
-                                modalInstance.show();
-                            }
-                        })
-                    return true;9
-                } catch (e) {
-                    isWrong.value = true;
+    try {
+        const response = await axios.get(`http://localhost:8080/users/${inputValue2.value}/name`);
+
+        console.log('result: ', response.data.result);
+
+        if (response.data.result.employee_name == inputValue.value) {
+            try {
+                const mailResponse = await axios.get(`http://localhost:8080/mails/pwd/${inputValue2.value}`);
+                if (mailResponse.status == 200) {
+                    const modalInstance = new bootstrap.Modal(myModal.value);
+                    modalInstance.show();
                 }
+                return true;
+            } catch (e) {
+                console.error(e);
+                isWrong.value = true;
             }
+        } else {
             isWrong.value = true;
-        })
-
-
-};
+        }
+    } catch (error) {
+        if (error.response && error.response.status == 404) {
+            console.log(error.response.data.message);
+            isWrong.value = true;
+        } else {
+            console.error(error);
+            isWrong.value = true;
+        }
+    }
+}
 
 function login() {
     router.push('/');
