@@ -5,10 +5,13 @@
                 <div id="title">
                     <h1>Your Id is...</h1>
                 </div>
-                <div class = contents>
-                    <div>""</div>
-                    <div></div>
-                    <div>""</div>
+                <div class="contents">
+                    <div>"" </div>
+                    <h3>&nbsp {{ email }} &nbsp</h3>
+                    <div> ""</div>
+                </div>
+                <div class="return" @click="login">
+                    <h5>Return to Sign in!</h5>
                 </div>
                 <div class="line">
                     <hr>
@@ -34,7 +37,8 @@ import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 const router = useRouter();
-const { r } = window.history.state
+const route = useRoute();
+const email = route.query.email;
 
 function login() {
     router.push('/');
@@ -45,7 +49,7 @@ function findPwd() {
 }
 
 onMounted(async () => {
-    console.log(r);
+    console.log(route.query.email);
 }) 
 
 </script>
@@ -67,6 +71,20 @@ body {
 
 * {
     box-sizing: border-box;
+}
+
+h1 {
+    font-weight: bold;
+    font-size: 50px;
+}
+
+h3 {
+    font-weight: bold;
+}
+
+hr {
+    width: 49%;
+    margin: auto 10px;
 }
 
 .container {
@@ -108,9 +126,15 @@ body {
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
-    margin: auto;
+    margin: 20% auto 5%;
 }
 
+.return {
+    display: flex;
+    justify-content: center;
+    cursor: pointer;
+    color: gray;
+}
 
 
 .line {
@@ -121,15 +145,6 @@ body {
 
 }
 
-h1 {
-    font-weight: bold;
-    font-size: 50px;
-}
-
-hr {
-    width: 49%;
-    margin: auto 10px;
-}
 
 .find-id {
     font-size: 14px;

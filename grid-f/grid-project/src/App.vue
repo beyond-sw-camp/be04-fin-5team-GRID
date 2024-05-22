@@ -5,35 +5,11 @@
     import Footer from '@/components/Footer.vue';
 
     const router = useRouter();
-
-
 </script>
 
 <template>
-  <div class="header">
-    <Header/>
-  </div>
-
-  <div>
-    <div id="sidebar">
-      <Sidebar/> 
-    </div>
-    <!-- <div class="content">
-      <RouterView />
-    </div> -->
-  </div>
-  <div class="footer">
-    <Footer/>
-  </div>
-
-
+  <RouterView/>
 </template>
-
-<script setup>
-
-import {RouterView} from 'vue-router';
-
-</script>
 
 <style scoped>
 .header {

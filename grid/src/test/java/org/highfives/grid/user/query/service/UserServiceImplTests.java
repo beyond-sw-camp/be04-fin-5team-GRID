@@ -39,4 +39,12 @@ class UserServiceImplTests {
                 () -> userService.findUserByEmployeeNum("1")
         );
     }
+
+    @DisplayName("id로 유저 정보 조회")
+    @Test
+    void findUserByIdTest() {
+        Assertions.assertDoesNotThrow(
+                () -> userService.findUserById(1)
+        );
+    }
 }

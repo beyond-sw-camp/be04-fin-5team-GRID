@@ -125,7 +125,7 @@ async function find() {
                 if (findResult.value.name == inputValue.value && findResult.value.employeeNumber == inputValue2.value) {
                     router.push({
                         path: '/find/id/result',
-                        state: { r : findResult.value.email }
+                        query: { email : findResult.value.email }
                     });
                 }
             })

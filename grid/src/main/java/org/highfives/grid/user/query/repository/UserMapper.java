@@ -24,4 +24,6 @@ public interface UserMapper {
     String getPosition(int id);
 
     String getDuties(int id);
+
+    UserDTO getUserInfoById(int id);
 }

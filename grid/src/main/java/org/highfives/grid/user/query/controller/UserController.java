@@ -60,6 +60,22 @@ public class UserController {
         }
     }
 
+    @GetMapping("/id/{userID}")
+    public ResponseEntity<ResFindUserVO> findUserById(@PathVariable("userID") int id) {
+
+        UserDTO userDTO = userService.findUserById(id);
+
+        if(userDTO != null){
+            ResFindUserVO response =
+                    new ResFindUserVO(200, "Success to find user", "/users/list", userDTO);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } else {
+            ResFindUserVO response =
+                    new ResFindUserVO(404, "No matching user", "/users/{employeeNumber}", null);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+    }
+
     // 직원 id로 부서장/팀장 정보 조회
     @GetMapping("/{id}/leaders")
     public ResponseEntity<ResFindLeaderVO> findLeaderInfo(@PathVariable("id") int id) {

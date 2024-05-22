@@ -134,7 +134,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @PutMapping("/password")
+    @PutMapping("/pwd")
     public ResponseEntity<ResUserVO> findPwd(@RequestBody String pwd) {
 
         userService.findPwd(pwd);
