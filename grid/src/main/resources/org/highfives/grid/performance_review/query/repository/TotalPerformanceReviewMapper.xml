@@ -71,4 +71,25 @@
         WHERE A.reviewer_id = #{employeeId};
     </select>
 
+    <select id="selectAllTotal" resultMap="totalResultMap">
+        SELECT
+        A.id as 'ID',
+        A.year as 'YEAR',
+        A.review_name as 'REVIEW_NAME',
+        grade.id as 'GRADE_ID',
+        grade.grade as 'GRADE',
+        A.total_score as 'SCORE',
+        reviewee.id as 'REViEWEE_ID',
+        reviewee.employee_name as 'REViEWEE_NAME',
+        reviewer.id as 'REViEWER_ID',
+        reviewer.employee_name as 'REViEWER_NAME'
+        FROM total_performance_review as A
+        JOIN (SELECT * FROM employee WHERE duties_id = 4) as reviewee
+        ON A.reviewee_id = reviewee.id
+        JOIN (SELECT * FROM employee WHERE duties_id = 3) as reviewer
+        ON A.reviewer_id = reviewer.id
+        JOIN review_grade as grade
+        ON A.total_id = grade.id
+    </select>
+
 </mapper>

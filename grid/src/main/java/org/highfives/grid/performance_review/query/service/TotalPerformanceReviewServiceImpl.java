@@ -30,4 +30,11 @@ public class TotalPerformanceReviewServiceImpl implements TotalPerformanceReview
 
         return totalPerformanceReviewDTOList;
     }
+
+    @Override
+    public List<TotalPerformanceReviewDTO> findAllTotal() {
+        List<TotalPerformanceReviewDTO> totalPerformanceReviewDTOList = totalPerformanceReviewMapper.selectAllTotal();
+
+        return totalPerformanceReviewDTOList;
+    }
 }

@@ -13,7 +13,7 @@ class TotalPerformanceReviewServiceImplTest {
     @Autowired
     private TotalPerformanceReviewServiceImpl totalPerformanceReviewService;
 
-    @DisplayName("평가대상자 기준으로 조회")
+    @DisplayName("종합 평가 평가대상자 기준으로 조회")
     @Test
     public void findTotalByRevieweeId(){
         int employeeId = 6;
@@ -24,7 +24,7 @@ class TotalPerformanceReviewServiceImplTest {
 
     }
 
-    @DisplayName("평가자 기준으로 조회")
+    @DisplayName("종합 평가 평가자 기준으로 조회")
     @Test
     public void findTotalByReviewerId(){
         int employeeId = 5;
@@ -32,6 +32,17 @@ class TotalPerformanceReviewServiceImplTest {
         System.out.println(totalPerformanceReviewService.findTotalByReviewerId(employeeId));
         assertNotNull(
                 totalPerformanceReviewService.findTotalByReviewerId(employeeId)
+        );
+
+    }
+
+    @DisplayName(" 종합 평가 전체 조회")
+    @Test
+    public void findAllTotal(){
+
+        System.out.println(totalPerformanceReviewService.findAllTotal());
+        assertNotNull(
+                totalPerformanceReviewService.findAllTotal()
         );
 
     }
