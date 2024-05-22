@@ -1,5 +1,6 @@
 package org.highfives.grid.approval.command.controller;
 
+import org.highfives.grid.approval.command.aggregate.YN;
 import org.highfives.grid.approval.command.service.ApprovalService;
 import org.highfives.grid.approval.command.vo.*;
 import org.highfives.grid.approval.common.dto.BTApprovalDTO;
@@ -142,11 +143,19 @@ public class ApprovalController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-
     @PostMapping("/bt/{btApprovalId}")
     public ResponseEntity<ResApprovalVO> cancelBTApproval(@PathVariable int btApprovalId) {
 
         BTApprovalDTO result = approvalService.cancelBTApproval(btApprovalId);
+
+        if (result.getCancelYn() == YN.Y) {
+            ResApprovalVO response = ResApprovalVO.builder()
+                    .statusCode(200)
+                    .message("출장 결재 회수 성공")
+                    .href("")
+                    .btResult(result)
+                    .build();
+        }
 
         ResApprovalVO response = ResApprovalVO.builder()
                 .statusCode(201)
@@ -163,6 +172,17 @@ public class ApprovalController {
 
         OvertimeApprovalDTO result = approvalService.cancelOvertimeApproval(overtimeApprovalId);
 
+        if (result.getCancelYn() == YN.Y) {
+            ResApprovalVO response = ResApprovalVO.builder()
+                    .statusCode(200)
+                    .message("시간 외 근무 결재 회수 성공")
+                    .href("")
+                    .overtimeResult(result)
+                    .build();
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        }
+
         ResApprovalVO response = ResApprovalVO.builder()
                 .statusCode(201)
                 .message("시간 외 근무 결재 취소 결재 생성 성공")
@@ -177,6 +197,17 @@ public class ApprovalController {
     public ResponseEntity<ResApprovalVO> cancelRWApproval(@PathVariable int rwApprovalId) {
 
         RWApprovalDTO result = approvalService.cancelRWApproval(rwApprovalId);
+
+        if (result.getCancelYn() == YN.Y) {
+            ResApprovalVO response = ResApprovalVO.builder()
+                    .statusCode(200)
+                    .message("단축 근무 결재 회수 성공")
+                    .href("")
+                    .rwResult(result)
+                    .build();
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        }
 
         ResApprovalVO response = ResApprovalVO.builder()
                 .statusCode(201)
@@ -193,6 +224,17 @@ public class ApprovalController {
 
         VacationApprovalDTO result = approvalService.cancelVacationApproval(vacationApprovalId);
 
+        if (result.getCancelYN() == YN.Y) {
+            ResApprovalVO response = ResApprovalVO.builder()
+                    .statusCode(200)
+                    .message("휴가 결재 회수 성공")
+                    .href("")
+                    .vacationResult(result)
+                    .build();
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        }
+
         ResApprovalVO response = ResApprovalVO.builder()
                 .statusCode(201)
                 .message("휴가 결재 취소 결재 생성 성공")
@@ -201,5 +243,65 @@ public class ApprovalController {
                 .build();
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PutMapping("/bt-status/{approvalId}")
+    public ResponseEntity<ResApprovalVO> viewBTApproval(@PathVariable int approvalId) {
+
+        BTApprovalDTO result = approvalService.viewBTApproval(approvalId);
+
+        ResApprovalVO response = ResApprovalVO.builder()
+                .statusCode(200)
+                .message("출장 결재 열람 상태 변경 성공")
+                .href("")
+                .btResult(result)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @PutMapping("/overtime-status/{approvalId}")
+    public ResponseEntity<ResApprovalVO> viewOvertimeApproval(@PathVariable int approvalId) {
+
+        OvertimeApprovalDTO result = approvalService.viewOvertimeApproval(approvalId);
+
+        ResApprovalVO response = ResApprovalVO.builder()
+                .statusCode(200)
+                .message("시간 외 근무 결재 열람 상태 변경 성공")
+                .href("")
+                .overtimeResult(result)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @PutMapping("/rw-status/{approvalId}")
+    public ResponseEntity<ResApprovalVO> viewRWApproval(@PathVariable int approvalId) {
+
+        RWApprovalDTO result = approvalService.viewRWApproval(approvalId);
+
+        ResApprovalVO response = ResApprovalVO.builder()
+                .statusCode(200)
+                .message("단축 근무 결재 열람 상태 변경 성공")
+                .href("")
+                .rwResult(result)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @PutMapping("/vacation-status/{approvalId}")
+    public ResponseEntity<ResApprovalVO> viewVacationApproval(@PathVariable int approvalId) {
+
+        VacationApprovalDTO result = approvalService.viewVacationApproval(approvalId);
+
+        ResApprovalVO response = ResApprovalVO.builder()
+                .statusCode(200)
+                .message("휴가 결재 열람 상태 변경 성공")
+                .href("")
+                .vacationResult(result)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

@@ -246,28 +246,31 @@ public class ApprovalServiceImpl implements ApprovalService {
 
         // N인 경우에는 회수
         if (btApproval.getApprovalStatus() == ApprovalStatus.N) {
+            // 취소가 된 상태에서 취소?
             btApproval.setCancelYN(YN.Y);
 
             btApprovalRepository.save(btApproval);
 
             return mapper.map(btApproval, BTApprovalDTO.class);
+        }
 
         // 이외의 경우에는 취소 결재 생성
-        } else {
-            BTApproval cancelApproval = BTApproval.builder()
-                    .startTime(btApproval.getStartTime())
-                    .endTime(btApproval.getEndTime())
-                    .content(btApproval.getContent() + " \n취소")
-                    .destination(btApproval.getDestination())
-                    .writeTime(LocalDateTime.now().format(dateFormat))
-                    .requesterId(btApproval.getRequesterId())
-                    .cancelDocId(btApprovalId)
-                    .build();
+        BTApproval cancelApproval = BTApproval.builder()
+                .startTime(btApproval.getStartTime())
+                .endTime(btApproval.getEndTime())
+                .content(btApproval.getContent() + " \n취소")
+                .destination(btApproval.getDestination())
+                .writeTime(LocalDateTime.now().format(dateFormat))
+                .requesterId(btApproval.getRequesterId())
+                .cancelDocId(btApprovalId)
+                .build();
 
-            btApprovalRepository.save(cancelApproval);
+        btApprovalRepository.save(cancelApproval);
 
-            return mapper.map(cancelApproval, BTApprovalDTO.class);
-        }
+        ReqAddApprovalChainVO request = new ReqAddApprovalChainVO(1, cancelApproval.getId(), cancelApproval.getRequesterId());
+        approvalChainService.addBTApprovalChain(request);
+
+        return mapper.map(cancelApproval, BTApprovalDTO.class);
     }
 
     @Override
@@ -282,21 +285,23 @@ public class ApprovalServiceImpl implements ApprovalService {
             oApprovalRepository.save(overtimeApproval);
 
             return mapper.map(overtimeApproval, OvertimeApprovalDTO.class);
-
-        } else {
-            OvertimeApproval cancelApproval = OvertimeApproval.builder()
-                    .startTime(overtimeApproval.getStartTime())
-                    .endTime(overtimeApproval.getEndTime())
-                    .content(overtimeApproval.getContent() + " \n취소")
-                    .writeTime(LocalDateTime.now().format(dateFormat))
-                    .requesterId(overtimeApproval.getRequesterId())
-                    .cancelDocId(overtimeApprovalId)
-                    .build();
-
-            oApprovalRepository.save(cancelApproval);
-
-            return mapper.map(cancelApproval, OvertimeApprovalDTO.class);
         }
+
+        OvertimeApproval cancelApproval = OvertimeApproval.builder()
+                .startTime(overtimeApproval.getStartTime())
+                .endTime(overtimeApproval.getEndTime())
+                .content(overtimeApproval.getContent() + " \n취소")
+                .writeTime(LocalDateTime.now().format(dateFormat))
+                .requesterId(overtimeApproval.getRequesterId())
+                .cancelDocId(overtimeApprovalId)
+                .build();
+
+        oApprovalRepository.save(cancelApproval);
+
+        ReqAddApprovalChainVO request = new ReqAddApprovalChainVO(2, cancelApproval.getId(), cancelApproval.getRequesterId());
+        approvalChainService.addOApprovalChain(request);
+
+        return mapper.map(cancelApproval, OvertimeApprovalDTO.class);
     }
 
     @Override
@@ -311,24 +316,26 @@ public class ApprovalServiceImpl implements ApprovalService {
             rwApprovalRepository.save(rwApproval);
 
             return mapper.map(rwApproval, RWApprovalDTO.class);
-
-        } else {
-            RWApproval cancelApproval = RWApproval.builder()
-                    .startTime(rwApproval.getStartTime())
-                    .endTime(rwApproval.getEndTime())
-                    .content(rwApproval.getContent() + " \n취소")
-                    .writeTime(LocalDateTime.now().format(dateFormat))
-                    .requesterId(rwApproval.getRequesterId())
-                    .originName(rwApproval.getOriginName())
-                    .renameName(rwApproval.getRenameName())
-                    .path(rwApproval.getPath())
-                    .cancelDocId(rwApprovalId)
-                    .build();
-
-            rwApprovalRepository.save(cancelApproval);
-
-            return mapper.map(cancelApproval, RWApprovalDTO.class);
         }
+
+        RWApproval cancelApproval = RWApproval.builder()
+                    .startTime(rwApproval.getStartTime())
+                .endTime(rwApproval.getEndTime())
+                .content(rwApproval.getContent() + " \n취소")
+                .writeTime(LocalDateTime.now().format(dateFormat))
+                .requesterId(rwApproval.getRequesterId())
+                .originName(rwApproval.getOriginName())
+                .renameName(rwApproval.getRenameName())
+                .path(rwApproval.getPath())
+                .cancelDocId(rwApprovalId)
+                .build();
+
+        rwApprovalRepository.save(cancelApproval);
+
+        ReqAddApprovalChainVO request = new ReqAddApprovalChainVO(3, cancelApproval.getId(), cancelApproval.getRequesterId());
+        approvalChainService.addRWApprovalChain(request);
+
+        return mapper.map(cancelApproval, RWApprovalDTO.class);
     }
 
     @Override
@@ -343,21 +350,73 @@ public class ApprovalServiceImpl implements ApprovalService {
             vApprovalRepository.save(vacationApproval);
 
             return mapper.map(vacationApproval, VacationApprovalDTO.class);
-
-        } else {
-            VacationApproval cancelApproval = VacationApproval.builder()
-                    .startTime(vacationApproval.getStartTime())
-                    .endTime(vacationApproval.getEndTime())
-                    .content(vacationApproval.getContent() + " \n취소")
-                    .writeTime(LocalDateTime.now().format(dateFormat))
-                    .requesterId(vacationApproval.getRequesterId())
-                    .infoId(vacationApproval.getInfoId())
-                    .cancelDocId(vacationApprovalId)
-                    .build();
-
-            vApprovalRepository.save(cancelApproval);
-
-            return mapper.map(cancelApproval, VacationApprovalDTO.class);
         }
+
+        VacationApproval cancelApproval = VacationApproval.builder()
+                .startTime(vacationApproval.getStartTime())
+                .endTime(vacationApproval.getEndTime())
+                .content(vacationApproval.getContent() + " \n취소")
+                .writeTime(LocalDateTime.now().format(dateFormat))
+                .requesterId(vacationApproval.getRequesterId())
+                .infoId(vacationApproval.getInfoId())
+                .cancelDocId(vacationApprovalId)
+                .build();
+
+        vApprovalRepository.save(cancelApproval);
+
+        ReqAddApprovalChainVO request = new ReqAddApprovalChainVO(4, cancelApproval.getId(), cancelApproval.getRequesterId());
+        approvalChainService.addVApprovalChain(request);
+
+        return mapper.map(cancelApproval, VacationApprovalDTO.class);
     }
+
+    @Override
+    @Transactional
+    public BTApprovalDTO viewBTApproval(int btApprovalId) {
+
+        BTApproval btApproval = btApprovalRepository.findById(btApprovalId).orElseThrow();
+        btApproval.setApprovalStatus(ApprovalStatus.V);
+
+        btApprovalRepository.save(btApproval);
+
+        return mapper.map(btApproval, BTApprovalDTO.class);
+    }
+
+    @Override
+    @Transactional
+    public OvertimeApprovalDTO viewOvertimeApproval(int overtimeApprovalId) {
+
+        OvertimeApproval overtimeApproval = oApprovalRepository.findById(overtimeApprovalId).orElseThrow();
+        overtimeApproval.setApprovalStatus(ApprovalStatus.V);
+
+        oApprovalRepository.save(overtimeApproval);
+
+        return mapper.map(overtimeApproval, OvertimeApprovalDTO.class);
+    }
+
+    @Override
+    @Transactional
+    public RWApprovalDTO viewRWApproval(int rwApprovalId) {
+
+        RWApproval rwApproval = rwApprovalRepository.findById(rwApprovalId).orElseThrow();
+        rwApproval.setApprovalStatus(ApprovalStatus.V);
+
+        rwApprovalRepository.save(rwApproval);
+
+        return mapper.map(rwApproval, RWApprovalDTO.class);
+    }
+
+    @Override
+    @Transactional
+    public VacationApprovalDTO viewVacationApproval(int vacationApprovalId) {
+
+        VacationApproval vacationApproval = vApprovalRepository.findById(vacationApprovalId).orElseThrow();
+        vacationApproval.setApprovalStatus(ApprovalStatus.V);
+
+        vApprovalRepository.save(vacationApproval);
+
+        return mapper.map(vacationApproval, VacationApprovalDTO.class);
+    }
+
+
 }

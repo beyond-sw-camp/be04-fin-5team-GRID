@@ -1,38 +1,60 @@
 package org.highfives.grid.approval_chain.command.service;
 
+import org.highfives.grid.approval.command.aggregate.*;
+import org.highfives.grid.approval.command.repository.BTApprovalRepository;
+import org.highfives.grid.approval.command.repository.OApprovalRepository;
+import org.highfives.grid.approval.command.repository.RWApprovalRepository;
+import org.highfives.grid.approval.command.repository.VApprovalRepository;
+import org.highfives.grid.approval.common.dto.BTApprovalDTO;
+import org.highfives.grid.approval_chain.command.vo.CommentVO;
 import org.highfives.grid.approval_chain.command.aggregate.*;
 import org.highfives.grid.approval_chain.command.repository.BTApprovalChainRepository;
 import org.highfives.grid.approval_chain.command.repository.OApprovalChainRepository;
 import org.highfives.grid.approval_chain.command.repository.RWApprovalChainRepository;
 import org.highfives.grid.approval_chain.command.repository.VApprovalChainRepository;
 import org.highfives.grid.approval_chain.command.vo.ReqAddApprovalChainVO;
+import org.highfives.grid.approval_chain.command.vo.ChainStatusVO;
 import org.highfives.grid.approval_chain.common.dto.*;
+import org.highfives.grid.user.command.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service(value = "CommandApprovalChainService")
 public class ApprovalChainServiceImpl implements ApprovalChainService{
 
+    private static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private final ModelMapper mapper;
     private final BTApprovalChainRepository btApprovalChainRepository;
+    private final BTApprovalRepository btApprovalRepository;
     private final OApprovalChainRepository oApprovalChainRepository;
+    private final OApprovalRepository oApprovalRepository;
     private final RWApprovalChainRepository rwApprovalChainRepository;
+    private final RWApprovalRepository rwApprovalRepository;
     private final VApprovalChainRepository vApprovalChainRepository;
+    private final VApprovalRepository vApprovalRepository;
     private final org.highfives.grid.approval_chain.query.service.ApprovalChainService approvalChainService;
+    private final UserService userService;
 
     @Autowired
-    public ApprovalChainServiceImpl(ModelMapper mapper, BTApprovalChainRepository btApprovalChainRepository, OApprovalChainRepository oApprovalChainRepository, RWApprovalChainRepository rwApprovalChainRepository, VApprovalChainRepository vApprovalChainRepository, org.highfives.grid.approval_chain.query.service.ApprovalChainService approvalChainService) {
+    public ApprovalChainServiceImpl(ModelMapper mapper, BTApprovalChainRepository btApprovalChainRepository, BTApprovalRepository btApprovalRepository, OApprovalChainRepository oApprovalChainRepository, OApprovalRepository oApprovalRepository, RWApprovalChainRepository rwApprovalChainRepository, RWApprovalRepository rwApprovalRepository, VApprovalChainRepository vApprovalChainRepository, VApprovalRepository vApprovalRepository, org.highfives.grid.approval_chain.query.service.ApprovalChainService approvalChainService, UserService userService) {
         this.mapper = mapper;
         this.btApprovalChainRepository = btApprovalChainRepository;
+        this.btApprovalRepository = btApprovalRepository;
         this.oApprovalChainRepository = oApprovalChainRepository;
+        this.oApprovalRepository = oApprovalRepository;
         this.rwApprovalChainRepository = rwApprovalChainRepository;
+        this.rwApprovalRepository = rwApprovalRepository;
         this.vApprovalChainRepository = vApprovalChainRepository;
+        this.vApprovalRepository = vApprovalRepository;
         this.approvalChainService = approvalChainService;
+        this.userService = userService;
     }
 
     @Override
@@ -127,5 +149,214 @@ public class ApprovalChainServiceImpl implements ApprovalChainService{
         }
 
         return vChainDTOList;
+    }
+
+    @Override
+    @Transactional
+    public BTApprovalChainDTO addBTApprovalComment(CommentVO commentVO) {
+
+        BTApprovalChain btApprovalChain = btApprovalChainRepository.findById(commentVO.getChainId()).orElseThrow();
+
+        btApprovalChain.setComment(commentVO.getComment());
+
+        btApprovalChainRepository.save(btApprovalChain);
+
+        return mapper.map(btApprovalChain, BTApprovalChainDTO.class);
+    }
+
+    @Override
+    @Transactional
+    public OApprovalChainDTO addOApprovalComment(CommentVO commentVO) {
+
+        OApprovalChain oApprovalChain = oApprovalChainRepository.findById(commentVO.getChainId()).orElseThrow();
+
+        oApprovalChain.setComment(commentVO.getComment());
+
+        oApprovalChainRepository.save(oApprovalChain);
+
+        return mapper.map(oApprovalChain, OApprovalChainDTO.class);
+    }
+
+    @Override
+    @Transactional
+    public RWApprovalChainDTO addRWApprovalComment(CommentVO commentVO) {
+
+        RWApprovalChain rwApprovalChain = rwApprovalChainRepository.findById(commentVO.getChainId()).orElseThrow();
+
+        rwApprovalChain.setComment(commentVO.getComment());
+
+        rwApprovalChainRepository.save(rwApprovalChain);
+
+        return mapper.map(rwApprovalChain, RWApprovalChainDTO.class);
+    }
+
+    @Override
+    @Transactional
+    public VApprovalChainDTO addVApprovalComment(CommentVO commentVO) {
+
+        VApprovalChain vApprovalChain = vApprovalChainRepository.findById(commentVO.getChainId()).orElseThrow();
+
+        vApprovalChain.setComment(vApprovalChain.getComment());
+
+        vApprovalChainRepository.save(vApprovalChain);
+
+        return mapper.map(vApprovalChain, VApprovalChainDTO.class);
+    }
+
+    @Override
+    @Transactional
+    public BTApprovalChainDTO modifyBTChainStatus(ChainStatusVO chainStatusVO) {
+
+        // 이미 approval status가 승인이나 반려 상태인 경우 -> 예외 처리
+        // 이미 chain status가 승인이나 반려 상태인 경우 -> 예외 처리
+        ChainDTO btChain = approvalChainService.findBTChainByApprovalAndChainId(chainStatusVO.getChainId(), chainStatusVO.getApprovalId());
+
+        if (btChain.getStage() == 2) {  // 두번째 결재자
+            ChainDTO btChain2 = approvalChainService.findBTChainByApprovalAndChainId(chainStatusVO.getChainId() + 1, chainStatusVO.getApprovalId());
+
+            if (btChain2.getChainStatus() == ChainStatus.A) {   // 첫번째 결재자가 승인한 경우에만 결재(승인/반려) 가능
+                BTApprovalChain approvalChain = btApprovalChainRepository.findById(btChain.getId()).orElseThrow();
+
+                approvalChain.setApprovalStatus(chainStatusVO.getChainStatus());
+                approvalChain.setApprovalTime(LocalDateTime.now().format(dateFormat));
+
+                btApprovalChainRepository.save(approvalChain);
+
+                if (chainStatusVO.getChainStatus() == ChainStatus.A) {
+                    // 결재 상태가 승인으로 변경되는 함수 호출
+                    modifyBTApprovalStatus(btChain.getApprovalId(), ApprovalStatus.A);
+
+                    BTApproval btApproval = btApprovalRepository.findById(chainStatusVO.getApprovalId()).orElseThrow();
+
+                    if (btApproval.getCancelDocId() > 0) {
+
+                        BTApproval canceledBTApproval = btApprovalRepository.findById(btApproval.getCancelDocId()).orElseThrow();
+                        canceledBTApproval.setCancelYN(YN.Y);
+                    }
+
+                } else {
+                    // 결재 상태가 반려로 변경되는 함수 호출
+                    modifyBTApprovalStatus(btChain.getApprovalId(), ApprovalStatus.D);
+                }
+
+                return mapper.map(approvalChain, BTApprovalChainDTO.class);
+            }
+
+            return null;
+
+            // 첫번째 결재자가 승인 상태가 아닌 경우 -> 예외 처리
+        }
+
+        BTApprovalChain approvalChain = btApprovalChainRepository.findById(btChain.getId()).orElseThrow();
+
+        approvalChain.setApprovalStatus(chainStatusVO.getChainStatus());
+        approvalChain.setApprovalTime(LocalDateTime.now().format(dateFormat));
+
+        btApprovalChainRepository.save(approvalChain);
+
+        if (chainStatusVO.getChainStatus() == ChainStatus.D) {
+            // 결재 상태가 반려로 변경되는 함수 호출
+            modifyBTApprovalStatus(btChain.getApprovalId(), ApprovalStatus.D);
+        }
+
+        return mapper.map(approvalChain, BTApprovalChainDTO.class);
+    }
+
+    @Override
+    public BTApprovalDTO modifyBTApprovalStatus(int btApprovalId, ApprovalStatus approvalStatus) {
+
+        BTApproval btApproval = btApprovalRepository.findById(btApprovalId).orElseThrow();
+        btApproval.setApprovalStatus(approvalStatus);
+
+        return mapper.map(btApproval, BTApprovalDTO.class);
+    }
+
+    @Override
+    public OApprovalChainDTO modifyOChainStatus(ChainStatusVO chainStatusVO) {
+
+        // 현재 승인 상태 체크에 사용
+        OApprovalChain approvalChain = oApprovalChainRepository.findByApprovalId(chainStatusVO.getApprovalId());
+        OvertimeApproval overtimeApproval = oApprovalRepository.findById(chainStatusVO.getApprovalId()).orElseThrow();
+
+        approvalChain.setApprovalStatus(chainStatusVO.getChainStatus());
+        approvalChain.setApprovalTime(LocalDateTime.now().format(dateFormat));
+
+        if (chainStatusVO.getChainStatus() == ChainStatus.A) {
+            overtimeApproval.setApprovalStatus(ApprovalStatus.A);
+
+            if (overtimeApproval.getCancelDocId() > 0) {
+                OvertimeApproval canceledOApproval = oApprovalRepository.findById(overtimeApproval.getCancelDocId()).orElseThrow();
+                canceledOApproval.setCancelYN(YN.Y);
+            }
+
+        } else {
+            // W는 예외 처리
+            overtimeApproval.setApprovalStatus(ApprovalStatus.D);
+        }
+
+        oApprovalChainRepository.save(approvalChain);
+        oApprovalRepository.save(overtimeApproval);
+
+        return mapper.map(approvalChain, OApprovalChainDTO.class);
+    }
+
+    @Override
+    public RWApprovalChainDTO modifyRWChainStatus(ChainStatusVO chainStatusVO) {
+
+        RWApprovalChain approvalChain = rwApprovalChainRepository.findByApprovalId(chainStatusVO.getApprovalId());
+        RWApproval rwApproval = rwApprovalRepository.findById(chainStatusVO.getApprovalId()).orElseThrow();
+
+        approvalChain.setApprovalStatus(chainStatusVO.getChainStatus());
+        approvalChain.setApprovalTime(LocalDateTime.now().format(dateFormat));
+
+        if (chainStatusVO.getChainStatus() == ChainStatus.A) {
+            rwApproval.setApprovalStatus(ApprovalStatus.A);
+
+            userService.changeGender(rwApproval.getRequesterId());
+            // 성별 남자의 경우 false 반환 -> 예외 처리
+
+            if (rwApproval.getCancelDocId() > 0) {
+                RWApproval canceledRWApproval = rwApprovalRepository.findById(rwApproval.getCancelDocId()).orElseThrow();
+                canceledRWApproval.setCancelYN(YN.Y);
+
+                userService.changeGender(canceledRWApproval.getRequesterId());
+                // 성별 남자의 경우 false 반환 -> 예외 처리
+            }
+
+        } else {
+            rwApproval.setApprovalStatus(ApprovalStatus.D);
+        }
+
+        rwApprovalChainRepository.save(approvalChain);
+        rwApprovalRepository.save(rwApproval);
+
+        return mapper.map(approvalChain, RWApprovalChainDTO.class);
+    }
+
+    @Override
+    public VApprovalChainDTO modifyVChainStatus(ChainStatusVO chainStatusVO) {
+
+        VApprovalChain approvalChain = vApprovalChainRepository.findByApprovalId(chainStatusVO.getApprovalId());
+        VacationApproval vacationApproval = vApprovalRepository.findById(chainStatusVO.getApprovalId()).orElseThrow();
+
+        approvalChain.setApprovalStatus(chainStatusVO.getChainStatus());
+        approvalChain.setApprovalTime(LocalDateTime.now().format(dateFormat));
+
+        if (chainStatusVO.getChainStatus() == ChainStatus.A) {
+            vacationApproval.setApprovalStatus(ApprovalStatus.A);
+
+            if(vacationApproval.getCancelDocId() > 0) {
+                VacationApproval canceledVApproval = vApprovalRepository.findById(vacationApproval.getCancelDocId()).orElseThrow();
+                canceledVApproval.setCancelYN(YN.Y);
+            }
+
+        } else {
+            vacationApproval.setApprovalStatus(ApprovalStatus.D);
+        }
+
+        vApprovalChainRepository.save(approvalChain);
+        vApprovalRepository.save(vacationApproval);
+
+        return mapper.map(approvalChain, VApprovalChainDTO.class);
     }
 }
