@@ -1,32 +1,9 @@
 <script setup>
-    import { RouterLink, RouterView, useRouter } from 'vue-router';
-    import Header from '@/components/Header.vue';
-    import Sidebar from '@/components/Sidebar.vue';
-    import Footer from '@/components/Footer.vue';
-
-    const router = useRouter();
-
-
+    import { RouterView} from 'vue-router';
 </script>
 
 <template>
-  <div class="header">
-    <Header/>
-  </div>
-
-  <div>
-    <div id="sidebar">
-      <Sidebar/> 
-    </div>
-    <div class="content">
-      <RouterView />
-    </div>
-  </div>
-  <!-- <div class="footer">
-    <Footer/>
-  </div> -->
-
-
+  <RouterView/>
 </template>
 
 <style scoped>
