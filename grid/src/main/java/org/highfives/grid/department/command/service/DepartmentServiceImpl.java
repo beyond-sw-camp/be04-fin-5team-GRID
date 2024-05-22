@@ -57,6 +57,7 @@ public class DepartmentServiceImpl implements DepartmentService {
                 .departmentStatus("Y")
                 .highDepartment(departmentDTO.getHighDepartment())
                 .departmentCode(departmentDTO.getDepartmentCode())
+                .leaderId(departmentDTO.getLeaderId())
                 .startTime(formattedDate)
                 .build();
 

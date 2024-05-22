@@ -64,7 +64,6 @@ const fetchEmployee = async () => {
   try {
     const response = await axios.get(`http://localhost:8080/users/240201`); // ${employeeNumber}로 수정예정
     employee.value = response.data.result;
-    console.log('Employee data:', employee.value);
   } catch (err) {
     console.error('Error fetching employee:', err);
     error.value = 'Failed to fetch employee data.';
