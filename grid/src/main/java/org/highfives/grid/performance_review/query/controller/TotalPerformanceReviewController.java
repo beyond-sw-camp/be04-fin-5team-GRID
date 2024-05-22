@@ -3,8 +3,6 @@ package org.highfives.grid.performance_review.query.controller;
 import org.highfives.grid.performance_review.query.dto.TotalPerformanceReviewDTO;
 import org.highfives.grid.performance_review.query.service.TotalPerformanceReviewService;
 import org.highfives.grid.performance_review.query.vo.ResponseDetailTotalVO;
-import org.highfives.grid.performance_review.query.vo.ResponsePerformanceReviewGoalVO;
-import org.highfives.grid.performance_review.query.vo.ResponsePerformanceReviewVO;
 import org.highfives.grid.performance_review.query.vo.ResponseTotalPerformanceReviewVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

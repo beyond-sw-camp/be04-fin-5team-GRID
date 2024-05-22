@@ -1,6 +1,5 @@
 package org.highfives.grid.performance_review.command.service;
 
-import org.highfives.grid.performance_review.command.aggregate.entity.PerformanceReviewGoalItem;
 import org.highfives.grid.performance_review.command.aggregate.entity.PerformanceReviewItem;
 import org.highfives.grid.performance_review.command.dto.PerformanceReviewGoalItemDTO;
 import org.highfives.grid.performance_review.command.dto.PerformanceReviewItemDTO;

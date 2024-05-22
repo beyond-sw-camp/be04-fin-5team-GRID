@@ -5,7 +5,6 @@ import org.highfives.grid.performance_review.command.aggregate.entity.Performanc
 import org.highfives.grid.performance_review.command.dto.ModifyPerformanceReviewDTO;
 import org.highfives.grid.performance_review.command.dto.PerformanceReviewDTO;
 import org.highfives.grid.performance_review.command.dto.PerformanceReviewItemDTO;
-import org.highfives.grid.performance_review.command.dto.TotalPerformanceReviewDTO;
 import org.highfives.grid.performance_review.command.repository.PerformanceReviewRepository;
 import org.highfives.grid.performance_review.command.vo.RequestPerformanceReviewVO;
 import org.highfives.grid.performance_review.query.dto.PerformanceReviewGoalDTO;
