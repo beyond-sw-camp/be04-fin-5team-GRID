@@ -369,4 +369,54 @@ public class ApprovalServiceImpl implements ApprovalService {
 
         return mapper.map(cancelApproval, VacationApprovalDTO.class);
     }
+
+    @Override
+    @Transactional
+    public BTApprovalDTO viewBTApproval(int btApprovalId) {
+
+        BTApproval btApproval = btApprovalRepository.findById(btApprovalId).orElseThrow();
+        btApproval.setApprovalStatus(ApprovalStatus.V);
+
+        btApprovalRepository.save(btApproval);
+
+        return mapper.map(btApproval, BTApprovalDTO.class);
+    }
+
+    @Override
+    @Transactional
+    public OvertimeApprovalDTO viewOvertimeApproval(int overtimeApprovalId) {
+
+        OvertimeApproval overtimeApproval = oApprovalRepository.findById(overtimeApprovalId).orElseThrow();
+        overtimeApproval.setApprovalStatus(ApprovalStatus.V);
+
+        oApprovalRepository.save(overtimeApproval);
+
+        return mapper.map(overtimeApproval, OvertimeApprovalDTO.class);
+    }
+
+    @Override
+    @Transactional
+    public RWApprovalDTO viewRWApproval(int rwApprovalId) {
+
+        RWApproval rwApproval = rwApprovalRepository.findById(rwApprovalId).orElseThrow();
+        rwApproval.setApprovalStatus(ApprovalStatus.V);
+
+        rwApprovalRepository.save(rwApproval);
+
+        return mapper.map(rwApproval, RWApprovalDTO.class);
+    }
+
+    @Override
+    @Transactional
+    public VacationApprovalDTO viewVacationApproval(int vacationApprovalId) {
+
+        VacationApproval vacationApproval = vApprovalRepository.findById(vacationApprovalId).orElseThrow();
+        vacationApproval.setApprovalStatus(ApprovalStatus.V);
+
+        vApprovalRepository.save(vacationApproval);
+
+        return mapper.map(vacationApproval, VacationApprovalDTO.class);
+    }
+
+
 }
