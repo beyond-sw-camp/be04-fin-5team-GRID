@@ -12,4 +12,6 @@ public interface TotalPerformanceReviewMapper {
     List<TotalPerformanceReviewDTO> selectTotalByReviewerId(int employeeId);
 
     List<TotalPerformanceReviewDTO> selectAllTotal();
+
+    TotalPerformanceReviewDTO selectTotalById(int id);
 }

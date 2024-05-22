@@ -37,4 +37,11 @@ public class TotalPerformanceReviewServiceImpl implements TotalPerformanceReview
 
         return totalPerformanceReviewDTOList;
     }
+
+    @Override
+    public TotalPerformanceReviewDTO findTotalById(int id) {
+        TotalPerformanceReviewDTO totalPerformanceReviewDTO = totalPerformanceReviewMapper.selectTotalById(id);
+
+        return totalPerformanceReviewDTO;
+    }
 }

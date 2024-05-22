@@ -46,4 +46,16 @@ class TotalPerformanceReviewServiceImplTest {
         );
 
     }
+
+    @DisplayName(" 종합 평가 하나 조회")
+    @Test
+    public void findTotalById(){
+        int id = 6;
+
+        System.out.println(totalPerformanceReviewService.findTotalById(id));
+        assertNotNull(
+                totalPerformanceReviewService.findTotalById(id)
+        );
+
+    }
 }

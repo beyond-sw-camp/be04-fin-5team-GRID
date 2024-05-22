@@ -9,6 +9,6 @@ public interface TotalPerformanceReviewService {
 
     List<TotalPerformanceReviewDTO> findTotalByRevieweeId(int employeeId);
     List<TotalPerformanceReviewDTO> findTotalByReviewerId(int employeeId);
-
     List<TotalPerformanceReviewDTO> findAllTotal();
+    TotalPerformanceReviewDTO findTotalById(int id);
 }
