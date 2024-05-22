@@ -6,5 +6,5 @@ import org.highfives.grid.approval.common.dto.BTApprovalDTO;
 public interface ApprovalService {
 
     public BTApprovalDTO findBTApprovalById(int btApprovalId);
-    public void exportToPDF(BTApproval btApproval, String filePath);
+    public void exportToPDF(BTApprovalDTO btApproval, String filePath);
 }
