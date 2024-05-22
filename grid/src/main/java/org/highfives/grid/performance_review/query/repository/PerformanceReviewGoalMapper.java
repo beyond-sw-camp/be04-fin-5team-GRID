@@ -7,6 +7,7 @@ import org.highfives.grid.performance_review.query.dto.GoalItemDTO;
 import org.highfives.grid.performance_review.query.dto.PerformanceReviewGoalDTO;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface PerformanceReviewGoalMapper {
@@ -17,4 +18,6 @@ public interface PerformanceReviewGoalMapper {
     DetailGoalDTO selectDetailGoalById(int id);
 
     List<GoalItemDTO> selectAllGoalItemByGoalId(int id);
+
+    PerformanceReviewGoalDTO selectGoalByWriterIdAndYear(Map<String, Integer> intMap);
 }

@@ -10,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Service(value = "commandDepartmentService")
 public class DepartmentServiceImpl implements DepartmentService {
@@ -55,13 +57,63 @@ public class DepartmentServiceImpl implements DepartmentService {
         Department department = Department.builder()
                 .departmentName(departmentDTO.getDepartmentName())
                 .departmentStatus("Y")
+                .highDepartment(departmentDTO.getHighDepartment())
                 .departmentCode(departmentDTO.getDepartmentCode())
+                .leaderId(departmentDTO.getLeaderId())
                 .startTime(formattedDate)
                 .build();
 
         departmentRepository.save(department);
 
         return mapper.map(department, DepartmentDTO.class);
+    }
+
+    @Override
+    public List<DepartmentDTO> modifyAllDepartment(List<DepartmentDTO> departmentDTO) {
+        List<DepartmentDTO> updateList = new ArrayList<>();
+
+        for (DepartmentDTO modifyData : departmentDTO) {
+            DepartmentDTO currentDepartmentInfo = findDepartmentById(modifyData.getId());
+
+            if(!modifyData.getDepartmentStatus().equals("N")) {
+                Department department = Department.builder()
+                        .id(modifyData.getId())
+                        .departmentName(modifyData.getDepartmentName())
+                        .departmentStatus(modifyData.getDepartmentStatus())
+                        .startTime(currentDepartmentInfo.getStartTime())
+                        .endTime(currentDepartmentInfo.getEndTime())
+                        .highDepartment(modifyData.getHighDepartment())
+                        .memberCnt(currentDepartmentInfo.getMemberCnt())
+                        .leaderId(modifyData.getLeaderId())
+                        .departmentCode(modifyData.getDepartmentCode())
+                        .build();
+
+                departmentRepository.save(department);
+                updateList.add(mapper.map(department, DepartmentDTO.class));
+            }
+
+            Date currentDate = new Date();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String formattedDate = dateFormat.format(currentDate);
+
+            Department department = Department.builder()
+                    .id(modifyData.getId())
+                    .departmentName(modifyData.getDepartmentName())
+                    .departmentStatus(modifyData.getDepartmentStatus())
+                    .startTime(currentDepartmentInfo.getStartTime())
+                    .endTime(formattedDate)
+                    .highDepartment(modifyData.getHighDepartment())
+                    .memberCnt(currentDepartmentInfo.getMemberCnt())
+                    .leaderId(modifyData.getLeaderId())
+                    .departmentCode(modifyData.getDepartmentCode())
+                    .build();
+
+            departmentRepository.save(department);
+            updateList.add(mapper.map(department, DepartmentDTO.class));
+        }
+
+        return updateList;
+
     }
 
     @Override
@@ -78,6 +130,7 @@ public class DepartmentServiceImpl implements DepartmentService {
                     .highDepartment(departmentDTO.getHighDepartment())
                     .memberCnt(currentDepartmentInfo.getMemberCnt())
                     .leaderId(departmentDTO.getLeaderId())
+                    .departmentCode(departmentDTO.getDepartmentCode())
                     .build();
 
             departmentRepository.save(department);
@@ -97,6 +150,7 @@ public class DepartmentServiceImpl implements DepartmentService {
                     .highDepartment(departmentDTO.getHighDepartment())
                     .memberCnt(currentDepartmentInfo.getMemberCnt())
                     .leaderId(departmentDTO.getLeaderId())
+                    .departmentCode(departmentDTO.getDepartmentCode())
                     .build();
 
             departmentRepository.save(department);

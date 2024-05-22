@@ -11,4 +11,6 @@ public interface PerformanceReviewGoalService {
     List<PerformanceReviewGoalDTO> findAllGoalByApproverId(int employeeId);
 
     DetailGoalDTO findDetailGoalById(int id);
+
+    PerformanceReviewGoalDTO findGoalByWriterIdAndYear(int writerId, int year);
 }

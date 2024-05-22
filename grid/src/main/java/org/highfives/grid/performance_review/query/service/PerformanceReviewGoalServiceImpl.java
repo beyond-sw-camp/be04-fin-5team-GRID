@@ -9,9 +9,11 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-@Service
+@Service(value = "queryPerformanceReviewGoalServiceImpl")
 public class PerformanceReviewGoalServiceImpl implements PerformanceReviewGoalService{
 
     private final PerformanceReviewGoalMapper performanceReviewGoalMapper;
@@ -51,5 +53,18 @@ public class PerformanceReviewGoalServiceImpl implements PerformanceReviewGoalSe
         System.out.println(findDetailGoal);
 
         return findDetailGoal;
+    }
+
+    @Override
+    public PerformanceReviewGoalDTO findGoalByWriterIdAndYear(int writerId, int year) {
+        Map<String, Integer> intMap = new HashMap();
+        intMap.put("writerId", writerId);
+        intMap.put("year", year);
+
+        System.out.println(intMap);
+        PerformanceReviewGoalDTO performanceReviewGoalDTO = performanceReviewGoalMapper.selectGoalByWriterIdAndYear(intMap);
+        
+        System.out.println(performanceReviewGoalDTO);
+        return performanceReviewGoalDTO;
     }
 }

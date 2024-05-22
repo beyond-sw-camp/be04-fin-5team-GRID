@@ -3,11 +3,14 @@ package org.highfives.grid.department.command.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.highfives.grid.department.command.dto.DepartmentDTO;
 import org.highfives.grid.department.command.service.DepartmentService;
+import org.highfives.grid.department.command.vo.ResponseDepartmentListVO;
 import org.highfives.grid.department.command.vo.ResponseDepartmentVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController(value = "CommandDepartmentController")
@@ -61,6 +64,22 @@ public class DepartmentController {
         DepartmentDTO departmentList = departmentService.modifyDepartment(departmentDTO);
 
         ResponseDepartmentVO responseDepartmentVO = ResponseDepartmentVO.builder()
+                .message("success")
+                .href("/{id}")
+                .statusCode(200)
+                .result(departmentList)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(responseDepartmentVO);
+    }
+
+
+    /* 설명. 부서 전체 정보 수정 기능 */
+    @PutMapping("list")
+    public ResponseEntity<ResponseDepartmentListVO> modifyAllDepartment(@RequestBody List<DepartmentDTO> departmentDTO) {
+        List<DepartmentDTO> departmentList = departmentService.modifyAllDepartment(departmentDTO);
+
+        ResponseDepartmentListVO responseDepartmentVO = ResponseDepartmentListVO.builder()
                 .message("success")
                 .href("/{id}")
                 .statusCode(200)

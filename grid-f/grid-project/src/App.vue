@@ -18,22 +18,16 @@
     <div id="sidebar">
       <Sidebar/> 
     </div>
-    <!-- <div class="content">
+    <div class="content">
       <RouterView />
-    </div> -->
+    </div>
   </div>
-  <div class="footer">
+  <!-- <div class="footer">
     <Footer/>
-  </div>
+  </div> -->
 
 
 </template>
-
-<script setup>
-
-import {RouterView} from 'vue-router';
-
-</script>
 
 <style scoped>
 .header {

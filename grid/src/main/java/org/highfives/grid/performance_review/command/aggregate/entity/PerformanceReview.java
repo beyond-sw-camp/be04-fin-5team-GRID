@@ -43,7 +43,10 @@ public class PerformanceReview {
     @Setter
     private String approvalTime;
 
-    public PerformanceReview(String type, int year, String reviewName, String approvalStatus, int writerId, String writeTime, int approverId) {
+    @Column(name = "goal_id")
+    private int goalId;
+
+    public PerformanceReview(String type, int year, String reviewName, String approvalStatus, int writerId, String writeTime, int approverId, int goalId) {
         this.type = type;
         this.year = year;
         this.reviewName = reviewName;
@@ -51,5 +54,6 @@ public class PerformanceReview {
         this.writerId = writerId;
         this.writeTime = writeTime;
         this.approverId = approverId;
+        this.goalId = goalId;
     }
 }

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.highfives.grid.vacation.query.repository.VacationMapper">
+    <resultMap id="vacationInfoResultMap" type="org.highfives.grid.vacation.query.entity.VacationInfo">
+        <id property="id" column="ID"/>
+        <result property="vacationNum" column="VACATION_NUM"/>
+        <result property="addTime" column="ADD_TIME"/>
+        <result property="endTime" column="END_TIME"/>
+        <result property="employeeId" column="EMPLOYEE_ID"/>
+        <result property="typeId" column="TYPE_ID"/>
+    </resultMap>
+    <resultMap id="vacationPolicyResultMap" type="org.highfives.grid.vacation.query.entity.VacationPolicy">
+        <id property="id" column="ID"/>
+        <result property="content" column="CONTENT"/>
+        <result property="typeId" column="TYPE_ID"/>
+    </resultMap>
+    <resultMap id="vacationHistoryResultMap" type="org.highfives.grid.vacation.query.entity.VacationHistory">
+        <id property="id" column="ID"/>
+        <result property="changeTime" column="CHANGE_TIME"/>
+        <result property="changeReason" column="CHANGE_REASON"/>
+        <result property="typeId" column="TYPE_ID"/>
+        <result property="changeTypeId" column="CHANGE_TYPE_ID"/>
+        <result property="employeeId" column="EMPLOYEE_ID"/>
+    </resultMap>
+    <select id="selectAllVacationInfo" resultMap="vacationInfoResultMap" >
+        SELECT
+        ID,
+        VACATION_NUM,
+        ADD_TIME,
+        END_TIME,
+        EMPLOYEE_ID,
+        TYPE_ID
+        FROM VACATION_INFO
+    </select>
+    <select id="selectUserVacationInfo" parameterType="_int" resultMap="vacationInfoResultMap" >
+        SELECT
+        ID,
+        VACATION_NUM,
+        ADD_TIME,
+        END_TIME,
+        EMPLOYEE_ID,
+        TYPE_ID
+        FROM VACATION_INFO
+        WHERE EMPLOYEE_ID = #{employeeId}
+    </select>
+    <select id="selectAllPolicy" parameterType="_int" resultMap="vacationPolicyResultMap">
+        SELECT
+        ID,
+        CONTENT,
+        TYPE_ID
+        FROM VACATION_POLICY
+        WHERE TYPE_ID = #{typeId}
+    </select>
+    <select id="selectAllHistories" resultMap="vacationHistoryResultMap">
+        SELECT
+        ID,
+        CHANGE_TIME,
+        CHANGE_REASON,
+        TYPE_ID,
+        CHANGE_TYPE_ID,
+        EMPLOYEE_ID
+        FROM VACATION_HISTORY
+    </select>
+    <select id="searchVacationInfoByName" parameterType="org.highfives.grid.vacation.query.vo.NameSearch" resultMap="vacationInfoResultMap">
+        SELECT
+        VI.ID,
+        VI.VACATION_NUM,
+        VI.ADD_TIME,
+        VI.END_TIME,
+        VI.EMPLOYEE_ID,
+        VI.TYPE_ID
+        FROM VACATION_INFO VI
+        JOIN EMPLOYEE EM ON VI.EMPLOYEE_ID = EM.ID
+        WHERE EM.EMPLOYEE_NAME LIKE CONCAT('%',#{NAME},'%')
+    </select>
+    <select id="searchVacationInfoByDept" parameterType="org.highfives.grid.vacation.query.vo.DeptSearch" resultMap="vacationInfoResultMap">
+        SELECT
+        VI.ID,
+        VI.VACATION_NUM,
+        VI.ADD_TIME,
+        VI.END_TIME,
+        VI.EMPLOYEE_ID,
+        VI.TYPE_ID
+        FROM VACATION_INFO VI
+        JOIN EMPLOYEE EM ON VI.EMPLOYEE_ID = EM.ID
+        JOIN DEPARTMENT DE ON EM.DEPARTMENT_ID = DE.ID
+        WHERE DE.DEPARTMENT_NAME LIKE CONCAT('%',#{DEPT},'%')
+    </select>
+    <select id="searchVacationHistories" parameterType="org.highfives.grid.vacation.query.vo.HistorySearch" resultMap="vacationHistoryResultMap">
+        SELECT
+        ID,
+        CHANGE_TIME,
+        CHANGE_REASON,
+        TYPE_ID,
+        CHANGE_TYPE_ID,
+        EMPLOYEE_ID
+        FROM VACATION_HISTORY
+        WHERE TYPE_ID = #{typeId} AND EMPLOYEE_ID = #{employeeId} AND CHANGE_TYPE_ID = #{changeTypeId}
+    </select>
+</mapper>

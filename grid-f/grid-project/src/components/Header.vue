@@ -61,7 +61,7 @@ const handleDragEnd = async () => {
       order: index + 1, // 서버가 기대하는 순서 값을 추가
     }));
 
-    await axios.put('http://localhost:8080/department', { departments: updatedDepartments });
+    await axios.put('http://localhost:8080/department/list', { departments: updatedDepartments });
   } catch (error) {
     console.error('부서 순서를 업데이트하는 데 실패했습니다:', error);
   }
@@ -71,7 +71,13 @@ onMounted(fetchDepartments);
 </script>
 
 <style scoped>
-/* 스타일 코드는 그대로 유지됩니다. */
+@font-face {
+    font-family: 'IBMPlexSansKR-Regular';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_20-07@1.0/IBMPlexSansKR-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
 .header {
   background: #002366;
   color: white;
@@ -79,6 +85,7 @@ onMounted(fetchDepartments);
   display: flex;
   justify-content: space-between;
   align-items: center;
+  font-family: 'IBMPlexSansKR-Regular';
 }
 
 .logo {
