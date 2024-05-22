@@ -5,6 +5,7 @@ import org.highfives.grid.user.query.dto.LeaderInfoDTO;
 import org.highfives.grid.user.query.dto.UserDTO;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface UserMapper {
@@ -26,4 +27,6 @@ public interface UserMapper {
     String getDuties(int id);
 
     UserDTO getUserInfoById(int id);
+
+    Map<String, Object> getUserInfoByEmail(String email);
 }

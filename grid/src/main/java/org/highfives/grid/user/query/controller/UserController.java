@@ -3,10 +3,7 @@ package org.highfives.grid.user.query.controller;
 import org.highfives.grid.user.query.dto.LeaderInfoDTO;
 import org.highfives.grid.user.query.dto.UserDTO;
 import org.highfives.grid.user.query.service.UserService;
-import org.highfives.grid.user.query.vo.ResFindLeaderVO;
-import org.highfives.grid.user.query.vo.ResFindListVO;
-import org.highfives.grid.user.query.vo.ResFindUserVO;
-import org.highfives.grid.user.query.vo.SimpleInfo;
+import org.highfives.grid.user.query.vo.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,7 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController("UserQueryController")
 @RequestMapping("/users")
@@ -60,6 +59,25 @@ public class UserController {
         }
     }
 
+    // 이메일로 이름 체크
+    @GetMapping("/{email}/name")
+    public ResponseEntity<ResCheckNameVO> checkNameByEmail(@PathVariable("email") String email) {
+
+        Map<String, Object> result = userService.checkNameByEmail(email);
+
+        if(result != null){
+            ResCheckNameVO response =
+                    new ResCheckNameVO(200, "Success to find user", "/users/list", result);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } else {
+            ResCheckNameVO response =
+                    new ResCheckNameVO(404, "No matching user", "/users/{employeeNumber}", null);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+    }
+
+
+    //아이디로 사원 정보 조회
     @GetMapping("/id/{userID}")
     public ResponseEntity<ResFindUserVO> findUserById(@PathVariable("userID") int id) {
 

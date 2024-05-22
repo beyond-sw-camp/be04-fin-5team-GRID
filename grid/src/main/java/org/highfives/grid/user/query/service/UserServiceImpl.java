@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service("QueryUserService")
 public class UserServiceImpl implements UserService{
@@ -98,5 +99,14 @@ public class UserServiceImpl implements UserService{
         return result;
     }
 
+    @Override
+    public Map<String, Object> checkNameByEmail(String email) {
+        try {
+            Map<String, Object> selectResult = userMapper.getUserInfoByEmail(email);
 
+            return selectResult;
+        } catch (NullPointerException e) {
+            return null;
+        }
+    }
 }

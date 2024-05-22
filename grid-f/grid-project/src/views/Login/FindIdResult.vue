@@ -62,15 +62,17 @@ onMounted(async () => {
     font-style: normal;
 }
 
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
     width: 100vh;
     margin: 0;
     padding: 0;
 
-}
-
-* {
-    box-sizing: border-box;
 }
 
 h1 {
@@ -94,7 +96,6 @@ hr {
     width: 100%;
     padding: 0;
     display: flex;
-
     margin: 0;
 }
 

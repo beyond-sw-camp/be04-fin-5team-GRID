@@ -195,7 +195,6 @@ body {
     width: 30%;
     padding: 0;
     margin: 0;
-
 }
 
 .login {

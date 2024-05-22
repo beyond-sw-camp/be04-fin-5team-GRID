@@ -47,4 +47,12 @@ class UserServiceImplTests {
                 () -> userService.findUserById(1)
         );
     }
+
+    @DisplayName("email로 유저 정보 조회")
+    @Test
+    void checkNameByEmailTest() {
+        Assertions.assertDoesNotThrow(
+                () -> userService.checkNameByEmail("gridpeople2024@gmail.com")
+        );
+    }
 }

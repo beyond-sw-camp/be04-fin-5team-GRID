@@ -166,7 +166,16 @@
         E.team_id,
         E.department_id
         FROM Employee E
-        WHERE E.employee_number = #{id}
+        WHERE E.id = #{id}
+    </select>
+
+    <!-- email로 유저 조회 쿼리    -->
+    <select id="getUserInfoByEmail" parameterType="string" resultType="map">
+        SELECT
+        E.email,
+        E.employee_name
+        FROM Employee E
+        WHERE E.email = #{id}
     </select>
 
     <!--  사원 직위명 조회  -->
@@ -186,36 +195,4 @@
         JOIN employee E ON E.duties_id = D.id
         WHERE E.id = #{eNum}
     </select>
-<!--    <select id="selectPostsByCondition" parameterType="com.teamphoenix.ahub.fair.query.dto.FairDTO" resultMap="fairList">-->
-<!--        SELECT-->
-<!--        F.fair_id-->
-<!--        , F.fair_title-->
-<!--        , F.fair_content-->
-<!--        , F.fair_writedate-->
-<!--        , F.use_acceptance-->
-<!--        , F.member_code-->
-<!--        , F.fair_tag1-->
-<!--        , F.fair_tag2-->
-<!--        , F.fair_tag3-->
-<!--        , F.fair_startdate-->
-<!--        , F.fair_enddate-->
-<!--        , F.fair_location-->
-<!--        , F.fair_area-->
-<!--        FROM fair F-->
-<!--        <where>-->
-<!--            <if test="fairTitle neq null and fairContent eq null">-->
-<!--                F.fair_title LIKE CONCAT ('%', #{fairTitle}, '%')-->
-<!--            </if>-->
-<!--            <if test="fairContent neq null and fairTitle eq null">-->
-<!--                F.fair_content LIKE CONCAT('%', #{fairContent}, '%')-->
-<!--            </if>-->
-<!--            <if test="fairTitle neq null and fairContent neq null">-->
-<!--                F.fair_title LIKE CONCAT('%', #{fairTitle}, '%')-->
-<!--                OR F.fair_content LIKE CONCAT('%', #{fairContent}, '%')-->
-<!--            </if>-->
-<!--            <if test="memberCode neq 0">-->
-<!--                F.member_code = #{memberCode}-->
-<!--            </if>-->
-<!--        </where>-->
-<!--    </select>-->
 </mapper>

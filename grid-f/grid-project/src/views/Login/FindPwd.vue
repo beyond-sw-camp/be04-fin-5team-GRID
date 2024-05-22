@@ -14,7 +14,7 @@
                 <div class="userName">
                     <div class="outBox" :class="{ 'existence': isExistence }">
                         <div class="inputBox">
-                            <input type="text" v-model="inputValue" >
+                            <input type="text" v-model="inputValue">
                             <label for="sampleId">이름</label>
                         </div>
                     </div>
@@ -29,9 +29,9 @@
                     &nbsp; 이름을 입력해주세요.
                 </div>
                 <div class="employeeNumber">
-                    <div class="outBox" :class="{ 'existence': isEnumExistence }">
+                    <div class="outBox" :class="{ 'existence': isExistence2 }">
                         <div class="inputBox">
-                            <input type="text" v-model="inputValue2" @keyup.enter="find" >
+                            <input type="text" v-model="inputValue2" @keyup.enter="sendMail">
                             <label for="samplePwd">이메일</label>
                         </div>
                     </div>
@@ -55,18 +55,18 @@
                     &nbsp; 해당하는 정보가 없습니다! 이름과 이메일을 확인해주세요!
                 </div>
                 <div class="button d-grid gap-3" style="max-width: 56%;">
-                    <button type="button" class="btn btn-block" @click="find">Find</button>
+                    <button type="button" class="btn btn-block" @click="sendMail">Send Email</button>
                 </div>
                 <div class="line">
                     <hr>
                     <div>or</div>
                     <hr>
                 </div>
-                <div class="find-pwd">
-                    <div id="find-pwd1">
-                        <div>Forgot your password?</div>
+                <div class="find-id">
+                    <div id="find-id1">
+                        <div>Forgot your email?</div>
                     </div>
-                    <div id="find-pwd2" @click="findPwd">아이디 찾기</div>
+                    <div id="find-id2" @click="findId">아이디 찾기</div>
                 </div>
                 <div class="toLogin">
                     <div id="toLogin1">
@@ -80,67 +80,102 @@
 
         </div>
     </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" ref="myModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">메일 전송 완료</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    입력하신 메일을 확인해주세요! 로그인 화면으로 돌아갑니다.
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal" @click="login">Close</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
 </template>
 
 <script setup>
-import { ref, watch } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
+import bootstrap from 'bootstrap/dist/js/bootstrap.bundle.js';
 
 const inputValue = ref('');
 const inputValue2 = ref('');
 const isExistence = ref(false);
-const isEnumExistence = ref(false);
+const isExistence2 = ref(false);
 const isNameExistence = ref(false);
 const isEmailExistence = ref(false);
 const isWrong = ref(false);
 const router = useRouter();
-const findResult = ref([]);
+const myModal = ref(null);
 
-async function find() {
-    isEmailExistence.value = false;
+async function sendMail() {
     isNameExistence.value = false;
+    isEmailExistence.value = false;
     isWrong.value = false;
 
     if (inputValue.value == '') {
-        // alert('이름을 입력해주세요.');
         isNameExistence.value = true;
         return false;
     }
 
     if (inputValue2.value == '') {
-        // alert('비밀번호를 입력해주세요.');
         isEmailExistence.value = true;
         return false;
     }
 
-    try {
-        await axios.get(`http://localhost:8080/users/${inputValue2.value}`)
-            .then((response) => {
-                findResult.value = response.data.result;
-                console.log(findResult.value);
-                console.log(findResult.value.name);
-                console.log(findResult.value.email);
-                
-                if (findResult.value.name == inputValue.value && findResult.value.employeeNumber == inputValue2.value) {
-                    router.push({
-                        path: '/find/id/result',
-                        query: { email : findResult.value.email }
-                    });
+    await axios.get(`http://localhost:8080/users/${inputValue2.value}/name`)
+        .then((response) => {
+            console.log(response.data.result);
+            if (response.status == 404) {
+                console.log(response);
+            }
+            if (response.data.result.employee_name == inputValue.value) {
+                try {
+                    axios.get(`http://localhost:8080/mails/pwd/${inputValue2.value}`)
+                        .then((response) => {
+                            if (response.status == 200) {
+                                const modalInstance = new bootstrap.Modal(myModal.value);
+                                modalInstance.show();
+                            }
+                        })
+                    return true;9
+                } catch (e) {
+                    isWrong.value = true;
                 }
-            })
-    } catch (e) {
-        isWrong.value = true;
-    }
+            }
+            isWrong.value = true;
+        })
+
+
 };
 
 function login() {
     router.push('/');
 }
 
-function findPwd() {
-    router.push('/find/pwd');
+function findId() {
+    router.push('/find/id');
 }
+
+onMounted(() => {
+    const modalElement = myModal.value;
+    new bootstrap.Modal(modalElement);
+})
 
 
 watch(inputValue, (newValue) => {
@@ -148,7 +183,7 @@ watch(inputValue, (newValue) => {
 });
 
 watch(inputValue2, (newValue) => {
-    isEnumExistence.value = newValue !== '';
+    isExistence2.value = newValue !== '';
 });
 
 </script>
@@ -243,6 +278,7 @@ body {
     margin: 1% auto 0;
     display: flex;
     flex-direction: row;
+    justify-content: center;
 
 }
 
@@ -252,22 +288,22 @@ h1 {
 }
 
 hr {
-    width: 49%;
+    width: 35%;
     margin: auto 10px;
 }
 
 .toLogin {
     font-size: 14px;
-    width: 85%;
-    margin: 1% auto 0;
+    width: 80%;
+    margin: 1% auto 0 16%;
     display: flex;
     flex-direction: row;
 }
 
-.find-pwd {
+.find-id {
     font-size: 14px;
-    width: 85%;
-    margin: 1% auto 0;
+    width: 80%;
+    margin: 1% auto 0 16%;
     display: flex;
     flex-direction: row;
 }
@@ -298,7 +334,7 @@ hr {
 }
 
 #toLogin1 {
-    width: 60%;
+    width: 50%;
     display: flex;
     justify-content: center;
 }
@@ -309,13 +345,13 @@ hr {
     cursor: pointer;
 }
 
-#find-pwd1 {
-    width: 60%;
+#find-id1 {
+    width: 50%;
     display: flex;
     justify-content: center;
 }
 
-#find-pwd2 {
+#find-id2 {
     font-weight: bold;
     color: #002366;
     cursor: pointer;
