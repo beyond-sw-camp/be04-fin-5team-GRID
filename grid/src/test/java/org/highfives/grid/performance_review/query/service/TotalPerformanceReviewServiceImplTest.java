@@ -29,7 +29,6 @@ class TotalPerformanceReviewServiceImplTest {
     public void findTotalByReviewerId(){
         int employeeId = 5;
 
-        System.out.println(totalPerformanceReviewService.findTotalByReviewerId(employeeId));
         assertNotNull(
                 totalPerformanceReviewService.findTotalByReviewerId(employeeId)
         );
@@ -40,7 +39,6 @@ class TotalPerformanceReviewServiceImplTest {
     @Test
     public void findAllTotal(){
 
-        System.out.println(totalPerformanceReviewService.findAllTotal());
         assertNotNull(
                 totalPerformanceReviewService.findAllTotal()
         );
@@ -52,7 +50,6 @@ class TotalPerformanceReviewServiceImplTest {
     public void findTotalById(){
         int id = 6;
 
-        System.out.println(totalPerformanceReviewService.findTotalById(id));
         assertNotNull(
                 totalPerformanceReviewService.findTotalById(id)
         );

@@ -36,7 +36,6 @@ public class PerformanceReviewItemServiceImpl implements PerformanceReviewItemSe
     @Transactional
     public List<PerformanceReviewItemDTO> addNewItems(int goalId, int reviewId) {
         List<PerformanceReviewGoalItemDTO> performanceReviewGoalItemList = performanceReviewGoalItemService.findByGoalId(goalId);
-        System.out.println(performanceReviewGoalItemList);
 
         List<PerformanceReviewItemDTO> addReviewList = new ArrayList<>();
         for (PerformanceReviewGoalItemDTO performanceReviewGoalItem : performanceReviewGoalItemList) {
@@ -62,12 +61,9 @@ public class PerformanceReviewItemServiceImpl implements PerformanceReviewItemSe
 
     @Override
     public PerformanceReviewItemDTO modifyItem(PerformanceReviewItemDTO performanceReviewItemDTO) {
-        System.out.println(performanceReviewItemDTO);
 
         PerformanceReviewItem performanceReviewItem = performanceReviewItemRepository.findById(performanceReviewItemDTO.getId())
                 .orElseThrow(IllegalArgumentException::new);
-
-        System.out.println(performanceReviewItem);
 
         if (performanceReviewItem != null) {
             performanceReviewItem.setActionItem(performanceReviewItemDTO.getActionItem());
@@ -84,7 +80,6 @@ public class PerformanceReviewItemServiceImpl implements PerformanceReviewItemSe
                 performanceReviewItemDTO.getId()
         ).orElseThrow(IllegalArgumentException::new);
 
-        System.out.println(modifyItem);
         return modelMapper.map(modifyItem, PerformanceReviewItemDTO.class);
     }
 
@@ -95,8 +90,6 @@ public class PerformanceReviewItemServiceImpl implements PerformanceReviewItemSe
         List<PerformanceReviewItemDTO> performanceReviewItemDTOList = performanceReviewItemList.stream()
                 .map(performanceReviewItem -> modelMapper.map(performanceReviewItem, PerformanceReviewItemDTO.class))
                 .collect(Collectors.toList());
-
-        System.out.println(performanceReviewItemDTOList);
 
         return performanceReviewItemDTOList;
     }
