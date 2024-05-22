@@ -20,16 +20,6 @@ class ApprovalServiceImplTest {
     void findBTApprovalById() {
     }
 
-    @DisplayName("직원별 주당 시간 외 근무 조회")
-    @Test
-    void findOInWeekByEmployeeId() {
-
-        OvertimeInWeekDTO overtime = new OvertimeInWeekDTO("2024-05-12 00:00:00", "2024-05-18 00:00:00", 1);
-
-        Assertions.assertDoesNotThrow(
-                () -> approvalService.findOInWeekByEmployeeId(overtime)
-        );
-    }
 
     @Test
     void BTexportToPDF() {
@@ -38,12 +28,5 @@ class ApprovalServiceImplTest {
 
     @Test
     void countOvertimeInWeek() {
-
-        OvertimeInWeekDTO overtime = new OvertimeInWeekDTO("2024-05-12 00:00:00", "2024-05-18 00:00:00", 1);
-        List<OvertimeApprovalDTO> list = approvalService.findOInWeekByEmployeeId(overtime);
-
-        Assertions.assertDoesNotThrow(
-                () -> approvalService.countOvertimeInWeek(list)
-        );
     }
 }

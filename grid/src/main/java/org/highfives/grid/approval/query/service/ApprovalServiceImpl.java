@@ -52,16 +52,11 @@ public class ApprovalServiceImpl implements ApprovalService{
     }
 
     @Override
-    public List<OvertimeApprovalDTO> findOInWeekByEmployeeId(OvertimeInWeekDTO overtimeInWeek) {
+    public int countOvertimeInWeek(OvertimeInWeekDTO overtimeInWeek) {
 
         List<OvertimeApprovalDTO> overtimeApprovalList = approvalMapper.findOInWeekByEmployeeId(overtimeInWeek);
 
-        return overtimeApprovalList;
-    }
-
-    @Override
-    public int countOvertimeInWeek(List<OvertimeApprovalDTO> overtimeApprovalList) {
-
+        System.out.println(overtimeApprovalList);
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
         int sum = 0;
@@ -71,6 +66,7 @@ public class ApprovalServiceImpl implements ApprovalService{
             LocalDateTime endTime = LocalDateTime.parse(overtimeApproval.getEndTime(), dateFormat);
 
             sum += ChronoUnit.HOURS.between(startTime, endTime);
+            System.out.println(startTime + " " + endTime);
         }
 
         return sum;

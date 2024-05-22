@@ -26,7 +26,6 @@
             AND (approval_status = "A")
             AND (cancel_yn = "N")
             AND (cancel_document_id = 0)
-            AND (STR_TO_DATE(start_time, '%Y-%m-%d %H:%i:%s') BETWEEN #{sunday} AND #{saturday})
-            AND (STR_TO_DATE(end_time, '%Y-%m-%d %H:%i:%s') BETWEEN #{sunday} AND #{saturday});
+            AND (STR_TO_DATE(start_time, '%Y-%m-%d %H:%i:%s') BETWEEN #{sunday} AND #{saturday});
     </select>
 </mapper>

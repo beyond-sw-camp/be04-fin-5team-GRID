@@ -10,7 +10,6 @@ import org.highfives.grid.approval_chain.common.dto.OApprovalChainDTO;
 import org.highfives.grid.approval_chain.common.dto.RWApprovalChainDTO;
 import org.highfives.grid.approval_chain.common.dto.VApprovalChainDTO;
 
-import javax.xml.stream.events.Comment;
 import java.util.List;
 
 public interface ApprovalChainService {

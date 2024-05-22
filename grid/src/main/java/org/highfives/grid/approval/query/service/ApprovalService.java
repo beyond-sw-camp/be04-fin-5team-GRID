@@ -9,7 +9,6 @@ import java.util.List;
 public interface ApprovalService {
 
     public BTApprovalDTO findBTApprovalById(int btApprovalId);
-    List<OvertimeApprovalDTO> findOInWeekByEmployeeId(OvertimeInWeekDTO overtimeInWeek);
-    int countOvertimeInWeek(List<OvertimeApprovalDTO> overtimeApprovalList);
+    int countOvertimeInWeek(OvertimeInWeekDTO overtimeInWeek);
     public void BTexportToPDF(BTApprovalDTO btApproval, String filePath);
 }
