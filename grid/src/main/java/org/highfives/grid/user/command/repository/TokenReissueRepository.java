@@ -7,8 +7,6 @@ import java.util.Optional;
 
 public interface TokenReissueRepository extends CrudRepository<RefreshToken, Integer> {
 
-    Optional<RefreshToken> findByAccessToken(String accessToken);
-
     @Override
     Optional<RefreshToken> findById(Integer integer);
 

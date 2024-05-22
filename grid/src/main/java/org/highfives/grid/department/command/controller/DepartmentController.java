@@ -1,5 +1,6 @@
 package org.highfives.grid.department.command.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.highfives.grid.department.command.dto.DepartmentDTO;
 import org.highfives.grid.department.command.service.DepartmentService;
 import org.highfives.grid.department.command.vo.ResponseDepartmentListVO;
@@ -14,6 +15,7 @@ import java.util.List;
 
 @RestController(value = "CommandDepartmentController")
 @RequestMapping("/department")
+@Slf4j
 public class DepartmentController {
 
     private final DepartmentService departmentService;
@@ -45,7 +47,7 @@ public class DepartmentController {
     public ResponseEntity<ResponseDepartmentVO> registDepartment(@RequestBody DepartmentDTO departmentDTO) {
 
         DepartmentDTO departmentList = departmentService.registDepartment(departmentDTO);
-
+        log.info("departmentList={}", departmentList);
         ResponseDepartmentVO responseDepartmentVO = ResponseDepartmentVO.builder()
                 .message("success")
                 .href("/{id}")
@@ -71,6 +73,7 @@ public class DepartmentController {
         return ResponseEntity.status(HttpStatus.OK).body(responseDepartmentVO);
     }
 
+
     /* 설명. 부서 전체 정보 수정 기능 */
     @PutMapping("list")
     public ResponseEntity<ResponseDepartmentListVO> modifyAllDepartment(@RequestBody List<DepartmentDTO> departmentDTO) {
@@ -85,6 +88,7 @@ public class DepartmentController {
 
         return ResponseEntity.status(HttpStatus.OK).body(responseDepartmentVO);
     }
+
 
     /* 설명. 부서 삭제 기능 */
     @DeleteMapping("/{id}")
