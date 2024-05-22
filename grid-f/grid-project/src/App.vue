@@ -1,8 +1,12 @@
 <template>
   <div class="all">
-      <div class="header">Header</div>
+      <div class="header">
+          <RouterLink to="/vacation/history" replace>history</RouterLink>
+          <RouterLink to="/vacation/policy" replace>policy</RouterLink>
+          <RouterLink to="/vacation/manage" replace>manage</RouterLink>
+      </div>
       <div class="sidebar">Sidebar</div>
-      <div class="content"> <PolicyRegist /> </div>
+      <div class="content"> <RouterView/></div>
   </div>
 </template>
 
@@ -10,10 +14,13 @@
   import Policy from "@/components/Vacation/Policy/VacationPolicy.vue";
   import PolicyModify from "@/components/Vacation/Policy/VacationPolicyModify.vue";
   import PolicyRegist from "@/components/Vacation/Policy/VacationPolicyRegist.vue";
-  import Main from "@/components/Main/Main.vue";
-  import { RouterLink, RouterView, useRouter } from 'vue-router';
+  import History from "@/components/Vacation/History/VacationHistory.vue";
+  import Manage from "@/components/Vacation/Manage/VacationManage.vue";
+  import ManageRegist from "@/components/Vacation/Manage/VacationManageRegist.vue";
+  import ManageDelete from "@/components/Vacation/Manage/VacationManageDelete.vue";
+  import Main from "@/views/MainView.vue"
+  import {RouterLink, RouterView} from 'vue-router';
 
-  const router = useRouter();
 </script>
 
 
@@ -28,8 +35,8 @@
 
   .all {
       display: grid;
-      grid-template-rows: 100px minmax(980px, auto);
-      grid-template-columns: 300px minmax(1620px,auto);
+      grid-template-rows: 100px minmax(764px, auto);
+      grid-template-columns: 250px minmax(1286px,auto);
       width: 100%;
       height: 100vh;
   }

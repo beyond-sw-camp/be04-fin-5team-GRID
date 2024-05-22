@@ -31,8 +31,9 @@
 
     .policyAll {
         display: grid;
-        grid-template-rows: 150px 700px 100px;
-        grid-template-columns: 5% 85% 10%;
+        grid-template-rows: 15% 75% 10%;
+        grid-template-columns: 10% 80% 10%;
+        height: 100%;
     }
 
     .policyTitle {

@@ -35,8 +35,9 @@
 <style scoped>
     .manageRegistAll {
         display: grid;
-        grid-template-rows: 150px 650px 100px ;
-        grid-template-columns: 5% 85% 10%;
+        grid-template-rows: 15% 80% 5% ;
+        grid-template-columns: 10% 80% 10%;
+        height: 100%;
     }
 
     .manageTitle {

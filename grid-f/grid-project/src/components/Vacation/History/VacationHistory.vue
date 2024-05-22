@@ -66,8 +66,9 @@
 <style scoped>
     .historyAll {
         display: grid;
-        grid-template-rows: 150px  150px 50px 500px 100px ;
-        grid-template-columns: 5% 85% 10%;
+        grid-template-rows: 17.5% 17.5% 5% 50% 10% ;
+        grid-template-columns: 10% 80% 10%;
+        height: 100%;
     }
 
     .historyTitle {
@@ -94,17 +95,10 @@
     }
 
     .vacationsTitle {
+        margin-left: 5%;
         display: grid;
-        grid-template-columns: 90% 10%;
+        grid-template-columns: 85% 10% 5%;
         align-items: center;
-    }
-
-    .vacationsTitle p{
-        margin:0;
-    }
-
-    .todayBtn{
-        height: 20%;
     }
 
     .vacationsNum {
@@ -112,18 +106,7 @@
         display: grid;
         grid-template-columns:15% 85%;
         font-size: 20px;
-    }
-
-    .todayBtn {
-        width: 100%;
-        background-color: orange;
-        color: white;
-        padding: 10px 10px;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 12px;
-        font-style: bold;
+        margin-left: 5%;
     }
 
     .plusBtn {
@@ -132,34 +115,49 @@
 
     .today {
         width: calc(100% - 20px); /* 부모 요소의 너비에 비례하여 폭을 설정 */
-        padding: 10px; /* 내부 여백 추가 */
         background-color: #F8F9FAFF;
     }
 
     .tomorrow {
         width: calc(100% - 20px); /* 부모 요소의 너비에 비례하여 폭을 설정 */
-        padding: 10px; /* 내부 여백 추가 */
         background-color: #F8F9FAFF;
         grid-column-start: 3;
     }
 
     .search {
-        margin-top: 2%;
+        /* margin-top: 2%; */
         grid-row-start:3;
         grid-column-start: 2;
         display: grid;
-        grid-template-columns: 85% 10% 5%;
+        grid-template-columns: 79% 13% 1% 7%;
     }
 
     .sortBox {
         grid-column-start: 2;
         margin-left: 2%;
+        width: 100%;
+        background-color: orange;
+        color: white;
+        padding: 5px 5px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 12px;
+        font-style: bold;
     }
 
     .printBtn {
-        grid-column-start: 3;
+        grid-column-start: 4;
         margin-left: 2%;
-        padding: 1%;
+        width: 100%;
+        background-color: orange;
+        color: white;
+        padding: 5px 5px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 12px;
+        font-style: bold;
     }
 
     .tableContainer {

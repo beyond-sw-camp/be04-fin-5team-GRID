@@ -5,6 +5,7 @@ import router from '../src/router/router.js'
 
 const app = createApp(App);
 
-app.mount('#app');
+
 app.provide('$axios', axios);
 app.use(router);
+app.mount('#app');

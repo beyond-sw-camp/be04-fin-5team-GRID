@@ -2,7 +2,7 @@
     <div class="manageDeleteAll">
         <div class="manageTitle">
             <img class = "deleteIcon" src="@/assets/buttons/vacation.png">
-            <h1>휴가 삭제</h1>
+            <h1>휴가 수정/삭제</h1>
         </div>
         <div class="deleteMain">
             <div class="vacationType">
@@ -23,7 +23,8 @@
             </div>
         </div>
         <div class="buttons">
-                <button class="regist">삭제하기</button>
+                <button class="modify">수정하기</button>
+                <button class="delete">삭제하기</button>
         </div>
     </div>
 </template>
@@ -35,8 +36,9 @@
 <style scoped>
     .manageDeleteAll {
         display: grid;
-        grid-template-rows: 150px 650px 100px ;
-        grid-template-columns: 5% 85% 10%;
+        grid-template-rows: 15% 80% 5% ;
+        grid-template-columns: 10% 80% 10%;
+        height: 100%;
     }
 
     .manageTitle {
@@ -100,13 +102,26 @@
 
     .buttons {
         display: grid;
-        grid-template-columns: 40% 5% 10% 5% 40%;
+        grid-template-columns: 30% 9% 10% 2% 10% 9% 30%;
         place-items: center;
         grid-row-start: 3;
         grid-column-start: 2;
     }
 
-    .regist {
+    .delete {
+        grid-column-start: 5;
+        width: 100%;
+        background-color: orange;
+        color: white;
+        padding: 10px 10px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 12px;
+        font-style: bold;
+    }
+
+    .modify {
         grid-column-start: 3;
         width: 100%;
         background-color: orange;

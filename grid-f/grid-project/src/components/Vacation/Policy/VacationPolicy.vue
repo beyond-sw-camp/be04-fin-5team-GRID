@@ -3,7 +3,7 @@
         <div class="policyTitle">
             <img class = "policyIcon" src="@/assets/buttons/policy.png">
             <h1>휴가정책</h1>
-            <button class = "policyRegist">등록하기</button>
+            <button class = "policyRegist" @click="registPolicy()">등록하기</button>
         </div>
         <div class="policyContent">
             <div class="policyBox">
@@ -59,7 +59,11 @@
 import router from '@/router/router';
 
 function modifyPolicy() {
-    router.push('/policy/modify');
+    router.push('/vacation/policy/modify');
+}
+
+function registPolicy() {
+    router.push('/vacation/policy/regist');
 }
 
 </script>
@@ -69,8 +73,9 @@ function modifyPolicy() {
 
     .policyAll {
         display: grid;
-        grid-template-rows: 150px minmax(830px, auto);
+        grid-template-rows: 15% 85%;
         grid-template-columns: 5% 85% 10%;
+        height: 100%;
     }
 
     .policyTitle {
@@ -81,7 +86,7 @@ function modifyPolicy() {
         margin-top: 1%;
         color: #000000;
         display: grid;
-        grid-template-columns: 5% 90% 5%;
+        grid-template-columns: 5% 88% 7%;
         align-items: center;
     }
 

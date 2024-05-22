@@ -5,16 +5,36 @@ const router = createRouter({
     routes: [
         {
             path: '/', 
-            component:() => import('../components/Main/Main.vue')
+            component:() => import('../views/MainView.vue')
         },
         {
-            path: '/policy',
-            component:() => import('../components/Vacation/Policy/VacationPolicy.vue')
+            path: '/vacation/policy',
+            component:() => import('../views/VacationPolicyView.vue')
 
         },
         {
-            path: '/policy/modify',
-            component:() => import('../components/Vacation/Policy/VacationPolicyModify.vue')
+            path: '/vacation/policy/modify',
+            component:() => import('../views/VacationPolicyModifyView.vue')
+        },
+        {
+            path: '/vacation/policy/regist',
+            component:() => import('../views/VacationPolicyRegistView.vue')
+        },
+        {
+            path: '/vacation/manage',
+            component:() => import('../views/VacationManageMainView.vue')
+        },
+        {
+            path: '/vacation/manage/regist',
+            component:() => import('../views/VacationManageRegistView.vue')
+        },
+        {
+            path: '/vacation/manage/delete',
+            component:() => import('../views/VacationManageDeleteView.vue')
+        },
+        {
+            path: '/vacation/history',
+            component:() => import('../views/VacationHistoryMainView.vue')
         }
     ]
 })

@@ -5,13 +5,13 @@
             <h1>휴가 관리</h1>
         </div>
         <div class="manageRegist">
-            <button class="manageBtn" type="button">등록하기</button>
+            <button class="manageBtn" type="button" @click="registVacation()">등록하기</button>
         </div>
         <div class="vacations">
             <div class="annual">
                 <div class="vacationsTitle">
                     <h3>연차</h3>
-                    <img class="plusBtn" src="@/assets/buttons/plus.png">
+                    <img class="plusBtn" @click="modifyVacation()" src="@/assets/buttons/plus.png">
                 </div>
                 <div class="vacationsNum">
                     <h3>임직원의 기본 휴가</h3>
@@ -49,14 +49,24 @@
 </template>
 
 <script setup>
+import router from '@/router/router';
+
+const modifyVacation = () => {
+    router.push('/vacation/manage/delete');
+}
+
+const registVacation = () => {
+    router.push('/vacation/manage/regist');
+}
 
 </script>
 
 <style scoped>
     .manageAll {
         display: grid;
-        grid-template-rows: 150px 30px 150px 150px 150px 150px ;
-        grid-template-columns: 5% 85% 10%;
+        grid-template-rows: 19% 5% 19% 19% 19% 19% ;
+        grid-template-columns: 10% 80% 10%;
+        height: 100%;
     }
 
     .manageTitle {
@@ -77,7 +87,7 @@
 
     .manageRegist {
         display: grid;
-        grid-template-columns: 90% 5% 5%;
+        grid-template-columns: 87% 8% 5%;
         grid-column-start:2 ;
     }
 
@@ -86,7 +96,7 @@
         width: 100%;
         background-color: orange;
         color: white;
-        padding: 10px 10px;
+        padding: 8px 8px;
         border: none;
         border-radius: 4px;
         cursor: pointer;
