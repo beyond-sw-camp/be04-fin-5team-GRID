@@ -319,7 +319,7 @@ public class ApprovalServiceImpl implements ApprovalService {
         }
 
         RWApproval cancelApproval = RWApproval.builder()
-                    .startTime(rwApproval.getStartTime())
+                .startTime(rwApproval.getStartTime())
                 .endTime(rwApproval.getEndTime())
                 .content(rwApproval.getContent() + " \n취소")
                 .writeTime(LocalDateTime.now().format(dateFormat))
@@ -417,6 +417,4 @@ public class ApprovalServiceImpl implements ApprovalService {
 
         return mapper.map(vacationApproval, VacationApprovalDTO.class);
     }
-
-
 }

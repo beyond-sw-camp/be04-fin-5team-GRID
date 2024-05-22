@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.highfives.grid.approval.query.repository.ApprovalMapper">
+
+    <resultMap id="OvertimeApproval" type="org.highfives.grid.approval.common.dto.OvertimeApprovalDTO">
+        <id property="id" column="id"/>
+        <result property="startTime" column="start_time"/>
+        <result property="endTime" column="end_time"/>
+        <result property="content" column="content"/>
+        <result property="approvalStatus" column="approval_status"/>
+        <result property="writeTime" column="write_time"/>
+        <result property="cancelYn" column="cancel_yn"/>
+        <result property="cancelDocId" column="cancel_doc_id"/>
+        <result property="requesterId" column="requester_id"/>
+    </resultMap>
+
+    <select id="findOInWeekByEmployeeId" resultMap="OvertimeApproval" parameterType="org.highfives.grid.approval.common.dto.OvertimeInWeekDTO">
+         SELECT
+                start_time,
+                end_time
+           FROM overtime_approval
+          WHERE (requester_id = #{requesterId})
+            AND (approval_status = "A")
+            AND (cancel_yn = "N")
+            AND (cancel_document_id = 0)
+            AND (STR_TO_DATE(start_time, '%Y-%m-%d %H:%i:%s') BETWEEN #{sunday} AND #{saturday})
+            AND (STR_TO_DATE(end_time, '%Y-%m-%d %H:%i:%s') BETWEEN #{sunday} AND #{saturday});
+    </select>
+</mapper>

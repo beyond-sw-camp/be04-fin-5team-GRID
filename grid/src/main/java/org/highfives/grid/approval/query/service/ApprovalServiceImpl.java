@@ -9,8 +9,12 @@ import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
 import org.highfives.grid.approval.command.aggregate.ApprovalStatus;
 import org.highfives.grid.approval.command.aggregate.BTApproval;
+import org.highfives.grid.approval.command.aggregate.OvertimeApproval;
 import org.highfives.grid.approval.command.repository.BTApprovalRepository;
 import org.highfives.grid.approval.common.dto.BTApprovalDTO;
+import org.highfives.grid.approval.common.dto.OvertimeApprovalDTO;
+import org.highfives.grid.approval.common.dto.OvertimeInWeekDTO;
+import org.highfives.grid.approval.query.repository.ApprovalMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,16 +23,22 @@ import java.awt.*;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
 
 @Service(value = "QueryApprovalService")
 public class ApprovalServiceImpl implements ApprovalService{
 
     private final ModelMapper mapper;
+    private final ApprovalMapper approvalMapper;
     private final BTApprovalRepository btApprovalRepository;
 
     @Autowired
-    public ApprovalServiceImpl(ModelMapper mapper, BTApprovalRepository btApprovalRepository) {
+    public ApprovalServiceImpl(ModelMapper mapper, ApprovalMapper approvalMapper, BTApprovalRepository btApprovalRepository) {
         this.mapper = mapper;
+        this.approvalMapper = approvalMapper;
         this.btApprovalRepository = btApprovalRepository;
     }
 
@@ -42,7 +52,33 @@ public class ApprovalServiceImpl implements ApprovalService{
     }
 
     @Override
-    public void exportToPDF(BTApprovalDTO btApproval, String filePath) {
+    public List<OvertimeApprovalDTO> findOInWeekByEmployeeId(OvertimeInWeekDTO overtimeInWeek) {
+
+        List<OvertimeApprovalDTO> overtimeApprovalList = approvalMapper.findOInWeekByEmployeeId(overtimeInWeek);
+
+        return overtimeApprovalList;
+    }
+
+    @Override
+    public int countOvertimeInWeek(List<OvertimeApprovalDTO> overtimeApprovalList) {
+
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+        int sum = 0;
+
+        for (OvertimeApprovalDTO overtimeApproval : overtimeApprovalList) {
+            LocalDateTime startTime = LocalDateTime.parse(overtimeApproval.getStartTime(), dateFormat);
+            LocalDateTime endTime = LocalDateTime.parse(overtimeApproval.getEndTime(), dateFormat);
+
+            sum += ChronoUnit.HOURS.between(startTime, endTime);
+        }
+
+        return sum;
+    }
+
+
+    @Override
+    public void BTexportToPDF(BTApprovalDTO btApproval, String filePath) {
 
         Document document = new Document();
 
@@ -68,6 +104,7 @@ public class ApprovalServiceImpl implements ApprovalService{
             PdfPCell t_cell1 = new PdfPCell(new Paragraph("시작 날짜", tableFont));
             PdfPCell t_cell2 = new PdfPCell(new Paragraph("종료 날짜", tableFont));
             PdfPCell t_cell3 = new PdfPCell(new Paragraph("출장지", tableFont));
+
             t_cell1.setBackgroundColor(Color.LIGHT_GRAY);
             t_cell2.setBackgroundColor(Color.LIGHT_GRAY);
             t_cell3.setBackgroundColor(Color.LIGHT_GRAY);
@@ -91,4 +128,6 @@ public class ApprovalServiceImpl implements ApprovalService{
             document.close();
         }
     }
+
+
 }
