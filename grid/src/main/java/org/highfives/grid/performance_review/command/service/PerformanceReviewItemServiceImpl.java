@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service(value = "commandPerformanceReviewItemServiceImpl")
 public class PerformanceReviewItemServiceImpl implements PerformanceReviewItemService{
@@ -85,6 +86,19 @@ public class PerformanceReviewItemServiceImpl implements PerformanceReviewItemSe
 
         System.out.println(modifyItem);
         return modelMapper.map(modifyItem, PerformanceReviewItemDTO.class);
+    }
+
+    @Override
+    public List<PerformanceReviewItemDTO> findByReviewId(int id) {
+        List<PerformanceReviewItem> performanceReviewItemList = performanceReviewItemRepository.findByReviewId(id);
+
+        List<PerformanceReviewItemDTO> performanceReviewItemDTOList = performanceReviewItemList.stream()
+                .map(performanceReviewItem -> modelMapper.map(performanceReviewItem, PerformanceReviewItemDTO.class))
+                .collect(Collectors.toList());
+
+        System.out.println(performanceReviewItemDTOList);
+
+        return performanceReviewItemDTOList;
     }
 
 }
