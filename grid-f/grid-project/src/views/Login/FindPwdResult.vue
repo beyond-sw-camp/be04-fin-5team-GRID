@@ -5,8 +5,7 @@
                 <div id="title">
                     <h1>Reset your password!</h1>
                 </div>
-
-                <div class="userName">
+                <div class="firstPwd">
                     <div class="outBox" :class="{ 'existence': isExistence }">
                         <div class="inputBox">
                             <input type="password" v-model="inputValue" @input="validatePwd">
@@ -32,7 +31,7 @@
                     </svg>
                     &nbsp; 잘못된 비밀번호 형식입니다. 다시 입력해주세요!
                 </div>
-                <div class="employeeNumber">
+                <div class="secondPwd">
                     <div class="outBox" :class="{ 'existence': isExistence2 }">
                         <div class="inputBox">
                             <input type="password" v-model="inputValue2" @input="validatePwd2" @keyup.enter="resetPwd">
@@ -59,7 +58,7 @@
                     &nbsp; 비밀번호가 일치하지 않습니다. 다시 입력해주세요!
                 </div>
                 <div class="info">
-                    영문, 숫자, 특수 문자 조합으로 이루어진 8~15자리의 값을 입력해주세요.<br>
+                    영문, 숫자, 특수 문자 조합으로 이루어진 8~15자리 값을 입력하세요.<br>
                 </div>
                 <div class="button d-grid gap-3" style="max-width: 56%;">
                     <button type="button" class="btn btn-block" @click="resetPwd">Reset</button>
@@ -92,7 +91,7 @@
 <script setup>
 import { ref, watch, onMounted } from 'vue';
 import axios from 'axios';
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 import bootstrap from 'bootstrap/dist/js/bootstrap.bundle.js';
 
 const inputValue = ref('');
@@ -105,8 +104,10 @@ const isPwdRight = ref(false);
 const isPwdRight2 = ref(false);
 const isWrong = ref(false);
 const router = useRouter();
-const myModal = ref(null);
+const route = useRoute();
 const pwdRegex = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,15}$/;
+const givenEmail = route.params.email;
+
 
 async function resetPwd() {
     isPwdExistence.value = false;
@@ -118,35 +119,33 @@ async function resetPwd() {
         return false;
     }
 
+    if (!pwdRegex.test(inputValue.value)) {
+        isPwdRight.value = true;
+        return false;
+    }
+
     if (inputValue2.value == '') {
         isPwdExistence2.value = true;
         return false;
     }
 
-    await axios.get(`http://localhost:8080/users/${inputValue2.value}/name`)
+    if (inputValue2.value != inputValue.value) {
+        isPwdRight2.value = true;
+        return false;
+    }
+
+    await axios.put(`http://localhost:8080/users/pwd`, {
+        pwd: inputValue.value,
+        email: givenEmail
+    })
         .then((response) => {
-            console.log(response.data.result);
-            if (response.status == 404) {
-                console.log(response);
+            if (response.status == 200) {
+                alert("비밀번호가 수정되었습니다.")
+                router.push('/');
+            } else {
+                alert("에러가 발생했습니다. 다시 시도해주세요.")
             }
-            if (response.data.result.employee_name == inputValue.value) {
-                try {
-                    axios.get(`http://localhost:8080/mails/pwd/${inputValue2.value}`)
-                        .then((response) => {
-                            if (response.status == 200) {
-                                const modalInstance = new bootstrap.Modal(myModal.value);
-                                modalInstance.show();
-                            }
-                        })
-                    return true; 9
-                } catch (e) {
-                    isWrong.value = true;
-                }
-            }
-            isWrong.value = true;
         })
-
-
 };
 
 function login() {
@@ -204,6 +203,15 @@ body {
     padding: 0;
 }
 
+h1 {
+    font-weight: bold;
+    font-size: 50px;
+}
+
+hr {
+    width: 35%;
+    margin: auto 10px;
+}
 
 .container {
     font-family: 'IBMPlexSansKR-Regular';
@@ -237,7 +245,7 @@ body {
     justify-content: center;
 }
 
-.userName {
+.firstPwd {
     display: flex;
     flex-direction: row;
     align-items: flex-start;
@@ -246,7 +254,7 @@ body {
     font-weight: bold;
 }
 
-.employeeNumber {
+.secondPwd {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -266,6 +274,7 @@ body {
     background-color: #002366;
     color: white;
     font-weight: 600;
+    height: 38px; /* 버튼의 높이를 명시적으로 설정 */
 }
 
 .line {
@@ -275,16 +284,6 @@ body {
     flex-direction: row;
     justify-content: center;
 
-}
-
-h1 {
-    font-weight: bold;
-    font-size: 50px;
-}
-
-hr {
-    width: 35%;
-    margin: auto 10px;
 }
 
 .toLogin {
@@ -308,31 +307,12 @@ hr {
     color: gray;
     font-size: 12px;
     text-align: center;
+    max-width: 55%;
 }
 
 #title {
     font-size: 1em;
     align-self: center;
-}
-
-#title-content {
-    align-self: center;
-    font-size: 0.9em;
-    color: rgb(179, 173, 173);
-}
-
-#title-content2 {
-    align-self: center;
-    font-size: 0.9em;
-    color: rgb(179, 173, 173);
-}
-
-#email-input {
-    width: 100%;
-}
-
-#email-form {
-    color: rgb(179, 173, 173);
 }
 
 #toLogin1 {
@@ -409,27 +389,6 @@ hr {
     outline: none;
 }
 
-.inputBox input[type="password"] {
-    padding: 0 10px;
-    width: 100%;
-    height: 20px;
-    font-size: 14px;
-    border-radius: 8px;
-    box-sizing: border-box;
-    outline: none;
-}
-
-.outBox input[type="password"] {
-    padding: 0 10px;
-    width: 100%;
-    height: 38px;
-    font-size: 14px;
-    border-radius: 8px;
-    border: 1px solid rgb(220, 220, 220);
-    box-sizing: border-box;
-    outline: none;
-}
-
 .outBox .inputBox label {
     position: absolute;
     left: 0;
@@ -456,14 +415,4 @@ hr {
     transform: scale(0.85) translate(8px, -33px);
 }
 
-.outBox .inputBox input[type="password"]:focus,
-.outBox.existence .inputBox input[type="password"] {
-    border: 2px solid #002366;
-}
-
-.outBox .inputBox input[type="password"]:focus+label,
-.outBox.existence .inputBox label {
-    color: #002366;
-    transform: scale(0.85) translate(8px, -33px);
-}
 </style>

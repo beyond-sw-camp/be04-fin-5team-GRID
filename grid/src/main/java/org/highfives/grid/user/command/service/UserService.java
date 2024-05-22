@@ -1,9 +1,11 @@
 package org.highfives.grid.user.command.service;
 
 import org.highfives.grid.user.command.dto.UserDTO;
+import org.highfives.grid.user.command.vo.ReqResetPwdVO;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
+import java.util.Map;
 
 public interface UserService extends UserDetailsService {
     UserDTO addNewUser(UserDTO givenInfo);
@@ -22,7 +24,7 @@ public interface UserService extends UserDetailsService {
 
     boolean deleteUser(String employeeNumber);
 
-    void findPwd(String pwd);
+    boolean resetPwd(Map<String, String> infos);
 
     boolean changeGender(int userId);
 }

@@ -11,7 +11,7 @@ import org.highfives.grid.user.command.aggregate.PrincipalDetails;
 import org.highfives.grid.user.command.aggregate.RefreshToken;
 import org.highfives.grid.user.command.aggregate.Role;
 import org.highfives.grid.user.command.repository.TokenReissueRepository;
-import org.highfives.grid.user.command.vo.ReqLogin;
+import org.highfives.grid.user.command.vo.ReqLoginVO;
 import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -41,8 +41,8 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     public Authentication attemptAuthentication(HttpServletRequest request,
                                                 HttpServletResponse response) throws AuthenticationException {
         try {
-            ReqLogin requestLogin =
-                    new ObjectMapper().readValue(request.getInputStream(), ReqLogin.class);
+            ReqLoginVO requestLogin =
+                    new ObjectMapper().readValue(request.getInputStream(), ReqLoginVO.class);
 
             System.out.println("requestLogin = " + requestLogin);
             // 사용자가 전달한 id / pwd 를 사용해 authentication 토큰을 만듬

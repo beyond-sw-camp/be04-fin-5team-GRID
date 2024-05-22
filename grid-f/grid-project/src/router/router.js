@@ -22,7 +22,7 @@ const router = createRouter({
             component: () => import('../views/Login/FindIdResult.vue')
         },
         {
-            path: '/find/pwd/result',
+            path: '/find/pwd/:email/result',
             component: () => import('../views/Login/FindPwdResult.vue')
         }
 
