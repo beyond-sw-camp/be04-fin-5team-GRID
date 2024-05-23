@@ -97,4 +97,8 @@ public class RWApproval {
     public void setCancelYN(YN cancelYN) {
         this.cancelYN = cancelYN;
     }
+
+    public void setApprovalStatus(ApprovalStatus approvalStatus) {
+        this.approvalStatus = approvalStatus;
+    }
 }

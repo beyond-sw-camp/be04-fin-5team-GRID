@@ -48,4 +48,12 @@ public class BTApprovalChain {
     public void setComment(String comment) {
         this.comment = comment;
     }
+
+    public void setApprovalStatus(ChainStatus approvalStatus) {
+        this.approvalStatus = approvalStatus;
+    }
+
+    public void setApprovalTime(String approvalTime) {
+        this.approvalTime = approvalTime;
+    }
 }

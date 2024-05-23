@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.highfives.grid.approval.command.aggregate.YN;
 
 @RequiredArgsConstructor
 @Getter
@@ -23,7 +24,7 @@ public class RWApprovalDTO {
 
     private String writeTime;
 
-    private String cancelYn;
+    private YN cancelYn;
 
     private int cancelDocumentId;
 

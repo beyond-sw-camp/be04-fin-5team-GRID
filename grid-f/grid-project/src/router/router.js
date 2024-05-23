@@ -24,8 +24,14 @@ const router = createRouter({
         {
             path: '/find/pwd/:email/result',
             component: () => import('../views/Login/FindPwdResult.vue')
+        },
+            path: '/2',
+            component: () => import('../views/Login2.vue')
+        },
+        {
+            path: '/department',
+            component: () => import('@/components/Department/Department.vue')
         }
-
     ]
 })
 

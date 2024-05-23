@@ -23,4 +23,8 @@ public interface ApprovalService {
     OvertimeApprovalDTO cancelOvertimeApproval(int overtimeApprovalId);
     RWApprovalDTO cancelRWApproval(int rwApprovalId);
     VacationApprovalDTO cancelVacationApproval(int vacationApprovalId);
+    BTApprovalDTO viewBTApproval(int btApprovalId);
+    OvertimeApprovalDTO viewOvertimeApproval(int overtimeApprovalId);
+    RWApprovalDTO viewRWApproval(int rwApprovalId);
+    VacationApprovalDTO viewVacationApproval(int vacationApprovalId);
 }
