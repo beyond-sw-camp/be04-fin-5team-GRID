@@ -30,7 +30,7 @@ public class ResApprovalVO {
 
     private VacationApprovalDTO vacationResult;
 
-    private ApprovalEmpDTO approvalEmpResult;
+    private List<ApprovalEmpDTO> approvalEmpResultList;
 
     private List<BTApprovalDTO> btResultList;
 

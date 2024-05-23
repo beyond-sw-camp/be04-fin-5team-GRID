@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service(value = "QueryApprovalService")
@@ -46,18 +47,21 @@ public class ApprovalServiceImpl implements ApprovalService{
     }
 
     @Override
-    public ApprovalEmpDTO findAllBTApprovalByEmployeeId(int typeId, int employeeId) {
+    public List<ApprovalEmpDTO> findAllApprovalByEmployeeId(int typeId, int employeeId) {
 
-        ApprovalEmpDTO approvalEmp = new ApprovalEmpDTO();
+        List<ApprovalEmpDTO> approvalEmpList = new ArrayList<>();
 
         switch (typeId) {
             case 1:
-                approvalEmp = approvalMapper.findAllBTApprovalByEmployeeId(employeeId);
+                approvalEmpList = approvalMapper.findAllBTApprovalByEmployeeId(employeeId);
                 break;
 
+            case 2:
+                approvalEmpList = approvalMapper.findAllOvertimeApprovalByEmployeeId(employeeId);
+                break;
         }
 
-        return approvalEmp;
+        return approvalEmpList;
     }
 
     @Override
