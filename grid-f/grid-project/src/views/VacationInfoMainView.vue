@@ -9,12 +9,12 @@
           <RouterLink to="/vacation/info" replace>info</RouterLink>
       </div>
       <div class="sidebar">Sidebar</div>
-      <div class="content"><ManageDelete /></div>
+      <div class="content"><InfoMain /></div>
 </div>
 </template>
 
 <script setup>
-    import ManageDelete from "../components/Vacation/Manage/VacationManageDelete.vue";
+    import InfoMain from "../components/Vacation/Info/VacationChangeInfo.vue";
 
 </script>
 
