@@ -7,13 +7,16 @@ const router = createRouter({
             path: '/', 
             component:() => import('../views/MainView.vue')
         },
+        // {
+        //     path: '/',
+        //     component: () => import('../views/Login/Login.vue')
+        // },
         {
             path: '/vacation/policy',
             component:() => import('../views/VacationPolicyView.vue')
-
         },
         {
-            path: '/vacation/policy/modify',
+            path: '/vacation/policy/modify/:id',
             component:() => import('../views/VacationPolicyModifyView.vue')
         },
         {
@@ -35,7 +38,12 @@ const router = createRouter({
         {
             path: '/vacation/history',
             component:() => import('../views/VacationHistoryMainView.vue')
-        }
+        },
+        {
+            path: '/vacation/info',
+            component:() => import('../views/VacationInfoMainView.vue')
+        },
+        
     ]
 })
 

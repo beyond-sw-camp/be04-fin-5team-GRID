@@ -1,11 +1,4 @@
 <template>
-    <header>
-        <nav>
-            <RouterLink to="/vacation/history" replace>history</RouterLink>
-            <RouterLink to="/vacation/policy" replace>policy</RouterLink>
-            <RouterLink to="/vacation/manage" replace>manage</RouterLink>
-        </nav>
-    </header>
     <main>
         <RouterView/>
     </main>
