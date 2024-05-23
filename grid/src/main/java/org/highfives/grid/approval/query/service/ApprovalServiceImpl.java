@@ -7,13 +7,11 @@ import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
-import org.highfives.grid.approval.command.aggregate.ApprovalStatus;
-import org.highfives.grid.approval.command.aggregate.BTApproval;
-import org.highfives.grid.approval.command.aggregate.OvertimeApproval;
 import org.highfives.grid.approval.command.repository.BTApprovalRepository;
 import org.highfives.grid.approval.common.dto.BTApprovalDTO;
 import org.highfives.grid.approval.common.dto.OvertimeApprovalDTO;
 import org.highfives.grid.approval.common.dto.OvertimeInWeekDTO;
+import org.highfives.grid.approval.query.dto.ApprovalEmpDTO;
 import org.highfives.grid.approval.query.repository.ApprovalMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,12 +41,23 @@ public class ApprovalServiceImpl implements ApprovalService{
     }
 
     @Override
-    public BTApprovalDTO findBTApprovalById(int btApprovalId) {
+    public List<BTApprovalDTO> findAllBTApproval() {
+        return approvalMapper.findAllBTApproval();
+    }
 
-        BTApproval btApproval = btApprovalRepository.findById(btApprovalId).orElseThrow();
-        if (btApproval.getApprovalStatus() == ApprovalStatus.A) return mapper.map(btApproval, BTApprovalDTO.class);
+    @Override
+    public ApprovalEmpDTO findAllBTApprovalByEmployeeId(int typeId, int employeeId) {
 
-        return null;
+        ApprovalEmpDTO approvalEmp = new ApprovalEmpDTO();
+
+        switch (typeId) {
+            case 1:
+                approvalEmp = approvalMapper.findAllBTApprovalByEmployeeId(employeeId);
+                break;
+
+        }
+
+        return approvalEmp;
     }
 
     @Override
@@ -71,7 +80,6 @@ public class ApprovalServiceImpl implements ApprovalService{
 
         return sum;
     }
-
 
     @Override
     public void BTexportToPDF(BTApprovalDTO btApproval, String filePath) {
