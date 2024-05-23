@@ -1,7 +1,7 @@
 <template>
     <div class="historyAll">
         <div class="historyTitle">
-            <img class = "historyIcon" src="@/assets/buttons/vacation.png">
+            <img class="historyIcon" src="@/assets/buttons/vacation.png">
             <h1>휴가 기록</h1>
         </div>
         <div class="vacations">
@@ -32,7 +32,7 @@
             <table>
                 <thead>
                     <tr>
-                        <th></th>
+                        <th><input type="checkbox" id="selectAll" @change="selectAllCheckbox"></th>
                         <th>이름</th>
                         <th>휴가종류</th>
                         <th>신청날짜</th>
@@ -44,7 +44,7 @@
                 </thead>
                 <tbody>
                     <tr v-for="index in 10" :key="index">
-                        <td></td>
+                        <td><input type="checkbox" :id="'checkbox' + index"></td>
                         <td>이름 {{ index }}</td>
                         <td>연차</td>
                         <td>2024-05-01</td>
@@ -60,13 +60,43 @@
 </template>
 
 <script setup>
+import { onBeforeMount, ref } from 'vue';
+import axios from "axios";
+import router from '@/router/router';
 
+
+const histories = ref({
+    result: {}
+});
+
+function selectAllCheckbox(event) {
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    checkboxes.forEach(checkbox => {
+        if (checkbox !== event.target) {
+            checkbox.checked = event.target.checked;
+        }
+    });
+}
+
+const getAllVacationHistory = async () => {
+    await axios.get("/api/vacation/details")
+    .then(response => {
+        histories.value = response.data;
+        console.log(response.data);
+        console.log(histories.value.result)
+    })
+
+}
+
+onBeforeMount(() => {
+    getAllVacationHistory();
+})
 </script>
 
 <style scoped>
     .historyAll {
         display: grid;
-        grid-template-rows: 17.5% 17.5% 5% 50% 10% ;
+        grid-template-rows: 17.5% 17.5% 5% 50% 10%;
         grid-template-columns: 10% 80% 10%;
         height: 100%;
     }
@@ -84,7 +114,7 @@
     }
 
     .historyIcon {
-        width:100%;
+        width: 100%;
     }
 
     .vacations {
@@ -104,7 +134,7 @@
     .vacationsNum {
         grid-column-start: 1;
         display: grid;
-        grid-template-columns:15% 85%;
+        grid-template-columns: 15% 85%;
         font-size: 20px;
         margin-left: 5%;
     }
@@ -114,19 +144,18 @@
     }
 
     .today {
-        width: calc(100% - 20px); /* 부모 요소의 너비에 비례하여 폭을 설정 */
+        width: calc(100% - 20px);
         background-color: #F8F9FAFF;
     }
 
     .tomorrow {
-        width: calc(100% - 20px); /* 부모 요소의 너비에 비례하여 폭을 설정 */
+        width: calc(100% - 20px);
         background-color: #F8F9FAFF;
         grid-column-start: 3;
     }
 
     .search {
-        /* margin-top: 2%; */
-        grid-row-start:3;
+        grid-row-start: 3;
         grid-column-start: 2;
         display: grid;
         grid-template-columns: 79% 13% 1% 7%;
@@ -183,9 +212,6 @@
     }
 
     .more {
-        width:15px;
-        
+        width: 15px;
     }
-
-    
 </style>
