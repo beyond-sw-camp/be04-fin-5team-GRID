@@ -2,7 +2,6 @@ package org.highfives.grid.approval.query.controller;
 
 import org.highfives.grid.approval.common.dto.BTApprovalDTO;
 import org.highfives.grid.approval.query.service.ApprovalService;
-import org.highfives.grid.approval.query.vo.ApprovalVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,10 +21,10 @@ public class ApprovalController {
     }
 
     @GetMapping("/bt-pdf/{approvalId}")
-    public void addApprovalPDF(Model model, @PathVariable int approvalId) {
+    public void downloadBTApprovalPDF(Model model, @PathVariable int approvalId) {
 
         BTApprovalDTO btApproval = approvalService.findBTApprovalById(approvalId);
-        if (btApproval != null) approvalService.exportToPDF(btApproval, "business_trip_approval.pdf");  // 생성 일시를 포함한 형태로 제목 수정
+        if (btApproval != null) approvalService.BTexportToPDF(btApproval, "business_trip_approval.pdf");  // 생성 일시를 포함한 형태로 제목 수정
     }
 
 
