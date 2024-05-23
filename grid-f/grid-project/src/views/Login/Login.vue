@@ -20,6 +20,15 @@
                         </div>
                     </div>
                 </div>
+                <div v-if="isValueExistence" id="error-message">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        class="bi bi-exclamation-circle" viewBox="0 0 16 16">
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                        <path
+                            d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0M7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0z" />
+                    </svg>
+                    &nbsp; 이메일을 입력해주세요.
+                </div>
                 <div class="password">
                     <div class="outBox" :class="{ 'existence': isPwdExistence }">
                         <div class="inputBox">
@@ -27,17 +36,24 @@
                             <label for="samplePwd">비밀번호</label>
                         </div>
                     </div>
-                    <!-- <div class="input-group" id="pwd-input">
-                        <span class="input-group-text">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                class="bi bi-key" viewBox="0 0 16 16">
-                                <path
-                                    d="M0 8a4 4 0 0 1 7.465-2H14a.5.5 0 0 1 .354.146l1.5 1.5a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0L13 9.207l-.646.647a.5.5 0 0 1-.708 0L11 9.207l-.646.647a.5.5 0 0 1-.708 0L9 9.207l-.646.647A.5.5 0 0 1 8 10h-.535A4 4 0 0 1 0 8m4-3a3 3 0 1 0 2.712 4.285A.5.5 0 0 1 7.163 9h.63l.853-.854a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.793-.793-1-1h-6.63a.5.5 0 0 1-.451-.285A3 3 0 0 0 4 5" />
-                                <path d="M4 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0" />
-                            </svg>
-                        </span>
-                        <input type="password" class="form-control" placeholder="비밀번호">
-                    </div> -->
+                </div>
+                <div v-if="isValue2Existence" id="error-message2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        class="bi bi-exclamation-circle" viewBox="0 0 16 16">
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                        <path
+                            d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0M7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0z" />
+                    </svg>
+                    &nbsp; 비밀번호를 입력해주세요.
+                </div>
+                <div v-if="isWrong" id="error-message">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        class="bi bi-exclamation-circle" viewBox="0 0 16 16">
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                        <path
+                            d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0M7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0z" />
+                    </svg>
+                    &nbsp; 아이디 또는 비밀번호를 확인해주세요!
                 </div>
                 <div class="button d-grid gap-3" style="max-width: 68%;">
                     <button type="button" class="btn btn-block" @click="Login">Sign in</button>
@@ -49,13 +65,13 @@
                 </div>
                 <div class="find-id">
                     <div id="find-id1">
-                        <div>Forget your email?</div>
+                        <div>Forgot your email?</div>
                     </div>
                     <div id="find-id2" @click="findId">아이디 찾기</div>
                 </div>
                 <div class="find-pwd">
                     <div id="find-pwd1">
-                        <div>Forget your password?</div>
+                        <div>Forgot your password?</div>
                     </div>
                     <div id="find-pwd2" @click="findPwd">비밀번호 찾기</div>
                 </div>
@@ -68,36 +84,67 @@
 </template>
 
 <script setup>
-
 import { ref, watch } from 'vue';
 import axios from 'axios';
+import { useRouter } from 'vue-router';
+
 
 const inputValue = ref('');
 const inputPwd = ref('');
 const isExistence = ref(false);
 const isPwdExistence = ref(false);
+const isValueExistence = ref(false);
+const isValue2Existence = ref(false);
+const isWrong = ref(false);
+const router = useRouter();
 
 async function Login() {
-    try {
-        console.log(`${inputValue.value}`);
-        console.log(`${inputPwd.value}`);
-        const response = await axios.post('http://localhost:8080/login', 
-            {   email: inputValue.value, 
-                pwd: inputPwd.value
-            });
-        console.log(response);
-        console.log(response.headers);
-        if(response.status == 200) {
-            localStorage.setItem('token', response.headers.access);    
-            alert('로그인 되었습니다');
-            // 이후 이동할 경로 (rotuer 추가)
-        }
-    } catch (e) {
-        alert('아이디 또는 비밀번호를 확인해주세요.');
+
+    isValueExistence.value = false;
+    isValue2Existence.value = false;
+    isWrong.value = false;
+
+    if (inputValue.value == '') {
+        isValueExistence.value = true;
+        return ;
     }
 
-    
+    if (inputPwd.value == '') {
+        isValue2Existence.value = true;
+        return ;
+    }
+
+    try {
+        await axios.post('http://localhost:8080/login',
+            {
+                email: inputValue.value,
+                pwd: inputPwd.value
+            }, {
+            withCredentials: true
+        })
+            .then((response) => {
+                if (response.status == 200) {
+                    console.log(response);
+                    console.log(response.data.access);
+                    // console.log('[]: ', response.headers.getAccept().value);
+                    localStorage.setItem('access', response.data.access)
+                    alert('로그인 되었습니다');
+                    isWrong.value = false;
+                    router.push('/main');
+                }
+            })
+    } catch (e) {
+        isWrong.value = true;
+    }
 };
+
+function findId() {
+    router.push('/find/id');
+}
+
+function findPwd() {
+    router.push('/find/pwd');
+}
 
 
 watch(inputValue, (newValue) => {
@@ -168,7 +215,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    margin: 12% auto 1%;
+    margin: 12% auto 0;
     width: 85%;
     font-weight: bold;
 }
@@ -263,6 +310,7 @@ hr {
 #find-id2 {
     font-weight: bold;
     color: #002366;
+    cursor: pointer;
 }
 
 #find-pwd1 {
@@ -274,6 +322,23 @@ hr {
 #find-pwd2 {
     font-weight: bold;
     color: #002366;
+    cursor: pointer;
+}
+
+#error-message {
+    color: red;
+    font-size: 12px;
+    text-align: left;
+    margin: 1% 0 0 17%;
+    width: 85%;
+}
+
+#error-message2 {
+    color: red;
+    font-size: 12px;
+    text-align: left;
+    margin: 1% 0 0 17%;
+    width: 85%;
 }
 
 .outBox {

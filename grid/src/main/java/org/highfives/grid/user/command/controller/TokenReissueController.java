@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
+
 @RestController
 public class TokenReissueController {
 
@@ -21,7 +23,7 @@ public class TokenReissueController {
     }
 
     @PostMapping("/tokens/re-auth")
-    public ResponseEntity<?> reissue(HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<?> reissue(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         //get refresh token
         String refresh = null;

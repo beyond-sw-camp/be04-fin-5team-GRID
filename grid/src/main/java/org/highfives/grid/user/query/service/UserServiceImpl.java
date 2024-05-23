@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service("QueryUserService")
 public class UserServiceImpl implements UserService{
@@ -23,10 +24,26 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public UserDTO findUserByEmployeeNum(int eNum) {
+    public UserDTO findUserByEmployeeNum(String eNum) {
 
         try {
             UserDTO result = userMapper.getUserInfo(eNum);
+            result.setProfilePath(imgMapper.getProfileImg(result.getId()));
+            result.setPosition(userMapper.getPosition(result.getId()));
+            result.setDuties(userMapper.getDuties(result.getId()));
+
+            System.out.println("result = " + result);
+            return result;
+
+        } catch (NullPointerException e) {
+            return null;
+        }
+    }
+
+    @Override
+    public UserDTO findUserById(int id) {
+        try {
+            UserDTO result = userMapper.getUserInfoById(id);
             result.setProfilePath(imgMapper.getProfileImg(result.getId()));
             result.setPosition(userMapper.getPosition(result.getId()));
             result.setDuties(userMapper.getDuties(result.getId()));
@@ -82,5 +99,14 @@ public class UserServiceImpl implements UserService{
         return result;
     }
 
+    @Override
+    public Map<String, Object> checkNameByEmail(String email) {
+        try {
+            Map<String, Object> selectResult = userMapper.getUserInfoByEmail(email);
 
+            return selectResult;
+        } catch (NullPointerException e) {
+            return null;
+        }
+    }
 }
