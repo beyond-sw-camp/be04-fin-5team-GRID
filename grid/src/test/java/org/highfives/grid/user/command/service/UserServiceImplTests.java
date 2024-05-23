@@ -17,7 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import static org.highfives.grid.user.command.aggregate.Gender.M;
@@ -125,7 +127,20 @@ class UserServiceImplTests {
                 () -> userService.deleteUser("9999999")
         );
     }
-    
+
+    @DisplayName("비밀번호 리셋")
+    @Test
+    @Transactional
+    void resetPwdTest() {
+        Map<String, String> test = new HashMap<>();
+        test.put("email", "gridpeople2024@gmail.com");
+        test.put("pwd", "qwer1234!");
+
+        Assertions.assertDoesNotThrow(
+                () -> userService.resetPwd(test)
+        );
+    }
+
     @DisplayName("성별 변경")
     @Test
     @Transactional

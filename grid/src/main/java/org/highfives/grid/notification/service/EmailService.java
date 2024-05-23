@@ -1,10 +1,13 @@
 package org.highfives.grid.notification.service;
 
+import org.springframework.stereotype.Service;
+
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.util.Properties;
 
+@Service
 public class EmailService {
 
     public void sendEmail(String fromEmail, String password, String toEmail, String subject, String body) {

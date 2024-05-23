@@ -9,9 +9,9 @@ spring:
 
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://localhost:3306/grid
-    username: grid
-    password: grid
+    url: jdbc:mariadb://localhost:3306/erp
+    username: root
+    password: root
 
 application:
   security:
