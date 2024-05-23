@@ -17,8 +17,6 @@ public class ApprovalEmpDTO {
 
     private String endTime;
 
-    private String destination;
-
     private String content;
 
     private ApprovalStatus approvalStatus;
@@ -30,6 +28,10 @@ public class ApprovalEmpDTO {
     private int cancelDocId;
 
     private int requesterId;
+
+    private String destination;
+
+    private int infoId;
 
     private String employeeName;
 

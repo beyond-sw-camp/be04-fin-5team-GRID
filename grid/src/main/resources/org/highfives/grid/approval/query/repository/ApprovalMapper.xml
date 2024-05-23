@@ -30,6 +30,7 @@
         <result property="cancelYn" column="cancel_yn"/>
         <result property="cancelDocId" column="cancel_doc_id"/>
         <result property="requesterId" column="requester_id"/>
+        <result property="infoId" column="info_id"/>
     </resultMap>
 
     <select id="findOInWeekByEmployeeId" resultMap="oApprovalMap" parameterType="org.highfives.grid.approval.common.dto.OvertimeInWeekDTO">
@@ -63,7 +64,7 @@
 
     <select id="findAllBTApprovalByEmployeeId" resultMap="approvalMap" parameterType="int">
         SELECT
-                a.id,
+                a.id as employeeId,
                 a.employee_name,
                 a.employee_number,
                 b.id,
@@ -85,9 +86,9 @@
            AND  b.cancel_document_id = 0;
     </select>
 
-    <select id="findAllOvertimeApprovalByEmployeeId" resultMap="approvalMap" parameterType="int">
+    <select id="findAllOApprovalByEmployeeId" resultMap="approvalMap" parameterType="int">
         SELECT
-                a.id,
+                a.id as employeeId,
                 a.employee_name,
                 a.employee_number,
                 b.id,
@@ -110,7 +111,7 @@
 
     <select id="findAllRWApprovalByEmployeeId" resultMap="approvalMap" parameterType="int">
         SELECT
-                a.id,
+                a.id as employeeId,
                 a.employee_name,
                 a.employee_number,
                 b.id,
@@ -124,6 +125,30 @@
                 b.requester_id
           FROM  employee a
           JOIN  rw_approval b
+            ON  a.id = b.requester_id
+         WHERE  a.id = #{employeeId}
+           AND  b.approval_status = 'A'
+           AND  b.cancel_yn = 'N'
+           AND  b.cancel_document_id = 0;
+    </select>
+
+    <select id="findAllVApprovalByEmployeeId" resultMap="approvalMap" parameterType="int">
+        SELECT
+                a.id as employeeId,
+                a.employee_name,
+                a.employee_number,
+                b.id,
+                b.start_time,
+                b.end_time,
+                b.info_id,
+                b.content,
+                b.approval_status,
+                b.write_time,
+                b.cancel_yn,
+                b.cancel_document_id,
+                b.requester_id
+          FROM  employee a
+          JOIN  vacation_approval b
             ON  a.id = b.requester_id
          WHERE  a.id = #{employeeId}
            AND  b.approval_status = 'A'
