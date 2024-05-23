@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.highfives.grid.vacation.query.dto.VacationPolicyDTO;
+import org.highfives.grid.vacation.query.dto.VacationTypeDTO;
 
 import java.util.List;
 
@@ -12,11 +12,9 @@ import java.util.List;
 @Setter
 @ToString
 @RequiredArgsConstructor
-public class ResVacationPolicyVO {
-
+public class ResVacationTypeVO {
     private int statusCode;
     private String message;
     private String href;
-    private VacationPolicyWithTypeName result;
-
+    private List<VacationTypeDTO> result;
 }

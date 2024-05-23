@@ -19,6 +19,8 @@ public interface UserMapper {
 
     List<UserDTO> getUserList();
 
+    UserDTO getUserInfoById(int id);
+
     UserDTO getUserInfo(int eNum);
 
     String getPosition(int id);

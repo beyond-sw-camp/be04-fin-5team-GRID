@@ -16,6 +16,12 @@
         <result property="content" column="CONTENT"/>
         <result property="typeId" column="TYPE_ID"/>
     </resultMap>
+    <resultMap id="vacationPolicyWithTypeNameResultMap" type="org.highfives.grid.vacation.query.vo.VacationPolicyWithTypeName">
+        <id property="id" column="ID"/>
+        <result property="content" column="CONTENT"/>
+        <result property="typeId" column="TYPE_ID"/>
+        <result property="typeName" column="TYPE_NAME"/>
+    </resultMap>
     <resultMap id="vacationHistoryResultMap" type="org.highfives.grid.vacation.query.entity.VacationHistory">
         <id property="id" column="ID"/>
         <result property="changeTime" column="CHANGE_TIME"/>
@@ -23,6 +29,21 @@
         <result property="typeId" column="TYPE_ID"/>
         <result property="changeTypeId" column="CHANGE_TYPE_ID"/>
         <result property="employeeId" column="EMPLOYEE_ID"/>
+    </resultMap>
+    <resultMap id="vacationHistoryDTOResultMap" type="org.highfives.grid.vacation.query.dto.VacationHistoryDTO">
+        <id property="id" column="ID"/>
+        <result property="changeTime" column="CHANGE_TIME"/>
+        <result property="changeReason" column="CHANGE_REASON"/>
+        <result property="typeId" column="TYPE_ID"/>
+        <result property="changeTypeId" column="CHANGE_TYPE_ID"/>
+        <result property="employeeId" column="EMPLOYEE_ID"/>
+        <result property="employeeName" column="EMPLOYEE_NAME"/>
+        <result property="typeName" column="TYPE_NAME"/>
+        <result property="changeTypeName" column="CHANGE_TYPE_NAME"/>
+    </resultMap>
+    <resultMap id="vacationTypeResultMap" type="org.highfives.grid.vacation.query.entity.VacationType">
+        <id property="id" column="ID"/>
+        <result property="typeName" column="TYPE_NAME"/>
     </resultMap>
     <select id="selectAllVacationInfo" resultMap="vacationInfoResultMap" >
         SELECT
@@ -45,13 +66,24 @@
         FROM VACATION_INFO
         WHERE EMPLOYEE_ID = #{employeeId}
     </select>
-    <select id="selectAllPolicy" parameterType="_int" resultMap="vacationPolicyResultMap">
+    <select id="selectAllPolicy" parameterType="_int" resultMap="vacationPolicyWithTypeNameResultMap">
         SELECT
-        ID,
-        CONTENT,
-        TYPE_ID
-        FROM VACATION_POLICY
-        WHERE TYPE_ID = #{typeId}
+        vp.ID,
+        vp.CONTENT,
+        vp.TYPE_ID,
+        vt.TYPE_NAME
+        FROM VACATION_POLICY vp
+        JOIN VACATION_TYPE vt ON vp.TYPE_ID = vt.ID
+        WHERE vp.ID = #{id}
+    </select>
+    <select id="selectRealAllPolicy" resultMap="vacationPolicyWithTypeNameResultMap">
+        SELECT
+        vp.ID,
+        vp.CONTENT,
+        vp.TYPE_ID,
+        vt.TYPE_NAME
+        FROM VACATION_POLICY vp
+        JOIN VACATION_TYPE vt ON vp.TYPE_ID = vt.ID
     </select>
     <select id="selectAllHistories" resultMap="vacationHistoryResultMap">
         SELECT
@@ -88,15 +120,45 @@
         JOIN DEPARTMENT DE ON EM.DEPARTMENT_ID = DE.ID
         WHERE DE.DEPARTMENT_NAME LIKE CONCAT('%',#{DEPT},'%')
     </select>
-    <select id="searchVacationHistories" parameterType="org.highfives.grid.vacation.query.vo.HistorySearch" resultMap="vacationHistoryResultMap">
+    <select id="searchVacationHistories" parameterType="org.highfives.grid.vacation.query.vo.HistorySearch">
         SELECT
         ID,
         CHANGE_TIME,
         CHANGE_REASON,
         TYPE_ID,
         CHANGE_TYPE_ID,
-        EMPLOYEE_ID
+        EMPLOYEE_ID,
+        e.EMPLOYEE_NAME AS EMPLOYEE_NAME,
+        vt.TYPE_NAME AS TYPE_NAME,
+        vct.TYPE_NAME AS CHANGE_TYPE_NAME
         FROM VACATION_HISTORY
+        JOIN EMPLOYEE e ON vh.employee_id = e.id
+        JOIN VACATION_TYPE vt ON vt.id = vh.type_id
+        JOIN VACATION_CHANGE_TYPE vct on vh.change_type_id = vct.id
         WHERE TYPE_ID = #{typeId} AND EMPLOYEE_ID = #{employeeId} AND CHANGE_TYPE_ID = #{changeTypeId}
+    </select>
+    <select id="vacationHistoryTable" resultMap="vacationHistoryDTOResultMap">
+        SELECT
+        vh.ID,
+        vh.CHANGE_TIME,
+        vh.CHANGE_REASON,
+        vh.TYPE_ID,
+        vh.CHANGE_TYPE_ID,
+        vh.EMPLOYEE_ID,
+        e.EMPLOYEE_NAME AS EMPLOYEE_NAME,
+        vt.TYPE_NAME AS TYPE_NAME,
+        vct.TYPE_NAME AS CHANGE_TYPE_NAME
+        FROM VACATION_HISTORY vh
+        JOIN EMPLOYEE e ON vh.employee_id = e.id
+        JOIN VACATION_TYPE vt ON vt.id = vh.type_id
+        JOIN VACATION_CHANGE_TYPE vct on vh.change_type_id = vct.id
+        ORDER BY vh.ID ASC
+    </select>
+    <select id="selectAllType" resultMap="vacationTypeResultMap">
+        SELECT
+        ID,
+        TYPE_NAME
+        FROM VACATION_TYPE
+        ORDER BY ID ASC
     </select>
 </mapper>

@@ -12,11 +12,10 @@ import java.util.List;
 @Setter
 @ToString
 @RequiredArgsConstructor
-public class ResVacationPolicyVO {
+public class ResVacationPolicyWithTypeNameVO {
 
     private int statusCode;
     private String message;
     private String href;
-    private VacationPolicyWithTypeName result;
-
+    private List<VacationPolicyWithTypeName> result;
 }

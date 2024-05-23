@@ -1,9 +1,7 @@
 package org.highfives.grid.vacation.query.controller;
 
 import org.highfives.grid.vacation.query.service.VacationService;
-import org.highfives.grid.vacation.query.vo.ResVacationHistoryVO;
-import org.highfives.grid.vacation.query.vo.ResVacationInfoVO;
-import org.highfives.grid.vacation.query.vo.ResVacationPolicyVO;
+import org.highfives.grid.vacation.query.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,9 +29,15 @@ public class VacationController {
         return ResponseEntity.status(HttpStatus.OK).body(vacations);
     }
 
-    @GetMapping("/policy/{typeId}")
-    public ResponseEntity<ResVacationPolicyVO> getVacationPolicy(@PathVariable int typeId) {
-        ResVacationPolicyVO policies = vacationService.getVacationPolicy(typeId);
+    @GetMapping("/policy/{id}")
+    public ResponseEntity<ResVacationPolicyVO> getVacationPolicy(@PathVariable int id) {
+        ResVacationPolicyVO policies = vacationService.getVacationPolicy(id);
+        return ResponseEntity.status(HttpStatus.OK).body(policies);
+    }
+
+    @GetMapping("/policy/all")
+    public ResponseEntity<ResVacationPolicyWithTypeNameVO> getAllVacationPolicy() {
+        ResVacationPolicyWithTypeNameVO policies = vacationService.getAllVacationPolicy();
         return ResponseEntity.status(HttpStatus.OK).body(policies);
     }
 
@@ -60,6 +64,12 @@ public class VacationController {
     public ResponseEntity<ResVacationInfoVO> searchVacationInfoByDept(@RequestParam("dept") String dept) {
         ResVacationInfoVO vacations = vacationService.searchVacationInfoByDept(dept);
         return ResponseEntity.status(HttpStatus.OK).body(vacations);
+    }
+
+    @GetMapping("/type")
+    public ResponseEntity<ResVacationTypeVO> getVacationType() {
+        ResVacationTypeVO types = vacationService.getVacationType();
+        return ResponseEntity.status(HttpStatus.OK).body(types);
     }
 
 

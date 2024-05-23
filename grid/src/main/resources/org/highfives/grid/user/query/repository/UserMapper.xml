@@ -96,6 +96,7 @@
         SELECT
         E.id,
         E.employee_name,
+        E.gender,
         E.employee_number,
         E.position_id,
         E.duties_id,
@@ -154,6 +155,37 @@
         FROM duties D
         JOIN employee E ON E.duties_id = D.id
         WHERE E.id = #{eNum}
+    </select>
+
+    <!-- id로 유저 조회 쿼리    -->
+    <select id="getUserInfoById" parameterType="_int" resultMap="userInfo">
+        SELECT
+        E.id,
+        E.email,
+        E.employee_name,
+        E.employee_number,
+        E.gender,
+        E.phone_number,
+        E.call_number,
+        E.zip_code,
+        E.address,
+        E.assigned_task,
+        E.join_time,
+        E.join_type,
+        E.resign_time,
+        E.resign_yn,
+        E.work_type,
+        E.contract_start_time,
+        E.contract_end_time,
+        E.salary,
+        E.absence_yn,
+        E.absence_content,
+        E.position_id,
+        E.duties_id,
+        E.team_id,
+        E.department_id
+        FROM Employee E
+        WHERE E.id = #{id}
     </select>
 <!--    <select id="selectPostsByCondition" parameterType="com.teamphoenix.ahub.fair.query.dto.FairDTO" resultMap="fairList">-->
 <!--        SELECT-->
