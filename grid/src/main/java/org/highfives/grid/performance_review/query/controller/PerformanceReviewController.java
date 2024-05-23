@@ -4,7 +4,6 @@ import org.highfives.grid.performance_review.query.dto.DetailPerformanceReviewDT
 import org.highfives.grid.performance_review.query.dto.PerformanceReviewDTO;
 import org.highfives.grid.performance_review.query.service.PerformanceReviewService;
 import org.highfives.grid.performance_review.query.vo.ResponseDetailReviewVO;
-import org.highfives.grid.performance_review.query.vo.ResponsePerformanceReviewGoalVO;
 import org.highfives.grid.performance_review.query.vo.ResponsePerformanceReviewVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

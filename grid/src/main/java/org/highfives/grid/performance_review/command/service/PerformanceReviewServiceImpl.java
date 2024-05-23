@@ -5,7 +5,6 @@ import org.highfives.grid.performance_review.command.aggregate.entity.Performanc
 import org.highfives.grid.performance_review.command.dto.ModifyPerformanceReviewDTO;
 import org.highfives.grid.performance_review.command.dto.PerformanceReviewDTO;
 import org.highfives.grid.performance_review.command.dto.PerformanceReviewItemDTO;
-import org.highfives.grid.performance_review.command.dto.TotalPerformanceReviewDTO;
 import org.highfives.grid.performance_review.command.repository.PerformanceReviewRepository;
 import org.highfives.grid.performance_review.command.vo.RequestPerformanceReviewVO;
 import org.highfives.grid.performance_review.query.dto.PerformanceReviewGoalDTO;
@@ -89,7 +88,6 @@ public class PerformanceReviewServiceImpl implements PerformanceReviewService{
         // 업적 평가 항목 생성
         List<PerformanceReviewItemDTO> reviewItemList = performanceReviewItemService.addNewItems(
                                                                 performanceReview.getGoalId(), performanceReview.getId());
-        System.out.println(reviewItemList);
 
 
         return modelMapper.map(addReview, PerformanceReviewDTO.class);
@@ -279,8 +277,7 @@ public class PerformanceReviewServiceImpl implements PerformanceReviewService{
 
         // 연말 평가를 확정하면 종합 평가 생성
         if(performanceReview.getType().equals("F")) {
-            System.out.println("종합 생성");
-            System.out.println(performanceReview.getGoalId());
+
             // GoalId로 중간, 연말 평가 조회
             List<PerformanceReview> performanceReviewList = performanceReviewRepository.findByGoalId(performanceReview.getGoalId());
 
