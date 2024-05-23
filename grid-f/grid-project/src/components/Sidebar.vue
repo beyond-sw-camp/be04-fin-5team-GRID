@@ -30,7 +30,7 @@
         <li>
           <span @click="toggleMenu('hrManagement')">인사 관리</span>
           <ul v-show="activeMenus.hrManagement">
-            <li>인사 정보</li>
+            <li @click="moveHr">인사 정보</li>
           </ul>
         </li>
         <li>
@@ -59,6 +59,7 @@ import { ref, onMounted,reactive } from 'vue';
 
 const employee = ref([]);
 const error = ref([]);
+const router = useRouter();
 
 const fetchEmployee = async () => {
   try {
@@ -86,6 +87,10 @@ const activeMenus = reactive({
 const toggleMenu = (menu) => {
   activeMenus[menu] = !activeMenus[menu];
 };
+
+function moveHr() {
+  router.push('/hr/main');
+}
 </script>
 
 <style scoped>

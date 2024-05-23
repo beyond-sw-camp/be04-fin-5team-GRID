@@ -79,7 +79,7 @@ onMounted(fetchDepartments);
 }
 
 .header {
-  background: #002366;
+  background: #088A85;
   color: white;
   padding: 10px 20px;
   display: flex;
