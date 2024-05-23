@@ -107,4 +107,27 @@
            AND  b.cancel_yn = 'N'
            AND  b.cancel_document_id = 0;
     </select>
+
+    <select id="findAllRWApprovalByEmployeeId" resultMap="approvalMap" parameterType="int">
+        SELECT
+                a.id,
+                a.employee_name,
+                a.employee_number,
+                b.id,
+                b.start_time,
+                b.end_time,
+                b.content,
+                b.approval_status,
+                b.write_time,
+                b.cancel_yn,
+                b.cancel_document_id,
+                b.requester_id
+          FROM  employee a
+          JOIN  rw_approval b
+            ON  a.id = b.requester_id
+         WHERE  a.id = #{employeeId}
+           AND  b.approval_status = 'A'
+           AND  b.cancel_yn = 'N'
+           AND  b.cancel_document_id = 0;
+    </select>
 </mapper>

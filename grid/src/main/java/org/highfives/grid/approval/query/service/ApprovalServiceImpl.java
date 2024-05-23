@@ -59,6 +59,10 @@ public class ApprovalServiceImpl implements ApprovalService{
             case 2:
                 approvalEmpList = approvalMapper.findAllOvertimeApprovalByEmployeeId(employeeId);
                 break;
+
+            case 3:
+                approvalEmpList = approvalMapper.findAllRWApprovalByEmployeeId(employeeId);
+                break;
         }
 
         return approvalEmpList;
