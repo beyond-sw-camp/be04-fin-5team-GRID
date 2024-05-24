@@ -86,6 +86,7 @@ public class ApprovalServiceImpl implements ApprovalService{
                 break;
 
             case 3:
+                approvalEmp = approvalMapper.findRWDetailByApprovalId(approvalId);
                 break;
 
             case 4:

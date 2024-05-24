@@ -19,5 +19,5 @@ public interface ApprovalMapper {
     List<ApprovalEmpDTO> findAllVApprovalByEmployeeId(int employeeId);
     ApprovalEmpDTO findBTDetailByApprovalId(int approvalId);
     ApprovalEmpDTO findODetailByApprovalId(int approvalId);
-
+    ApprovalEmpDTO findRWDetailByApprovalId(int approvalId);
 }
