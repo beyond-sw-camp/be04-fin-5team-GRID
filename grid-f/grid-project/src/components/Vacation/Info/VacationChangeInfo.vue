@@ -183,7 +183,7 @@ onBeforeMount(() => {
         grid-column-start: 2;
         grid-column-end: 3;
         font-size: 12px;
-        font-weight: 0;
+        font-weight: 600;
         margin-top: 2%;
         color: #000000;
         display: grid;
