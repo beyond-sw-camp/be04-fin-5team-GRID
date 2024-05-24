@@ -1,6 +1,7 @@
 package org.highfives.grid.vacation.query.repository;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.highfives.grid.vacation.query.dto.VacationTypeDTO;
 import org.highfives.grid.vacation.query.entity.VacationType;
 import org.highfives.grid.vacation.query.dto.VacationHistoryDTO;
 import org.highfives.grid.vacation.query.entity.VacationHistory;
@@ -28,5 +29,7 @@ public interface VacationMapper {
 
     List<VacationPolicyWithTypeName> selectRealAllPolicy();
 
-    List<VacationType> selectAllType();
+    List<VacationTypeDTO> selectAllType();
+
+    VacationTypeDTO selectTypeById(int id);
 }

@@ -21,4 +21,6 @@ public interface VacationService {
     ResVacationPolicyWithTypeNameVO getAllVacationPolicy();
 
     ResVacationTypeVO getVacationType();
+
+    ResOneVacationTypeVO getVacationTypeById(int id);
 }

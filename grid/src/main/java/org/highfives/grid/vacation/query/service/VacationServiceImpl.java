@@ -128,14 +128,26 @@ public class VacationServiceImpl implements VacationService {
 
     @Override
     public ResVacationTypeVO getVacationType() {
-        List<VacationType> types = vacationMapper.selectAllType();
+        List<VacationTypeDTO> types = vacationMapper.selectAllType();
 
         ResVacationTypeVO resVacationTypeVO = new ResVacationTypeVO();
         resVacationTypeVO.setStatusCode(200);
         resVacationTypeVO.setMessage("조회 성공");
-        resVacationTypeVO.setResult(types.stream().map(type -> modelMapper.map(type, VacationTypeDTO.class)).collect(Collectors.toList()));
+        resVacationTypeVO.setResult(types);
 
         return resVacationTypeVO;
+    }
+
+    @Override
+    public ResOneVacationTypeVO getVacationTypeById(int id) {
+        VacationTypeDTO type = vacationMapper.selectTypeById(id);
+
+        ResOneVacationTypeVO resOneVacationTypeVO = new ResOneVacationTypeVO();
+        resOneVacationTypeVO.setStatusCode(200);
+        resOneVacationTypeVO.setMessage("조회 성공");
+        resOneVacationTypeVO.setResult(type);
+
+        return resOneVacationTypeVO;
     }
 
 }

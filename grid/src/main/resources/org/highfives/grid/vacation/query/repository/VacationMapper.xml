@@ -41,9 +41,12 @@
         <result property="typeName" column="TYPE_NAME"/>
         <result property="changeTypeName" column="CHANGE_TYPE_NAME"/>
     </resultMap>
-    <resultMap id="vacationTypeResultMap" type="org.highfives.grid.vacation.query.entity.VacationType">
+    <resultMap id="vacationTypeResultMap" type="org.highfives.grid.vacation.query.dto.VacationTypeDTO">
         <id property="id" column="ID"/>
         <result property="typeName" column="TYPE_NAME"/>
+        <result property="vacationNum" column="VACATION_NUM"/>
+        <result property="dateOfUse" column="DATE_OF_USE"/>
+        <result property="vacationExplain" column="VACATION_EXPLAIN"/>
     </resultMap>
     <select id="selectAllVacationInfo" resultMap="vacationInfoResultMap" >
         SELECT
@@ -157,8 +160,22 @@
     <select id="selectAllType" resultMap="vacationTypeResultMap">
         SELECT
         ID,
-        TYPE_NAME
+        TYPE_NAME,
+        VACATION_NUM,
+        DATE_OF_USE,
+        VACATION_EXPLAIN
         FROM VACATION_TYPE
+        ORDER BY ID ASC
+    </select>
+    <select id="selectTypeById" parameterType="_int" resultMap="vacationTypeResultMap">
+        SELECT
+        ID,
+        TYPE_NAME,
+        VACATION_NUM,
+        DATE_OF_USE,
+        VACATION_EXPLAIN
+        FROM VACATION_TYPE
+        WHERE ID = #{id}
         ORDER BY ID ASC
     </select>
 </mapper>
