@@ -13,13 +13,13 @@
 
     <resultMap id="btChainMap" type="org.highfives.grid.approval_chain.common.dto.ChainDTO">
         <id property="stage" column="stage"/>
-        <id property="id" column="id"/>
-        <id property="approvalTime" column="approval_time"/>
-        <id property="chainStatus" column="approval_status"/>
-        <id property="comment" column="comment"/>
-        <id property="approvalId" column="approval_id"/>
-        <id property="employeeId" column="employee_id"/>
-        <id property="chainId" column="chain_id"/>
+        <result property="id" column="id"/>
+        <result property="approvalTime" column="approval_time"/>
+        <result property="chainStatus" column="approval_status"/>
+        <result property="comment" column="comment"/>
+        <result property="approvalId" column="approval_id"/>
+        <result property="employeeId" column="employee_id"/>
+        <result property="chainId" column="chain_id"/>
     </resultMap>
 
     <select id="findChainListByTypeId" resultMap="approvalChainMap" parameterType="int">

@@ -7,6 +7,7 @@ import org.highfives.grid.approval.common.dto.BTApprovalDTO;
 import org.highfives.grid.approval.common.dto.OvertimeApprovalDTO;
 import org.highfives.grid.approval.common.dto.RWApprovalDTO;
 import org.highfives.grid.approval.common.dto.VacationApprovalDTO;
+import org.highfives.grid.approval.common.vo.ResApprovalVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
