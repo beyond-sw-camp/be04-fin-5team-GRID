@@ -20,18 +20,6 @@
         <result property="cancelYn" column="cancel_yn"/>
         <result property="cancelDocId" column="cancel_document_id"/>
         <result property="employeeId" column="requester_id"/>
-        <result property="employeeName" column="employee_name"/>
-        <result property="employeeNumber" column="employee_number"/>
-        <result property="employeeEmail" column="email"/>
-        <result property="employeeCall" column="call_number"/>
-        <result property="dutyId" column="duties_id"/>
-        <result property="dutyName" column="duties_name"/>
-        <result property="positionId" column="position_id"/>
-        <result property="positionName" column="position_name"/>
-        <result property="teamId" column="team_id"/>
-        <result property="teamName" column="team_name"/>
-        <result property="deptId" column="department_id"/>
-        <result property="deptName" column="department_name"/>
     </resultMap>
 
     <resultMap id="oApprovalMap" type="org.highfives.grid.approval.common.dto.OvertimeApprovalDTO">
@@ -77,7 +65,6 @@
 
     <select id="findAllBTApprovalByEmployeeId" resultMap="approvalMap" parameterType="int">
         SELECT
-                a.id as employeeId,
                 a.employee_name,
                 a.employee_number,
                 b.id,
@@ -101,7 +88,6 @@
 
     <select id="findAllOApprovalByEmployeeId" resultMap="approvalMap" parameterType="int">
         SELECT
-                a.id as employeeId,
                 a.employee_name,
                 a.employee_number,
                 b.id,
@@ -124,7 +110,6 @@
 
     <select id="findAllRWApprovalByEmployeeId" resultMap="approvalMap" parameterType="int">
         SELECT
-                a.id as employeeId,
                 a.employee_name,
                 a.employee_number,
                 b.id,
@@ -150,7 +135,6 @@
 
     <select id="findAllVApprovalByEmployeeId" resultMap="approvalMap" parameterType="int">
         SELECT
-                a.id as employeeId,
                 a.employee_name,
                 a.employee_number,
                 b.id,
@@ -174,138 +158,66 @@
 
     <select id="findBTDetailByApprovalId" resultMap="approvalMap" parameterType="int">
         SELECT
-                a.id as employeeId,
-                a.employee_name,
-                a.employee_number,
-                a.email,
-                a.call_number,
-                a.duties_id,
-                a.position_id,
-                a.team_id,
-                a.department_id,
-                b.id,
-                b.start_time,
-                b.end_time,
-                b.content,
-                b.destination,
-                b.approval_status,
-                b.write_time,
-                b.cancel_yn,
-                b.cancel_document_id,
-                b.requester_id,
-                c.department_name,
-                d.team_name,
-                e.duties_name,
-                f.position_name
-          FROM  employee a
-          JOIN  bt_approval b ON a.id = b.requester_id
-          JOIN  department c ON c.id = a.department_id
-          JOIN  team d ON d.id = a.team_id
-          JOIN  duties e ON e.id = a.duties_id
-          JOIN  e_position f ON f.id = a.position_id
-         WHERE  b.id = #{approvalId};
+                id,
+                start_time,
+                end_time,
+                content,
+                destination,
+                approval_status,
+                write_time,
+                cancel_yn,
+                cancel_document_id,
+                requester_id
+          FROM  bt_approval
+         WHERE  id = #{approvalId};
     </select>
 
     <select id="findODetailByApprovalId" resultMap="approvalMap" parameterType="int">
         SELECT
-                a.id as employeeId,
-                a.employee_name,
-                a.employee_number,
-                a.email,
-                a.call_number,
-                a.duties_id,
-                a.position_id,
-                a.team_id,
-                a.department_id,
-                b.id,
-                b.start_time,
-                b.end_time,
-                b.content,
-                b.approval_status,
-                b.write_time,
-                b.cancel_yn,
-                b.cancel_document_id,
-                b.requester_id,
-                c.department_name,
-                d.team_name,
-                e.duties_name,
-                f.position_name
-          FROM  employee a
-          JOIN  overtime_approval b ON a.id = b.requester_id
-          JOIN  department c ON c.id = a.department_id
-          JOIN  team d ON d.id = a.team_id
-          JOIN  duties e ON e.id = a.duties_id
-          JOIN  e_position f ON f.id = a.position_id
-         WHERE  b.id = #{approvalId};
+                id,
+                start_time,
+                end_time,
+                content,
+                approval_status,
+                write_time,
+                cancel_yn,
+                cancel_document_id,
+                requester_id
+          FROM  overtime_approval
+         WHERE  id = #{approvalId};
     </select>
 
     <select id="findRWDetailByApprovalId" resultMap="approvalMap" parameterType="int">
         SELECT
-                a.id as employeeId,
-                a.employee_name,
-                a.employee_number,
-                a.email,
-                a.call_number,
-                a.duties_id,
-                a.position_id,
-                a.team_id,
-                a.department_id,
-                b.id,
-                b.start_time,
-                b.end_time,
-                b.content,
-                b.origin_name,
-                b.rename_name,
-                b.path,
-                b.approval_status,
-                b.write_time,
-                b.cancel_yn,
-                b.cancel_document_id,
-                b.requester_id,
-                c.department_name,
-                d.team_name,
-                e.duties_name,
-                f.position_name
-          FROM  employee a
-          JOIN  rw_approval b ON a.id = b.requester_id
-          JOIN  department c ON c.id = a.department_id
-          JOIN  team d ON d.id = a.team_id
-          JOIN  duties e ON e.id = a.duties_id
-          JOIN  e_position f ON f.id = a.position_id
-         WHERE  b.id = #{approvalId};
+                id,
+                start_time,
+                end_time,
+                content,
+                origin_name,
+                rename_name,
+                path,
+                approval_status,
+                write_time,
+                cancel_yn,
+                cancel_document_id,
+                requester_id
+          FROM  rw_approval
+         WHERE  id = #{approvalId};
     </select>
 
     <select id="findVDetailByApprovalId" resultMap="approvalMap" parameterType="int">
         SELECT
-                a.id as employeeId,
-                a.employee_name,
-                a.employee_number,
-                a.email,
-                a.call_number,
-                a.duties_id,
-                a.position_id,
-                a.team_id,
-                a.department_id,
-                b.id,
-                b.start_time,
-                b.end_time,
-                b.content,
-                b.info_id,
-                b.approval_status,
-                b.write_time,
-                b.cancel_yn,
-                b.cancel_document_id,
-                b.requester_id,
-                c.department_name,
-                d.team_name,
-                e.duties_name,
-                f.position_name
-          FROM  employee a
-          JOIN  vacation_approval b ON a.id = b.requester_id
-          JOIN  department c ON c.id = a.department_id
-          JOIN  team d ON d.id = a.team_id
-          JOIN  duties e ON e.id = a.duties_id
-          JOIN  e_position f ON f.id = a.position_id
-         WHERE  b.id = #{approvalId};
+                id,
+                start_time,
+                end_time,
+                content,
+                info_id,
+                approval_status,
+                write_time,
+                cancel_yn,
+                cancel_document_id,
+                requester_id
+          FROM  vacation_approval
+         WHERE  id = #{approvalId};
     </select>
 </mapper>

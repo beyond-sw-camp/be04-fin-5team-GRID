@@ -13,6 +13,8 @@ import org.highfives.grid.approval.common.dto.OvertimeApprovalDTO;
 import org.highfives.grid.approval.common.dto.OvertimeInWeekDTO;
 import org.highfives.grid.approval.query.dto.ApprovalEmpDTO;
 import org.highfives.grid.approval.query.repository.ApprovalMapper;
+import org.highfives.grid.user.query.dto.UserDTO;
+import org.highfives.grid.user.query.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,12 +35,14 @@ public class ApprovalServiceImpl implements ApprovalService{
     private final ModelMapper mapper;
     private final ApprovalMapper approvalMapper;
     private final BTApprovalRepository btApprovalRepository;
+    private final UserService userService;
 
     @Autowired
-    public ApprovalServiceImpl(ModelMapper mapper, ApprovalMapper approvalMapper, BTApprovalRepository btApprovalRepository) {
+    public ApprovalServiceImpl(ModelMapper mapper, ApprovalMapper approvalMapper, BTApprovalRepository btApprovalRepository, UserService userService) {
         this.mapper = mapper;
         this.approvalMapper = approvalMapper;
         this.btApprovalRepository = btApprovalRepository;
+        this.userService = userService;
     }
 
     @Override
@@ -93,6 +97,9 @@ public class ApprovalServiceImpl implements ApprovalService{
                 approvalEmp = approvalMapper.findVDetailByApprovalId(approvalId);
                 break;
         }
+
+        UserDTO user = userService.findUserById(approvalEmp.getEmployeeId());
+        approvalEmp.setUser(user);
 
         return approvalEmp;
     }

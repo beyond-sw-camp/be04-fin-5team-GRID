@@ -3,6 +3,7 @@ package org.highfives.grid.approval.query.dto;
 import lombok.*;
 import org.highfives.grid.approval.command.aggregate.ApprovalStatus;
 import org.highfives.grid.approval.command.aggregate.YN;
+import org.highfives.grid.user.query.dto.UserDTO;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -27,7 +28,7 @@ public class ApprovalEmpDTO {
 
     private int cancelDocId;
 
-    private int requesterId;
+    private int employeeId;
 
     private String destination;
 
@@ -39,30 +40,6 @@ public class ApprovalEmpDTO {
 
     private int infoId;
 
-    private int employeeId;
-
-    private String employeeName;
-
-    private int employeeNumber;
-
-    private String employeeEmail;
-
-    private String employeeCall;
-
-    private int dutyId;
-
-    private String dutyName;
-
-    private int positionId;
-
-    private String positionName;
-
-    private int deptId;
-
-    private String deptName;
-
-    private int teamId;
-
-    private String teamName;
+    private UserDTO user;
 }
 
