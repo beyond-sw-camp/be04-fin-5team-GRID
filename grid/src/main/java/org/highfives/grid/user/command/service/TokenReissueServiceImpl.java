@@ -13,6 +13,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+
 @Service
 @Slf4j
 public class TokenReissueServiceImpl implements TokenReissueService{
@@ -67,7 +70,7 @@ public class TokenReissueServiceImpl implements TokenReissueService{
 
     @Override
     @Transactional
-    public HttpServletResponse reissueToken(String refresh, HttpServletResponse response) {
+    public HttpServletResponse reissueToken(String refresh, HttpServletResponse response) throws IOException {
 
         int id = jwtUtil.getUserId(refresh);
         String username = jwtUtil.getUserEmail(refresh);
@@ -87,9 +90,11 @@ public class TokenReissueServiceImpl implements TokenReissueService{
         tokenReissueRepository.save(redisToken);
 
         //response
-        response.setHeader("access", newAccess);
         response.addCookie(jwtUtil.createCookie("refresh", newRefresh));
-
+        response.setContentType("application/json");
+        PrintWriter out = response.getWriter();
+        out.print("{\"access\": \"" + newAccess + "\"}");
+        out.flush();
         return response;
     }
 }

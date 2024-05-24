@@ -108,7 +108,7 @@
     </select>
 
     <!-- 사원 번호로 유저 조회 쿼리    -->
-    <select id="getUserInfo" parameterType="_int" resultMap="userInfo">
+    <select id="getUserInfo" parameterType="string" resultMap="userInfo">
         SELECT
         E.id,
         E.email,
@@ -138,6 +138,46 @@
         WHERE E.employee_number = #{id}
     </select>
 
+    <!-- id로 유저 조회 쿼리    -->
+    <select id="getUserInfoById" parameterType="_int" resultMap="userInfo">
+        SELECT
+        E.id,
+        E.email,
+        E.employee_name,
+        E.employee_number,
+        E.gender,
+        E.phone_number,
+        E.call_number,
+        E.zip_code,
+        E.address,
+        E.assigned_task,
+        E.join_time,
+        E.join_type,
+        E.resign_time,
+        E.resign_yn,
+        E.work_type,
+        E.contract_start_time,
+        E.contract_end_time,
+        E.salary,
+        E.absence_yn,
+        E.absence_content,
+        E.position_id,
+        E.duties_id,
+        E.team_id,
+        E.department_id
+        FROM Employee E
+        WHERE E.id = #{id}
+    </select>
+
+    <!-- email로 유저 조회 쿼리    -->
+    <select id="getUserInfoByEmail" parameterType="string" resultType="map">
+        SELECT
+        E.email,
+        E.employee_name
+        FROM Employee E
+        WHERE E.email = #{id}
+    </select>
+
     <!--  사원 직위명 조회  -->
     <select id="getPosition" parameterType="_int">
         SELECT
@@ -155,36 +195,4 @@
         JOIN employee E ON E.duties_id = D.id
         WHERE E.id = #{eNum}
     </select>
-<!--    <select id="selectPostsByCondition" parameterType="com.teamphoenix.ahub.fair.query.dto.FairDTO" resultMap="fairList">-->
-<!--        SELECT-->
-<!--        F.fair_id-->
-<!--        , F.fair_title-->
-<!--        , F.fair_content-->
-<!--        , F.fair_writedate-->
-<!--        , F.use_acceptance-->
-<!--        , F.member_code-->
-<!--        , F.fair_tag1-->
-<!--        , F.fair_tag2-->
-<!--        , F.fair_tag3-->
-<!--        , F.fair_startdate-->
-<!--        , F.fair_enddate-->
-<!--        , F.fair_location-->
-<!--        , F.fair_area-->
-<!--        FROM fair F-->
-<!--        <where>-->
-<!--            <if test="fairTitle neq null and fairContent eq null">-->
-<!--                F.fair_title LIKE CONCAT ('%', #{fairTitle}, '%')-->
-<!--            </if>-->
-<!--            <if test="fairContent neq null and fairTitle eq null">-->
-<!--                F.fair_content LIKE CONCAT('%', #{fairContent}, '%')-->
-<!--            </if>-->
-<!--            <if test="fairTitle neq null and fairContent neq null">-->
-<!--                F.fair_title LIKE CONCAT('%', #{fairTitle}, '%')-->
-<!--                OR F.fair_content LIKE CONCAT('%', #{fairContent}, '%')-->
-<!--            </if>-->
-<!--            <if test="memberCode neq 0">-->
-<!--                F.member_code = #{memberCode}-->
-<!--            </if>-->
-<!--        </where>-->
-<!--    </select>-->
 </mapper>

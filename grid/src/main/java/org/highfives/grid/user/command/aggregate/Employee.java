@@ -17,6 +17,7 @@ public class Employee {
     @Column
     private String email;
     @Column
+    @Setter
     private String pwd;
     @Column
     private String employeeName;
@@ -131,7 +132,6 @@ public class Employee {
     public void setResignTime(String resignTime) {
         this.resignTime = resignTime;
     }
-
     public void setResignYn(YN resignYn) {
         this.resignYn = resignYn;
     }

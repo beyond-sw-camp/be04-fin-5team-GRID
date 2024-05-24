@@ -36,7 +36,23 @@ class UserServiceImplTests {
     @Test
     void findUserByEmployeeNumberTest() {
         Assertions.assertDoesNotThrow(
-                () -> userService.findUserByEmployeeNum(1)
+                () -> userService.findUserByEmployeeNum("1")
+        );
+    }
+
+    @DisplayName("id로 유저 정보 조회")
+    @Test
+    void findUserByIdTest() {
+        Assertions.assertDoesNotThrow(
+                () -> userService.findUserById(1)
+        );
+    }
+
+    @DisplayName("email로 유저 정보 조회")
+    @Test
+    void checkNameByEmailTest() {
+        Assertions.assertDoesNotThrow(
+                () -> userService.checkNameByEmail("gridpeople2024@gmail.com")
         );
     }
 }
