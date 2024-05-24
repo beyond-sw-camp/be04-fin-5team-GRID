@@ -72,6 +72,14 @@ public class ApprovalServiceImpl implements ApprovalService{
     }
 
     @Override
+    public ApprovalEmpDTO findDetailByApprovalId(int typeId, int approvalId) {
+
+        ApprovalEmpDTO approvalEmp = approvalMapper.findBTDetailByApprovalId(approvalId);
+
+        return approvalEmp;
+    }
+
+    @Override
     public int countOvertimeInWeek(OvertimeInWeekDTO overtimeInWeek) {
 
         List<OvertimeApprovalDTO> overtimeApprovalList = approvalMapper.findOInWeekByEmployeeId(overtimeInWeek);

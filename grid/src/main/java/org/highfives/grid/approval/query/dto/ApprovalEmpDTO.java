@@ -31,10 +31,38 @@ public class ApprovalEmpDTO {
 
     private String destination;
 
+    private String originName;
+
+    private String renameName;
+
+    private String path;
+
     private int infoId;
+
+    private int employeeId;
 
     private String employeeName;
 
     private int employeeNumber;
+
+    private String employeeEmail;
+
+    private String employeeCall;
+
+    private int dutyId;
+
+    private String dutyName;
+
+    private int positionId;
+
+    private String positionName;
+
+    private int teamId;
+
+    private String teamName;
+
+    private int deptId;
+
+    private String deptName;
 }
 
