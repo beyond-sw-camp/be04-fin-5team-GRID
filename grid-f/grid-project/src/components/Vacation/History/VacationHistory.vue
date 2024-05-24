@@ -25,18 +25,18 @@
             </div>
         </div>
         <div class="search">
-            <button class="sortBox">정렬하기</button>
-            <button class="printBtn">출력하기</button>
+            <input class="sortBox" type="text" placeholder="검색">
+            <button class="printBtn">검색</button>
         </div> 
         <div class="tableContainer">
             <table>
                 <thead>
                     <tr>
-                        <th><input type="checkbox" id="selectAll" @change="selectAllCheckbox"></th>
+                        <th>번호</th>
                         <th>이름</th>
                         <th>휴가종류</th>
                         <th>신청날짜</th>
-                        <th>연차 사용기간</th>
+                        <th>휴가 사용기간</th>
                         <th>사용개수</th>
                         <th>결재상태</th>
                         <th>세부정보</th>
@@ -44,7 +44,7 @@
                 </thead>
                 <tbody>
                     <tr v-for="index in 10" :key="index">
-                        <td><input type="checkbox" :id="'checkbox' + index"></td>
+                        <td>{{ index }}</td>
                         <td>이름 {{ index }}</td>
                         <td>연차</td>
                         <td>2024-05-01</td>
@@ -55,6 +55,16 @@
                     </tr>
                 </tbody>
             </table>
+        </div>
+        <div class="pagination">
+            <button @click="prevPage" :disabled="currentPage === 1">Previous</button>
+            <button 
+                v-for="page in totalPages" 
+                :key="page" 
+                @click="goToPage(page)" 
+                :class="{ active: page === currentPage }"
+            >{{ page }}</button>
+            <button @click="nextPage" :disabled="currentPage === totalPages">Next</button>
         </div>
     </div>
 </template>
@@ -96,7 +106,7 @@ onBeforeMount(() => {
 <style scoped>
     .historyAll {
         display: grid;
-        grid-template-rows: 17.5% 17.5% 5% 50% 10%;
+        grid-template-rows: 18% 15% 4% 43% 5% 13%;
         grid-template-columns: 10% 80% 10%;
         height: 100%;
     }
@@ -104,17 +114,21 @@ onBeforeMount(() => {
     .historyTitle {
         grid-column-start: 2;
         grid-column-end: 3;
-        font-size: 20px;
+        font-size: 12px;
         font-weight: 600;
-        margin-top: 1%;
+        margin-top: 2%;
         color: #000000;
         display: grid;
-        grid-template-columns: 5% 95%;
+        grid-template-columns: 3% 97%;
         align-items: center;
     }
 
+    .historyTitle h1 {
+        margin-left: 0.5%;
+    }
+
     .historyIcon {
-        width: 100%;
+        width: 80%;
     }
 
     .vacations {
@@ -122,21 +136,23 @@ onBeforeMount(() => {
         grid-column-end: 3;
         display: grid;
         grid-template-columns: 20% 5% 20% 5% 50%;
+        align-items: center;
+        margin-bottom: 5%;
     }
 
     .vacationsTitle {
-        margin-left: 5%;
         display: grid;
         grid-template-columns: 85% 10% 5%;
         align-items: center;
+        font-size: 12px;
+        height: 50%;
     }
 
     .vacationsNum {
         grid-column-start: 1;
         display: grid;
         grid-template-columns: 15% 85%;
-        font-size: 20px;
-        margin-left: 5%;
+        font-size: 10px;
     }
 
     .plusBtn {
@@ -144,13 +160,13 @@ onBeforeMount(() => {
     }
 
     .today {
-        width: calc(100% - 20px);
-        background-color: #F8F9FAFF;
+        padding: 10px;
+        background-color: #F2F2F2;
     }
 
     .tomorrow {
-        width: calc(100% - 20px);
-        background-color: #F8F9FAFF;
+        padding: 10px;
+        background-color: #F2F2F2;
         grid-column-start: 3;
     }
 
@@ -158,19 +174,14 @@ onBeforeMount(() => {
         grid-row-start: 3;
         grid-column-start: 2;
         display: grid;
-        grid-template-columns: 79% 13% 1% 7%;
+        grid-template-columns: 80% 15% 1% 4%;
     }
 
     .sortBox {
         grid-column-start: 2;
         margin-left: 2%;
-        width: 100%;
-        background-color: orange;
-        color: white;
         padding: 5px 5px;
-        border: none;
         border-radius: 4px;
-        cursor: pointer;
         font-size: 12px;
         font-style: bold;
     }
@@ -179,7 +190,7 @@ onBeforeMount(() => {
         grid-column-start: 4;
         margin-left: 2%;
         width: 100%;
-        background-color: orange;
+        background-color: #088A85;
         color: white;
         padding: 5px 5px;
         border: none;
@@ -192,7 +203,8 @@ onBeforeMount(() => {
     .tableContainer {
         grid-column-start: 2;
         grid-column-end: 3;
-        margin-top: 10px;
+        margin-top: 20px;
+        font-size: 12px;
     }
 
     table {
@@ -203,7 +215,7 @@ onBeforeMount(() => {
     th, td {
         border: 1px solid #dddddd;
         text-align: left;
-        padding: 8px;
+        padding: 6px;
         vertical-align: middle;
     }
 
@@ -212,6 +224,43 @@ onBeforeMount(() => {
     }
 
     .more {
-        width: 15px;
+        width: 12px;
+    }
+
+    .pagination {
+        grid-row-start: 5;
+        grid-column-start: 2;
+        grid-column-end: 3;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 10px;
+    }
+
+    .pagination button {
+        background-color: white;
+        color: black;
+        padding: 5px 10px;
+        border: 1px solid #dddddd;
+        border-radius: 4px;
+        cursor: pointer;
+        margin: 0 5px;
+    }
+
+    .pagination button.active {
+        background-color: darkorange;
+        font-weight: bold;
+        color: white;
+    }
+
+    .pagination button:disabled {
+        background-color: #dddddd;
+        cursor: not-allowed;
+    }
+
+
+    .pagination span {
+        display: flex;
+        align-items: center;
     }
 </style>

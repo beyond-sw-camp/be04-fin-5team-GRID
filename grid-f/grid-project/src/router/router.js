@@ -32,7 +32,7 @@ const router = createRouter({
             component:() => import('../views/VacationManageRegistView.vue')
         },
         {
-            path: '/vacation/manage/delete',
+            path: '/vacation/manage/modify/:id',
             component:() => import('../views/VacationManageDeleteView.vue')
         },
         {
