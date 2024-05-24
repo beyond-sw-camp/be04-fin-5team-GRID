@@ -25,13 +25,19 @@ const router = createRouter({
             path: '/find/pwd/:email/result',
             component: () => import('../views/Login/FindPwdResult.vue')
         },
-            path: '/2',
-            component: () => import('../views/Login2.vue')
-        },
         {
             path: '/department',
             component: () => import('@/components/Department/Department.vue')
-        }
+        },
+        {
+            path: '/performance-review-goal',
+            component: () => import('../views/PerformanceReview/GoalListView.vue')
+        },
+        {
+            path: '/review-goal/detail/:id',
+            component: () => import('../views/PerformanceReview/GoalDetailView.vue')
+        },
+
     ]
 })
 

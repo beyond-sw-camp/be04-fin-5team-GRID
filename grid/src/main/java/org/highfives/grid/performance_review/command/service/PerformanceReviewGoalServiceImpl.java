@@ -135,6 +135,7 @@ public class PerformanceReviewGoalServiceImpl implements PerformanceReviewGoalSe
 
     // 승인 상태로 변경
     @Override
+    @Transactional
     public PerformanceReviewGoalDTO modifyGoalStatusApproval(int id) {
         PerformanceReviewGoal performanceReviewGoal = performanceReviewGoalRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("해당 ID의 목표를 찾을 수 없습니다."));
@@ -161,6 +162,7 @@ public class PerformanceReviewGoalServiceImpl implements PerformanceReviewGoalSe
 
     // 반려 상태로 변경
     @Override
+    @Transactional
     public PerformanceReviewGoalDTO modifyGoalStatusDenied(int id) {
         PerformanceReviewGoal performanceReviewGoal = performanceReviewGoalRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("해당 ID의 목표를 찾을 수 없습니다."));
