@@ -29,14 +29,14 @@ public class Team {
     private String teamStatus;
 
     @Column(name = "start_time")
-    private String startTime;
+    private TeamStatus startTime;
 
     @Column(name = "end_time")
     private String endTime;
 
     @Column(name = "department_id")
-    private String departmentId;
+    private int departmentId;
 
     @Column(name = "leader_id")
-    private String leaderId;
+    private int leaderId;
 }
