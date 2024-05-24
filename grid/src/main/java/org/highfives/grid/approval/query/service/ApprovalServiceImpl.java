@@ -90,6 +90,7 @@ public class ApprovalServiceImpl implements ApprovalService{
                 break;
 
             case 4:
+                approvalEmp = approvalMapper.findVDetailByApprovalId(approvalId);
                 break;
         }
 
