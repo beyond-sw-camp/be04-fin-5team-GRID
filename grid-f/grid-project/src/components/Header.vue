@@ -4,7 +4,6 @@
       <div class="logo">
         <img src="@/assets/logo.png" @click="main()" class="logoimage">
       </div>
-      <input class="search" type="text" placeholder="Search" />
       <div class="icons">
         <button class="icon-button">
           <img src="@/assets/icon1.png" alt="Button 1" class="icon-image" />

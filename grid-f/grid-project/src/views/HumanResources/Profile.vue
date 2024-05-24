@@ -78,12 +78,12 @@ body {
     min-height: 100%;
     min-width: 100%;
     display: grid;
-    grid-template-columns: 250px calc(100% - 250px);
-    grid-template-rows: 60px calc(100vh - 70px) 10px;
+    grid-template-columns: 250px auto;
+    grid-template-rows: 60px auto 10px;
     grid-template-areas:
         "header header"
         "side contents"
-        "side footer";
+        "footer footer";
 }
 
 .header {
@@ -97,20 +97,26 @@ body {
 }
 
 .sidebar {
+    grid-area: side;
     position: fixed;
     top: 60px;
     left: 0;
-    grid-area: side;
+    width: 250px;
+    height: calc(100vh - 60px);
+    z-index: 800;
 }
 
 .footer {
-    position: fixed;
-    z-index: 600;
     grid-area: footer;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    z-index: 600;
 }
 
 .contents {
     grid-area: contents;
+    height: calc(100vh - 70px)px;
 }
 
 .insideContents {
@@ -133,7 +139,7 @@ body {
 .title-image {
     width: 42.8px;
     height: 55.8px;
-    margin: 0 15px 0 0 ;
+    margin: 0 15px 0 0;
 }
 
 #title-image {
@@ -146,6 +152,8 @@ body {
 
 .title-name {
     width: 80%;
+    font-size: 12px;
+    font-weight: 0;
 }
 
 .first {

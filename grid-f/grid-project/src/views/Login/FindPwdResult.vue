@@ -135,7 +135,7 @@ async function resetPwd() {
     }
 
     await axios.put(`http://localhost:8080/users/pwd`, {
-        pwd: inputValue.value,
+        pwd: inputValue.value,  
         email: givenEmail
     })
         .then((response) => {

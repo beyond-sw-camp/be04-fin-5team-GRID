@@ -1,6 +1,6 @@
 <template>
   <footer class="footer">
-    <p>&copy; 2024 Grid. All rights reserved.</p>
+    &copy; 2024 Grid. All rights reserved.
   </footer>
 </template>
 
@@ -15,6 +15,6 @@
   text-align: center;
   padding: 10px;
   bottom: 0;
-  width: 100%;
+  width: calc(100% - 180px);
 }
 </style>

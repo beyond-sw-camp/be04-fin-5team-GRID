@@ -7,6 +7,7 @@ import org.highfives.grid.user.query.repository.ImgMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -26,13 +27,12 @@ public class UserServiceImpl implements UserService{
     @Override
     public UserDTO findUserByEmployeeNum(String eNum) {
 
-        try {
-            UserDTO result = userMapper.getUserInfo(eNum);
-            result.setProfilePath(imgMapper.getProfileImg(result.getId()));
-            result.setPosition(userMapper.getPosition(result.getId()));
-            result.setDuties(userMapper.getDuties(result.getId()));
+        Map<String, Object> info = new HashMap<>();
+        info.put("eNum", eNum);
 
-            System.out.println("result = " + result);
+        try {
+            UserDTO result = userMapper.getUserInfo(info);
+            result.setProfilePath(imgMapper.getProfileImg(result.getId()));
             return result;
 
         } catch (NullPointerException e) {
@@ -42,13 +42,13 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public UserDTO findUserById(int id) {
-        try {
-            UserDTO result = userMapper.getUserInfoById(id);
-            result.setProfilePath(imgMapper.getProfileImg(result.getId()));
-            result.setPosition(userMapper.getPosition(result.getId()));
-            result.setDuties(userMapper.getDuties(result.getId()));
 
-            System.out.println("result = " + result);
+        Map<String, Object> info = new HashMap<>();
+        info.put("id", id);
+
+        try {
+            UserDTO result = userMapper.getUserInfo(info);
+            result.setProfilePath(imgMapper.getProfileImg(result.getId()));
             return result;
 
         } catch (NullPointerException e) {
@@ -65,11 +65,7 @@ public class UserServiceImpl implements UserService{
         // profile 이미지 조회 해서 입력
         for (int i = 0; i < userList.size(); i++) {
             UserDTO userDTO = userList.get(i);
-
             userDTO.setProfilePath(imgMapper.getProfileImg(userDTO.getId()));
-            userDTO.setPosition(userMapper.getPosition(userDTO.getId()));
-            userDTO.setDuties(userMapper.getDuties(userDTO.getId()));
-
             userList.set(i, userDTO);
         }
 
