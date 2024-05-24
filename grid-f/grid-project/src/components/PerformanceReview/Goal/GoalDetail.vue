@@ -35,13 +35,18 @@
       </table>
     </div>
     <div class="GoalButtonContainer">
-      <button @click="memberSave()">팀원 저장</button>
-      <button @click="submit()">상신</button>
-      <button @click="leaderSave()">팀장 저장</button>
-      <button @click="approval()">승인</button>
-      <button @click="denied()">반려</button>
+      <div v-if="userRole === 'member'">
+        <button @click="memberSave()">팀원 저장</button>
+        <button @click="submit()">상신</button>
+      </div>
+      <div v-if="userRole === 'leader'">
+        <button @click="leaderSave()">팀장 저장</button>
+        <button @click="approval()">승인</button>
+        <button @click="denied()">반려</button>
+      </div>
     </div>
     <div class="tableContainer">
+      <div v-if="userRole === 'member'">
       <table>
         <thead>
         <tr>
@@ -58,11 +63,41 @@
         <tbody>
         <tr v-for="(item, index) in goalItemList" :key="item.id">
           <td>{{ index + 1 }}</td>
-          <td>{{ item.jobName }}</td>
-          <td>{{ item.goal }}</td>
-          <td>{{ item.metric }}</td>
-          <td>{{ item.weight }}</td>
-          <td>{{ item.plan }}</td>
+          <td>
+            <input
+                v-if="!isReadOnly"
+                v-model="item.jobName"
+                type="text"
+            />
+          </td>
+          <td>
+            <input
+                v-if="!isReadOnly"
+                v-model="item.goal"
+                type="text"
+            />
+          </td>
+          <td>
+            <input
+                v-if="!isReadOnly"
+                v-model="item.metric"
+                type="text"
+            />
+</td>
+          <td>
+            <input
+                v-if="!isReadOnly"
+                v-model="item.weight"
+                type="int"
+            />
+          </td>
+          <td>
+            <input
+                v-if="!isReadOnly"
+                v-model="item.plan"
+                type="text"
+            />
+          </td>
           <td>{{ item.objection }}</td>
           <td>
             <button @click="deleteItem(index)">삭제</button>
@@ -70,6 +105,41 @@
         </tr>
         </tbody>
       </table>
+      </div>
+        <div v-if="userRole === 'leader'">
+          <table>
+            <thead>
+            <tr>
+              <th>No</th>
+              <th>*업무명</th>
+              <th>*목표</th>
+              <th>측정지표</th>
+              <th>가중치</th>
+              <th>계획</th>
+              <th>반려의견</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="(item, index) in goalItemList" :key="item.id">
+              <td>{{ index + 1 }}</td>
+              <td>{{ item.jobName }}</td>
+              <td>{{ item.goal }}</td>
+              <td>{{ item.metric }}</td>
+              <td>{{ item.weight }}</td>
+              <td>{{ item.plan }}</td>
+              <td>
+                <input
+                    v-if="!isReadOnly"
+                    v-model="item.objection"
+                    type="text"
+                />
+<!--                {{ item.objection }}-->
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+
     </div>
     <div class="addButton">
       <button class="btn btn-dark" @click="addRow()">목표 추가</button>
@@ -97,6 +167,10 @@ const goalDetail = ref({
   status: ''
 });
 
+// member, leader, manager
+const userRole = ref(null);
+
+
 const fetchGoalDetail = async () => {
   try {
     const route = router.currentRoute.value;
@@ -116,6 +190,9 @@ const fetchGoalDetail = async () => {
       approvalTime: goal.approvalTime || '없음',
       status: getApprovalStatus(goal.approvalStatus)
     };
+
+    // 유저 체크 기능
+    userRole.value = "member";
   } catch (error) {
     console.error('에러 발생:', error);
   }
@@ -212,6 +289,8 @@ async function memberSave() {
         `http://localhost:8080/review-goal/in-progress`,
         sendData
     );
+
+    window.location.reload();
   } catch (error) {
     console.error('Error sending data:', error);
   }
@@ -240,14 +319,12 @@ async function submit() {
         sendData
     );
 
-    if (response.data.href) {
-      const href = response.data.href.replace('{goalId}', response.data.goal.id);
-      router.push(`/${href}`);
-    }
+    window.location.reload();
   } catch (error) {
     console.error('Error sending data:', error);
   }
 }
+
 const sendData = ref({
   id: null,
   goalItemList: []
@@ -277,18 +354,13 @@ async function leaderSave() {
     );
     console.log("확인: ", response);
 
-    // if (response.data.href) {
-    //   console.log("실행")
-    //   const href = response.data.href.replace('{goalId}', response.data.goal.id);
-    //   console.log(href)
-    //   router.push(`/${href}`);
-    // }
     window.location.reload();
     console.log("변경완료")
   } catch (error) {
     console.error('Error sending data:', error);
   }
 }
+
 // 팀장 승인
 async function approval() {
   sendData.value = {
@@ -353,13 +425,11 @@ async function denied() {
     console.log("확인: ", response);
 
     if (response.data.href) {
-      console.log("실행")
       const href = response.data.href;
-      console.log(href)
       router.push(`/${href}`);
     }
-    window.location.reload();
-    console.log("변경완료")
+    // window.location.reload();
+
   } catch (error) {
     console.error('Error sending data:', error);
     window.location.reload();
