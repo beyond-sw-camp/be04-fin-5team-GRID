@@ -57,12 +57,12 @@ public class ApprovalEmpDTO {
 
     private String positionName;
 
-    private int teamId;
-
-    private String teamName;
-
     private int deptId;
 
     private String deptName;
+
+    private int teamId;
+
+    private String teamName;
 }
 

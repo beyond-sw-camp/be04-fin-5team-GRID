@@ -74,7 +74,23 @@ public class ApprovalServiceImpl implements ApprovalService{
     @Override
     public ApprovalEmpDTO findDetailByApprovalId(int typeId, int approvalId) {
 
-        ApprovalEmpDTO approvalEmp = approvalMapper.findBTDetailByApprovalId(approvalId);
+        ApprovalEmpDTO approvalEmp = new ApprovalEmpDTO();
+
+        switch (typeId) {
+            case 1:
+                approvalEmp = approvalMapper.findBTDetailByApprovalId(approvalId);
+                break;
+
+            case 2:
+                approvalEmp = approvalMapper.findODetailByApprovalId(approvalId);
+                break;
+
+            case 3:
+                break;
+
+            case 4:
+                break;
+        }
 
         return approvalEmp;
     }

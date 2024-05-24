@@ -205,4 +205,37 @@
           JOIN  e_position f ON f.id = a.position_id
          WHERE  b.id = #{approvalId};
     </select>
+
+    <select id="findODetailByApprovalId" resultMap="approvalMap" parameterType="int">
+        SELECT
+                a.id as employeeId,
+                a.employee_name,
+                a.employee_number,
+                a.email,
+                a.call_number,
+                a.duties_id,
+                a.position_id,
+                a.team_id,
+                a.department_id,
+                b.id,
+                b.start_time,
+                b.end_time,
+                b.content,
+                b.approval_status,
+                b.write_time,
+                b.cancel_yn,
+                b.cancel_document_id,
+                b.requester_id,
+                c.department_name,
+                d.team_name,
+                e.duties_name,
+                f.position_name
+          FROM  employee a
+          JOIN  overtime_approval b ON a.id = b.requester_id
+          JOIN  department c ON c.id = a.department_id
+          JOIN  team d ON d.id = a.team_id
+          JOIN  duties e ON e.id = a.duties_id
+          JOIN  e_position f ON f.id = a.position_id
+         WHERE  b.id = #{approvalId};
+    </select>
 </mapper>
