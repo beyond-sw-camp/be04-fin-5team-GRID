@@ -13,4 +13,7 @@ import lombok.ToString;
 public class VacationTypeDTO {
     private int id;
     private String typeName;
+    private String vacationNum;
+    private String dateOfUse;
+    private String vacationExplain;
 }

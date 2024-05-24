@@ -13,10 +13,7 @@ import org.highfives.grid.vacation.command.repository.VacationHistoryRepository;
 import org.highfives.grid.vacation.command.repository.VacationInfoRepository;
 import org.highfives.grid.vacation.command.repository.VacationPolicyRepository;
 import org.highfives.grid.vacation.command.repository.VacationTypeRepository;
-import org.highfives.grid.vacation.command.vo.GiveVacation;
-import org.highfives.grid.vacation.command.vo.ModifyPolicy;
-import org.highfives.grid.vacation.command.vo.RegistPolicy;
-import org.highfives.grid.vacation.command.vo.RegistVacationType;
+import org.highfives.grid.vacation.command.vo.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -384,8 +381,26 @@ public class VacationServiceImpl implements VacationService {
     public void registVacationType(RegistVacationType typeInfo) {
         VacationType vacationType = VacationType.builder()
                 .typeName(typeInfo.getTypeName())
+                .vacationNum(typeInfo.getVacationNum())
+                .dateOfUse(typeInfo.getDateOfUse())
+                .vacationExplain(typeInfo.getVacationExplain())
                 .build();
         vacationTypeRepository.save(vacationType);
+    }
+
+    @Override
+    @Transactional
+    public void modifyVacationType(ModifyVacationType typeInfo, int id) {
+        VacationType vacationType = vacationTypeRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+        vacationType.setVacationNum(typeInfo.getVacationNum());
+        vacationType.setDateOfUse(typeInfo.getDateOfUse());
+        vacationType.setVacationExplain(typeInfo.getVacationExplain());
+    }
+
+    @Override
+    @Transactional
+    public void deleteVacationType(int id) {
+        vacationTypeRepository.deleteById(id);
     }
 
     @Override
