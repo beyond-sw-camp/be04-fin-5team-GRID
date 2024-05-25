@@ -35,15 +35,15 @@ const router = createRouter({
         },
         {
             path: '/bt',
-            component: () => import('@/views/Approval/BTApprovalList.vue')
+            component: () => import('@/views/Approval/BTApprovalListView.vue')
         },
         {
             path: '/overtime',
-            component: () => import('@/views/Approval/OApprovalList.vue')
+            component: () => import('@/views/Approval/OApprovalListView.vue')
         },
         {
             path: '/vacation',
-            component: () => import('@/views/Approval/VApprovalList.vue')
+            component: () => import('@/views/Approval/VApprovalListView.vue')
         }
     ]
 })

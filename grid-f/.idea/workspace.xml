@@ -5,21 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6a98098f-32ea-4512-8d09-c7f6211d433b" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/grid-f.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/grid-project/src/components/Approval/ApprovalList.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/grid-project/src/views/Approval/BTApprovalList.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/grid-project/src/views/Approval/OApprovalList.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/grid-project/src/views/Approval/VApprovalList.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/grid-project/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/grid-project/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/grid-project/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/grid-project/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/grid-project/src/router/router.js" beforeDir="false" afterPath="$PROJECT_DIR$/grid-project/src/router/router.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/grid-project/src/views/Approval/BTApprovalListView.vue" beforeDir="false" afterPath="$PROJECT_DIR$/grid-project/src/views/Approval/BTApprovalListView.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/grid-project/src/views/Approval/OApprovalListView.vue" beforeDir="false" afterPath="$PROJECT_DIR$/grid-project/src/views/Approval/OApprovalListView.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/grid-project/src/views/Approval/VApprovalListView.vue" beforeDir="false" afterPath="$PROJECT_DIR$/grid-project/src/views/Approval/VApprovalListView.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../grid/src/main/java/org/highfives/grid/approval/command/service/ApprovalServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/../grid/src/main/java/org/highfives/grid/approval/command/service/ApprovalServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../grid/src/main/java/org/highfives/grid/approval/query/controller/ApprovalController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../grid/src/main/java/org/highfives/grid/approval/query/controller/ApprovalController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../grid/src/main/java/org/highfives/grid/approval/query/dto/ApprovalEmpDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/../grid/src/main/java/org/highfives/grid/approval/query/dto/ApprovalEmpDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../grid/src/main/java/org/highfives/grid/approval/query/repository/ApprovalMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/../grid/src/main/java/org/highfives/grid/approval/query/repository/ApprovalMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../grid/src/main/java/org/highfives/grid/approval/query/service/ApprovalService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../grid/src/main/java/org/highfives/grid/approval/query/service/ApprovalService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../grid/src/main/java/org/highfives/grid/approval/query/service/ApprovalServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/../grid/src/main/java/org/highfives/grid/approval/query/service/ApprovalServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../grid/src/main/resources/org/highfives/grid/approval/query/repository/ApprovalMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../grid/src/main/resources/org/highfives/grid/approval/query/repository/ApprovalMapper.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../grid/src/main/resources/org/highfives/grid/approval_chain/query/repository/ApprovalChainMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../grid/src/main/resources/org/highfives/grid/approval_chain/query/repository/ApprovalChainMapper.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -105,7 +103,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1716532212446</updated>
-      <workItem from="1716532213510" duration="20340000" />
+      <workItem from="1716532213510" duration="26480000" />
     </task>
     <servers />
   </component>
