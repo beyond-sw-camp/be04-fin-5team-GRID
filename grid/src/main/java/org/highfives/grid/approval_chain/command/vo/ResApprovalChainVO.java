@@ -1,10 +1,7 @@
 package org.highfives.grid.approval_chain.command.vo;
 
 import lombok.*;
-import org.highfives.grid.approval_chain.common.dto.BTApprovalChainDTO;
-import org.highfives.grid.approval_chain.common.dto.OApprovalChainDTO;
-import org.highfives.grid.approval_chain.common.dto.RWApprovalChainDTO;
-import org.highfives.grid.approval_chain.common.dto.VApprovalChainDTO;
+import org.highfives.grid.approval_chain.common.dto.*;
 
 import java.util.List;
 
@@ -29,35 +26,7 @@ public class ResApprovalChainVO {
 
     private VApprovalChainDTO vChainResult;
 
-    @Builder
-    public ResApprovalChainVO(int statusCode, String message, String href, BTApprovalChainDTO btChainResult) {
-        this.statusCode = statusCode;
-        this.message = message;
-        this.href = href;
-        this.btChainResult = btChainResult;
-    }
+    private ChainDTO chainResult;
 
-    @Builder
-    public ResApprovalChainVO(int statusCode, String message, String href, OApprovalChainDTO oChainResult) {
-        this.statusCode = statusCode;
-        this.message = message;
-        this.href = href;
-        this.oChainResult = oChainResult;
-    }
-
-    @Builder
-    public ResApprovalChainVO(int statusCode, String message, String href, RWApprovalChainDTO rwChainResult) {
-        this.statusCode = statusCode;
-        this.message = message;
-        this.href = href;
-        this.rwChainResult = rwChainResult;
-    }
-
-    @Builder
-    public ResApprovalChainVO(int statusCode, String message, String href, VApprovalChainDTO vChainResult) {
-        this.statusCode = statusCode;
-        this.message = message;
-        this.href = href;
-        this.vChainResult = vChainResult;
-    }
+    private List<ChainDTO> chainResultList;
 }
