@@ -41,7 +41,7 @@ public class ApprovalController {
     }
 
     @GetMapping("/list/{typeId}/{employeeId}")
-    public ResponseEntity<ResApprovalVO> findAllBTApprovalByEmployeeId(@PathVariable int typeId, @PathVariable int employeeId) {
+    public ResponseEntity<ResApprovalVO> findAllApprovalByEmployeeId(@PathVariable int typeId, @PathVariable int employeeId) {
 
         List<ApprovalEmpDTO> result = approvalService.findAllApprovalByEmployeeId(typeId, employeeId);
 
@@ -50,6 +50,21 @@ public class ApprovalController {
                 .message("직원별 결재 조회 성공")
                 .href("")
                 .approvalEmpResultList(result)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping("/detail/{typeId}/{approvalId}")
+    public ResponseEntity<ResApprovalVO> findDetailByApprovalId(@PathVariable int typeId, @PathVariable int approvalId) {
+
+        ApprovalEmpDTO result = approvalService.findDetailByApprovalId(typeId, approvalId);
+
+        ResApprovalVO response = ResApprovalVO.builder()
+                .statusCode(200)
+                .message("결재 상세 조회 성공")
+                .href("")
+                .approvalEmpResult(result)
                 .build();
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
