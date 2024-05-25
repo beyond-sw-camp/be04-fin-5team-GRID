@@ -2,7 +2,6 @@
   const props = defineProps({
     approvalList: Object
   })
-
 </script>
 
 <template>
@@ -29,7 +28,7 @@
     </tbody>
   </table>
 
-  <table v-if="props.approvalList.type === 'o'">
+  <table v-else-if="props.approvalList.type === 'o'">
     <thead>
     <tr>
       <th>번호</th>
@@ -50,7 +49,7 @@
     </tbody>
   </table>
 
-  <table v-if="props.approvalList.type === 'v'">
+  <table v-else-if="props.approvalList.type === 'v'">
     <thead>
     <tr>
       <th>번호</th>
