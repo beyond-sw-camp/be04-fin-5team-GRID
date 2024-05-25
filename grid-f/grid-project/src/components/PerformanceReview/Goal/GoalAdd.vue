@@ -1,0 +1,450 @@
+<template>
+  <div class="goalDetailContainer">
+    <div class="goalTitle">
+      <img class="goalIcon" src="@/assets/icons/goal_icon.png">
+      <h1>업적 평가 목표 작성</h1>
+    </div>
+    <div class="titleTableContainer">
+      <table>
+        <tbody>
+        <tr>
+          <td><label>연도</label></td>
+          <td colspan="3">{{ goalDetail.year }}</td>
+        </tr>
+        <tr>
+          <td><label>평가명</label></td>
+          <td colspan="3">{{ goalDetail.reviewName }}</td>
+        </tr>
+        <tr>
+          <td><label>작성자</label></td>
+          <td>{{ goalDetail.writerName }}</td>
+          <td><label>작성시간</label></td>
+          <td>{{ goalDetail.writeTime }}</td>
+        </tr>
+        <tr>
+          <td><label>결재자</label></td>
+          <td>{{ goalDetail.approverName }}</td>
+          <td><label>결재시간</label></td>
+          <td>{{ goalDetail.approvalTime }}</td>
+        </tr>
+        <tr>
+          <td><label>문서 상태</label></td>
+          <td colspan="3">{{ goalDetail.status }}</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="GoalButtonContainer">
+      <div v-if="userRole === 'member'">
+        <button @click="memberSave()">팀원 저장</button>
+        <button @click="submit()">상신</button>
+      </div>
+    </div>
+    <div class="tableContainer">
+      <div v-if="userRole === 'member'">
+        <table>
+          <thead>
+          <tr>
+            <th>No</th>
+            <th>*업무명</th>
+            <th>*목표</th>
+            <th>측정지표</th>
+            <th>가중치</th>
+            <th>계획</th>
+            <th>반려의견</th>
+            <th>삭제</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr v-for="(item, index) in goalItemList" :key="item.id">
+            <td>{{ index + 1 }}</td>
+            <td>
+              <input
+                  v-if="!isReadOnly"
+                  v-model="item.jobName"
+                  type="text"
+              />
+            </td>
+            <td>
+              <input
+                  v-if="!isReadOnly"
+                  v-model="item.goal"
+                  type="text"
+              />
+            </td>
+            <td>
+              <input
+                  v-if="!isReadOnly"
+                  v-model="item.metric"
+                  type="text"
+              />
+            </td>
+            <td>
+              <input
+                  v-if="!isReadOnly"
+                  v-model="item.weight"
+                  type="int"
+              />
+            </td>
+            <td>
+              <input
+                  v-if="!isReadOnly"
+                  v-model="item.plan"
+                  type="text"
+              />
+            </td>
+            <td>{{ item.objection }}</td>
+            <td>
+              <button @click="deleteItem(index)">삭제</button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="addButton">
+      <div v-if="userRole === 'member'">
+      <button class="btn btn-dark" @click="addRow()">목표 추가</button>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import {ref, onMounted} from 'vue';
+import {useRouter} from 'vue-router';
+import axios from 'axios';
+
+const router = useRouter();
+
+const goalItemList = ref([]);
+
+const goalDetail = ref({
+  id: '',
+  year: '',
+  reviewName: '',
+  writer: '',
+  createdTime: '',
+  approver: '',
+  approvalTime: '',
+  status: ''
+});
+
+// member, leader, manager
+const userRole = ref(null);
+
+
+const fetchGoalAdd = async () => {
+  try {
+    // 올해 생성된 목표가 있으면 조회 아니라면 새로 생성
+
+    const currentYear = new Date().getFullYear();
+    const currentTime = new Date()
+
+    console.log(currentTime);
+
+    // 팀원인지 확인하는 기능 추가 필요
+    userRole.value = "member";
+
+    // 올해 생성된 목표 평가가 있는지 확인
+    const responseGoal = await axios.get(`http://localhost:8080/review-goal/${currentYear}/6`);
+
+    // 생성된 목표 없으면
+    if(!responseGoal.data.findGoal){
+      const sandData = {
+        "year": currentYear,
+        "reviewName": `${currentYear} 인사평가`,
+        "approvalStatus": "IP",
+        "writerId": 6,
+        "writeTime": "2025-03-01 08:00:00",
+        "approverId": 5
+      }
+
+      const responseAdd = await axios.post(
+          `http://localhost:8080/review-goal`,
+          sandData
+      );
+
+      const id = responseAdd.data.goal.id;
+      const response = await axios.get(`http://localhost:8080/review-goal/detail/${id}`);
+      console.log(response.data);
+      const goal = response.data.findDetailGoal;
+      goalItemList.value = goal.goalItemList;
+
+      goalDetail.value = {
+        id: goal.id,
+        year: goal.year,
+        reviewName: goal.reviewName,
+        writerName: goal.writer ? goal.writer.employeeName : '없음',
+        writeTime: goal.writeTime || '없음',
+        approverName: goal.approver ? goal.approver.employeeName : '없음',
+        approvalTime: goal.approvalTime || '없음',
+        status: getApprovalStatus(goal.approvalStatus)
+      };
+
+    } else {
+      // 생성된 목표가 있을 때
+      const id = responseGoal.data.findGoal.id;
+      const response = await axios.get(`http://localhost:8080/review-goal/detail/${id}`);
+      console.log(response.data);
+      const goal = response.data.findDetailGoal;
+      goalItemList.value = goal.goalItemList;
+
+      goalDetail.value = {
+        id: goal.id,
+        year: goal.year,
+        reviewName: goal.reviewName,
+        writerName: goal.writer ? goal.writer.employeeName : '없음',
+        writeTime: goal.writeTime || '없음',
+        approverName: goal.approver ? goal.approver.employeeName : '없음',
+        approvalTime: goal.approvalTime || '없음',
+        status: getApprovalStatus(goal.approvalStatus)
+      };
+
+    }
+  } catch (error) {
+    console.error('에러 발생:', error);
+  }
+};
+
+const getApprovalStatus = (status) => {
+  switch (status) {
+    case 'IP':
+      return '작성 중';
+    case 'S':
+      return '상신';
+    case 'R':
+      return '확인 중';
+    case 'A':
+      return '승인';
+    case 'D':
+      return '반려';
+    default:
+      return '기타';
+  }
+};
+
+onMounted(() => {
+  fetchGoalAdd();
+});
+
+// 목표 추가
+const addRow = () => {
+  const lastItem = goalItemList.value[goalItemList.value.length - 1];
+
+  // 빈 행이 이미 있는지 확인
+  // jobName, goal이 null이 아니라면 추가 가능하게 변경
+  const attributesToCheck = ['jobName', 'goal', 'metric', 'weight', 'plan', 'objection'];
+  let emptyCheck = false;
+
+  for (const attribute of attributesToCheck) {
+    if (lastItem && lastItem[attribute] !== '') {
+      emptyCheck = true;
+      break;
+    }
+  }
+
+  if (emptyCheck || !lastItem) {
+    const index = goalItemList.value.length;
+    goalItemList.value.push({
+      id: index + 1,
+      jobName: '',
+      goal: '',
+      metric: '',
+      weight: '',
+      plan: '',
+      objection: ''
+    });
+  }
+};
+
+// 목표 항목 삭제
+async function deleteItem(index) {
+  try {
+    const id = goalItemList.value[index].id;
+    console.log(id);
+
+    if (id != null) {
+      await axios.delete(`http://localhost:8080/goal-item/${id}`);
+    }
+    goalItemList.value.splice(index, 1);
+    // 삭제 후 인덱스 값 업데이트
+    for (let i = index; i < goalItemList.value.length; i++) {
+      goalItemList.value[i].no = i + 1;
+    }
+
+  } catch (error) {
+    console.error('Error sending data:', error);
+  }
+}
+
+// 팀원 저장(in-progress)
+async function memberSave() {
+  const sendData = {
+    id: goalDetail.value.id,
+    goalItemList: goalItemList.value.map(item => ({
+      id: item.id || null,
+      jobName: item.jobName,
+      goal: item.goal,
+      metric: item.metric,
+      weight: item.weight,
+      plan: item.plan,
+      objection: item.objection || null
+    }))
+  };
+
+  try {
+    await axios.put(
+        `http://localhost:8080/review-goal/in-progress`,
+        sendData
+    );
+
+    window.location.reload();
+  } catch (error) {
+    console.error('Error sending data:', error);
+  }
+}
+
+// 팀원 상신(submit)
+async function submit() {
+  const sendData = {
+    id: goalDetail.value.id,
+    goalItemList: goalItemList.value.map(item => ({
+      id: item.id || null,
+      jobName: item.jobName,
+      goal: item.goal,
+      metric: item.metric,
+      weight: item.weight,
+      plan: item.plan,
+      objection: item.objection || null
+    }))
+  };
+
+  console.log(sendData);
+
+  try {
+    const response = await axios.put(
+        `http://localhost:8080/review-goal/submit`,
+        sendData
+    );
+
+    window.location.reload();
+  } catch (error) {
+    console.error('Error sending data:', error);
+  }
+}
+
+const sendData = ref({
+  id: null,
+  goalItemList: []
+});
+
+</script>
+
+<style scoped>
+.goalDetailContainer {
+  display: grid;
+  grid-template-rows: 18% 21% 8% minmax(10%, auto) 8% 13%;
+  grid-template-columns: 10% 80% 10%;
+  height: 100%;
+}
+
+.goalTitle {
+  grid-column-start: 2;
+  grid-column-end: 3;
+  font-size: 12px;
+  font-weight: 0;
+  margin-top: 2%;
+  color: #000000;
+  display: grid;
+  grid-template-columns: 3% 97%;
+  align-items: center;
+}
+
+.goalTitle h1 {
+  margin-left: 0.5%;
+}
+
+.goalIcon {
+  width: 80%;
+}
+
+.titleTableContainer {
+  grid-row-start: 2;
+  grid-column-start: 2;
+  grid-column-end: 3;
+  margin-top: 20px;
+  font-size: 12px;
+}
+
+.titleTableContainer td {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 6px;
+  vertical-align: middle;
+}
+
+.titleTableContainer label {
+  font-weight: bold;
+}
+
+.GoalButtonContainer {
+  grid-row-start: 3;
+  grid-column-start: 2;
+  grid-column-end: 3;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+
+.tableContainer {
+  grid-row-start: 4;
+  grid-column-start: 2;
+  grid-column-end: 3;
+  /* margin-top: 20px; */
+  font-size: 12px;
+
+  overflow-x: auto;
+  /* 가로 스크롤을 필요로 하는 경우 */
+  overflow-y: auto;
+  /* 세로 스크롤을 필요로 하는 경우 */
+  max-height: 200px;
+  /* 원하는 높이로 설정 */
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 6px;
+  vertical-align: middle;
+}
+
+th {
+  background-color: #f2f2f2;
+}
+
+/* .table th:nth-child(1),
+.table td:nth-child(1) {
+    min-width: 15px;
+    width: 5%;
+} */
+
+
+.addButton {
+  grid-row-start: 5;
+  grid-column-start: 2;
+  grid-column-end: 3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+</style>

@@ -444,7 +444,7 @@ public class VacationServiceImpl implements VacationService {
 
     // 입사이후 총 몇일이 지났는지 계산하는 메서드
     private int countDays(int userId) {
-        UserDTO employees = userService.findUserByEmployeeNum(userId);
+        UserDTO employees = userService.findUserById(userId);
         LocalDateTime today = LocalDateTime.now();
 
         String day = employees.getJoinTime();
@@ -460,7 +460,7 @@ public class VacationServiceImpl implements VacationService {
 
     // 입사이후 총 몇달이 지났는지 계산하는 메서드
     private int countMonths(int userId) {
-        UserDTO employees = userService.findUserByEmployeeNum(userId);
+        UserDTO employees = userService.findUserById(userId);
         LocalDate today = LocalDate.now();
 
         String day = employees.getJoinTime();

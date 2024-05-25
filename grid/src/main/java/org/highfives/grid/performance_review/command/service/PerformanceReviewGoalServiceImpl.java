@@ -41,12 +41,12 @@ public class PerformanceReviewGoalServiceImpl implements PerformanceReviewGoalSe
                 performanceReviewGoalDTO.getApprovalTime()
         );
 
-        performanceReviewGoalRepository.save(goal);
+        PerformanceReviewGoal saveGoal = performanceReviewGoalRepository.save(goal);
 
-        PerformanceReviewGoal saveGoal = performanceReviewGoalRepository.findByYearAndWriterId(
-                performanceReviewGoalDTO.getYear(),
-                performanceReviewGoalDTO.getWriterId()
-        );
+//        PerformanceReviewGoal saveGoal = performanceReviewGoalRepository.findByYearAndWriterId(
+//                performanceReviewGoalDTO.getYear(),
+//                performanceReviewGoalDTO.getWriterId()
+//        );
 
         PerformanceReviewGoalDTO saveGoalDTO = modelMapper.map(saveGoal, PerformanceReviewGoalDTO.class);
 
