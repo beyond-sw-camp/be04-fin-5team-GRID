@@ -29,4 +29,17 @@
         WHERE id = #{id}
     </select>
 
+    <select id="findTeamList" resultMap="TeamResultMap">
+        SELECT
+        id
+        , team_name
+        , member_cnt
+        , team_status
+        , start_time
+        , end_time
+        , department_id
+        , leader_id
+        FROM TEAM
+    </select>
+
 </mapper>

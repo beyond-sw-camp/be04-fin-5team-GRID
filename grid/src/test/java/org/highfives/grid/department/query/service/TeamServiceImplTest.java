@@ -36,4 +36,23 @@ class TeamServiceImplTest {
         assertThat(teamDTO.getId()).isSameAs(id);
 
     }
+
+    @Test
+    @DisplayName("팀 전체 조회")
+    void findTeamList() {
+
+        // Given
+
+        // When
+        List<TeamDTO> teamDTOList = teamService.findTeamList();
+
+        // Then
+        for (TeamDTO teamDTO : teamDTOList) {
+            assertThat(teamDTO).isNotNull();
+            TeamDTO findTest = teamService.findTeamById(teamDTO.getId());
+            assertThat(teamDTO.getTeamName()).isEqualTo(findTest.getTeamName());
+        }
+
+
+    }
 }

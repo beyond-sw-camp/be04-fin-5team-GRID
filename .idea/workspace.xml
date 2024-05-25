@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="7837fe4e-431b-475c-a191-e2b790314043" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/grid-f/grid-project/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/grid-f/grid-project/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/grid-f/grid-project/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/grid-f/grid-project/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/grid-f/grid-project/src/App.vue" beforeDir="false" afterPath="$PROJECT_DIR$/grid-f/grid-project/src/App.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/grid/src/main/java/org/highfives/grid/department/query/controller/TeamController.java" beforeDir="false" afterPath="$PROJECT_DIR$/grid/src/main/java/org/highfives/grid/department/query/controller/TeamController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/grid/src/main/java/org/highfives/grid/department/query/repository/TeamMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/grid/src/main/java/org/highfives/grid/department/query/repository/TeamMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/grid/src/main/java/org/highfives/grid/department/query/service/TeamService.java" beforeDir="false" afterPath="$PROJECT_DIR$/grid/src/main/java/org/highfives/grid/department/query/service/TeamService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/grid/src/main/java/org/highfives/grid/department/query/service/TeamServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/grid/src/main/java/org/highfives/grid/department/query/service/TeamServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/grid/src/main/resources/org/highfives/grid/department/query/repository/TeamMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/grid/src/main/resources/org/highfives/grid/department/query/repository/TeamMapper.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -28,9 +34,13 @@
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "develop",
+    "git-widget-placeholder": "feature/team",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/Playdata/Desktop/GRID/grid",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
     "vue.rearranger.settings.migration": "true"
   }
