@@ -5,7 +5,7 @@
             <h1>인사 정보</h1>
         </div>
         <div class="search">
-            <button class="printBtn">
+            <button class="printBtn" @click="downloadCSV">
                 <img src="@/assets/buttons/download.png" alt="download button">
                 Download
             </button>
@@ -43,7 +43,8 @@
                 </thead>
                 <tbody>
                     <tr v-for="employee in employeeList" :key="employee.id" @click="toInfo(employee.employeeNumber)">
-                        <td><img src="https://talkimg.imbc.com/TVianUpload/tvian/TViews/image/2020/04/12/FydNALvKf23Z637223013461671479.jpg" alt="profile" class="profile-image"></td>
+                        <td><img src="https://talkimg.imbc.com/TVianUpload/tvian/TViews/image/2020/04/12/FydNALvKf23Z637223013461671479.jpg"
+                                alt="profile" class="profile-image"></td>
                         <!-- <td><img :src="employee.profilePath" alt="profile" class="profile-image"></td> -->
                         <td>{{ employee.name }}</td>
                         <td>{{ employee.employeeNumber }}</td>
@@ -64,6 +65,8 @@
 import { ref, onMounted, onUnmounted } from 'vue';
 import axios from 'axios';
 import router from '@/router/router';
+import { saveAs } from 'file-saver';
+import { Parser } from '@json2csv/plainjs';
 
 const isAddDropdownOpen = ref(false);
 const employeeList = ref([]);
@@ -77,17 +80,44 @@ const toggleAddDropdown = () => {
 
 async function findUser() {
 
-    let response = null; 
+    let response = null;
 
-    const url = searchCondition.value.trim() === '' 
-            ? 'http://localhost:8080/users/list'
-            : `http://localhost:8080/users/list/${encodeURIComponent(searchCondition.value)}`;
+    const url = searchCondition.value.trim() === ''
+        ? 'http://localhost:8080/users/list'
+        : `http://localhost:8080/users/list/${encodeURIComponent(searchCondition.value)}`;
 
     response = await axios.get(url);
 
     employeeList.value = response.data.result;
     console.log(employeeList.value);
 }
+
+function downloadCSV() {
+
+    const csvData = employeeList.value.map(
+        item => ({
+            name: item.name,
+            employeeNumber: item.employeeNumber,
+            department: item.department,
+            team: item.team,
+            position: item.position,
+            duties: item.duties,
+            absenceYn: item.absenceYn,
+            absenceContent: item.absenceContent
+        })
+    )
+    // JSON 데이터를 CSV로 변환
+    const fields = ['name', 'employeeNumber', 'department', 'team', 'position', 'duties', 'absenceYn', 'absenceContent'];
+    const json2csvParser = new Parser({ fields });
+    const csv = json2csvParser.parse(csvData);
+
+    // BOM을 포함한 Blob 객체를 사용하여 CSV 파일 생성
+    const bom = '\uFEFF';
+    const blob = new Blob([bom + csv], { type: 'text/csv;charset=utf-8;' });
+
+    // 파일 다운로드
+    saveAs(blob, 'data.csv');
+};
 
 function toModify() {
     router.push('/hr/modify/list')
@@ -332,29 +362,29 @@ button {
 }
 
 .sortBox {
-        grid-column-start: 7;
-        margin-left: 2%;
-        padding: 5px 5px;
-        border-radius: 4px;
-        font-size: 12px;
-        font-style: bold;
-        border: 0.5px solid #088A85;
+    grid-column-start: 7;
+    margin-left: 2%;
+    padding: 5px 5px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-style: bold;
+    border: 0.5px solid #088A85;
 }
 
 .searchBtn {
-        grid-column-start: 9;
-        margin-left: 2%;
-        width: 100%;
-        min-width: 50px;
-        background-color: #088A85;
-        color: white;
-        padding: 5px 5px;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 12px;
-        font-style: bold;
-    }
+    grid-column-start: 9;
+    margin-left: 2%;
+    width: 100%;
+    min-width: 50px;
+    background-color: #088A85;
+    color: white;
+    padding: 5px 5px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    font-style: bold;
+}
 
 
 .tableContainer {
@@ -375,7 +405,8 @@ td {
     text-align: center;
     vertical-align: middle;
     color: #a7a4a4;
-    padding: 1rem; /* 각 셀에 여백 추가 */
+    padding: 1rem;
+    /* 각 셀에 여백 추가 */
 }
 
 th {
@@ -393,9 +424,9 @@ tbody tr:hover {
 
 .profile-image {
     width: 25px;
-    height: 25px; 
-    border-radius: 50%; 
-    object-fit: cover; 
+    height: 25px;
+    border-radius: 50%;
+    object-fit: cover;
 
 }
 </style>
