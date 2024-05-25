@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="6a98098f-32ea-4512-8d09-c7f6211d433b" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/grid-f.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/grid-project/src/components/Approval/ApprovalList.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/grid-project/src/views/Approval/BTApprovalList.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/grid-project/src/views/Approval/OApprovalList.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/grid-project/src/views/Approval/VApprovalList.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/grid-project/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/grid-project/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/grid-project/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/grid-project/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/grid-project/src/router/router.js" beforeDir="false" afterPath="$PROJECT_DIR$/grid-project/src/router/router.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../grid/src/main/java/org/highfives/grid/approval/query/dto/ApprovalEmpDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/../grid/src/main/java/org/highfives/grid/approval/query/dto/ApprovalEmpDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../grid/src/main/resources/org/highfives/grid/approval/query/repository/ApprovalMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../grid/src/main/resources/org/highfives/grid/approval/query/repository/ApprovalMapper.xml" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Vue Composition API Component" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="KubernetesApiProvider"><![CDATA[{
+  "contexts": [
+    {
+      "name": "docker-desktop"
+    }
+  ],
+  "isMigrated": true
+}]]></component>
+  <component name="KubernetesSettings">
+    <option name="contextName" value="docker-desktop" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 7
+}]]></component>
+  <component name="ProjectId" id="2gu0ZhGrtSWh1LQn067JKFTu5t4" />
+  <component name="ProjectViewState">
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Node.js.router.js.executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "feature/approval-front",
+    "jdk.selected.JAVA_MODULE": "17",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/Playdata/Documents/be04-fin-5team-GRID/grid-f",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "ts.external.directory.path": "C:\\Program Files\\JetBrains\\IntelliJ IDEA 2023.3.2\\plugins\\javascript-impl\\jsLanguageServicesImpl\\external",
+    "vue.rearranger.settings.migration": "true"
+  },
+  "keyToStringList": {
+    "vue.recent.templates": [
+      "Vue Composition API Component"
+    ]
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Playdata\Documents\be04-fin-5team-GRID\grid-f\grid-project\src\components\Approval" />
+    </key>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="jdk-17.0.9-corretto-17.0.9-f644763e9732-ebaef533" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="6a98098f-32ea-4512-8d09-c7f6211d433b" name="Changes" comment="" />
+      <created>1716532212446</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1716532212446</updated>
+      <workItem from="1716532213510" duration="20340000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+</project>
