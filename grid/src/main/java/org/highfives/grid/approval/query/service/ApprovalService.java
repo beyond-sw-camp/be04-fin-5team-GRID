@@ -9,7 +9,7 @@ import java.util.List;
 public interface ApprovalService {
 
     public List<BTApprovalDTO> findAllBTApproval();
-    public List<ApprovalEmpDTO> findAllApprovalByEmployeeId(int typeId, int employeeId);
+    public List<ApprovalEmpDTO> findAllApprovalByEmployeeId(int typeId, int employeeId, int isApproval);
     ApprovalEmpDTO findDetailByApprovalId(int typeId, int approvalId);
     int countOvertimeInWeek(OvertimeInWeekDTO overtimeInWeek);
     public void BTexportToPDF(BTApprovalDTO btApproval, String filePath);

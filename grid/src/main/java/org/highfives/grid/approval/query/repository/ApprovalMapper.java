@@ -7,13 +7,14 @@ import org.highfives.grid.approval.common.dto.OvertimeInWeekDTO;
 import org.highfives.grid.approval.query.dto.ApprovalEmpDTO;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface ApprovalMapper {
 
     List<OvertimeApprovalDTO> findOInWeekByEmployeeId(OvertimeInWeekDTO overtimeInWeek);
     List<BTApprovalDTO> findAllBTApproval();
-    List<ApprovalEmpDTO> findAllBTApprovalByEmployeeId(int employeeId);
+    List<ApprovalEmpDTO> findAllBTApprovalByEmployeeId(Map<String, Integer> params);
     List<ApprovalEmpDTO> findAllOApprovalByEmployeeId(int employeeId);
     List<ApprovalEmpDTO> findAllRWApprovalByEmployeeId(int employeeId);
     List<ApprovalEmpDTO> findAllVApprovalByEmployeeId(int employeeId);

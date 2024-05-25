@@ -27,7 +27,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service(value = "QueryApprovalService")
 public class ApprovalServiceImpl implements ApprovalService{
@@ -51,13 +53,19 @@ public class ApprovalServiceImpl implements ApprovalService{
     }
 
     @Override
-    public List<ApprovalEmpDTO> findAllApprovalByEmployeeId(int typeId, int employeeId) {
+    public List<ApprovalEmpDTO> findAllApprovalByEmployeeId(int typeId, int employeeId, int isApproval) {
 
         List<ApprovalEmpDTO> approvalEmpList = new ArrayList<>();
+        Map<String, Integer> params = new HashMap<>();
+
+        params.put("employeeId", employeeId);
+        params.put("isApproval", isApproval);
+
+        System.out.println(params);
 
         switch (typeId) {
             case 1:
-                approvalEmpList = approvalMapper.findAllBTApprovalByEmployeeId(employeeId);
+                approvalEmpList = approvalMapper.findAllBTApprovalByEmployeeId(params);
                 break;
 
             case 2:
@@ -109,7 +117,6 @@ public class ApprovalServiceImpl implements ApprovalService{
 
         List<OvertimeApprovalDTO> overtimeApprovalList = approvalMapper.findOInWeekByEmployeeId(overtimeInWeek);
 
-        System.out.println(overtimeApprovalList);
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
         int sum = 0;
@@ -118,8 +125,7 @@ public class ApprovalServiceImpl implements ApprovalService{
             LocalDateTime startTime = LocalDateTime.parse(overtimeApproval.getStartTime(), dateFormat);
             LocalDateTime endTime = LocalDateTime.parse(overtimeApproval.getEndTime(), dateFormat);
 
-            sum += ChronoUnit.HOURS.between(startTime, endTime);
-            System.out.println(startTime + " " + endTime);
+            sum += ChronoUnit.HOURS.between(startTime, endTime.plusMinutes(1));
         }
 
         return sum;
