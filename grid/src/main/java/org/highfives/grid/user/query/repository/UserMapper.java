@@ -20,7 +20,11 @@ public interface UserMapper {
 
     List<UserDTO> getUserList();
 
+    List<UserDTO> getUserListByName(String name);
+
     UserDTO getUserInfo(Map<String, Object> info);
 
     Map<String, Object> getUserInfoByEmail(String email);
+
+
 }

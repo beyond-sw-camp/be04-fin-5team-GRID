@@ -31,7 +31,7 @@ const router = createRouter({
             component: () => import('@/components/Department/Department.vue')
         },
         {
-            path: '/hr/main',
+            path: '/hr',
             component: () => import('../views/HumanResources/Main.vue')
         },
         {
@@ -39,8 +39,16 @@ const router = createRouter({
             component: () => import('../views/HumanResources/Profile.vue')
         },
         {
-            path: '/test',
-            component: () => import('../views/HumanResources/Test.vue')
+            path: '/hr/modify/list',
+            component: () => import('../views/HumanResources/Modify.vue')
+        },
+        {
+            path: '/hr/add/list',
+            component: () => import('../views/HumanResources/AddMulti.vue')
+        },
+        {
+            path: '/hr/add',
+            component: () => import('../views/HumanResources/Add.vue')
         }
     ]
 })

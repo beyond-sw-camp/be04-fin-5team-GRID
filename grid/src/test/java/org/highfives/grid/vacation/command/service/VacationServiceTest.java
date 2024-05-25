@@ -2,9 +2,9 @@ package org.highfives.grid.vacation.command.service;
 
 import jakarta.transaction.Transactional;
 import org.assertj.core.api.Assertions;
-import org.highfives.grid.user.entity.Employee;
-import org.highfives.grid.user.repository.UserRepository;
-import org.highfives.grid.user.service.UserService;
+import org.highfives.grid.user.command.aggregate.*;
+import org.highfives.grid.user.command.repository.UserRepository;
+import org.highfives.grid.user.query.service.UserService;
 import org.highfives.grid.vacation.command.entity.VacationPolicy;
 import org.highfives.grid.vacation.command.entity.VacationType;
 import org.highfives.grid.vacation.command.repository.VacationInfoRepository;
@@ -100,29 +100,29 @@ class VacationServiceTest {
                 .pwd("1234")
                 .employeeName("길동이")
                 .employeeNumber("11483")
-                .gender("M")
+                .gender(Gender.M)
                 .phoneNumber("010-6556-8888")
                 .callNumber("010-1234-1111")
                 .zipCode("12345")
                 .address("test")
                 .assignedTask("test")
                 .joinTime("2023-12-31")
-                .joinType("NEW")
+                .joinType(JoinType.NEW)
                 .resignTime("test")
-                .resignYn("Y")
-                .workType("R")
+                .resignYn(YN.N)
+                .workType(WorkType.R)
                 .contractStartTime("test")
                 .contractEndTime("test")
                 .salary(5200)
-                .absenceYn("Y")
+                .absenceYn(YN.Y)
                 .dutiesId(1)
                 .positionId(1)
                 .teamId(1)
                 .departmentId(1)
                 .build();
         userRepository.save(employee);
-        int size = userService.getAllUserinfo().size();
-        int id = userService.getAllUserinfo().get(size - 1).getId();
+        int size = userService.findAllUsers().size();
+        int id = userService.findAllUsers().get(size - 1).getId();
 
         //when
         vacationService.giveAnnualVacationBeforeYear();
@@ -143,29 +143,29 @@ class VacationServiceTest {
                 .pwd("1234")
                 .employeeName("길동이")
                 .employeeNumber("11483")
-                .gender("M")
+                .gender(Gender.M)
                 .phoneNumber("010-6556-8888")
                 .callNumber("010-1234-1111")
                 .zipCode("12345")
                 .address("test")
                 .assignedTask("test")
-                .joinTime("2020-12-31")
-                .joinType("NEW")
+                .joinTime("2023-12-31")
+                .joinType(JoinType.NEW)
                 .resignTime("test")
-                .resignYn("Y")
-                .workType("R")
+                .resignYn(YN.N)
+                .workType(WorkType.R)
                 .contractStartTime("test")
                 .contractEndTime("test")
                 .salary(5200)
-                .absenceYn("Y")
+                .absenceYn(YN.Y)
                 .dutiesId(1)
                 .positionId(1)
                 .teamId(1)
                 .departmentId(1)
                 .build();
         userRepository.save(employee);
-        int size = userService.getAllUserinfo().size();
-        int id = userService.getAllUserinfo().get(size - 1).getId();
+        int size = userService.findAllUsers().size();
+        int id = userService.findAllUsers().get(size - 1).getId();
 
         //when
         vacationService.giveAnnualVacationAfterYear();
@@ -180,33 +180,33 @@ class VacationServiceTest {
     void giveRegularVacation() {
         //given
         Employee employee = Employee.builder()
-                .email("test")
+                .email("qwer")
                 .pwd("1234")
                 .employeeName("길동이")
-                .employeeNumber("123")
-                .gender("M")
-                .phoneNumber("010-1234-1554")
+                .employeeNumber("11483")
+                .gender(Gender.M)
+                .phoneNumber("010-6556-8888")
                 .callNumber("010-1234-1111")
                 .zipCode("12345")
                 .address("test")
                 .assignedTask("test")
-                .joinTime("2020-12-31")
-                .joinType("NEW")
+                .joinTime("2023-12-31")
+                .joinType(JoinType.NEW)
                 .resignTime("test")
-                .resignYn("Y")
-                .workType("R")
+                .resignYn(YN.N)
+                .workType(WorkType.R)
                 .contractStartTime("test")
                 .contractEndTime("test")
                 .salary(5200)
-                .absenceYn("Y")
+                .absenceYn(YN.Y)
                 .dutiesId(1)
                 .positionId(1)
                 .teamId(1)
                 .departmentId(1)
                 .build();
         userRepository.save(employee);
-        int size = userService.getAllUserinfo().size();
-        int id = userService.getAllUserinfo().get(size - 1).getId();
+        int size = userService.findAllUsers().size();
+        int id = userService.findAllUsers().get(size - 1).getId();
 
         //when
         vacationService.giveRegularVacation();
@@ -221,33 +221,33 @@ class VacationServiceTest {
     void giveHealthVacation() {
         //given
         Employee employee = Employee.builder()
-                .email("test11")
+                .email("qwer")
                 .pwd("1234")
-                .employeeName("길순이")
-                .employeeNumber("111")
-                .gender("F")
-                .phoneNumber("010-4434-1554")
-                .callNumber("010-1134-1111")
-                .zipCode("5445")
-                .address("asdf")
-                .assignedTask("asdf")
-                .joinTime("2020-12-31")
-                .joinType("NEW")
+                .employeeName("길동이")
+                .employeeNumber("11483")
+                .gender(Gender.M)
+                .phoneNumber("010-6556-8888")
+                .callNumber("010-1234-1111")
+                .zipCode("12345")
+                .address("test")
+                .assignedTask("test")
+                .joinTime("2023-12-31")
+                .joinType(JoinType.NEW)
                 .resignTime("test")
-                .resignYn("Y")
-                .workType("R")
+                .resignYn(YN.N)
+                .workType(WorkType.R)
                 .contractStartTime("test")
                 .contractEndTime("test")
                 .salary(5200)
-                .absenceYn("Y")
+                .absenceYn(YN.Y)
                 .dutiesId(1)
                 .positionId(1)
                 .teamId(1)
                 .departmentId(1)
                 .build();
         userRepository.save(employee);
-        int size = userService.getAllUserinfo().size();
-        int id = userService.getAllUserinfo().get(size - 1).getId();
+        int size = userService.findAllUsers().size();
+        int id = userService.findAllUsers().get(size - 1).getId();
 
         //when
         vacationService.giveHealthVacation();

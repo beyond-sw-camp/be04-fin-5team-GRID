@@ -73,6 +73,20 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    public List<UserDTO> findUsersByName(String name) {
+
+        List<UserDTO> userList = userMapper.getUserListByName(name);
+
+        for (int i = 0; i < userList.size(); i++) {
+            UserDTO userDTO = userList.get(i);
+            userDTO.setProfilePath(imgMapper.getProfileImg(userDTO.getId()));
+            userList.set(i, userDTO);
+        }
+
+        return userList;
+    }
+
+    @Override
     public LeaderInfoDTO findLeaderInfo(int id) {
 
         LeaderInfoDTO result = new LeaderInfoDTO();

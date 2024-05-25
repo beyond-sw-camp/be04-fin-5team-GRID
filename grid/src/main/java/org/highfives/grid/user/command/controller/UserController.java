@@ -30,8 +30,6 @@ public class UserController {
     @PostMapping
     public ResponseEntity<ResUserVO> addNewUser(@RequestBody UserDTO givenInfo) {
 
-        System.out.println("givenInfo = " + givenInfo);
-
         if(duplicateInfoCheck(givenInfo) != null)
             return duplicateInfoCheck(givenInfo);
 

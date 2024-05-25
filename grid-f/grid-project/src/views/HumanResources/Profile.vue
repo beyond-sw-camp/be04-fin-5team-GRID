@@ -1,11 +1,4 @@
 <template>
-    <div class="container">
-        <div class="header">
-            <Header />
-        </div>
-        <div class="sidebar">
-            <Sidebar />
-        </div>
         <div class="contents">
             <div class="insideContents">
                 <div class="title">
@@ -45,17 +38,11 @@
 
 
         </div>
-        <div class="footer">
-            <Footer />
-        </div>
-    </div>
 
 </template>
 
 <script setup>
-import Header from '@/components/Header.vue';
-import Sidebar from '@/components/Sidebar.vue';
-import Footer from '@/components/Footer.vue';
+
 
 </script>
 
@@ -84,34 +71,6 @@ body {
         "header header"
         "side contents"
         "footer footer";
-}
-
-.header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 1000;
-    background-color: aqua;
-    grid-area: header;
-}
-
-.sidebar {
-    grid-area: side;
-    position: fixed;
-    top: 60px;
-    left: 0;
-    width: 250px;
-    height: calc(100vh - 60px);
-    z-index: 800;
-}
-
-.footer {
-    grid-area: footer;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    z-index: 600;
 }
 
 .contents {

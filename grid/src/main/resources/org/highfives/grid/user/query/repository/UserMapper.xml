@@ -108,7 +108,7 @@
         </association>
     </resultMap>
 
-    <select id="getUserList" resultMap="userInfo">
+    <select id="getUserList" resultMap="userInfo" parameterType="string">
         SELECT
         E.id,
         E.employee_name,
@@ -132,6 +132,34 @@
         JOIN Duties D ON E.duties_id = D.id
         WHERE E.resign_yn = 'N'
         AND E.id > 1
+        ORDER BY E.employee_name ASC;
+    </select>
+
+    <select id="getUserListByName" resultMap="userInfo" parameterType="string">
+        SELECT
+        E.id,
+        E.employee_name,
+        E.employee_number,
+        DEP.id dep_id,
+        DEP.department_name,
+        T.id t_id,
+        T.team_name,
+        P.id p_id,
+        P.position_name,
+        D.id d_id,
+        D.duties_name,
+        E.phone_number,
+        E.absence_yn,
+        E.absence_content,
+        E.join_time
+        FROM Employee E
+        JOIN Team T ON E.team_id = T.id
+        JOIN Department DEP ON E.department_id = DEP.id
+        JOIN e_Position P ON E.position_id = P.id
+        JOIN Duties D ON E.duties_id = D.id
+        WHERE E.resign_yn = 'N'
+        AND E.id > 1
+        AND E.employee_name LIKE CONCAT('%', #{name}, '%')
     </select>
 
     <select id="getUserInfo" parameterType="_int" resultMap="userInfo">
