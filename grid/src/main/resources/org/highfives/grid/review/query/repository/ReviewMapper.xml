@@ -67,4 +67,17 @@
         WHERE A.REVIEWER_ID = #{reviewerId}
     </select>
 
+    <select id="findHistoryList" resultMap="ReviewHistoryResultMap" parameterType="int">
+        SELECT
+        A.ID AS HISTORY_ID,
+        A.CONTENT,
+        A.WRITE_TIME ,
+        A.YEAR,
+        A.QUARTER,
+        A.REVIEWER_ID,
+        A.REVIEWEE_ID
+        FROM
+        MEMBER_REVIEW_HISTORY A
+    </select>
+
 </mapper>

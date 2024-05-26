@@ -27,7 +27,7 @@ public class ReviewController {
     }
 
     /* 설명. 동료 평가 결과 조회 */
-    @GetMapping("history-score/{historyId}/{revieweeId}")
+    @GetMapping("/history-score/{historyId}/{revieweeId}")
     public ResponseEntity<ResponseReviewHistoryAndScoreVO> findHistoryAndScoreById(@PathVariable int historyId,
                                                                                    @PathVariable int revieweeId) {
 
@@ -44,7 +44,7 @@ public class ReviewController {
     }
 
     /* 설명. 배정된 동료 평가 조회 */
-    @GetMapping("assigned-review/{reviewerId}")
+    @GetMapping("/assigned-review/{reviewerId}")
     public ResponseEntity<ResponseReviewHistoryVO> findAssignedReviewByReviewerId(@PathVariable int reviewerId) {
 
         List<ReviewHistoryDTO> assignedReviewList = reviewService.findAssignedReviewByReviewerId(reviewerId);
@@ -58,6 +58,22 @@ public class ReviewController {
                 .build();
 
         return ResponseEntity.status(HttpStatus.OK).body(responseReviewHistoryVO);
+    }
+
+    @GetMapping("/history-list")
+    public ResponseEntity<ResponseReviewHistoryVO> findHistoryList() {
+
+        List<ReviewHistoryDTO> ReviewList = reviewService.findHistoryList();
+
+        ResponseReviewHistoryVO responseReviewHistoryVO = ResponseReviewHistoryVO.builder()
+                .href("/review/assigned-review/{reviewerId}")
+                .statusCode(200)
+                .message("SUCCESS")
+                .result(ReviewList)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(responseReviewHistoryVO);
+
     }
 
 

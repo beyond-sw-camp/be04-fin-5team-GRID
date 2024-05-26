@@ -13,4 +13,5 @@ public interface ReviewService {
     List<ReviewHistoryDTO> findAssignedReviewByReviewerId(int reviewerId);
 
 
+    List<ReviewHistoryDTO> findHistoryList();
 }

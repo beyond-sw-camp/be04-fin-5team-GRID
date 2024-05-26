@@ -10,27 +10,20 @@ const router = createRouter({
             component: () => import('../views/Login/Login.vue')
         },
         {
-            path: '/find/id',
-            component: () => import('../views/Login/FindId.vue')
-        },
-        {
-            path: '/find/pwd',
-            component: () => import('../views/Login/FindPwd.vue')
-        },
-        {
-            path: '/find/id/result',
-            component: () => import('../views/Login/FindIdResult.vue')
-        },
-        {
-            path: '/find/pwd/:email/result',
-            component: () => import('../views/Login/FindPwdResult.vue')
-        },
-            path: '/2',
-            component: () => import('../views/Login2.vue')
-        },
-        {
             path: '/department',
             component: () => import('@/components/Department/Department.vue')
+        },
+        {
+            path: '/team',
+            component: () => import('@/components/Department/Team.vue')
+        },
+        {
+            path: '/review-list',
+            component: () => import('@/components/TeamReview/ReviewList.vue')
+        },
+        {
+            path: '/review-history',
+            component: () => import('@/components/TeamReview/ReviewHistory.vue')
         }
     ]
 })
