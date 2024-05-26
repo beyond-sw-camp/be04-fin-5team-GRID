@@ -6,4 +6,7 @@ public interface TeamService {
     TeamDTO addTeam(TeamDTO teamDTO);
 
     TeamDTO modifyTeam(TeamDTO teamDTO);
+
+    void deleteTeam(int id);
+
 }

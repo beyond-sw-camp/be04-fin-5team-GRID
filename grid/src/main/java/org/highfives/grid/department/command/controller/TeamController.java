@@ -51,6 +51,13 @@ public class TeamController {
         return ResponseEntity.status(HttpStatus.OK).body(responseTeamVO);
     }
 
+    @DeleteMapping("/{id}")
+    public void deleteTeam(@PathVariable int id) {
+
+        teamService.deleteTeam(id);
+
+    }
+
 
 
 

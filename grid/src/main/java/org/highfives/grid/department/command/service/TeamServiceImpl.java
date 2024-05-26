@@ -85,5 +85,10 @@ public class TeamServiceImpl implements TeamService{
         return mapper.map(team, TeamDTO.class);
     }
 
+    @Override
+    public void deleteTeam(int id) {
 
+        teamRepository.deleteById(id);
+
+    }
 }
