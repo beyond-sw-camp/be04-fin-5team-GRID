@@ -1,10 +1,21 @@
 <script setup>
+  import {useRouter} from "vue-router";
+
   const props = defineProps({
-    approvalList: Object
+    approvalList: Array
   })
+
+  const router = useRouter();
+
+  const approvalDetail = (typeId, approvalId) => {
+    router.push(`/approval-detail/${typeId}/${approvalId}`);
+  }
 </script>
 
 <template>
+  <div v-if="props.approvalList.length === 0">
+    Loading
+  </div>
   <table v-if="props.approvalList.type === 'bt'">
     <thead>
     <tr>
@@ -84,7 +95,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr v-for="(approval, index) in props.approvalList" :key="approval.id">
+      <tr v-for="(approval, index) in props.approvalList" :key="approval.id" @click="approvalDetail(props.approvalList.type, approval.id)">
         <td>{{ index + 1 }}</td>
         <td>{{ approval.content }}</td>
         <td>{{ approval.employeeNumber }}</td>
