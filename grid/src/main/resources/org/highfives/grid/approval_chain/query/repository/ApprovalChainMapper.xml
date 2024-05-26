@@ -95,5 +95,4 @@
             ON  a.id = b.chain_id
          WHERE  b.approval_id = #{approvalId};
     </select>
-
 </mapper>
