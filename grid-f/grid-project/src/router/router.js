@@ -41,6 +41,10 @@ const router = createRouter({
             path: '/review-goal/detail/:id',
             component: () => import('../views/PerformanceReview/GoalDetailView.vue')
         },
+        {
+            path: '/ad-time',
+            component: () => import('../views/AdTime/AdTimeListView.vue')
+        },
 
     ]
 })
