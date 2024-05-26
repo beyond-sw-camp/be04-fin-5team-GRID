@@ -11,7 +11,14 @@
         <button class="icon-button" type="button" data-bs-toggle="offcanvas" data-bs-target="#demo">
           <img src="@/assets/icon2.png" alt="Button 2" class="icon-image" />
         </button>
-        <img class="profile" src="@/assets/profile.png" alt="Profile Picture" />
+        <div class="dropdown">
+          <img src="https://talkimg.imbc.com/TVianUpload/tvian/TViews/image/2020/04/12/FydNALvKf23Z637223013461671479.jpg"
+            alt="profile" class="profile dropdown-toggle" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <li><a class="dropdown-item" href="#" @click="goToProfile">개인 정보</a></li>
+            <li><a class="dropdown-item" href="#" @click="logout">로그 아웃</a></li>
+          </ul>
+        </div>
       </div>
     </header>
 
@@ -36,8 +43,11 @@ import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import draggable from 'vuedraggable';
+import { useRouter } from 'vue-router';
 
 const departments = ref([]);
+const info = ref();
+const router = useRouter();
 
 const fetchDepartments = async () => {
   try {
@@ -66,15 +76,25 @@ const handleDragEnd = async () => {
   }
 };
 
+const goToProfile = (employeeNumber) => {
+  router.push(`/hr/profile/${employeeNumber}`); // 개인 정보 페이지로 이동
+};
+
+const logout = () => {
+  localStorage.removeItem('access');
+  document.cookie = 'refresh=; Max-Age=0; path=/;';
+  router.push('/');
+};
+
 onMounted(fetchDepartments);
 </script>
 
 <style scoped>
 @font-face {
-    font-family: 'IBMPlexSansKR-Regular';
-    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_20-07@1.0/IBMPlexSansKR-Regular.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
+  font-family: 'IBMPlexSansKR-Regular';
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_20-07@1.0/IBMPlexSansKR-Regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
 }
 
 .header {
@@ -115,6 +135,7 @@ onMounted(fetchDepartments);
   border-radius: 50%;
   cursor: pointer;
   margin-right: 50px;
+  object-fit: cover;
 }
 
 .icon-button {
@@ -133,6 +154,7 @@ onMounted(fetchDepartments);
 }
 
 .list-group-item {
-  cursor: move; /* 드래그 가능한 커서를 추가 */
+  cursor: move;
+  /* 드래그 가능한 커서를 추가 */
 }
 </style>
