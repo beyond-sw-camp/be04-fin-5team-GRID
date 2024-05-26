@@ -115,6 +115,30 @@ public class VacationServiceImpl implements VacationService {
     }
 
     @Override
+    public ResVacationHistoryVO searchVacationHistoryByName(String employeeName) {
+        List<VacationHistory> histories = vacationMapper.searchVacationHistoryByName(employeeName);
+
+        ResVacationHistoryVO resVacationHistoryVO = new ResVacationHistoryVO();
+        resVacationHistoryVO.setStatusCode(200);
+        resVacationHistoryVO.setMessage("조회 성공");
+        resVacationHistoryVO.setResult(histories.stream().map(history -> modelMapper.map(history, VacationHistoryDTO.class)).collect(Collectors.toList()));
+
+        return resVacationHistoryVO;
+    }
+
+    @Override
+    public ResVacationHistoryVO searchVacationHistoryById(String employeeNumber) {
+        List<VacationHistory> histories = vacationMapper.searchVacationHistoryById(employeeNumber);
+
+        ResVacationHistoryVO resVacationHistoryVO = new ResVacationHistoryVO();
+        resVacationHistoryVO.setStatusCode(200);
+        resVacationHistoryVO.setMessage("조회 성공");
+        resVacationHistoryVO.setResult(histories.stream().map(history -> modelMapper.map(history, VacationHistoryDTO.class)).collect(Collectors.toList()));
+
+        return resVacationHistoryVO;
+    }
+
+    @Override
     public ResVacationPolicyWithTypeNameVO getAllVacationPolicy() {
         List<VacationPolicyWithTypeName> policies = vacationMapper.selectRealAllPolicy();
 

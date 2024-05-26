@@ -38,6 +38,7 @@
         <result property="changeTypeId" column="CHANGE_TYPE_ID"/>
         <result property="employeeId" column="EMPLOYEE_ID"/>
         <result property="employeeName" column="EMPLOYEE_NAME"/>
+        <result property="employeeNumber" column="EMPLOYEE_NUMBER"/>
         <result property="typeName" column="TYPE_NAME"/>
         <result property="changeTypeName" column="CHANGE_TYPE_NAME"/>
     </resultMap>
@@ -132,6 +133,7 @@
         CHANGE_TYPE_ID,
         EMPLOYEE_ID,
         e.EMPLOYEE_NAME AS EMPLOYEE_NAME,
+        e.EMOLOYEE_NUMBER AS EMPLOYEE_NUMBER,
         vt.TYPE_NAME AS TYPE_NAME,
         vct.TYPE_NAME AS CHANGE_TYPE_NAME
         FROM VACATION_HISTORY
@@ -139,6 +141,44 @@
         JOIN VACATION_TYPE vt ON vt.id = vh.type_id
         JOIN VACATION_CHANGE_TYPE vct on vh.change_type_id = vct.id
         WHERE TYPE_ID = #{typeId} AND EMPLOYEE_ID = #{employeeId} AND CHANGE_TYPE_ID = #{changeTypeId}
+    </select>
+    <select id="searchVacationHistoryByName" parameterType="String" resultMap="vacationHistoryDTOResultMap">
+        SELECT
+        vh.ID,
+        vh.CHANGE_TIME,
+        vh.CHANGE_REASON,
+        vh.TYPE_ID,
+        vh.CHANGE_TYPE_ID,
+        vh.EMPLOYEE_ID,
+        e.EMPLOYEE_NAME AS EMPLOYEE_NAME,
+        e.EMPLOYEE_NUMBER AS EMPLOYEE_NUMBER,
+        vt.TYPE_NAME AS TYPE_NAME,
+        vct.TYPE_NAME AS CHANGE_TYPE_NAME
+        FROM VACATION_HISTORY vh
+        JOIN EMPLOYEE e ON vh.employee_id = e.id
+        JOIN VACATION_TYPE vt ON vt.id = vh.type_id
+        JOIN VACATION_CHANGE_TYPE vct on vh.change_type_id = vct.id
+        WHERE e.EMPLOYEE_NAME = #{employeeName}
+        ORDER BY vh.ID ASC
+    </select>
+    <select id="searchVacationHistoryById" parameterType="String" resultMap="vacationHistoryDTOResultMap">
+        SELECT
+        vh.ID,
+        vh.CHANGE_TIME,
+        vh.CHANGE_REASON,
+        vh.TYPE_ID,
+        vh.CHANGE_TYPE_ID,
+        vh.EMPLOYEE_ID,
+        e.EMPLOYEE_NAME AS EMPLOYEE_NAME,
+        e.EMPLOYEE_NUMBER AS EMPLOYEE_NUMBER,
+        vt.TYPE_NAME AS TYPE_NAME,
+        vct.TYPE_NAME AS CHANGE_TYPE_NAME
+        FROM VACATION_HISTORY vh
+        JOIN EMPLOYEE e ON vh.employee_id = e.id
+        JOIN VACATION_TYPE vt ON vt.id = vh.type_id
+        JOIN VACATION_CHANGE_TYPE vct on vh.change_type_id = vct.id
+        WHERE e.EMPLOYEE_NUMBER = #{employeeNumber}
+        ORDER BY vh.ID ASC
     </select>
     <select id="vacationHistoryTable" resultMap="vacationHistoryDTOResultMap">
         SELECT
@@ -149,6 +189,7 @@
         vh.CHANGE_TYPE_ID,
         vh.EMPLOYEE_ID,
         e.EMPLOYEE_NAME AS EMPLOYEE_NAME,
+        e.EMPLOYEE_NUMBER AS EMPLOYEE_NUMBER,
         vt.TYPE_NAME AS TYPE_NAME,
         vct.TYPE_NAME AS CHANGE_TYPE_NAME
         FROM VACATION_HISTORY vh

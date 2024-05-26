@@ -32,4 +32,8 @@ public interface VacationMapper {
     List<VacationTypeDTO> selectAllType();
 
     VacationTypeDTO selectTypeById(int id);
+
+    List<VacationHistory> searchVacationHistoryById(String employeeNumber);
+
+    List<VacationHistory> searchVacationHistoryByName(String employeeName);
 }

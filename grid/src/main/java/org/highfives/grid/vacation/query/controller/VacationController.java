@@ -47,6 +47,18 @@ public class VacationController {
         return ResponseEntity.status(HttpStatus.OK).body(histories);
     }
 
+    @GetMapping("/details/search/name")
+    public ResponseEntity<ResVacationHistoryVO> searchVacationHistoriesByName(@RequestParam("employeeName") String employeeName) {
+        ResVacationHistoryVO histories = vacationService.searchVacationHistoryByName(employeeName);
+        return ResponseEntity.status(HttpStatus.OK).body(histories);
+    }
+
+    @GetMapping("/details/search/id")
+    public ResponseEntity<ResVacationHistoryVO> searchVacationHistoriesById(@RequestParam("employeeNumber") String employeeNumber) {
+        ResVacationHistoryVO histories = vacationService.searchVacationHistoryById(employeeNumber);
+        return ResponseEntity.status(HttpStatus.OK).body(histories);
+    }
+
     @GetMapping("/history/search")
     public ResponseEntity<ResVacationHistoryVO> searchVacationHistories(@RequestParam("typeId") int typeId, @RequestParam("changeTypeId") int changeTypeId, @RequestParam("employeeId") int employeeId) {
         ResVacationHistoryVO histories = vacationService.searchVacationHistory(typeId, changeTypeId, employeeId);

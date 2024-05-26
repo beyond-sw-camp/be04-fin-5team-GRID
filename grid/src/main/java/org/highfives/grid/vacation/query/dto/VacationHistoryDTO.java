@@ -14,6 +14,7 @@ public class VacationHistoryDTO {
     private int changeTypeId;
     private int employeeId;
     private String employeeName;
+    private String employeeNumber;
     private String typeName;
     private String changeTypeName;
 

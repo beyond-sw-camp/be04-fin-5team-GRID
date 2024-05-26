@@ -23,4 +23,8 @@ public interface VacationService {
     ResVacationTypeVO getVacationType();
 
     ResOneVacationTypeVO getVacationTypeById(int id);
+
+    ResVacationHistoryVO searchVacationHistoryByName(String employeeName);
+
+    ResVacationHistoryVO searchVacationHistoryById(String employeeNumber);
 }
