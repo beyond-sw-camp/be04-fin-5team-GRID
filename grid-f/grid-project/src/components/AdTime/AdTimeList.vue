@@ -51,10 +51,10 @@ const itemsPerPage = 10;
 const fetchAdTime = async () => {
   try {
     // 직원일 때
-    const response = await axios.get(`http://localhost:8080/ad-times/2`);
+    const response = await axios.get(`http://localhost:8080/ad-time/2`);
 
     // 관리자일 때
-    // const response = await axios.get('http://localhost:8080/ad-times/all');
+    // const response = await axios.get('http://localhost:8080/ad-time/all');
     console.log(response.data.adTimeDTOList);
     adTimeList.value = response.data.adTimeDTOList;
   } catch (error) {
@@ -67,12 +67,20 @@ onMounted(() => {
 });
 
 const paginatedAdTimes = computed(() => {
+  if (!adTimeList.value || adTimeList.value.length === 0) {
+    return [];
+  }
+
   const start = (currentPage.value - 1) * itemsPerPage;
   const end = start + itemsPerPage;
   return adTimeList.value.slice(start, end);
 });
 
 const totalPages = computed(() => {
+  if (!adTimeList.value || adTimeList.value.length === 0) {
+    return 1;
+  }
+
   return Math.ceil(adTimeList.value.length / itemsPerPage);
 });
 

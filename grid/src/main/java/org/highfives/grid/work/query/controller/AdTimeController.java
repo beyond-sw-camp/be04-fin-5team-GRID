@@ -32,6 +32,7 @@ public class AdTimeController {
                 .statusCode(200)
                 .message("출퇴근 목록 조회 성공")
                 .href("")
+                .adTimeDTOList(adTimeList)
                 .build();
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
@@ -45,6 +46,7 @@ public class AdTimeController {
                 .statusCode(200)
                 .message("출퇴근 목록 조회 성공")
                 .href("")
+                .adTimeDTOList(adTimeList)
                 .build();
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
