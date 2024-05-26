@@ -24,9 +24,13 @@
                 </div>    
             </div>
         </div>
-        <div class="search">
-            <input class="sortBox" type="text" placeholder="검색">
-            <button class="printBtn">검색</button>
+        <div class="search">  
+            <select v-model="searchType" class="searchType">
+                <option value="name">이름</option>
+                <option value="employeeNumber">사번</option>
+            </select>
+            <input v-model="searchQuery" class="sortBox" type="text" placeholder="검색">
+            <button @click="search" class="printBtn">검색</button>
         </div> 
         <div class="tableContainer">
             <table>
@@ -34,6 +38,7 @@
                     <tr>
                         <th>번호</th>
                         <th>이름</th>
+                        <th>사번</th>
                         <th>휴가종류</th>
                         <th>신청날짜</th>
                         <th>휴가 사용기간</th>
@@ -46,6 +51,7 @@
                     <tr v-for="index in 10" :key="index">
                         <td>{{ index }}</td>
                         <td>이름 {{ index }}</td>
+                        <td>사번</td>
                         <td>연차</td>
                         <td>2024-05-01</td>
                         <td>2024-05-02 ~ 2024-05-10</td>
@@ -74,7 +80,8 @@ import { onBeforeMount, ref } from 'vue';
 import axios from "axios";
 import router from '@/router/router';
 
-
+const searchType = ref('name'); // 검색 유형을 위한 기본값 설정
+const searchQuery = ref(''); // 검색어를 위한 변수
 const histories = ref({
     result: {}
 });
@@ -174,11 +181,15 @@ onBeforeMount(() => {
         grid-row-start: 3;
         grid-column-start: 2;
         display: grid;
-        grid-template-columns: 80% 15% 1% 4%;
+        grid-template-columns: 74% 5% 1% 15% 1% 4%;
+    }
+
+    .searchType {
+        grid-column-start: 2;
     }
 
     .sortBox {
-        grid-column-start: 2;
+        grid-column-start: 4;
         margin-left: 2%;
         padding: 5px 5px;
         border-radius: 4px;
@@ -187,7 +198,7 @@ onBeforeMount(() => {
     }
 
     .printBtn {
-        grid-column-start: 4;
+        grid-column-start: 6;
         margin-left: 2%;
         width: 100%;
         background-color: #088A85;
