@@ -1,13 +1,9 @@
 package org.highfives.grid.department.command.aggregate;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 @NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @ToString
 @Entity
@@ -26,10 +22,10 @@ public class Team {
     private int memberCnt;
 
     @Column(name = "team_status")
-    private String teamStatus;
+    private TeamStatus teamStatus;
 
     @Column(name = "start_time")
-    private TeamStatus startTime;
+    private String startTime;
 
     @Column(name = "end_time")
     private String endTime;
@@ -39,4 +35,17 @@ public class Team {
 
     @Column(name = "leader_id")
     private int leaderId;
+
+    @Builder
+
+    public Team(int id, String teamName, int memberCnt, TeamStatus teamStatus, String startTime, String endTime, int departmentId, int leaderId) {
+        this.id = id;
+        this.teamName = teamName;
+        this.memberCnt = memberCnt;
+        this.teamStatus = teamStatus;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.departmentId = departmentId;
+        this.leaderId = leaderId;
+    }
 }

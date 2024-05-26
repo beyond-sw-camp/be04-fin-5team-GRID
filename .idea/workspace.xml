@@ -6,11 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="7837fe4e-431b-475c-a191-e2b790314043" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/grid/src/main/java/org/highfives/grid/department/query/controller/TeamController.java" beforeDir="false" afterPath="$PROJECT_DIR$/grid/src/main/java/org/highfives/grid/department/query/controller/TeamController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/grid/src/main/java/org/highfives/grid/department/query/repository/TeamMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/grid/src/main/java/org/highfives/grid/department/query/repository/TeamMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/grid/src/main/java/org/highfives/grid/department/query/service/TeamService.java" beforeDir="false" afterPath="$PROJECT_DIR$/grid/src/main/java/org/highfives/grid/department/query/service/TeamService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/grid/src/main/java/org/highfives/grid/department/query/service/TeamServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/grid/src/main/java/org/highfives/grid/department/query/service/TeamServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/grid/src/main/resources/org/highfives/grid/department/query/repository/TeamMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/grid/src/main/resources/org/highfives/grid/department/query/repository/TeamMapper.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,6 +30,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "feature/team",
+    "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/Playdata/Desktop/GRID/grid",
     "node.js.detected.package.eslint": "true",
@@ -56,6 +52,7 @@
       <workItem from="1715053255265" duration="18000" />
       <workItem from="1715129695760" duration="9000" />
       <workItem from="1716163022997" duration="190000" />
+      <workItem from="1716721627062" duration="20000" />
     </task>
     <servers />
   </component>

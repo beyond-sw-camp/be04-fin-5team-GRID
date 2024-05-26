@@ -17,10 +17,10 @@ public class ResponseTeamVO {
 
     private String href;
 
-    private List<TeamDTO> result;
+    private TeamDTO result;
 
     @Builder
-    public ResponseTeamVO(int statusCode, String message, String href, List<TeamDTO> result) {
+    public ResponseTeamVO(int statusCode, String message, String href, TeamDTO result) {
         this.statusCode = statusCode;
         this.message = message;
         this.href = href;

@@ -1,9 +1,6 @@
 package org.highfives.grid.department.command.dto;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.highfives.grid.department.command.aggregate.TeamStatus;
 
 @NoArgsConstructor
@@ -23,7 +20,19 @@ public class TeamDTO {
 
     private String endTime;
 
-    private String departmentId;
+    private int departmentId;
 
-    private String leaderId;
+    private int leaderId;
+
+    @Builder
+    public TeamDTO(int id, String teamName, int memberCnt, String teamStatus, TeamStatus startTime, String endTime, int departmentId, int leaderId) {
+        this.id = id;
+        this.teamName = teamName;
+        this.memberCnt = memberCnt;
+        this.teamStatus = teamStatus;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.departmentId = departmentId;
+        this.leaderId = leaderId;
+    }
 }

@@ -20,12 +20,12 @@ public class TeamDTO {
 
     private String endTime;
 
-    private String departmentId;
+    private int departmentId;
 
-    private String leaderId;
+    private int leaderId;
 
     @Builder
-    public TeamDTO(int id, String teamName, int memberCnt, String teamStatus, TeamStatus startTime, String endTime, String departmentId, String leaderId) {
+    public TeamDTO(int id, String teamName, int memberCnt, String teamStatus, TeamStatus startTime, String endTime, int departmentId, int leaderId) {
         this.id = id;
         this.teamName = teamName;
         this.memberCnt = memberCnt;
