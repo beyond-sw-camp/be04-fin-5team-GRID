@@ -4,7 +4,6 @@ import org.apache.ibatis.annotations.Param;
 import org.highfives.grid.work.command.aggregate.AdTime;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.stereotype.Repository;
 
 public interface AdTimeRepository extends JpaRepository<AdTime, Integer> {
     AdTime findByStartTimeAndEmployeeId(String startTime, int employeeId);
@@ -13,7 +12,7 @@ public interface AdTimeRepository extends JpaRepository<AdTime, Integer> {
                     "from AdTime adTime " +
                     "where adTime.startTime like concat(:startTime, '%') " +
                     "AND adTime.employeeId = :employeeId")
-    AdTime findAdTimeByEmployeeIdAndEndTime(
+    AdTime findAdTimeByEmployeeIdAndTime(
             @Param("startTime") String startTime
             , @Param("employeeId") int employeeId);
 }
