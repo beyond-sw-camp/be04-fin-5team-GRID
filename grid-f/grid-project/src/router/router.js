@@ -20,7 +20,11 @@ const router = createRouter({
         {
             path: '/addteamreview',
             component: () => import('@/components/TeamReview/AddTeamReview.vue')
-        }
+        },
+        {
+          path: '/team',
+          component: () => import('@/components/Department/Team.vue')
+      }
 
     ]
 })
