@@ -52,6 +52,10 @@ const router = createRouter({
         {
             path: '/approval-detail/:typeId/:approvalId',
             component: () => import('@/views/Approval/ApprovalDetailView.vue')
+        },
+        {
+            path: '/require',
+            component: () => import('@/views/Approval/RequiredApprovalListView.vue')
         }
     ]
 })

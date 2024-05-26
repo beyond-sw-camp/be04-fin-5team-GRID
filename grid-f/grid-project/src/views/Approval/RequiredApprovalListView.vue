@@ -1,16 +1,15 @@
 <script setup>
-  import {onMounted, reactive} from "vue";
+import {onMounted, reactive} from "vue";
   import axios from "axios";
-
-  import ApprovalList from "@/components/Approval/ApprovalList.vue";
+import ApprovalList from "@/components/Approval/ApprovalList.vue";
 
   const state = reactive({
     approvalList: []
-  });
+  })
 
-  const fetchApprovalList = async(typeId, employeeId, approvalStatus) => {
+  const fetchReqApprovalList = async(typeId, approverId, approvalStatus) => {
     try {
-      const response = await axios.get(`http://localhost:8080/approval/list/${typeId}/${employeeId}/${approvalStatus}`);
+      const response = await axios.get(`http://localhost:8080/approval/approver/${typeId}/${approverId}/${approvalStatus}`);
 
       if (response.status !== 200) {
         throw new Error("response is not ok");
@@ -25,9 +24,7 @@
   }
 
   onMounted(async() => {
-    // 버튼 클릭에 따라 다르게 실행
-    // 0: 전체, 1: 승인, 2: 반려, 3: 대기
-    await fetchApprovalList(1, 2, 0);
+    await fetchReqApprovalList(2, 1, 0);
   })
 </script>
 
