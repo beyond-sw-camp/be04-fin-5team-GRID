@@ -25,8 +25,12 @@
             </div>
         </div>
         <div class="search">  
-            <input class="sortBox" type="text" placeholder="검색">
-            <button class="printBtn">검색</button>
+            <select v-model="searchType" class="searchType">
+                <option value="name">이름</option>
+                <option value="employeeNumber">사번</option>
+            </select>
+            <input v-model="searchQuery" class="sortBox" type="text" placeholder="검색">
+            <button @click="search" class="printBtn">검색</button>
         </div> 
         <div class="tableContainer">
             <table>
@@ -34,6 +38,7 @@
                     <tr>
                         <th>번호</th>
                         <th>이름</th>
+                        <th>사번</th>
                         <th>지급종류</th>
                         <th>휴가종류</th>
                         <th>변경일</th>
@@ -44,6 +49,7 @@
                     <tr v-for="(history, index) in paginatedHistories" :key="history.id">
                         <td>{{ (currentPage - 1) * itemsPerPage + index + 1 }}</td>
                         <td>{{ history.employeeName }}</td>
+                        <td>{{ history.employeeNumber }}</td>
                         <td>{{ history.changeTypeName }}</td>
                         <td>{{ history.typeName }}</td>
                         <td>{{ history.changeTime }}</td>
@@ -65,35 +71,52 @@
     </div>
 </template>
 
-
-
 <script setup>
 import { onBeforeMount, ref, computed } from 'vue';
 import axios from "axios";
 import router from '@/router/router';
 
 const histories = ref([]);
+const searchType = ref('name'); // 검색 유형을 위한 기본값 설정
+const searchQuery = ref(''); // 검색어를 위한 변수
+const filteredHistories = ref([]); // 필터링된 기록
 const currentPage = ref(1);
 const itemsPerPage = 10;
 
 const totalPages = computed(() => {
-    return Math.ceil(histories.value.length / itemsPerPage);
+    return Math.ceil(filteredHistories.value.length / itemsPerPage);
 });
 
 const paginatedHistories = computed(() => {
     const start = (currentPage.value - 1) * itemsPerPage;
     const end = start + itemsPerPage;
-    return histories.value.slice(start, end);
+    return filteredHistories.value.slice(start, end);
 });
 
 const getAllVacationHistory = async () => {
     try {
         const response = await axios.get("/api/vacation/details");
         histories.value = response.data.result;
+        filteredHistories.value = histories.value; // 처음에 모든 기록을 보여줌
         console.log(response.data.result);
     } catch (error) {
         console.error("Error fetching vacation details:", error);
     }
+};
+
+const search = () => {
+    if (searchQuery.value) {
+        filteredHistories.value = histories.value.filter(history => {
+            if (searchType.value === 'name') {
+                return history.employeeName.includes(searchQuery.value);
+            } else if (searchType.value === 'employeeNumber') {
+                return history.employeeNumber.includes(searchQuery.value);
+            }
+        });
+    } else {
+        filteredHistories.value = histories.value; // 검색어가 없으면 모든 기록을 보여줌
+    }
+    currentPage.value = 1; // 새 검색 시 첫 페이지로 이동
 };
 
 const giveAnnualVacation = async () => {
@@ -168,8 +191,6 @@ onBeforeMount(() => {
     getAllVacationHistory();
 });
 </script>
-
-
 
 <style scoped>
     .historyAll {
@@ -246,11 +267,15 @@ onBeforeMount(() => {
         grid-row-start: 3;
         grid-column-start: 2;
         display: grid;
-        grid-template-columns: 80% 15% 1% 4%;
+        grid-template-columns: 74% 5% 1% 15% 1% 4%;
+    }
+
+    .searchType {
+        grid-column-start: 2;
     }
 
     .sortBox {
-        grid-column-start: 2;
+        grid-column-start: 4;
         margin-left: 2%;
         padding: 5px 5px;
         border-radius: 4px;
@@ -259,7 +284,7 @@ onBeforeMount(() => {
     }
 
     .printBtn {
-        grid-column-start: 4;
+        grid-column-start: 6;
         margin-left: 2%;
         width: 100%;
         background-color: #088A85;
