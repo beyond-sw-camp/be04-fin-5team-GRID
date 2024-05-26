@@ -84,7 +84,7 @@ public class ApprovalServiceImpl implements ApprovalService {
         String saturday = startDate.with(LocalTime.MAX).with(TemporalAdjusters.nextOrSame(DayOfWeek.SATURDAY)).format(dateFormat);
 
         int count = approvalService.countOvertimeInWeek(new OvertimeInWeekDTO(sunday, saturday, overtimeApprovalVO.getRequesterId()));
-        System.out.println(sunday + " " + saturday);
+
         long todayCount = 0;
 
         if (startDate.getDayOfWeek() == DayOfWeek.SATURDAY && endDate.getDayOfWeek() == DayOfWeek.SUNDAY) {

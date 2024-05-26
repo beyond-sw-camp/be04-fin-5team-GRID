@@ -23,13 +23,13 @@
     </resultMap>
 
     <select id="findChainListByTypeId" resultMap="approvalChainMap" parameterType="int">
-        SELECT
+         SELECT
                 id
               , duty
               , stage
               , type_id
-         FROM approval_chain
-        WHERE type_id = #{typeId}
+           FROM approval_chain
+          WHERE type_id = #{typeId}
     </select>
 
     <select id="findTeamLeaderByEmployeeId" resultType="java.lang.Integer" parameterType="int">

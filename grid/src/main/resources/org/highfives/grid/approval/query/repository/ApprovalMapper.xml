@@ -15,11 +15,14 @@
         <result property="renameName" column="rename_name"/>
         <result property="path" column="path"/>
         <result property="infoId" column="info_id"/>
+        <result property="vacationType" column="type_name"/>
         <result property="approvalStatus" column="approval_status"/>
         <result property="writeTime" column="write_time"/>
         <result property="cancelYn" column="cancel_yn"/>
         <result property="cancelDocId" column="cancel_document_id"/>
         <result property="employeeId" column="requester_id"/>
+        <result property="employeeName" column="employee_name"/>
+        <result property="employeeNumber" column="employee_number"/>
     </resultMap>
 
     <resultMap id="oApprovalMap" type="org.highfives.grid.approval.common.dto.OvertimeApprovalDTO">
@@ -63,7 +66,7 @@
            AND  cancel_document_id = 0
     </select>
 
-    <select id="findAllBTApprovalByEmployeeId" resultMap="approvalMap" parameterType="int">
+    <select id="findAllBTApprovalByEmployeeId" resultMap="approvalMap" parameterType="map">
         SELECT
                 a.employee_name,
                 a.employee_number,
@@ -81,12 +84,14 @@
           JOIN  bt_approval b
             ON  a.id = b.requester_id
          WHERE  a.id = #{employeeId}
-           AND  b.approval_status = 'A'
-           AND  b.cancel_yn = 'N'
-           AND  b.cancel_document_id = 0;
+        <if test="isApproval == 1">
+            AND  b.approval_status = 'A'
+            AND  b.cancel_yn = 'N'
+            AND  b.cancel_document_id = 0
+        </if>
     </select>
 
-    <select id="findAllOApprovalByEmployeeId" resultMap="approvalMap" parameterType="int">
+    <select id="findAllOApprovalByEmployeeId" resultMap="approvalMap" parameterType="map">
         SELECT
                 a.employee_name,
                 a.employee_number,
@@ -103,12 +108,14 @@
           JOIN  overtime_approval b
             ON  a.id = b.requester_id
          WHERE  a.id = #{employeeId}
+        <if test="isApproval == 1">
            AND  b.approval_status = 'A'
            AND  b.cancel_yn = 'N'
-           AND  b.cancel_document_id = 0;
+           AND  b.cancel_document_id = 0
+        </if>
     </select>
 
-    <select id="findAllRWApprovalByEmployeeId" resultMap="approvalMap" parameterType="int">
+    <select id="findAllRWApprovalByEmployeeId" resultMap="approvalMap" parameterType="map">
         SELECT
                 a.employee_name,
                 a.employee_number,
@@ -128,12 +135,14 @@
           JOIN  rw_approval b
             ON  a.id = b.requester_id
          WHERE  a.id = #{employeeId}
+        <if test="isApproval == 1">
            AND  b.approval_status = 'A'
            AND  b.cancel_yn = 'N'
-           AND  b.cancel_document_id = 0;
+           AND  b.cancel_document_id = 0
+        </if>
     </select>
 
-    <select id="findAllVApprovalByEmployeeId" resultMap="approvalMap" parameterType="int">
+    <select id="findAllVApprovalByEmployeeId" resultMap="approvalMap" parameterType="map">
         SELECT
                 a.employee_name,
                 a.employee_number,
@@ -146,14 +155,21 @@
                 b.write_time,
                 b.cancel_yn,
                 b.cancel_document_id,
-                b.requester_id
+                b.requester_id,
+                d.type_name
           FROM  employee a
           JOIN  vacation_approval b
             ON  a.id = b.requester_id
+          JOIN  vacation_info c
+            ON  c.id = b.info_id
+          JOIN  vacation_type d
+            ON  c.type_id = d.id
          WHERE  a.id = #{employeeId}
+        <if test="isApproval == 1">
            AND  b.approval_status = 'A'
            AND  b.cancel_yn = 'N'
-           AND  b.cancel_document_id = 0;
+           AND  b.cancel_document_id = 0
+        </if>
     </select>
 
     <select id="findBTDetailByApprovalId" resultMap="approvalMap" parameterType="int">

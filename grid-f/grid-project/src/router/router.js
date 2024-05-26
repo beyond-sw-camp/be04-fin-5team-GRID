@@ -25,12 +25,25 @@ const router = createRouter({
             path: '/find/pwd/:email/result',
             component: () => import('../views/Login/FindPwdResult.vue')
         },
-            path: '/2',
-            component: () => import('../views/Login2.vue')
-        },
+        // {
+        //     path: '/2',
+        //     component: () => import('../views/Login2.vue')
+        // },
         {
             path: '/department',
             component: () => import('@/components/Department/Department.vue')
+        },
+        {
+            path: '/bt',
+            component: () => import('@/views/Approval/BTApprovalListView.vue')
+        },
+        {
+            path: '/overtime',
+            component: () => import('@/views/Approval/OApprovalListView.vue')
+        },
+        {
+            path: '/vacation',
+            component: () => import('@/views/Approval/VApprovalListView.vue')
         }
     ]
 })
