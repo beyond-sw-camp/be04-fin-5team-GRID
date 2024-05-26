@@ -35,11 +35,15 @@ const router = createRouter({
             component: () => import('../views/HumanResources/Main.vue')
         },
         {
-            path: '/hr/profile/:id',
+            path: '/hr/profile/:employeeNumber',
             component: () => import('../views/HumanResources/Profile.vue')
         },
         {
             path: '/hr/modify/list',
+            component: () => import('../views/HumanResources/ModifyMulti.vue')
+        },
+        {
+            path: '/hr/modify/:employeeNumber',
             component: () => import('../views/HumanResources/Modify.vue')
         },
         {

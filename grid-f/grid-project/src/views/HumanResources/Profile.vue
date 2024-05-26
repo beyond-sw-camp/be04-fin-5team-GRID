@@ -1,49 +1,131 @@
 <template>
-        <div class="contents">
-            <div class="insideContents">
-                <div class="title">
-                    <div class="title-image">
-                        <img id="title-image" src="@/assets/profile.png" alt="Profile" />
-                    </div>
-                    <div class="title-name">
-                        <h1>인사 정보 상세</h1>
-                    </div>
+    <div class="profile-main">
+        <div class="profile-title">
+            <img class="profile-icon" src="@/assets/profile.png" alt="인사 정보 메인 이미지">
+            <h1>인사 정보 상세 </h1>
+        </div>
+        <div class="first">
+            <div class="image">
+                <img src="https://talkimg.imbc.com/TVianUpload/tvian/TViews/image/2020/04/12/FydNALvKf23Z637223013461671479.jpg"
+                    alt="">
+            </div>
+            <div class="name">
+                <div id="name">
+                    {{ result.name }}
                 </div>
-                <div class="first">
-                    <div class="image">
-
+                <div id="other-info">
+                    <div id="teamInfo">
+                        {{ result.team ? result.team.teamName : N / A }}
                     </div>
-                    <div class="content">
-
+                    <div id="dot">•</div>
+                    <div id="dutiesInfo">
+                        {{ result.duties ? result.duties.dutiesName : N / A }}
                     </div>
-                    <div class="button">
-
-                    </div>
-                </div>
-                <div class="tab">
-
-
-                </div>
-                <div class="info1">
-                    <div class="hrinfo">
-
-                    </div>
-                </div>
-                <div class="info2">
-                    <div class="basicInfo">
-
+                    <div id="dot">•</div>
+                    <div id="absenceInfo">
+                        {{ isAbsence ? '부재중' : '재실' }}
                     </div>
                 </div>
             </div>
-
-
+            <div class="button" v-if="userRole === 'ROLE_ADMIN'">
+                <div style="margin-right: 2%;">
+                    <button class="pwdBtn" data-bs-toggle="modal" data-bs-target="#myModal">비밀번호 변경</button>
+                </div>
+                <div>
+                    <button class="modifyBtn" @click="toModify(result.employeeNumber)">회원 정보 수정</button>
+                </div>
+            </div>
         </div>
+        <div class="second">
+            <ul class="nav nav-tabs">
+                <li class="nav-item" @click="currentTab = 'human-resources'">
+                    <a class="nav-link" :class="{ active: currentTab === 'human-resources' }" href="#">정보</a>
+                </li>
+                <li class="nav-item" @click="currentTab = 'wb'">
+                    <a class="nav-link" :class="{ active: currentTab === 'wb' }" href="#">근무/휴가</a>
+                </li>
+            </ul>
+        </div>
+        <div class="content">
+            <component :is="currentTabComponent" :result="result" :userRole="userRole"></component>
+        </div>
+    </div>
+    <div class="modal fade" id="myModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">유저 비밀번호 변경</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <ResetPwd :givenEmail="givenEmail" @passwordResetSuccess="handlePasswordResetSuccess"/>
+                </div>
+            </div>
+        </div>
+    </div>
 
 </template>
 
 <script setup>
+import HumanResourcesInfo from '@/components/HumanResources/HumanResourcesInfo.vue';
+import WB from '@/components/HumanResources/WorkVacation.vue';
+import ResetPwd from '@/components/Login/ResetPassword.vue';
+import { ref, computed, onMounted } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
+import axios from 'axios';
 
+const currentTab = ref('human-resources');
+const route = useRoute();
+const result = ref('');
+const isAbsence = ref(false);
+const userRole = ref('');
+const givenEmail = ref('');
+const router = useRouter();
 
+const tabComponents = {
+    'human-resources': HumanResourcesInfo,
+    'wb': WB,
+};
+
+const currentTabComponent = computed(() => tabComponents[currentTab.value]);
+
+function parseJwt(token) {
+    try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        return JSON.parse(jsonPayload);
+    } catch (error) {
+        console.error('Invalid token', error);
+        return null;
+    }
+}
+
+function toModify (employeeNumber) {
+    router.push(`/hr/modify/${employeeNumber}`);
+}
+
+onMounted(async () => {
+    const token = localStorage.getItem('access');
+    if (token) {
+        const decodedToken = parseJwt(token);
+        userRole.value = decodedToken?.auth || '';
+    }
+
+    const response = await axios.get(`http://localhost:8080/users/${route.params.employeeNumber}`);
+    result.value = response.data.result;
+    if (result.value.absenceYn === 'Y') {
+        isAbsence.value = true;
+    }
+
+    givenEmail.value = result.value.email;
+    console.log("result: ", result);
+    console.log("result2: ", givenEmail.value);
+}
+
+)
 </script>
 
 <style scoped>
@@ -55,118 +137,151 @@
 }
 
 body {
+    font-family: 'IBMPlexSansKR-Regula';
     min-height: 100vh;
     min-width: 100vw;
 }
 
-.container {
-    font-family: 'IBMPlexSansKR-Regular';
-    height: 100%;
-    min-height: 100%;
-    min-width: 100%;
+.profile-main {
     display: grid;
-    grid-template-columns: 250px auto;
-    grid-template-rows: 60px auto 10px;
-    grid-template-areas:
-        "header header"
-        "side contents"
-        "footer footer";
-}
-
-.contents {
-    grid-area: contents;
-    height: calc(100vh - 70px)px;
-}
-
-.insideContents {
-    display: flex;
-    flex-direction: column;
-    width: 80%;
+    grid-template-columns: 10% 80% 10%;
+    grid-template-rows: 18% 33% 15% auto;
     height: 100%;
-    margin: auto;
-
 }
 
-.title {
-    margin: 50px 0;
-    width: 100%;
-    display: flex;
-    flex-direction: row;
+.profile-title {
+    grid-column-start: 2;
+    grid-column-end: 3;
+    margin-top: 2%;
+    color: #000000;
+    display: grid;
+    grid-template-columns: 3% 97%;
     align-items: center;
 }
 
-.title-image {
-    width: 42.8px;
-    height: 55.8px;
-    margin: 0 15px 0 0;
+.profile-title h1 {
+    margin-left: 1.2%;
+    font-weight: bold;
+    font-size: 14pt;
 }
 
-#title-image {
-    width: 60px;
-    height: 100%;
-    border-radius: 50%;
-    cursor: pointer;
-    margin-right: 50px;
-}
-
-.title-name {
-    width: 80%;
-    font-size: 12px;
-    font-weight: 0;
+.profile-icon {
+    width: 130%;
+    margin: 0 40px 10px 0;
+    filter: invert(0%) sepia(64%) saturate(7%) hue-rotate(334deg) brightness(85%) contrast(101%);
 }
 
 .first {
-    width: 100%;
-    height: 70%;
-    display: flex;
-    flex-direction: row;
+    grid-row-start: 2;
+    grid-column-start: 2;
+    display: grid;
+    grid-template-columns: 17% 53% 30%;
+    max-height: 100%;
+    max-width: 100%;
 }
 
 .image {
-    width: 20%;
-    min-height: 10px;
-    background-color: red;
+    grid-column-start: 1;
+    padding: 0.5em;
+    height: 100%;
+    width: 100%;
 }
 
-.content {
-    width: 45%;
-    min-height: 10px;
-    background-color: blue;
+.image img {
+    width: 100%;
+    height: 100%;
+}
+
+.name {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 0.5em;
+    height: 100%;
+    width: 100%;
+}
+
+#name {
+    margin-bottom: 1%;
+    font-weight: bold;
+}
+
+#other-info {
+    display: flex;
+    flex-direction: row;
+
+}
+
+#teamInfo {
+    font-size: 13px;
+}
+
+#dutiesInfo {
+    font-size: 13px;
+}
+
+#dot {
+    margin: auto 9px;
+    font-size: 10px;
+}
+
+#absenceInfo {
+    font-size: 13px;
 }
 
 .button {
-    width: 35%;
-    min-height: 10px;
-    background-color: green;
+    display: flex;
+    justify-content: flex-end;
 }
 
-.tab {
-    width: 100%;
-    height: 14%;
-    min-height: 10px;
-    background-color: yellow;
+.modifyBtn {
+    margin-left: 2%;
+    width: 50%;
+    min-width: 102.24px;
+    min-height: 28px;
+    background-color: #088A85;
+    color: white;
+    padding: 5px 5px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    font-style: bold;
 }
 
-.info1 {
-    width: 100%;
-    height: 90%;
-
+.pwdBtn {
+    margin-left: 2%;
+    margin-right: 4%;
+    width: 50%;
+    min-width: 102.24px;
+    min-height: 28px;
+    background-color: #088A85;
+    color: white;
+    padding: 5px 5px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    font-style: bold;
 }
 
-.hrinfo {
-    width: 100%;
+.second {
+    grid-row-start: 3;
+    grid-column-start: 2;
     height: 100%;
-    background-color: orange;
+    width: 100%;
+    display: flex;
+    align-items: flex-end;
 }
 
-.info2 {
-    width: 100%;
-    height: 90%;
+.content {
+    grid-row-start: 4;
+    grid-column-start: 2;
+    margin-top: 15px;
 }
 
-.basicInfo {
-    width: 100%;
-    min-height: 100%;
-    background-color: pink;
+.modal-body {
+    padding: 0 0 50px 0;
+    height: 50%;
 }
 </style>

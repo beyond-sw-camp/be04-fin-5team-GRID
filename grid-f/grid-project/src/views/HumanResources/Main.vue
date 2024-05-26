@@ -106,17 +106,16 @@ function downloadCSV() {
             absenceContent: item.absenceContent
         })
     )
-    // JSON 데이터를 CSV로 변환
+
     const fields = ['name', 'employeeNumber', 'department', 'team', 'position', 'duties', 'absenceYn', 'absenceContent'];
     const json2csvParser = new Parser({ fields });
     const csv = json2csvParser.parse(csvData);
 
-    // BOM을 포함한 Blob 객체를 사용하여 CSV 파일 생성
     const bom = '\uFEFF';
     const blob = new Blob([bom + csv], { type: 'text/csv;charset=utf-8;' });
 
-    // 파일 다운로드
-    saveAs(blob, 'data.csv');
+
+    saveAs(blob, '사원 명단.csv');
 };
 
 function toModify() {

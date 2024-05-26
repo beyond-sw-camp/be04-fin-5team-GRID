@@ -392,6 +392,5 @@ tbody tr:hover {
     height: 25px; 
     border-radius: 50%; 
     object-fit: cover; 
-
 }
 </style>
