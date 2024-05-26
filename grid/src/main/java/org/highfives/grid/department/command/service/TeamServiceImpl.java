@@ -44,4 +44,46 @@ public class TeamServiceImpl implements TeamService{
 
         return mapper.map(team, TeamDTO.class);
     }
+
+    @Override
+    public TeamDTO modifyTeam(TeamDTO teamDTO) {
+        Team currentTeamData = teamRepository.findById(teamDTO.getId()).orElseThrow(() -> new IllegalArgumentException("값이 없습니다."));
+
+        if (teamDTO.getTeamStatus() == TeamStatus.N) {
+
+            Date currentDate = new Date();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String formattedDate = dateFormat.format(currentDate);
+
+            Team team = Team.builder()
+                    .id(teamDTO.getId())
+                    .teamName(teamDTO.getTeamName())
+                    .teamStatus(teamDTO.getTeamStatus())
+                    .startTime(currentTeamData.getStartTime())
+                    .endTime(formattedDate)
+                    .leaderId(teamDTO.getLeaderId())
+                    .departmentId(teamDTO.getDepartmentId())
+                    .build();
+
+            teamRepository.save(team);
+
+            return mapper.map(team, TeamDTO.class);
+
+        }
+
+        Team team = Team.builder()
+                .id(teamDTO.getId())
+                .teamName(teamDTO.getTeamName())
+                .teamStatus(currentTeamData.getTeamStatus())
+                .startTime(currentTeamData.getStartTime())
+                .leaderId(teamDTO.getLeaderId())
+                .departmentId(teamDTO.getDepartmentId())
+                .build();
+
+        teamRepository.save(team);
+
+        return mapper.map(team, TeamDTO.class);
+    }
+
+
 }

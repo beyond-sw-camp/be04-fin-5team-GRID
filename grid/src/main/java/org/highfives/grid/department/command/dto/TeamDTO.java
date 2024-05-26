@@ -14,9 +14,9 @@ public class TeamDTO {
 
     private int memberCnt;
 
-    private String teamStatus;
+    private TeamStatus teamStatus;
 
-    private TeamStatus startTime;
+    private String startTime;
 
     private String endTime;
 
@@ -25,7 +25,7 @@ public class TeamDTO {
     private int leaderId;
 
     @Builder
-    public TeamDTO(int id, String teamName, int memberCnt, String teamStatus, TeamStatus startTime, String endTime, int departmentId, int leaderId) {
+    public TeamDTO(int id, String teamName, int memberCnt, TeamStatus teamStatus, String startTime, String endTime, int departmentId, int leaderId) {
         this.id = id;
         this.teamName = teamName;
         this.memberCnt = memberCnt;

@@ -36,6 +36,23 @@ public class TeamController {
         return ResponseEntity.status(HttpStatus.OK).body(responseTeamVO);
     }
 
+    @PutMapping
+    public ResponseEntity<ResponseTeamVO> modifyTeam(@RequestBody TeamDTO teamDTO) {
+
+        TeamDTO modifyData = teamService.modifyTeam(teamDTO);
+
+        ResponseTeamVO responseTeamVO = ResponseTeamVO.builder()
+                .message("modify success")
+                .href("/team")
+                .statusCode(201)
+                .result(modifyData)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(responseTeamVO);
+    }
+
+
+
 
 
 }

@@ -43,4 +43,27 @@ class TeamServiceImplTest {
 
     }
 
+    @Test
+    @DisplayName("팀 수정 기능")
+    @Transactional
+    void modifyTeam() {
+
+        // Given
+        TeamDTO teamDTO = TeamDTO.builder()
+                .id(1)
+                .teamName("test")
+                .teamStatus(TeamStatus.N)
+                .leaderId(2)
+                .departmentId(1)
+                .build();
+
+        // When
+        TeamDTO modifyTeam = teamService.modifyTeam(teamDTO);
+
+        // Then
+        assertThat(modifyTeam).isNotNull();
+        assertThat(modifyTeam.getTeamStatus()).isEqualTo(teamDTO.getTeamStatus());
+
+    }
+
 }

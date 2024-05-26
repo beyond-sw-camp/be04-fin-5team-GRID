@@ -22,6 +22,7 @@ public class Team {
     private int memberCnt;
 
     @Column(name = "team_status")
+    @Enumerated(EnumType.STRING)
     private TeamStatus teamStatus;
 
     @Column(name = "start_time")
