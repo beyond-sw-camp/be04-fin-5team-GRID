@@ -10,8 +10,11 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
+@Builder
 public class ResponseAdTimeListVO {
+    private int statusCode;
     private String message;
+    private String href;
 
     private List<AdTimeDTO> adTimeDTOList;
 }

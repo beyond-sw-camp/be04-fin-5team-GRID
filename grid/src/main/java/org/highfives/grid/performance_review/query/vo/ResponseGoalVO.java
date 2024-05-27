@@ -10,9 +10,9 @@ import java.util.List;
 @Getter
 @ToString
 @Builder
-public class ResponsePerformanceReviewGoalVO {
+public class ResponseGoalVO {
     private int statusCode;
     private String message;
     private String href;
-    private List<PerformanceReviewGoalDTO> findGoalList;
+    private PerformanceReviewGoalDTO findGoal;
 }

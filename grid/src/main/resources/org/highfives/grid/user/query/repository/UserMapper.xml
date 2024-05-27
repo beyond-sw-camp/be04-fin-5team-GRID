@@ -90,25 +90,79 @@
         <result property="positionId" column="position_id"/>
         <result property="teamId" column="team_id"/>
         <result property="departmentId" column="department_id"/>
+        <association property="department" javaType="org.highfives.grid.user.query.dto.DepartmentDTO">
+            <id property="id" column="dep_id"/>
+            <result property="departmentName" column="department_name"/>
+        </association>
+        <association property="team" javaType="org.highfives.grid.user.query.dto.TeamDTO">
+            <id property="id" column="t_id"/>
+            <result property="teamName" column="team_name"/>
+        </association>
+        <association property="position" javaType="org.highfives.grid.user.query.dto.PositionDTO">
+            <id property="id" column="p_id"/>
+            <result property="positionName" column="position_name"/>
+        </association>
+        <association property="duties" javaType="org.highfives.grid.user.query.dto.DutiesDTO">
+            <id property="id" column="d_id"/>
+            <result property="dutiesName" column="duties_name"/>
+        </association>
     </resultMap>
 
-    <select id="getUserList" resultMap="userInfo">
+    <select id="getUserList" resultMap="userInfo" parameterType="string">
         SELECT
         E.id,
         E.employee_name,
         E.employee_number,
-        E.position_id,
-        E.duties_id,
+        DEP.id dep_id,
+        DEP.department_name,
+        T.id t_id,
+        T.team_name,
+        P.id p_id,
+        P.position_name,
+        D.id d_id,
+        D.duties_name,
         E.phone_number,
         E.absence_yn,
         E.absence_content,
         E.join_time
         FROM Employee E
+        JOIN Team T ON E.team_id = T.id
+        JOIN Department DEP ON E.department_id = DEP.id
+        JOIN e_Position P ON E.position_id = P.id
+        JOIN Duties D ON E.duties_id = D.id
         WHERE E.resign_yn = 'N'
+        AND E.id > 1
+        ORDER BY E.employee_name ASC;
     </select>
 
-    <!-- 사원 번호로 유저 조회 쿼리    -->
-    <select id="getUserInfo" parameterType="string" resultMap="userInfo">
+    <select id="getUserListByName" resultMap="userInfo" parameterType="string">
+        SELECT
+        E.id,
+        E.employee_name,
+        E.employee_number,
+        DEP.id dep_id,
+        DEP.department_name,
+        T.id t_id,
+        T.team_name,
+        P.id p_id,
+        P.position_name,
+        D.id d_id,
+        D.duties_name,
+        E.phone_number,
+        E.absence_yn,
+        E.absence_content,
+        E.join_time
+        FROM Employee E
+        JOIN Team T ON E.team_id = T.id
+        JOIN Department DEP ON E.department_id = DEP.id
+        JOIN e_Position P ON E.position_id = P.id
+        JOIN Duties D ON E.duties_id = D.id
+        WHERE E.resign_yn = 'N'
+        AND E.id > 1
+        AND E.employee_name LIKE CONCAT('%', #{name}, '%')
+    </select>
+
+    <select id="getUserInfo" parameterType="_int" resultMap="userInfo">
         SELECT
         E.id,
         E.email,
@@ -130,43 +184,25 @@
         E.salary,
         E.absence_yn,
         E.absence_content,
-        E.position_id,
-        E.duties_id,
-        E.team_id,
-        E.department_id
+        DEP.id dep_id,
+        DEP.department_name,
+        T.id t_id,
+        T.team_name,
+        P.id p_id,
+        P.position_name,
+        D.id d_id,
+        D.duties_name
         FROM Employee E
-        WHERE E.employee_number = #{id}
-    </select>
-
-    <!-- id로 유저 조회 쿼리    -->
-    <select id="getUserInfoById" parameterType="_int" resultMap="userInfo">
-        SELECT
-        E.id,
-        E.email,
-        E.employee_name,
-        E.employee_number,
-        E.gender,
-        E.phone_number,
-        E.call_number,
-        E.zip_code,
-        E.address,
-        E.assigned_task,
-        E.join_time,
-        E.join_type,
-        E.resign_time,
-        E.resign_yn,
-        E.work_type,
-        E.contract_start_time,
-        E.contract_end_time,
-        E.salary,
-        E.absence_yn,
-        E.absence_content,
-        E.position_id,
-        E.duties_id,
-        E.team_id,
-        E.department_id
-        FROM Employee E
-        WHERE E.id = #{id}
+        JOIN Team T ON E.team_id = T.id
+        JOIN Department DEP ON E.department_id = DEP.id
+        JOIN e_Position P ON E.position_id = P.id
+        JOIN Duties D ON E.duties_id = D.id
+        <if test="id != null and eNum == null">
+            WHERE E.id = #{id}
+        </if>
+        <if test="id == null and eNum != null">
+            WHERE E.employee_number = #{eNum}
+        </if>
     </select>
 
     <!-- email로 유저 조회 쿼리    -->
@@ -176,23 +212,5 @@
         E.employee_name
         FROM Employee E
         WHERE E.email = #{id}
-    </select>
-
-    <!--  사원 직위명 조회  -->
-    <select id="getPosition" parameterType="_int">
-        SELECT
-        P.position_name
-        FROM e_position P
-        JOIN employee E ON E.position_id = P.id
-        WHERE E.id = #{id}
-    </select>
-
-    <!--  사원 직책명 조회  -->
-    <select id="getDuties" parameterType="_int">
-        SELECT
-        D.duties_name
-        FROM duties D
-        JOIN employee E ON E.duties_id = D.id
-        WHERE E.id = #{eNum}
     </select>
 </mapper>

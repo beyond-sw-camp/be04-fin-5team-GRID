@@ -7,4 +7,6 @@ public interface AdTimeService {
     AdTimeDTO addStartTime(AdTimeDTO adTimeDTO);
 
     AdTimeDTO addEndTime(AdTimeDTO adTimeDTO);
+
+    AdTimeDTO findAdTime(String dateTime, int employeeId);
 }
