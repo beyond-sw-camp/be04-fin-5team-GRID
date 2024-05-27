@@ -28,11 +28,8 @@
                 </div>
             </div>
             <div class="button" v-if="userRole === 'ROLE_ADMIN'">
-                <div style="margin-right: 2%;">
-                    <button class="pwdBtn" data-bs-toggle="modal" data-bs-target="#myModal">비밀번호 변경</button>
-                </div>
                 <div>
-                    <button class="modifyBtn" @click="toModify(result.employeeNumber)">회원 정보 수정</button>
+                    <button class="modifyBtn" @click="toModify(result.employeeNumber, result)">회원 정보 수정</button>
                 </div>
             </div>
         </div>
@@ -51,19 +48,6 @@
         </div>
         <div class="content">
             <ModifyView :user="result"/>
-        </div>
-    </div>
-    <div class="modal fade" id="myModal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">유저 비밀번호 변경</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <ResetPwd :givenEmail="givenEmail"/>
-                </div>
-            </div>
         </div>
     </div>
 </template>
@@ -105,7 +89,8 @@ function parseJwt(token) {
     }
 }
 
-function toModify(employeeNumber) {
+function toModify(employeeNumber, user) {
+    sessionStorage.setItem('user', JSON.stringify(user));
     router.push({
         path: `/hr/modify/${employeeNumber}`
     });

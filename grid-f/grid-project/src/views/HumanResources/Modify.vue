@@ -8,7 +8,7 @@
             <div class="image">
                 <img src="https://talkimg.imbc.com/TVianUpload/tvian/TViews/image/2020/04/12/FydNALvKf23Z637223013461671479.jpg"
                     alt="">
-            </div>  
+            </div>
             <div class="button">
                 <div style="margin-right: 2%;">
                     <button class="pwdBtn" data-bs-toggle="modal" data-bs-target="#myModal">비밀번호 변경</button>
@@ -24,10 +24,23 @@
             </div>
             <div class="newInfo">
                 변경 정보
-            </div>        
+            </div>
         </div>
         <div class="content">
-            <ModifyInfo :user="user"/>
+            <ModifyInfo :user="user" @update-user="updateUser"/>
+        </div>
+    </div>
+    <div class="modal fade" id="myModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">유저 비밀번호 변경</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <ResetPwd :givenEmail="givenEmail"/>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -35,17 +48,18 @@
 <script setup>
 import ModifyInfo from '@/components/HumanResources/ModifyInfo.vue';
 import ResetPwd from '@/components/Login/ResetPassword.vue';
-import { ref, computed, onMounted } from 'vue';
-import { useRouter, useRoute } from 'vue-router';
+import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 import axios from 'axios';
 
 const router = useRouter();
 const user = ref();
-const name = ref('');
 const updatedUser = ref(null);
+const givenEmail = ref('');
 
 const cleanUserData = (userData) => {
     return {
+        id: user.value.id,
         email: userData.email,
         pwd: userData.pwd,
         name: userData.name,
@@ -69,12 +83,15 @@ const cleanUserData = (userData) => {
 
 const submitModifications = async () => {
     try {
+        if(updatedUser.value.callNumber == '-') {
+            updatedUser.value.callNumber = null;
+        }
         console.log('변경될 정보 확인: ', updatedUser.value);
         const cleanedData = cleanUserData(updatedUser.value);
         console.log('변경될 정보 확인22: ', cleanedData);
         const response = await axios.put(`http://localhost:8080/users/${user.value.id}`, cleanedData);
         alert("수정이 완료되었습니다.");
-        router.push(`/hr/profile/${user.employeeNumber}`);
+        router.push(`/hr/profile/${user.value.employeeNumber}`);
     } catch (error) {
         console.error("수정 중 오류 발생: ", error);
         alert("수정 중 오류가 발생했습니다.");
@@ -82,8 +99,8 @@ const submitModifications = async () => {
 };
 
 const updateUser = (newData) => {
-    updatedUser.value = { 
-        ...user.value, 
+    updatedUser.value = {
+        ...user.value,
         ...newData,
         departmentId: newData.departmentId !== undefined ? newData.departmentId : user.value.department?.id,
         teamId: newData.teamId !== undefined ? newData.teamId : user.value.team?.id,
@@ -98,6 +115,7 @@ onMounted(() => {
         const parsedUser = JSON.parse(userData);
         if (parsedUser && parsedUser.id) {
             user.value = parsedUser;
+            givenEmail.value = user.value.email;
             updatedUser.value = { ...user.value };
             console.log("유저 정보 확인: ", user.value);
         } else {

@@ -338,7 +338,6 @@ const execDaumPostcode = () => {
             }
             newZipCode.value = data.zonecode;
             newAddress.value = addr;
-            newAddressDetail.value = extraAddr;
         }
     }).open();
 };
@@ -377,6 +376,7 @@ watch(
         newJoinTime.value,
         newZipCode.value,
         newAddress.value,
+        newAddressDetail.value, // 추가
         newJoinType.value,
         newWorkType.value
     ],
@@ -390,13 +390,11 @@ watch(
             phoneNumber: newPhoneNumber.value || props.user.phoneNumber,
             callNumber: newCallNum.value || props.user.callNumber,
             zipCode: newZipCode.value || props.user.zipCode,
-            address: resultAddress.value || props.user.address,
+            address: resultAddress.value || props.user.address, // 수정
             assignedTask: newAssignedTask.value || props.user.assignedTask,
             joinTime: newJoinTime.value || props.user.joinTime,
             joinType: newJoinType.value || props.user.joinType,
             workType: newWorkType.value || props.user.workType,
-            resignYn: newIsResigned.value,
-            resignedTime: resignedTime.value,
             departmentId: newDepartmentId.value || props.user.department.id,
             teamId: newTeamId.value || props.user.team.id,
             positionId: newPositionId.value || props.user.position.id,

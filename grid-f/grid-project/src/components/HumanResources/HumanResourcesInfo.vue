@@ -138,12 +138,16 @@ const props = defineProps({
     result: {
         type: Object,
         required: true
+    }, 
+    userRole:{
+        type: String,
+        required: true
     }
 });
 
 const today = new Date();
 const year = today.getFullYear();
-const month = String(today.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1
+const month = String(today.getMonth() + 1).padStart(2, '0'); 
 const day = String(today.getDate()).padStart(2, '0');
 const callNum = ref('');
 const joinType = ref('');
@@ -154,9 +158,6 @@ const resignTime = ref('');
 const currentTime = `${year}-${month}-${day}`;
 
 onMounted(() => {
-    if (props.result.callNumber == null) {
-        callNum.value = '-';
-    }
     if (props.result.joinType == 'NEW') {
         joinType.value = '신입';
     } else {

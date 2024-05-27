@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.highfives.grid.user.command.aggregate.Employee;
 import org.highfives.grid.user.command.aggregate.Gender;
 import org.highfives.grid.user.command.aggregate.PrincipalDetails;
+import org.highfives.grid.user.command.aggregate.Role;
 import org.highfives.grid.user.command.dto.UserDTO;
 import org.highfives.grid.user.command.repository.UserRepository;
 import org.modelmapper.ModelMapper;
@@ -74,11 +75,8 @@ public class UserServiceImpl implements UserService{
     public UserDTO modifyUser(int id, UserDTO modifyInfo) {
 
         Employee oldInfo = userRepository.findById(id).orElseThrow(NullPointerException::new);
-
         userRepository.save(inputNewInfo(oldInfo, modifyInfo));
-
         Employee resultInfo = userRepository.findById(modifyInfo.getId()).orElseThrow(NullPointerException::new);
-
         return modelMapper.map(resultInfo, UserDTO.class);
     }
 
@@ -130,13 +128,28 @@ public class UserServiceImpl implements UserService{
     public String duplicateInfoCheck(UserDTO givenInfo) {
 
         try {
-            if (userRepository.findByEmail(givenInfo.getEmail()) != null) {
+
+            Employee employee = userRepository.findByEmail(givenInfo.getEmail());
+            if (employee != null) {
+                if(employee.getEmail().equals(givenInfo.getEmail())) {
+                    return "Pass";
+                }
                 return "Already used Email : " + givenInfo.getEmail();
             }
-            if (userRepository.findByEmployeeNumber(givenInfo.getEmployeeNumber()) != null) {
+
+            employee = userRepository.findByEmployeeNumber(givenInfo.getEmployeeNumber());
+            if (employee != null) {
+                if(employee.getEmployeeName().equals(givenInfo.getEmployeeNumber())) {
+                    return "Pass";
+                }
                 return "Already used Employee Number : " + givenInfo.getEmployeeNumber();
             }
-            if (userRepository.findByPhoneNumber(givenInfo.getPhoneNumber()) != null) {
+
+            employee = userRepository.findByPhoneNumber(givenInfo.getPhoneNumber());
+            if ( employee != null) {
+                if(employee.getPhoneNumber().equals(givenInfo.getPhoneNumber())) {
+                    return "Pass";
+                }
                 return "Already used Phone Number : " + givenInfo.getPhoneNumber();
             }
         } catch (Exception e) {
@@ -238,8 +251,8 @@ public class UserServiceImpl implements UserService{
                 .email(givenInfo.getEmail())
                 .pwd(oldInfo.getPwd())
                 .employeeName(givenInfo.getName())
-                .employeeNumber(oldInfo.getEmployeeNumber())
-                .gender(givenInfo.getGender())
+                .employeeNumber(givenInfo.getEmployeeNumber())
+                .gender(oldInfo.getGender())
                 .phoneNumber(givenInfo.getPhoneNumber())
                 .callNumber(givenInfo.getCallNumber())
                 .zipCode(givenInfo.getZipCode())
@@ -247,14 +260,15 @@ public class UserServiceImpl implements UserService{
                 .assignedTask(givenInfo.getAssignedTask())
                 .joinTime(givenInfo.getJoinTime())
                 .joinType(givenInfo.getJoinType())
-                .resignTime(givenInfo.getResignTime())
-                .resignYn(givenInfo.getResignYn())
+                .resignTime(oldInfo.getResignTime())
+                .resignYn(oldInfo.getResignYn())
                 .workType(givenInfo.getWorkType())
-                .contractStartTime(givenInfo.getContractStartTime())
-                .contractEndTime(givenInfo.getContractEndTime())
-                .salary(givenInfo.getSalary())
-                .absenceYn(givenInfo.getAbsenceYn())
-                .absenceContent(givenInfo.getAbsenceContent())
+                .role(Role.ROLE_USER)
+                .contractStartTime(oldInfo.getContractStartTime())
+                .contractEndTime(oldInfo.getContractEndTime())
+                .salary(oldInfo.getSalary())
+                .absenceYn(oldInfo.getAbsenceYn())
+                .absenceContent(oldInfo.getAbsenceContent())
                 .dutiesId(givenInfo.getDutiesId())
                 .positionId(givenInfo.getPositionId())
                 .teamId(givenInfo.getTeamId())

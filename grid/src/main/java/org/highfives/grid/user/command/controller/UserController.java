@@ -78,6 +78,7 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity<ResUserVO> modifyUserInfo(@PathVariable("id") int id, @RequestBody UserDTO modifyInfo) {
         System.out.println(" 여기까지 요청 들어오나? ");
+        System.out.println("id = " + id);
         System.out.println("modifyInfo = " + modifyInfo);
         if(!userService.idCheck(id, modifyInfo))
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -144,6 +145,8 @@ public class UserController {
         infos.put("email", info.getEmail());
         infos.put("pwd", info.getPwd());
 
+
+        System.out.println("infos = " + infos);
         if (userService.resetPwd(infos)){
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResUserVO(200, "Success to reset password", "/", null));
