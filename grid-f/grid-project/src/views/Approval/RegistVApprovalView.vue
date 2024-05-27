@@ -6,13 +6,16 @@ import axios from "axios";
 const route = useRoute();
 const typeId = 2;
 
-let vacationType = [];
+const state = reactive({
+  vacationType: [],
+});
+
 const postData = reactive({
   s_date: "",
-  s_time: "",
+  s_time: "00:00",
   e_date: "",
-  e_time: "",
-  info_id: 0,
+  e_time: "00:00",
+  infoId: 0,
   content: "",
   requesterId: 2    // 작성자 id
 });
@@ -30,8 +33,11 @@ const fetchVacationType = async() => {
       throw new Error("response is not ok");
     }
 
-    console.log(response.data);
-    vacationType = response.data;
+    let typeList = response.data.result;
+
+    for (const type of typeList) {
+      state.vacationType.push({value: parseInt(type.id), text: type.typeName});
+    }
 
   } catch (error) {
     console.error('Fetch error: ' + error.message);
@@ -42,18 +48,17 @@ const registApproval = async () => {
 
   alert('결재를 제출하시겠습니까?');
 
+  console.log(postData);
   try {
-    const response = await axios.post(`http://localhost:8080/approval/overtime`, postData, {
+
+    const response = await axios.post(`http://localhost:8080/approval/vacation`, postData, {
       headers: {
         'Content-Type': "application/json"
       }
     })
-
-    console.log(postData);
-    console.log(response);
-
     if (response.status !== 201) {
       throw new Error("response is not ok");
+
     }
 
   } catch (error) {
@@ -72,7 +77,7 @@ watch(
 );
 
 onMounted(async() => {
-  await fetchVacationType();
+  fetchVacationType();
 })
 </script>
 
@@ -81,7 +86,7 @@ onMounted(async() => {
     <b-card bg-variant="light">
       <b-form-group
           label-cols-lg="3"
-          label="시간 외 근무 결재"
+          label="휴가 결재"
           label-size="lg"
           label-class="font-weight-bold pt-0"
           class="mb-0"
@@ -112,7 +117,7 @@ onMounted(async() => {
             label-cols-sm="3"
             label-align-sm="right"
         >
-          <b-form-select v-model="selected" :options="options"></b-form-select>
+          <b-form-select v-model="postData.infoId" :options="state.vacationType"></b-form-select>
         </b-form-group>
 
         <b-form-group
