@@ -1,40 +1,27 @@
-package org.highfives.grid.department.command.aggregate;
+package org.highfives.grid.department.query.aggregate;
 
-import jakarta.persistence.*;
 import lombok.*;
+import org.highfives.grid.department.query.aggregate.TeamStatus;
 
 @NoArgsConstructor
 @Getter
+@Setter
 @ToString
-@Entity
-@Table(name = "team")
 public class Team {
-
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "team_name")
     private String teamName;
 
-    @Column(name = "member_cnt")
     private int memberCnt;
 
-    @Column(name = "team_status")
-    @Enumerated(EnumType.STRING)
     private TeamStatus teamStatus;
 
-    @Column(name = "start_time")
     private String startTime;
 
-    @Column(name = "end_time")
     private String endTime;
 
-    @Column(name = "department_id")
     private int departmentId;
 
-    @Column(name = "leader_id")
     private int leaderId;
 
     @Builder

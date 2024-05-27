@@ -9,13 +9,13 @@ import java.util.List;
 public interface ReviewService {
     ReviewDTO findReviewById(int id);
 
-    ReviewDTO addReview(ReviewDTO reviewDTO);
+    List<ReviewDTO> addReview(List<ReviewDTO> reviewDTO);
 
     List<ReviewListDTO> findAllReview();
 
     ReviewHistoryDTO findReviewHistoryById(int id);
 
-    ReviewHistoryDTO addReviewHistory(ReviewHistoryDTO historyDTO);
+    List<ReviewHistoryDTO> addReviewHistory(ReviewHistoryDTO historyDTO);
 
     ReviewHistoryDTO modifyReviewHistory(ReviewHistoryDTO historyDTO);
 
