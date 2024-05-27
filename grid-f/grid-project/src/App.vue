@@ -58,6 +58,7 @@
 </template>
 
 <style scoped>
+
 body {
     margin: 0;
     padding: 0;
@@ -117,6 +118,7 @@ body {
     font-size: 10px;
     justify-self: flex-end;
 }
+
 
 .container-full {
   display: flex;

@@ -171,6 +171,7 @@ const router = createRouter({
         {
             path: '/regist/vacation',
             component: () => import('@/views/Approval/RegistVApprovalView.vue')
+>>>>>>> develop
         }
     ]
 })
