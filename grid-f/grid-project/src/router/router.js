@@ -171,6 +171,10 @@ const router = createRouter({
         {
             path: '/regist/vacation',
             component: () => import('@/views/Approval/RegistVApprovalView.vue')
+        },
+        {
+            path: '/regist/main',
+            component: () => import('@/views/Approval/RegistMainView.vue')
         }
     ]
 })

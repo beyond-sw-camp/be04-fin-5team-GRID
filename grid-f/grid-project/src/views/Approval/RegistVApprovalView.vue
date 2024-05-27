@@ -1,84 +1,84 @@
 <script setup>
-import {onMounted, reactive, watch} from "vue";
-import {useRoute} from "vue-router";
-import axios from "axios";
+  import {onMounted, reactive, watch} from "vue";
+  import {useRoute} from "vue-router";
+  import axios from "axios";
 
-const route = useRoute();
-const typeId = 2;
+  const route = useRoute();
+  const typeId = 2;
 
-const state = reactive({
-  vacationType: [],
-});
+  const state = reactive({
+    vacationType: [],
+  });
 
-const postData = reactive({
-  s_date: "",
-  s_time: "00:00",
-  e_date: "",
-  e_time: "00:00",
-  infoId: 0,
-  content: "",
-  requesterId: 2    // 작성자 id
-});
+  const postData = reactive({
+    s_date: "",
+    s_time: "00:00",
+    e_date: "",
+    e_time: "00:00",
+    infoId: 0,
+    content: "",
+    requesterId: 2    // 작성자 id
+  });
 
-const updateDateTime = () => {
-  postData.startTime = `${postData.s_date} ${postData.s_time}:00`;
-  postData.endTime = `${postData.e_date} ${postData.e_time}:00`;
-};
+  const updateDateTime = () => {
+    postData.startTime = `${postData.s_date} ${postData.s_time}:00`;
+    postData.endTime = `${postData.e_date} ${postData.e_time}:00`;
+  };
 
-const fetchVacationType = async() => {
-  try {
-    const response = await axios.get(`http://localhost:8080/vacation/type`);
+  const fetchVacationType = async() => {
+    try {
+      const response = await axios.get(`http://localhost:8080/vacation/type`);
 
-    if (response.status !== 200) {
-      throw new Error("response is not ok");
-    }
-
-    let typeList = response.data.result;
-
-    for (const type of typeList) {
-      state.vacationType.push({value: parseInt(type.id), text: type.typeName});
-    }
-
-  } catch (error) {
-    console.error('Fetch error: ' + error.message);
-  }
-};
-
-const registApproval = async () => {
-
-  alert('결재를 제출하시겠습니까?');
-
-  console.log(postData);
-  try {
-
-    const response = await axios.post(`http://localhost:8080/approval/vacation`, postData, {
-      headers: {
-        'Content-Type': "application/json"
+      if (response.status !== 200) {
+        throw new Error("response is not ok");
       }
-    })
-    if (response.status !== 201) {
-      throw new Error("response is not ok");
 
+      let typeList = response.data.result;
+
+      for (const type of typeList) {
+        state.vacationType.push({value: parseInt(type.id), text: type.typeName});
+      }
+
+    } catch (error) {
+      console.error('Fetch error: ' + error.message);
     }
+  };
 
-  } catch (error) {
-    console.error('Fail to post: ', error.message);
+  const registApproval = async () => {
+
+    alert('결재를 제출하시겠습니까?');
+
+    console.log(postData);
+    try {
+
+      const response = await axios.post(`http://localhost:8080/approval/vacation`, postData, {
+        headers: {
+          'Content-Type': "application/json"
+        }
+      })
+      if (response.status !== 201) {
+        throw new Error("response is not ok");
+
+      }
+
+    } catch (error) {
+      console.error('Fail to post: ', error.message);
+    }
   }
-}
 
-watch(
-    () => [postData.s_date, postData.s_time],
-    updateDateTime
-);
+  watch(
+      () => [postData.s_date, postData.s_time],
+      updateDateTime
+  );
 
-watch(
-    () => [postData.e_date, postData.e_time],
-    updateDateTime
-);
+  watch(
+      () => [postData.e_date, postData.e_time],
+      updateDateTime
+  );
 
-onMounted(async() => {
-  fetchVacationType();
-})
+  onMounted(async() => {
+    fetchVacationType();
+  })
 </script>
 
 <template>
