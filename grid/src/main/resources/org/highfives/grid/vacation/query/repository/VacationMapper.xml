@@ -70,14 +70,20 @@
     </select>
     <select id="selectUserVacationInfo" parameterType="_int" resultMap="vacationInfoResultMap" >
         SELECT
-        ID,
-        VACATION_NUM,
-        ADD_TIME,
-        END_TIME,
-        EMPLOYEE_ID,
-        TYPE_ID
-        FROM VACATION_INFO
-        WHERE EMPLOYEE_ID = #{employeeId}
+        vi.ID,
+        vi.VACATION_NUM,
+        vi.ADD_TIME,
+        vi.END_TIME,
+        vi.EMPLOYEE_ID,
+        vi.TYPE_ID,
+        em.EMPLOYEE_NAME,
+        em.EMPLOYEE_NUMBER,
+        vt.TYPE_NAME
+        FROM VACATION_INFO vi
+        JOIN VACATION_TYPE vt ON vi.TYPE_ID = vt.ID
+        JOIN EMPLOYEE em ON vi.EMPLOYEE_ID = em.ID
+        WHERE vi.EMPLOYEE_ID = #{employeeId}
+        ORDER BY vi.ID ASC
     </select>
     <select id="selectAllPolicy" parameterType="_int" resultMap="vacationPolicyWithTypeNameResultMap">
         SELECT
@@ -205,6 +211,25 @@
         JOIN EMPLOYEE e ON vh.employee_id = e.id
         JOIN VACATION_TYPE vt ON vt.id = vh.type_id
         JOIN VACATION_CHANGE_TYPE vct on vh.change_type_id = vct.id
+        ORDER BY vh.ID ASC
+    </select>
+    <select id="userVacationHistoryTable" parameterType="_int" resultMap="vacationHistoryDTOResultMap">
+        SELECT
+        vh.ID,
+        vh.CHANGE_TIME,
+        vh.CHANGE_REASON,
+        vh.TYPE_ID,
+        vh.CHANGE_TYPE_ID,
+        vh.EMPLOYEE_ID,
+        e.EMPLOYEE_NAME AS EMPLOYEE_NAME,
+        e.EMPLOYEE_NUMBER AS EMPLOYEE_NUMBER,
+        vt.TYPE_NAME AS TYPE_NAME,
+        vct.TYPE_NAME AS CHANGE_TYPE_NAME
+        FROM VACATION_HISTORY vh
+        JOIN EMPLOYEE e ON vh.employee_id = e.id
+        JOIN VACATION_TYPE vt ON vt.id = vh.type_id
+        JOIN VACATION_CHANGE_TYPE vct on vh.change_type_id = vct.id
+        WHERE vh.EMPLOYEE_ID = #{employeeId}
         ORDER BY vh.ID ASC
     </select>
     <select id="selectAllType" resultMap="vacationTypeResultMap">
