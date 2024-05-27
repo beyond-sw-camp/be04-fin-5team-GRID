@@ -12,6 +12,7 @@
     "@json2csv/plainjs": "^7.0.6",
     "axios": "^1.6.8",
     "bootstrap": "^5.2.3",
+    "date-fns": "^3.6.0",
     "element-plus": "^2.7.3",
     "file-saver": "^2.0.5",
     "js-cookie": "^3.0.5",
@@ -23,8 +24,8 @@
     "vue-draggable-nested-tree": "^2.3.0-beta.1",
     "vue-ripple-directive": "^2.0.1",
     "vue-router": "^4.3.2",
-    "vuedraggable": "^4.1.0"
-
+    "vuedraggable": "^4.1.0",
+    "vuex": "^4.0.2"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.4",

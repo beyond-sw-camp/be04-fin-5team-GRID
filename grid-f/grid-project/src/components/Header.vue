@@ -39,15 +39,19 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import axios from 'axios';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import draggable from 'vuedraggable';
 import { useRouter } from 'vue-router';
+import { useStore } from 'vuex';
 
 const departments = ref([]);
 const info = ref();
 const router = useRouter();
+const store = useStore();
+
+const email = computed(() => store.state.email);
 
 const fetchDepartments = async () => {
   try {
@@ -59,6 +63,17 @@ const fetchDepartments = async () => {
     }));
   } catch (error) {
     console.error('부서 정보를 가져오는 데 실패했습니다:', error);
+  }
+};
+
+const fetchUserInfo = async () => {
+  try {
+    console.log('email:', email.value);
+    const response = await axios.get(`http://localhost:8080/users/mail/${email.value}`);
+    info.value = response.data;
+    console.log('User info:', info.value);
+  } catch (error) {
+    console.error('사용자 정보를 가져오는 데 실패했습니다:', error);
   }
 };
 
@@ -77,6 +92,7 @@ const handleDragEnd = async () => {
 };
 
 const goToProfile = (employeeNumber) => {
+  console.log(info.value.employeeNumber);
   router.push(`/hr/profile/${employeeNumber}`); // 개인 정보 페이지로 이동
 };
 
@@ -84,14 +100,23 @@ const logout = async () => {
   try {
     await axios.post('http://localhost:8080/logout', {}, { withCredentials: true });
     localStorage.removeItem('access');
+    store.dispatch('resetState');
+    alert('로그아웃 되었습니다');
     router.push('/');
   } catch (error) {
     console.error('로그아웃 중 오류가 발생했습니다:', error);
   }
 };
 
+function main() {
+  router.push('/main');
+}
 
-onMounted(fetchDepartments);
+onMounted(() => {
+  fetchDepartments();
+  fetchUserInfo();
+});
+
 </script>
 
 <style scoped>
@@ -135,8 +160,8 @@ onMounted(fetchDepartments);
 }
 
 .profile {
-  width: 40px;
-  height: 40px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   cursor: pointer;
   margin-right: 50px;

@@ -86,7 +86,7 @@
 import { ref, watch } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
-
+import { useStore } from 'vuex';
 
 const inputValue = ref('');
 const inputPwd = ref('');
@@ -96,6 +96,7 @@ const isValueExistence = ref(false);
 const isValue2Existence = ref(false);
 const isWrong = ref(false);
 const router = useRouter();
+const store = useStore();
 
 async function Login() {
 
@@ -128,6 +129,7 @@ async function Login() {
                     localStorage.setItem('access', response.data.access)
                     alert('로그인 되었습니다');
                     isWrong.value = false;
+                    store.dispatch('updateEmail', inputValue.value);
                     router.push('/main');
                 }
             })

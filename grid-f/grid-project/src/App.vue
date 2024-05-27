@@ -18,7 +18,6 @@ const layoutHiddenPaths = [
   '/test'
 ];
 
-// 현재 경로가 layoutHiddenPaths에 포함되어 있는지 확인하는 computed 프로퍼티
 const showLayout = computed(() => {
   return !layoutHiddenPaths.some(hiddenPath => {
     const regex = new RegExp(`^${hiddenPath.replace(/:\w+/g, '[^/]+')}$`);
@@ -26,12 +25,10 @@ const showLayout = computed(() => {
   });
 });
 
-// 컨테이너 클래스 설정
 const containerClass = computed(() => {
   return showLayout.value ? 'container' : 'container-full';
 });
 
-// 메인 컨텐츠 클래스 설정
 const mainContentClass = computed(() => {
   return showLayout.value ? 'main-content' : 'main-content-full';
 });

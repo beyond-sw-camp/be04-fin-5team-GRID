@@ -1,6 +1,8 @@
 package org.highfives.grid.user.query.service;
 
+import org.highfives.grid.user.query.dto.DutiesDTO;
 import org.highfives.grid.user.query.dto.LeaderInfoDTO;
+import org.highfives.grid.user.query.dto.PositionDTO;
 import org.highfives.grid.user.query.dto.UserDTO;
 import org.highfives.grid.user.query.repository.UserMapper;
 import org.highfives.grid.user.query.repository.ImgMapper;
@@ -45,6 +47,21 @@ public class UserServiceImpl implements UserService{
 
         Map<String, Object> info = new HashMap<>();
         info.put("id", id);
+
+        try {
+            UserDTO result = userMapper.getUserInfo(info);
+            result.setProfilePath(imgMapper.getProfileImg(result.getId()));
+            return result;
+
+        } catch (NullPointerException e) {
+            return null;
+        }
+    }
+
+    @Override
+    public UserDTO findUserByEmail(String email) {
+        Map<String, Object> info = new HashMap<>();
+        info.put("email", email);
 
         try {
             UserDTO result = userMapper.getUserInfo(info);
@@ -107,6 +124,18 @@ public class UserServiceImpl implements UserService{
         result.setTeamLeaderPosition(info.getTeamLeaderPosition());
 
         return result;
+    }
+
+    @Override
+    public List<PositionDTO> findPositions() {
+
+        return userMapper.findPositions();
+    }
+
+    @Override
+    public List<DutiesDTO> findDuties() {
+
+        return userMapper.findDuties();
     }
 
     @Override

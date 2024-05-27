@@ -1,5 +1,4 @@
-import {createRouter, createWebHistory} from 'vue-router';
-
+import { createRouter, createWebHistory } from 'vue-router';
 
 const router = createRouter({
 
@@ -10,7 +9,6 @@ const router = createRouter({
             component: () => import('../views/Login/Login.vue')
         },
         {
-
             path: '/find/id',
             component: () => import('../views/Login/FindId.vue')
         },
@@ -44,6 +42,7 @@ const router = createRouter({
         },
         {
             path: '/hr/modify/:employeeNumber',
+            name: 'Modify',
             component: () => import('../views/HumanResources/Modify.vue')
         },
         {
@@ -53,20 +52,21 @@ const router = createRouter({
         {
             path: '/hr/add',
             component: () => import('../views/HumanResources/Add.vue')
-        },
-        {
-            path: '/bt',
-            component: () => import('@/views/Approval/BTApprovalListView.vue')
-        },
-        {
-            path: '/overtime',
-            component: () => import('@/views/Approval/OApprovalListView.vue')
-        },
-        {
-            path: '/vacation',
-            component: () => import('@/views/Approval/VApprovalListView.vue')
         }
     ]
 })
+
+router.beforeEach((to, from, next) => {
+    const accessToken = localStorage.getItem('access');
+    const refreshToken = document.cookie.split('; ').find(row => row.startsWith('refresh='));
+
+    if (to.path === '/' && (accessToken || refreshToken)) {
+        next({ path: '/main' });
+    } else if (to.path !== '/' && !accessToken && !refreshToken) {
+        next({ path: '/' });
+    } else {
+        next();
+    }
+});
 
 export default router;

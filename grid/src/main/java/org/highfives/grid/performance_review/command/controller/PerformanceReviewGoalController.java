@@ -183,7 +183,7 @@ public class PerformanceReviewGoalController {
     }
 
     // 업적 평가 목표 확인중
-    @PutMapping("/read")
+    @PutMapping("/Read")
     public ResponseEntity<ResponseGoalAndItemVO> modifyGoalStatusRead(
             @RequestBody RequestGoalVO requestGoalVO) {
 
@@ -246,7 +246,7 @@ public class PerformanceReviewGoalController {
     }
 
     // 승인
-    @PutMapping("/approval")
+    @PutMapping("/Approval")
     public ResponseEntity<ResponseGoalAndItemVO> modifyGoalStatusApproval(
             @RequestBody RequestGoalVO requestGoalVO) {
 
@@ -281,7 +281,7 @@ public class PerformanceReviewGoalController {
 
 
     // 반려
-    @PutMapping("/denied")
+    @PutMapping("/Denied")
     public ResponseEntity<ResponseGoalAndItemVO> modifyGoalStatusDenied(
             @RequestBody RequestGoalVO requestGoalVO) {
 

@@ -2,7 +2,6 @@ package org.highfives.grid.approval_chain.common.dto;
 
 import lombok.*;
 import org.highfives.grid.approval_chain.command.aggregate.ChainStatus;
-import org.highfives.grid.user.query.dto.UserDTO;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -26,6 +25,4 @@ public class ChainDTO {
     private int employeeId;
 
     private int chainId;
-
-    private UserDTO user;
 }

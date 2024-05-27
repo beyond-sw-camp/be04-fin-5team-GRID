@@ -16,7 +16,6 @@ import org.highfives.grid.approval_chain.command.vo.ReqAddApprovalChainVO;
 import org.highfives.grid.approval_chain.command.vo.ChainStatusVO;
 import org.highfives.grid.approval_chain.common.dto.*;
 import org.highfives.grid.user.command.service.UserService;
-import org.highfives.grid.vacation.command.service.VacationService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,10 +41,9 @@ public class ApprovalChainServiceImpl implements ApprovalChainService{
     private final VApprovalRepository vApprovalRepository;
     private final org.highfives.grid.approval_chain.query.service.ApprovalChainService approvalChainService;
     private final UserService userService;
-    private final VacationService vacationService;
 
     @Autowired
-    public ApprovalChainServiceImpl(ModelMapper mapper, BTApprovalChainRepository btApprovalChainRepository, BTApprovalRepository btApprovalRepository, OApprovalChainRepository oApprovalChainRepository, OApprovalRepository oApprovalRepository, RWApprovalChainRepository rwApprovalChainRepository, RWApprovalRepository rwApprovalRepository, VApprovalChainRepository vApprovalChainRepository, VApprovalRepository vApprovalRepository, org.highfives.grid.approval_chain.query.service.ApprovalChainService approvalChainService, UserService userService, VacationService vacationService) {
+    public ApprovalChainServiceImpl(ModelMapper mapper, BTApprovalChainRepository btApprovalChainRepository, BTApprovalRepository btApprovalRepository, OApprovalChainRepository oApprovalChainRepository, OApprovalRepository oApprovalRepository, RWApprovalChainRepository rwApprovalChainRepository, RWApprovalRepository rwApprovalRepository, VApprovalChainRepository vApprovalChainRepository, VApprovalRepository vApprovalRepository, org.highfives.grid.approval_chain.query.service.ApprovalChainService approvalChainService, UserService userService) {
         this.mapper = mapper;
         this.btApprovalChainRepository = btApprovalChainRepository;
         this.btApprovalRepository = btApprovalRepository;
@@ -57,7 +55,6 @@ public class ApprovalChainServiceImpl implements ApprovalChainService{
         this.vApprovalRepository = vApprovalRepository;
         this.approvalChainService = approvalChainService;
         this.userService = userService;
-        this.vacationService = vacationService;
     }
 
     @Override
@@ -351,11 +348,6 @@ public class ApprovalChainServiceImpl implements ApprovalChainService{
             if(vacationApproval.getCancelDocId() > 0) {
                 VacationApproval canceledVApproval = vApprovalRepository.findById(vacationApproval.getCancelDocId()).orElseThrow();
                 canceledVApproval.setCancelYN(YN.Y);
-
-                vacationService.plusVacationNum(vacationApproval.getRequesterId(), vacationApproval.getInfoId());
-
-            } else {
-                vacationService.minusVacationNum(vacationApproval.getRequesterId(), vacationApproval.getInfoId());
             }
 
         } else {

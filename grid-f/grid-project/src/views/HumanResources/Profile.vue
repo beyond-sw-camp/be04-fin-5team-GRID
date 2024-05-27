@@ -49,6 +49,9 @@
         <div class="content">
             <component :is="currentTabComponent" :result="result" :userRole="userRole"></component>
         </div>
+        <div class="content">
+            <ModifyView :user="result"/>
+        </div>
     </div>
     <div class="modal fade" id="myModal">
         <div class="modal-dialog">
@@ -58,12 +61,11 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <ResetPwd :givenEmail="givenEmail" @passwordResetSuccess="handlePasswordResetSuccess"/>
+                    <ResetPwd :givenEmail="givenEmail"/>
                 </div>
             </div>
         </div>
     </div>
-
 </template>
 
 <script setup>
@@ -103,8 +105,10 @@ function parseJwt(token) {
     }
 }
 
-function toModify (employeeNumber) {
-    router.push(`/hr/modify/${employeeNumber}`);
+function toModify(employeeNumber) {
+    router.push({
+        path: `/hr/modify/${employeeNumber}`
+    });
 }
 
 onMounted(async () => {
@@ -121,8 +125,6 @@ onMounted(async () => {
     }
 
     givenEmail.value = result.value.email;
-    console.log("result: ", result);
-    console.log("result2: ", givenEmail.value);
 }
 
 )

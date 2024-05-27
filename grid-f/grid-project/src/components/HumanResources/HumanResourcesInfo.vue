@@ -138,10 +138,6 @@ const props = defineProps({
     result: {
         type: Object,
         required: true
-    },
-    userRole: {
-        type: String,
-        required: true
     }
 });
 
@@ -158,8 +154,6 @@ const resignTime = ref('');
 const currentTime = `${year}-${month}-${day}`;
 
 onMounted(() => {
-    console.log("확인: ", props.result);
-    console.log("확인2: ", props.userRole);
     if (props.result.callNumber == null) {
         callNum.value = '-';
     }

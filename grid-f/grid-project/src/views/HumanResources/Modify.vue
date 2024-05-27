@@ -2,166 +2,112 @@
     <div class="profile-main">
         <div class="profile-title">
             <img class="profile-icon" src="@/assets/profile.png" alt="인사 정보 메인 이미지">
-            <h1>인사 정보 수정</h1>
+            <h1>인사 정보 수정 </h1>
         </div>
-        <div class="first">
+        <div class="first" v-if="user">
             <div class="image">
-                <img src="https://talkimg.imbc.com/TVianUpload/tvian/TViews/image/2020/04/12/FydNALvKf23Z637223013461671479.jpg" alt="">
-            </div>
-            <div class="name">
-                <div id="name">
-                    <input v-model="user.name" type="text" />
-                </div>
-                <div id="other-info">
-                    <div id="teamInfo">
-                        <select v-model="user.teamId">
-                            <option v-for="team in teams" :key="team.id" :value="team.id">
-                                {{ team.teamName }}
-                            </option>
-                        </select>
-                    </div>
-                    <div id="dot">•</div>
-                    <div id="dutiesInfo">
-                        <select v-model="user.dutiesId">
-                            <option v-for="duty in duties" :key="duty.id" :value="duty.id">
-                                {{ duty.dutiesName }}
-                            </option>
-                        </select>
-                    </div>
-                    <div id="dot">•</div>
-                    <div id="absenceInfo">
-                        <select v-model="user.absenceYn">
-                            <option value="Y">부재중</option>
-                            <option value="N">재실</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-            <div class="button" v-if="userRole === 'ROLE_ADMIN'">
+                <img src="https://talkimg.imbc.com/TVianUpload/tvian/TViews/image/2020/04/12/FydNALvKf23Z637223013461671479.jpg"
+                    alt="">
+            </div>  
+            <div class="button">
                 <div style="margin-right: 2%;">
                     <button class="pwdBtn" data-bs-toggle="modal" data-bs-target="#myModal">비밀번호 변경</button>
                 </div>
                 <div>
-                    <button class="modifyBtn" @click="submitForm">수정 내용 저장</button>
+                    <button class="modifyBtn" @click="submitModifications">수정</button>
                 </div>
             </div>
         </div>
         <div class="second">
-            <ul class="nav nav-tabs">
-                <li class="nav-item" @click="currentTab = 'human-resources'">
-                    <a class="nav-link" :class="{ active: currentTab === 'human-resources' }" href="#">정보</a>
-                </li>
-                <li class="nav-item" @click="currentTab = 'wb'">
-                    <a class="nav-link" :class="{ active: currentTab === 'wb' }" href="#">근무/휴가</a>
-                </li>
-            </ul>
+            <div class="oldInfo">
+                기존 정보
+            </div>
+            <div class="newInfo">
+                변경 정보
+            </div>        
         </div>
         <div class="content">
-            <component :is="currentTabComponent" :result="result" :userRole="userRole"></component>
-        </div>
-    </div>
-    <div class="modal fade" id="myModal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">유저 비밀번호 변경</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <ResetPwd :givenEmail="givenEmail" @passwordResetSuccess="handlePasswordResetSuccess" />
-                </div>
-            </div>
+            <ModifyInfo :user="user"/>
         </div>
     </div>
 </template>
 
 <script setup>
-import HumanResourcesInfo from '@/components/HumanResources/HumanResourcesInfo.vue';
-import WB from '@/components/HumanResources/WorkVacation.vue';
+import ModifyInfo from '@/components/HumanResources/ModifyInfo.vue';
 import ResetPwd from '@/components/Login/ResetPassword.vue';
 import { ref, computed, onMounted } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 import axios from 'axios';
 
-const currentTab = ref('human-resources');
-const route = useRoute();
-const result = ref('');
-const isAbsence = ref(false);
-const userRole = ref('');
-const givenEmail = ref('');
-const user = ref({}); // to hold the user data for form editing
-const departments = ref([]);
-const teams = ref([]);
-const positions = ref([]);
-const duties = ref([]);
+const router = useRouter();
+const user = ref();
+const name = ref('');
+const updatedUser = ref(null);
 
-const tabComponents = {
-    'human-resources': HumanResourcesInfo,
-    'wb': WB,
+const cleanUserData = (userData) => {
+    return {
+        email: userData.email,
+        pwd: userData.pwd,
+        name: userData.name,
+        employeeNumber: userData.employeeNumber,
+        phoneNumber: userData.phoneNumber,
+        callNumber: userData.callNumber,
+        zipCode: userData.zipCode,
+        address: userData.address,
+        assignedTask: userData.assignedTask,
+        joinTime: userData.joinTime,
+        joinType: userData.joinType,
+        workType: userData.workType,
+        resignYn: userData.resignYn,
+        resignedTime: userData.resignedTime,
+        departmentId: userData.departmentId,
+        teamId: userData.teamId,
+        positionId: userData.positionId,
+        dutiesId: userData.dutiesId,
+    };
 };
 
-const currentTabComponent = computed(() => tabComponents[currentTab.value]);
-
-function parseJwt(token) {
+const submitModifications = async () => {
     try {
-        const base64Url = token.split('.')[1];
-        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
-            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-        }).join(''));
-        return JSON.parse(jsonPayload);
+        console.log('변경될 정보 확인: ', updatedUser.value);
+        const cleanedData = cleanUserData(updatedUser.value);
+        console.log('변경될 정보 확인22: ', cleanedData);
+        const response = await axios.put(`http://localhost:8080/users/${user.value.id}`, cleanedData);
+        alert("수정이 완료되었습니다.");
+        router.push(`/hr/profile/${user.employeeNumber}`);
     } catch (error) {
-        console.error('Invalid token', error);
-        return null;
+        console.error("수정 중 오류 발생: ", error);
+        alert("수정 중 오류가 발생했습니다.");
     }
-}
+};
 
-function handlePasswordResetSuccess() {
-    const myModal = new bootstrap.Modal(document.getElementById('myModal'));
-    myModal.hide();
-}
+const updateUser = (newData) => {
+    updatedUser.value = { 
+        ...user.value, 
+        ...newData,
+        departmentId: newData.departmentId !== undefined ? newData.departmentId : user.value.department?.id,
+        teamId: newData.teamId !== undefined ? newData.teamId : user.value.team?.id,
+        positionId: newData.positionId !== undefined ? newData.positionId : user.value.position?.id,
+        dutiesId: newData.dutiesId !== undefined ? newData.dutiesId : user.value.duties?.id,
+    };
+};
 
-async function fetchDropdownData() {
-    const departmentResponse = await axios.get('/api/departments');
-    const teamResponse = await axios.get('/api/teams');
-    const positionResponse = await axios.get('/api/positions');
-    const dutiesResponse = await axios.get('/api/duties');
-    departments.value = departmentResponse.data;
-    teams.value = teamResponse.data;
-    positions.value = positionResponse.data;
-    duties.value = dutiesResponse.data;
-}
-
-async function submitForm() {
-    try {
-        await axios.put(`http://localhost:8080/users/${route.params.employeeNumber}`, user.value);
-        alert('수정 내용이 저장되었습니다.');
-    } catch (error) {
-        alert('수정 내용 저장에 실패했습니다.');
-        console.error(error);
+onMounted(() => {
+    const userData = sessionStorage.getItem('user');
+    if (userData) {
+        const parsedUser = JSON.parse(userData);
+        if (parsedUser && parsedUser.id) {
+            user.value = parsedUser;
+            updatedUser.value = { ...user.value };
+            console.log("유저 정보 확인: ", user.value);
+        } else {
+            console.error("유저 정보가 올바르지 않습니다. ID가 없습니다.");
+        }
+    } else {
+        console.error("SessionStorage에 유저 정보가 없습니다.");
     }
-}
-
-onMounted(async () => {
-    const token = localStorage.getItem('access');
-    if (token) {
-        const decodedToken = parseJwt(token);
-        userRole.value = decodedToken?.auth || '';
-    }
-
-    const response = await axios.get(`http://localhost:8080/users/${route.params.employeeNumber}`);
-    result.value = response.data.result;
-    user.value = response.data.result; // initialize user data for form
-    if (result.value.absenceYn === 'Y') {
-        isAbsence.value = true;
-    }
-
-    givenEmail.value = result.value.email;
-    console.log("result: ", result);
-    console.log("result2: ", givenEmail.value);
-
-    await fetchDropdownData(); // fetch dropdown data after loading user data
 });
+
 </script>
 
 <style scoped>
@@ -181,7 +127,7 @@ body {
 .profile-main {
     display: grid;
     grid-template-columns: 10% 80% 10%;
-    grid-template-rows: 18% 33% 15% auto;
+    grid-template-rows: 18% 33% 10% auto;
     height: 100%;
 }
 
@@ -211,7 +157,7 @@ body {
     grid-row-start: 2;
     grid-column-start: 2;
     display: grid;
-    grid-template-columns: 17% 53% 30%;
+    grid-template-columns: 17% 23% 30% 30%;
     max-height: 100%;
     max-width: 100%;
 }
@@ -245,6 +191,7 @@ body {
 #other-info {
     display: flex;
     flex-direction: row;
+
 }
 
 #teamInfo {
@@ -265,6 +212,7 @@ body {
 }
 
 .button {
+    grid-column-start: 4;
     display: flex;
     justify-content: flex-end;
 }
@@ -300,13 +248,24 @@ body {
     font-style: bold;
 }
 
+.modifyFirst {
+    grid-column-start: 3;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 0.5em;
+    height: 100%;
+    width: 100%;
+}
+
 .second {
     grid-row-start: 3;
     grid-column-start: 2;
     height: 100%;
     width: 100%;
-    display: flex;
+    display: grid;
     align-items: flex-end;
+    grid-template-columns: 25% auto 45%;
 }
 
 .content {
@@ -318,5 +277,19 @@ body {
 .modal-body {
     padding: 0 0 50px 0;
     height: 50%;
+}
+
+.oldInfo {
+    grid-column-start: 2;
+    text-align: center;
+    color: rgb(180, 177, 177);
+    font-weight: bold;
+}
+
+.newInfo {
+    grid-column-start: 3;
+    text-align: center;
+    color: rgb(180, 177, 177);
+    font-weight: bold;
 }
 </style>

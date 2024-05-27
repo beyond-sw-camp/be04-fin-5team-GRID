@@ -43,6 +43,9 @@ public class TotalPerformanceReviewServiceImpl implements TotalPerformanceReview
         List<PerformanceReviewItemDTO> midReviewItemList = performanceReviewItemService.findByReviewId(midReview.getId());
         List<PerformanceReviewItemDTO> finReviewItemList = performanceReviewItemService.findByReviewId(finReview.getId());
 
+        System.out.println(midReviewItemList);
+        System.out.println(finReviewItemList);
+
         // 업적 종합 평가 점수
         double totalScore = 0;
         for (int i = 0; i < midReviewItemList.size(); i++){
@@ -51,9 +54,11 @@ public class TotalPerformanceReviewServiceImpl implements TotalPerformanceReview
 
             totalScore += m * 0.3 + f * 0.7;
         }
+        System.out.println(totalScore);
 
         // 등급 조회
         int totalId = calculateGrade(totalScore);
+        System.out.println(totalId);
 
         // 종합 평가 생성
         TotalPerformanceReview totalPerformanceReview = new TotalPerformanceReview(
@@ -86,7 +91,7 @@ public class TotalPerformanceReviewServiceImpl implements TotalPerformanceReview
             }
         }
 
-        // 최저 등급 설정
+        // 디폴트 등급 설정
         return 5;
     }
 }

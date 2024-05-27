@@ -28,6 +28,7 @@ public class PerformanceReviewGoalServiceImpl implements PerformanceReviewGoalSe
     @Override
     @Transactional
     public PerformanceReviewGoalDTO addNewGoal(PerformanceReviewGoalDTO performanceReviewGoalDTO) {
+        System.out.println(performanceReviewGoalDTO);
 
         // 작성중 기본값으로 변경
         PerformanceReviewGoal goal = new PerformanceReviewGoal(
@@ -41,15 +42,17 @@ public class PerformanceReviewGoalServiceImpl implements PerformanceReviewGoalSe
                 performanceReviewGoalDTO.getApprovalTime()
         );
 
+        System.out.println(goal);
         performanceReviewGoalRepository.save(goal);
 
+        System.out.println("저장완료");
         PerformanceReviewGoal saveGoal = performanceReviewGoalRepository.findByYearAndWriterId(
                 performanceReviewGoalDTO.getYear(),
                 performanceReviewGoalDTO.getWriterId()
         );
-
+        System.out.println(saveGoal);
         PerformanceReviewGoalDTO saveGoalDTO = modelMapper.map(saveGoal, PerformanceReviewGoalDTO.class);
-
+        System.out.println(saveGoalDTO);
         return saveGoalDTO;
     }
 

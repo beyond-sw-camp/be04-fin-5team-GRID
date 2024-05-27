@@ -11,7 +11,5 @@ public class ApprovalVO {
 
     int typeId;
 
-    int employeeId;
-
     int approvalId;
 }
