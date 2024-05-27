@@ -17,7 +17,7 @@ public class VacationController {
         this.vacationService = vacationService;
     }
 
-    @GetMapping("/all")
+    @GetMapping("/info")
     public ResponseEntity<ResVacationInfoVO> getAllVacations() {
         ResVacationInfoVO vacations = vacationService.getAllVacations();
         return ResponseEntity.status(HttpStatus.OK).body(vacations);

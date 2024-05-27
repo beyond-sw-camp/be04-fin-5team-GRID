@@ -10,6 +10,9 @@
         <result property="endTime" column="END_TIME"/>
         <result property="employeeId" column="EMPLOYEE_ID"/>
         <result property="typeId" column="TYPE_ID"/>
+        <result property="typeName" column="TYPE_NAME"/>
+        <result property="employeeName" column="EMPLOYEE_NAME"/>
+        <result property="employeeNumber" column="EMPLOYEE_NUMBER"/>
     </resultMap>
     <resultMap id="vacationPolicyResultMap" type="org.highfives.grid.vacation.query.entity.VacationPolicy">
         <id property="id" column="ID"/>
@@ -51,13 +54,19 @@
     </resultMap>
     <select id="selectAllVacationInfo" resultMap="vacationInfoResultMap" >
         SELECT
-        ID,
-        VACATION_NUM,
-        ADD_TIME,
-        END_TIME,
-        EMPLOYEE_ID,
-        TYPE_ID
-        FROM VACATION_INFO
+        vi.ID,
+        vi.VACATION_NUM,
+        vi.ADD_TIME,
+        vi.END_TIME,
+        vi.EMPLOYEE_ID,
+        vi.TYPE_ID,
+        em.EMPLOYEE_NAME,
+        em.EMPLOYEE_NUMBER,
+        vt.TYPE_NAME
+        FROM VACATION_INFO vi
+        JOIN VACATION_TYPE vt ON vi.TYPE_ID = vt.ID
+        JOIN EMPLOYEE em ON vi.EMPLOYEE_ID = em.ID
+        ORDER BY vi.ID ASC
     </select>
     <select id="selectUserVacationInfo" parameterType="_int" resultMap="vacationInfoResultMap" >
         SELECT
