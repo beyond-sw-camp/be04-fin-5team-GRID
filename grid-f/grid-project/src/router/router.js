@@ -81,23 +81,23 @@ const router = createRouter({
             component: () => import('../views/HumanResources/Add.vue')
         },
         {
-            path: '/bt',
+            path: '/bt/:employeeId',
             component: () => import('@/views/Approval/BTApprovalListView.vue')
         },
         {
-            path: '/overtime',
+            path: '/overtime/:employeeId',
             component: () => import('@/views/Approval/OApprovalListView.vue')
         },
         {
-            path: '/vacation',
+            path: '/vacation/:employeeId',
             component: () => import('@/views/Approval/VApprovalListView.vue')
         },
         {
-            path: '/approval',
+            path: '/approval/:employeeId',
             component: () => import('@/views/Approval/AllApprovalListView.vue')
         },
         {
-            path: '/approval-detail/:typeId/:approvalId',
+            path: '/approval/detail/:typeId/:approvalId',
             component: () => import('@/views/Approval/ApprovalDetailView.vue')
         },
         {

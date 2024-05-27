@@ -1,10 +1,17 @@
-import { createApp } from 'vue'
-import App from './App.vue'
-import axios from 'axios'
-import router from '../src/router/router.js'
+import { createApp } from 'vue';
+import App from './App.vue';
+import router from './router/router.js';
+import axios from 'axios';
 
-const app = createApp(App)
+import {BootstrapVue3} from "bootstrap-vue-3";
+
+import 'bootstrap/dist/css/bootstrap.css';
+import 'bootstrap-vue-3/dist/bootstrap-vue-3.css';
+
+const app = createApp(App);
+
 app.use(router);
-app.mount('#app')
-app.provide('$axios', axios)
+app.use(BootstrapVue3);
+app.provide('$axios', axios);
 
+app.mount('#app');
