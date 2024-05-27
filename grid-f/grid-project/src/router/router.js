@@ -43,6 +43,14 @@ const router = createRouter({
             component: () => import('../views/PerformanceReview/GoalDetailView.vue')
         },
         {
+            path: '/ad-time',
+            component: () => import('../views/AdTime/AdTimeListView.vue')
+        },
+        {
+            path: '/ad-time/add',
+            component: () => import('../views/AdTime/AdTimeAddView.vue')
+        },
+        {
             path: '/hr',
             component: () => import('../views/HumanResources/Main.vue')
         },
