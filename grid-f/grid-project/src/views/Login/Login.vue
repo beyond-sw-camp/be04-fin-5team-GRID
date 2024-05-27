@@ -14,7 +14,7 @@
                 <div class="email">
                     <div class="outBox" :class="{ 'existence': isExistence }">
                         <div class="inputBox">
-                            <input type="text" v-model="inputValue">
+                            <input type="text" v-model="inputValue" @keyup.enter="Login">
                             <label for="sampleId">이메일</label>
                         </div>
                     </div>
@@ -31,7 +31,7 @@
                 <div class="password">
                     <div class="outBox" :class="{ 'existence': isPwdExistence }">
                         <div class="inputBox">
-                            <input type="password" v-model="inputPwd">
+                            <input type="password" v-model="inputPwd" @keyup.enter="Login">
                             <label for="samplePwd">비밀번호</label>
                         </div>
                     </div>
