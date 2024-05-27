@@ -4,10 +4,7 @@ import org.highfives.grid.review.command.dto.ReviewDTO;
 import org.highfives.grid.review.command.dto.ReviewHistoryDTO;
 import org.highfives.grid.review.command.dto.ReviewListDTO;
 import org.highfives.grid.review.command.service.ReviewService;
-import org.highfives.grid.review.command.vo.ResponseAddReviewListVO;
-import org.highfives.grid.review.command.vo.ResponseReviewHistoryVO;
-import org.highfives.grid.review.command.vo.ResponseReviewListVO;
-import org.highfives.grid.review.command.vo.ResponseReviewVO;
+import org.highfives.grid.review.command.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,11 +42,11 @@ public class ReviewController {
 
     /* 설명. 평가 후 결과 저장 기능 (Review) */
     @PostMapping
-    public ResponseEntity<ResponseReviewVO> addReview(@RequestBody ReviewDTO requestData) {
+    public ResponseEntity<ResponseAddReviewVO> addReview(@RequestBody List<ReviewDTO> requestData) {
 
-         ReviewDTO reviewInfo = reviewService.addReview(requestData);
+         List<ReviewDTO> reviewInfo = reviewService.addReview(requestData);
 
-        ResponseReviewVO responseReviewVO = ResponseReviewVO.builder()
+        ResponseAddReviewVO responseReviewVO = ResponseAddReviewVO.builder()
                 .message("create success")
                 .statusCode(201)
                 .href("/review")

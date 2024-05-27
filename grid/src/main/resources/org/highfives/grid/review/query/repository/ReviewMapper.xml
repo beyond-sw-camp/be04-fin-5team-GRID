@@ -28,6 +28,7 @@
         A.WRITE_TIME ,
         A.YEAR,
         A.QUARTER,
+        A.REVIEW_STATUS,
         A.REVIEWER_ID,
         A.REVIEWEE_ID,
         B.ID AS MEMBER_REVIEW_ID,
@@ -59,6 +60,7 @@
         A.CONTENT,
         A.WRITE_TIME ,
         A.YEAR,
+        A.REVIEW_STATUS,
         A.QUARTER,
         A.REVIEWER_ID,
         A.REVIEWEE_ID

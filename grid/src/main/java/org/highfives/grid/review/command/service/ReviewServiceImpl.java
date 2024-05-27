@@ -62,16 +62,23 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional
-    public ReviewDTO addReview(ReviewDTO reviewDTO) {
+    public List<ReviewDTO> addReview(List<ReviewDTO> reviewDTO) {
 
-        Review review = Review.builder()
-                .score(reviewDTO.getScore())
-                .reviewId(reviewDTO.getReviewId())
-                .historyId(reviewDTO.getHistoryId())
-                .build();
+        List<ReviewDTO> reviewList = new ArrayList<>();
 
-        reviewRepository.save(review);
-        return mapper.map(review, ReviewDTO.class);
+        for (ReviewDTO reviewdata : reviewDTO) {
+            Review review = Review.builder()
+                    .score(reviewdata.getScore())
+                    .reviewId(reviewdata.getReviewId())
+                    .historyId(reviewdata.getHistoryId())
+                    .build();
+            reviewRepository.save(review);
+
+            reviewList.add(mapper.map(review, ReviewDTO.class));
+        }
+
+
+        return reviewList;
 
     }
 
@@ -160,7 +167,7 @@ public class ReviewServiceImpl implements ReviewService {
                 .content(historyDTO.getContent())
                 .year(historyDTO.getYear())
                 .quarter(historyDTO.getQuarter())
-                .reviewStatus(ReviewStatus.INCOMPLETE)
+                .reviewStatus(ReviewStatus.N)
                 .reviewerId(historyDTO.getReviewerId())
                 .revieweeId(historyDTO.getRevieweeId())
                 .build();
@@ -185,10 +192,10 @@ public class ReviewServiceImpl implements ReviewService {
                 .content(reviewHistory.getContent())
                 .year(reviewHistory.getYear())
                 .quarter(reviewHistory.getQuarter())
-                .reviewStatus(ReviewStatus.COMPLETE)
+                .reviewStatus(ReviewStatus.Y)
                 .writeTime(formattedDate)
-                .reviewerId(historyDTO.getReviewerId())
-                .revieweeId(historyDTO.getRevieweeId())
+                .reviewerId(reviewHistory.getReviewerId())
+                .revieweeId(reviewHistory.getRevieweeId())
                 .build();
 
         reviewHistoryRepository.save(updateReviewHistory);

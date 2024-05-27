@@ -9,7 +9,7 @@ import java.util.List;
 public interface ReviewService {
     ReviewDTO findReviewById(int id);
 
-    ReviewDTO addReview(ReviewDTO reviewDTO);
+    List<ReviewDTO> addReview(List<ReviewDTO> reviewDTO);
 
     List<ReviewListDTO> findAllReview();
 

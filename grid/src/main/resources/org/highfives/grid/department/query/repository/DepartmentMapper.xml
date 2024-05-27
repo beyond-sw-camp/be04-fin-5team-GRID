@@ -11,7 +11,6 @@
         <result column="department_status" property="departmentStatus"/>
         <result column="start_time" property="startTime"/>
         <result column="end_time" property="endTime"/>
-        <result column="high_department" property="highDepartment"/>
         <result column="department_code" property="departmentCode"/>
         <result column="leader_id" property="leaderId"/>
     </resultMap>
@@ -24,7 +23,6 @@
             , A.DEPARTMENT_STATUS
             , A.START_TIME
             , A.END_TIME
-            , A.HIGH_DEPARTMENT
             , A.LEADER_ID
             , A.DEPARTMENT_CODE
             , B.EMPLOYEE_NAME
