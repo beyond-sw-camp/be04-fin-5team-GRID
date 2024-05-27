@@ -38,15 +38,15 @@ const router = createRouter({
         // },
         {
             path: '/performance-review-goal/add',
-            component: () => import('../views/PerformanceReview/GoalAddView.vue')
+            component: () => import('../views/PerformanceReview/Goal/GoalAddView.vue')
         },
         {
             path: '/performance-review-goal',
-            component: () => import('../views/PerformanceReview/GoalListView.vue')
+            component: () => import('../views/PerformanceReview/Goal/GoalListView.vue')
         },
         {
             path: '/review-goal/detail/:id',
-            component: () => import('../views/PerformanceReview/GoalDetailView.vue')
+            component: () => import('../views/PerformanceReview/Goal/GoalDetailView.vue')
         },
         {
             path: '/ad-time',
@@ -139,6 +139,10 @@ const router = createRouter({
         {
             path: '/performance-review/detail/:id',
             component: () => import('../views/PerformanceReview/Review/PerformanceReviewDetailView.vue')
+        },
+        {
+            path: '/performance-review/mid',
+            component: () => import('../views/PerformanceReview/Review/MidPerformanceReviewAddView.vue')
         },
     ]
 })

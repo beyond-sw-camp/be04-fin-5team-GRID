@@ -1,8 +1,8 @@
 <template>
-  <div class="reviewDetailContainer">
+  <div class="reviewAddContainer">
     <div class="reviewTitle">
       <img class="reviewIcon" src="@/assets/icons/goal_icon.png">
-      <h1>업적 평가 목표 조회</h1>
+      <h1>업적 평가 작성</h1>
     </div>
     <div class="titleTableContainer">
       <table>
@@ -40,11 +40,6 @@
       <div v-if="userRole === 'member'">
         <button @click="memberSave()">팀원 저장</button>
         <button @click="submit()">상신</button>
-      </div>
-      <div v-if="userRole === 'leader'">
-        <button @click="leaderSave()">팀장 저장</button>
-        <button @click="complete()">확인</button>
-        <button @click="valid()">확정</button>
       </div>
     </div>
     <div class="performanceTableContainer">
@@ -128,76 +123,12 @@
           </tbody>
         </table>
       </div>
-      <div v-if="userRole === 'leader'">
-        <table>
-          <thead>
-          <tr>
-            <th>No</th>
-            <th>목표</th>
-            <th>실행과제</th>
-            <th>측정지표</th>
-            <th>세부계획</th>
-            <th>가중치</th>
-            <th>추진실적</th>
-            <th>자기 평가</th>
-            <th>자기 평가 점수</th>
-            <th>자기 평가 의견</th>
-            <th>상급 평가</th>
-            <th>상급 평가 점수</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr v-for="(item, index) in reviewItemList" :key="item.id">
-            <td>{{ index + 1 }}</td>
-            <td>
-              {{ item.goal }}
-            </td>
-            <td>
-              {{ item.actionItem }}
-            </td>
-            <td>
-              {{ item.metric }}
-            </td>
-            <td>
-              {{ item.detailPlan }}
-            </td>
-            <td>
-              {{ item.weight }}
-            </td>
-            <td>
-              {{ item.performance }}
-            </td>
-            <td>
-              {{ item.selfId }}
-            </td>
-            <td>
-              {{item.selfScore}}
-            </td>
-            <td>
-              {{ item.selfComment }}
-            </td>
-            <td>
-              <select v-if="!isReadOnly" v-model="item.superiorId" class="form-select" @change="updateSuperiorScore(item)">
-                <option value="1">S</option>
-                <option value="2">A</option>
-                <option value="3">B+</option>
-                <option value="4">B</option>
-                <option value="5">C</option>
-              </select>
-            </td>
-            <td>
-              {{item.superiorScore}}
-            </td>
-          </tr>
-          </tbody>
-        </table>
-      </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import {ref, onMounted, computed} from 'vue';
+import {ref, onMounted} from 'vue';
 import {useRouter} from 'vue-router';
 import axios from 'axios';
 
@@ -222,8 +153,30 @@ const userRole = ref(null);
 
 const isReadOnly = ref(false);
 
-const fetchReviewDetail = async () => {
+
+// 현재 시간
+function getCurrentDateTimeString() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  const hours = String(now.getHours()).padStart(2, '0');
+  const minutes = String(now.getMinutes()).padStart(2, '0');
+  const seconds = String(now.getSeconds()).padStart(2, '0');
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
+
+const fetchReviewAdd = async () => {
   try {
+    // 중간 평가 기간이 아니라면 작성x
+    // 올해 생성된 중간 평가가 있으면 조회 아니라면 새로 생성
+
+    const currentYear = new Date().getFullYear();   // 올해 년도
+    const currentTime = getCurrentDateTimeString()  // 현재 시간
+
+    // 팀원인지 확인하는 기능 추가 필요
+    userRole.value = "member";
+
     const route = router.currentRoute.value;
     const id = route.params.id;
 
@@ -279,7 +232,7 @@ const getType = (type) => {
 };
 
 onMounted(() => {
-  fetchReviewDetail();
+  fetchReviewAdd();
 });
 
 // 점수 계산
@@ -296,13 +249,6 @@ const updateSelfScore = (item) => {
   const baseScore = scoreMapping[item.selfId] || 0;
   const weight = parseFloat(item.weight) || 0;
   item.selfScore = baseScore * weight / 100; // 가중치를 백분율로 계산
-};
-
-// 상급 평가 변경
-const updateSuperiorScore = (item) => {
-  const baseScore = scoreMapping[item.superiorId] || 0;
-  const weight = parseFloat(item.weight) || 0;
-  item.superiorScore = baseScore * weight / 100; // 가중치를 백분율로 계산
 };
 
 // 팀원 저장(in-progress)
@@ -369,107 +315,11 @@ async function submit() {
   }
 }
 
-// 팀장 저장(read)
-async function leaderSave() {
-  const sendData = {
-    reviewId: reviewDetail.value.id,
-    performanceReviewItemList: reviewItemList.value.map(item => ({
-      id: item.id,
-      goal: item.goal,
-      actionItem: item.actionItem,
-      metric: item.metric,
-      detailPlan: item.detail,
-      weight: item.weight,
-      performance: item.performance,
-      selfId: item.selfId,
-      selfScore: item.selfScore,
-      selfComment: item.selfComment,
-      superiorId: item.superiorId,
-      superiorScore: item.superiorScore,
-      reviewId: reviewDetail.value.id
-    }))
-  };
-  console.log(sendData);
-  try {
-    await axios.put(
-        `http://localhost:8080/performance-review/read`,
-        sendData
-    );
-    window.location.reload();
-  } catch (error) {
-    console.error('Error sending data:', error);
-  }
-}
-
-// 팀장 확인(complete)
-async function complete() {
-  const sendData = {
-    reviewId: reviewDetail.value.id,
-    performanceReviewItemList: reviewItemList.value.map(item => ({
-      id: item.id,
-      goal: item.goal,
-      actionItem: item.actionItem,
-      metric: item.metric,
-      detailPlan: item.detail,
-      weight: item.weight,
-      performance: item.performance,
-      selfId: item.selfId,
-      selfScore: item.selfScore,
-      selfComment: item.selfComment,
-      superiorId: item.superiorId,
-      superiorScore: item.superiorScore,
-      reviewId: reviewDetail.value.id
-    }))
-  };
-  console.log(sendData);
-  try {
-    await axios.put(
-        `http://localhost:8080/performance-review/complete`,
-        sendData
-    );
-    window.location.reload();
-  } catch (error) {
-    console.error('Error sending data:', error);
-  }
-}
-
-// 팀장 확정(complete)
-async function valid() {
-  const sendData = {
-    reviewId: reviewDetail.value.id,
-    performanceReviewItemList: reviewItemList.value.map(item => ({
-      id: item.id,
-      goal: item.goal,
-      actionItem: item.actionItem,
-      metric: item.metric,
-      detailPlan: item.detail,
-      weight: item.weight,
-      performance: item.performance,
-      selfId: item.selfId,
-      selfScore: item.selfScore,
-      selfComment: item.selfComment,
-      superiorId: item.superiorId,
-      superiorScore: item.superiorScore,
-      reviewId: reviewDetail.value.id
-    }))
-  };
-  console.log(sendData);
-  try {
-    await axios.put(
-        `http://localhost:8080/performance-review/valid`,
-        sendData
-    );
-    window.location.reload();
-  } catch (error) {
-    console.error('Error sending data:', error);
-  }
-}
-
 
 </script>
 
 <style scoped>
-.reviewDetailContainer {
+.reviewAddContainer {
   display: grid;
   grid-template-rows: 18% 21% 8% minmax(40%, auto) 8% 13%;
   grid-template-columns: 10% 80% 10%;

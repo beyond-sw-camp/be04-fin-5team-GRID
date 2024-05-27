@@ -52,7 +52,7 @@
           <ul v-show="activeMenus.performanceReview">
             <li @click="navigateTo('/performance-review-goal/add')">목표 작성</li>
             <li @click="navigateTo('/performance-review-goal')">목표 조회</li>
-            <li>중간 평가 작성</li>
+            <li @click="navigateTo('/performance-review/mid')">중간 평가 작성</li>
             <li>연말 평가 작성</li>
             <li @click="navigateTo('/performance-review')">평가 조회</li>
             <li>종합 평가 조회</li>
