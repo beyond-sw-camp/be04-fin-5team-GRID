@@ -53,6 +53,18 @@ const router = createRouter({
         {
             path: '/hr/add',
             component: () => import('../views/HumanResources/Add.vue')
+        },
+        {
+            path: '/bt',
+            component: () => import('@/views/Approval/BTApprovalListView.vue')
+        },
+        {
+            path: '/overtime',
+            component: () => import('@/views/Approval/OApprovalListView.vue')
+        },
+        {
+            path: '/vacation',
+            component: () => import('@/views/Approval/VApprovalListView.vue')
         }
     ]
 })
