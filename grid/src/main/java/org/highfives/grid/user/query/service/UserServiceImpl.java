@@ -57,22 +57,6 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public UserDTO findUserById(int id) {
-        try {
-            UserDTO result = userMapper.getUserInfoById(id);
-            result.setProfilePath(imgMapper.getProfileImg(result.getId()));
-            result.setPosition(userMapper.getPosition(result.getId()));
-            result.setDuties(userMapper.getDuties(result.getId()));
-
-            System.out.println("result = " + result);
-            return result;
-
-        } catch (NullPointerException e) {
-            return null;
-        }
-    }
-
-    @Override
     public List<UserDTO> findAllUsers() {
 
         // employee 테이블 정보 조회

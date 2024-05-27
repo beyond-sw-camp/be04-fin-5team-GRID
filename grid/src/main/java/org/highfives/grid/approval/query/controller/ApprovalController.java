@@ -95,11 +95,4 @@ public class ApprovalController {
         return ResponseEntity.status(HttpStatus.OK).body(count);
     }
 
-    @GetMapping("/bt-pdf/{approvalId}")
-    public void addApprovalPDF(Model model, @PathVariable int approvalId) {
-
-        BTApprovalDTO btApproval = approvalService.findBTApprovalById(approvalId);
-        if (btApproval != null) approvalService.exportToPDF(btApproval, "business_trip_approval.pdf");  // 생성 일시를 포함한 형태로 제목 수정
-    }
-
 }
