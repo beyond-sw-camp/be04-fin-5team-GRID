@@ -15,6 +15,8 @@ import org.highfives.grid.approval.query.dto.ApprovalEmpDTO;
 import org.highfives.grid.approval.query.repository.ApprovalMapper;
 import org.highfives.grid.user.query.dto.UserDTO;
 import org.highfives.grid.user.query.service.UserService;
+import org.highfives.grid.approval.command.aggregate.ApprovalStatus;
+import org.highfives.grid.approval.command.aggregate.BTApproval;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,6 +32,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 
 @Service(value = "QueryApprovalService")
 public class ApprovalServiceImpl implements ApprovalService{
@@ -158,7 +161,6 @@ public class ApprovalServiceImpl implements ApprovalService{
             PdfPCell t_cell1 = new PdfPCell(new Paragraph("시작 날짜", tableFont));
             PdfPCell t_cell2 = new PdfPCell(new Paragraph("종료 날짜", tableFont));
             PdfPCell t_cell3 = new PdfPCell(new Paragraph("출장지", tableFont));
-
             t_cell1.setBackgroundColor(Color.LIGHT_GRAY);
             t_cell2.setBackgroundColor(Color.LIGHT_GRAY);
             t_cell3.setBackgroundColor(Color.LIGHT_GRAY);
@@ -182,6 +184,4 @@ public class ApprovalServiceImpl implements ApprovalService{
             document.close();
         }
     }
-
-
 }

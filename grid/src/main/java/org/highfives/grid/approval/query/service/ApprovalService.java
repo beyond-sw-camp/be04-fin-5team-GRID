@@ -13,4 +13,5 @@ public interface ApprovalService {
     ApprovalEmpDTO findDetailByApprovalId(int typeId, int approvalId);
     int countOvertimeInWeek(OvertimeInWeekDTO overtimeInWeek);
     public void BTexportToPDF(BTApprovalDTO btApproval, String filePath);
+
 }

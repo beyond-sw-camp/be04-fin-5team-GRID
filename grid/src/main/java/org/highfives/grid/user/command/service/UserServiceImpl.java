@@ -200,6 +200,22 @@ public class UserServiceImpl implements UserService{
         return false;
     }
 
+    public boolean changeGender(int userId) {
+
+        Employee employee = userRepository.findById(userId).orElseThrow(NullPointerException::new);
+        if(employee.getGender() == Gender.F ) {
+            employee.setGender(Gender.P);
+            userRepository.save(employee);
+            return true;
+        }
+        if(employee.getGender() == Gender.P) {
+            employee.setGender(Gender.F);
+            userRepository.save(employee);
+            return true;
+        }
+        return false;
+    }
+
     private Employee dTOtoEntity(UserDTO givenInfo) {
 
         return Employee.builder()

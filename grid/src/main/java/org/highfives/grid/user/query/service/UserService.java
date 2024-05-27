@@ -18,4 +18,5 @@ public interface UserService {
     Map<String, Object> checkNameByEmail(String email);
 
     List<UserDTO> findUsersByName(String name);
+
 }

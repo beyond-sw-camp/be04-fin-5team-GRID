@@ -26,6 +26,7 @@ public class ChainDTO {
     private int employeeId;
 
     private int chainId;
-
+    
     private UserDTO user;
+
 }

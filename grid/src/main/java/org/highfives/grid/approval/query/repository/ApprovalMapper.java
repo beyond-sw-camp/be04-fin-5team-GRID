@@ -22,4 +22,5 @@ public interface ApprovalMapper {
     ApprovalEmpDTO findODetailByApprovalId(int approvalId);
     ApprovalEmpDTO findRWDetailByApprovalId(int approvalId);
     ApprovalEmpDTO findVDetailByApprovalId(int approvalId);
+
 }

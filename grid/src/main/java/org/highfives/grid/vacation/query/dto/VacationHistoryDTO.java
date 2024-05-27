@@ -13,14 +13,8 @@ public class VacationHistoryDTO {
     private int typeId;
     private int changeTypeId;
     private int employeeId;
-
-    @Builder
-    public VacationHistoryDTO(int id, String changeTime, String changeReason, int typeId, int changeTypeId, int employeeId) {
-        this.id = id;
-        this.changeTime = changeTime;
-        this.changeReason = changeReason;
-        this.typeId = typeId;
-        this.changeTypeId = changeTypeId;
-        this.employeeId = employeeId;
-    }
+    private String employeeName;
+    private String employeeNumber;
+    private String typeName;
+    private String changeTypeName;
 }

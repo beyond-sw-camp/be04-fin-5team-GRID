@@ -1,6 +1,5 @@
 import {createRouter, createWebHistory} from 'vue-router';
 
-
 const router = createRouter({
 
     history: createWebHistory(),
@@ -10,7 +9,6 @@ const router = createRouter({
             component: () => import('../views/Login/Login.vue')
         },
         {
-
             path: '/find/id',
             component: () => import('../views/Login/FindId.vue')
         },
@@ -35,8 +33,8 @@ const router = createRouter({
             component: () => import('@/components/TeamReview/AddTeamReview.vue')
         },
         {
-          path: '/team',
-          component: () => import('@/components/Department/Team.vue')
+            path: '/team',
+            component: () => import('@/components/Department/Team.vue')
         },
         {
             path: '/performance-review-goal/add',
@@ -101,7 +99,39 @@ const router = createRouter({
         {
             path: '/approval-detail/:typeId/:approvalId',
             component: () => import('@/views/Approval/ApprovalDetailView.vue')
-        }
+        },
+        {
+            path: '/vacation/policy',
+            component:() => import('../views/VacationPolicyView.vue')
+        },
+        {
+            path: '/vacation/policy/modify/:id',
+            component:() => import('../views/VacationPolicyModifyView.vue')
+        },
+        {
+            path: '/vacation/policy/regist',
+            component:() => import('../views/VacationPolicyRegistView.vue')
+        },
+        {
+            path: '/vacation/manage',
+            component:() => import('../views/VacationManageMainView.vue')
+        },
+        {
+            path: '/vacation/manage/regist',
+            component:() => import('../views/VacationManageRegistView.vue')
+        },
+        {
+            path: '/vacation/manage/modify/:id',
+            component:() => import('../views/VacationManageDeleteView.vue')
+        },
+        {
+            path: '/vacation/history',
+            component:() => import('../views/VacationHistoryMainView.vue')
+        },
+        {
+            path: '/vacation/info',
+            component:() => import('../views/VacationInfoMainView.vue')
+        },
     ]
 })
 

@@ -16,4 +16,5 @@ public interface ApprovalChainService {
     int findLeaderByEmployeeId(int employeeId, int chainId);
     ChainDTO findBTChainByApprovalAndChainId(int chainId, int approvalId);
     List<ChainDTO> findChainByApprovalId(int typeId, int approvalId);
+
 }
