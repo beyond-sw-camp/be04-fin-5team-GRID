@@ -29,6 +29,14 @@ const router = createRouter({
         {
             path: '/department',
             component: () => import('@/components/Department/Department.vue')
+        },        
+        {
+            path: '/addteamreview',
+            component: () => import('@/components/TeamReview/AddTeamReview.vue')
+        },
+        {
+          path: '/team',
+          component: () => import('@/components/Department/Team.vue')
         },
         {
             path: '/performance-review-goal/add',
