@@ -17,6 +17,7 @@ public class ResVacationPolicyVO {
     private int statusCode;
     private String message;
     private String href;
-    private List<VacationPolicyDTO> result;
+    private VacationPolicyWithTypeName result;
+
 
 }

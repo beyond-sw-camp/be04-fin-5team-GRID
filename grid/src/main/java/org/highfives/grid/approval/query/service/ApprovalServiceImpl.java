@@ -15,6 +15,8 @@ import org.highfives.grid.approval.query.dto.ApprovalEmpDTO;
 import org.highfives.grid.approval.query.repository.ApprovalMapper;
 import org.highfives.grid.user.query.dto.UserDTO;
 import org.highfives.grid.user.query.service.UserService;
+import org.highfives.grid.approval.command.aggregate.ApprovalStatus;
+import org.highfives.grid.approval.command.aggregate.BTApproval;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,6 +32,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 
 @Service(value = "QueryApprovalService")
 public class ApprovalServiceImpl implements ApprovalService{
@@ -61,23 +64,21 @@ public class ApprovalServiceImpl implements ApprovalService{
         params.put("employeeId", employeeId);
         params.put("isApproval", isApproval);
 
-        System.out.println(params);
-
         switch (typeId) {
             case 1:
                 approvalEmpList = approvalMapper.findAllBTApprovalByEmployeeId(params);
                 break;
 
             case 2:
-                approvalEmpList = approvalMapper.findAllOApprovalByEmployeeId(employeeId);
+                approvalEmpList = approvalMapper.findAllOApprovalByEmployeeId(params);
                 break;
 
             case 3:
-                approvalEmpList = approvalMapper.findAllRWApprovalByEmployeeId(employeeId);
+                approvalEmpList = approvalMapper.findAllRWApprovalByEmployeeId(params);
                 break;
 
             case 4:
-                approvalEmpList = approvalMapper.findAllVApprovalByEmployeeId(employeeId);
+                approvalEmpList = approvalMapper.findAllVApprovalByEmployeeId(params);
         }
 
         return approvalEmpList;
@@ -113,6 +114,21 @@ public class ApprovalServiceImpl implements ApprovalService{
     }
 
     @Override
+    public List<ApprovalEmpDTO> findAllApprovalByApproverId(int typeId, int approverId, int isApproval) {
+
+        List<ApprovalEmpDTO> approvalEmpList = new ArrayList<>();
+        Map<String, Integer> params = new HashMap<>();
+
+        params.put("typeId", typeId);
+        params.put("approverId", approverId);
+        params.put("isApproval", isApproval);
+
+        approvalEmpList = approvalMapper.findAllBTApprovalByApproverId(params);
+
+        return approvalEmpList;
+    }
+
+    @Override
     public int countOvertimeInWeek(OvertimeInWeekDTO overtimeInWeek) {
 
         List<OvertimeApprovalDTO> overtimeApprovalList = approvalMapper.findOInWeekByEmployeeId(overtimeInWeek);
@@ -130,6 +146,8 @@ public class ApprovalServiceImpl implements ApprovalService{
 
         return sum;
     }
+
+
 
     @Override
     public void BTexportToPDF(BTApprovalDTO btApproval, String filePath) {
@@ -158,7 +176,6 @@ public class ApprovalServiceImpl implements ApprovalService{
             PdfPCell t_cell1 = new PdfPCell(new Paragraph("시작 날짜", tableFont));
             PdfPCell t_cell2 = new PdfPCell(new Paragraph("종료 날짜", tableFont));
             PdfPCell t_cell3 = new PdfPCell(new Paragraph("출장지", tableFont));
-
             t_cell1.setBackgroundColor(Color.LIGHT_GRAY);
             t_cell2.setBackgroundColor(Color.LIGHT_GRAY);
             t_cell3.setBackgroundColor(Color.LIGHT_GRAY);
@@ -182,6 +199,4 @@ public class ApprovalServiceImpl implements ApprovalService{
             document.close();
         }
     }
-
-
 }

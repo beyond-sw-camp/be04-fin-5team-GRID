@@ -52,6 +52,7 @@
                       WHERE id = #{employeeId});
     </select>
 
+
     <select id="findBTChainByApprovalAndChainId" resultMap="chainMap" parameterType="map">
         SELECT
                 a.stage,
@@ -93,6 +94,7 @@
                 </if>
           JOIN  approval_chain a
             ON  a.id = b.chain_id
-         WHERE  b.approval_id = #{approvalId};
+         WHERE  b.approval_id = #{approvalId}
+      ORDER BY  a.stage;
     </select>
 </mapper>

@@ -8,4 +8,8 @@ import lombok.*;
 @AllArgsConstructor
 public class RegistVacationType {
     private String typeName;
+    private String vacationNum;
+    private String dateOfUse;
+    private String vacationExplain;
+
 }
