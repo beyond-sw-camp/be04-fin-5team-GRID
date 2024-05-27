@@ -1,5 +1,5 @@
 <script setup>
-  import { onMounted, reactive } from "vue";
+  import {onMounted, reactive} from "vue";
   import axios from "axios";
   import ApprovalList from "@/components/Approval/ApprovalList.vue";
 

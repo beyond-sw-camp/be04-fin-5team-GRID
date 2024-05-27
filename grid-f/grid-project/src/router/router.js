@@ -85,6 +85,14 @@ const router = createRouter({
         {
             path: '/vacation',
             component: () => import('@/views/Approval/VApprovalListView.vue')
+        },
+        {
+            path: '/approval',
+            component: () => import('@/views/Approval/AllApprovalListView.vue')
+        },
+        {
+            path: '/approval-detail/:typeId/:approvalId',
+            component: () => import('@/views/Approval/ApprovalDetailView.vue')
         }
     ]
 })

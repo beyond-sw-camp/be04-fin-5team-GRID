@@ -1,6 +1,7 @@
 <script setup>
+
 import { computed } from 'vue';
-import { RouterView, useRoute } from 'vue-router';
+import {RouterLink, RouterView, useRouter} from 'vue-router';
 import Header from '@/components/Header.vue';
 import Sidebar from '@/components/Sidebar.vue';
 import Footer from '@/components/Footer.vue';
