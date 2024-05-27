@@ -9,13 +9,18 @@
         <id property="id" column="id"/>
         <result property="startTime" column="start_time"/>
         <result property="endTime" column="end_time"/>
-        <result property="destination" column="destination"/>
         <result property="content" column="content"/>
+        <result property="destination" column="destination"/>
+        <result property="originName" column="origin_name"/>
+        <result property="renameName" column="rename_name"/>
+        <result property="path" column="path"/>
+        <result property="infoId" column="info_id"/>
+        <result property="vacationType" column="type_name"/>
         <result property="approvalStatus" column="approval_status"/>
         <result property="writeTime" column="write_time"/>
         <result property="cancelYn" column="cancel_yn"/>
-        <result property="cancelDocId" column="cancel_doc_id"/>
-        <result property="requesterId" column="requester_id"/>
+        <result property="cancelDocId" column="cancel_document_id"/>
+        <result property="employeeId" column="requester_id"/>
         <result property="employeeName" column="employee_name"/>
         <result property="employeeNumber" column="employee_number"/>
     </resultMap>
@@ -28,9 +33,8 @@
         <result property="approvalStatus" column="approval_status"/>
         <result property="writeTime" column="write_time"/>
         <result property="cancelYn" column="cancel_yn"/>
-        <result property="cancelDocId" column="cancel_doc_id"/>
+        <result property="cancelDocId" column="cancel_document_id"/>
         <result property="requesterId" column="requester_id"/>
-        <result property="infoId" column="info_id"/>
     </resultMap>
 
     <select id="findOInWeekByEmployeeId" resultMap="oApprovalMap" parameterType="org.highfives.grid.approval.common.dto.OvertimeInWeekDTO">
@@ -62,9 +66,8 @@
            AND  cancel_document_id = 0
     </select>
 
-    <select id="findAllBTApprovalByEmployeeId" resultMap="approvalMap" parameterType="int">
+    <select id="findAllBTApprovalByEmployeeId" resultMap="approvalMap" parameterType="map">
         SELECT
-                a.id as employeeId,
                 a.employee_name,
                 a.employee_number,
                 b.id,
@@ -81,14 +84,15 @@
           JOIN  bt_approval b
             ON  a.id = b.requester_id
          WHERE  a.id = #{employeeId}
-           AND  b.approval_status = 'A'
-           AND  b.cancel_yn = 'N'
-           AND  b.cancel_document_id = 0;
+        <if test="isApproval == 1">
+            AND  b.approval_status = 'A'
+            AND  b.cancel_yn = 'N'
+            AND  b.cancel_document_id = 0
+        </if>
     </select>
 
-    <select id="findAllOApprovalByEmployeeId" resultMap="approvalMap" parameterType="int">
+    <select id="findAllOApprovalByEmployeeId" resultMap="approvalMap" parameterType="map">
         SELECT
-                a.id as employeeId,
                 a.employee_name,
                 a.employee_number,
                 b.id,
@@ -104,20 +108,24 @@
           JOIN  overtime_approval b
             ON  a.id = b.requester_id
          WHERE  a.id = #{employeeId}
+        <if test="isApproval == 1">
            AND  b.approval_status = 'A'
            AND  b.cancel_yn = 'N'
-           AND  b.cancel_document_id = 0;
+           AND  b.cancel_document_id = 0
+        </if>
     </select>
 
-    <select id="findAllRWApprovalByEmployeeId" resultMap="approvalMap" parameterType="int">
+    <select id="findAllRWApprovalByEmployeeId" resultMap="approvalMap" parameterType="map">
         SELECT
-                a.id as employeeId,
                 a.employee_name,
                 a.employee_number,
                 b.id,
                 b.start_time,
                 b.end_time,
                 b.content,
+                b.origin_name,
+                b.rename_name,
+                b.path,
                 b.approval_status,
                 b.write_time,
                 b.cancel_yn,
@@ -127,14 +135,15 @@
           JOIN  rw_approval b
             ON  a.id = b.requester_id
          WHERE  a.id = #{employeeId}
+        <if test="isApproval == 1">
            AND  b.approval_status = 'A'
            AND  b.cancel_yn = 'N'
-           AND  b.cancel_document_id = 0;
+           AND  b.cancel_document_id = 0
+        </if>
     </select>
 
-    <select id="findAllVApprovalByEmployeeId" resultMap="approvalMap" parameterType="int">
+    <select id="findAllVApprovalByEmployeeId" resultMap="approvalMap" parameterType="map">
         SELECT
-                a.id as employeeId,
                 a.employee_name,
                 a.employee_number,
                 b.id,
@@ -146,13 +155,85 @@
                 b.write_time,
                 b.cancel_yn,
                 b.cancel_document_id,
-                b.requester_id
+                b.requester_id,
+                d.type_name
           FROM  employee a
           JOIN  vacation_approval b
             ON  a.id = b.requester_id
+          JOIN  vacation_info c
+            ON  c.id = b.info_id
+          JOIN  vacation_type d
+            ON  c.type_id = d.id
          WHERE  a.id = #{employeeId}
+        <if test="isApproval == 1">
            AND  b.approval_status = 'A'
            AND  b.cancel_yn = 'N'
-           AND  b.cancel_document_id = 0;
+           AND  b.cancel_document_id = 0
+        </if>
+    </select>
+
+    <select id="findBTDetailByApprovalId" resultMap="approvalMap" parameterType="int">
+        SELECT
+                id,
+                start_time,
+                end_time,
+                content,
+                destination,
+                approval_status,
+                write_time,
+                cancel_yn,
+                cancel_document_id,
+                requester_id
+          FROM  bt_approval
+         WHERE  id = #{approvalId};
+    </select>
+
+    <select id="findODetailByApprovalId" resultMap="approvalMap" parameterType="int">
+        SELECT
+                id,
+                start_time,
+                end_time,
+                content,
+                approval_status,
+                write_time,
+                cancel_yn,
+                cancel_document_id,
+                requester_id
+          FROM  overtime_approval
+         WHERE  id = #{approvalId};
+    </select>
+
+    <select id="findRWDetailByApprovalId" resultMap="approvalMap" parameterType="int">
+        SELECT
+                id,
+                start_time,
+                end_time,
+                content,
+                origin_name,
+                rename_name,
+                path,
+                approval_status,
+                write_time,
+                cancel_yn,
+                cancel_document_id,
+                requester_id
+          FROM  rw_approval
+         WHERE  id = #{approvalId};
+    </select>
+
+    <select id="findVDetailByApprovalId" resultMap="approvalMap" parameterType="int">
+        SELECT
+                id,
+                start_time,
+                end_time,
+                content,
+                info_id,
+                approval_status,
+                write_time,
+                cancel_yn,
+                cancel_document_id,
+                requester_id
+          FROM  vacation_approval
+         WHERE  id = #{approvalId};
     </select>
 </mapper>
