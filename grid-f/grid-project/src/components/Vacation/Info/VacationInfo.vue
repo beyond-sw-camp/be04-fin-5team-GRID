@@ -4,6 +4,35 @@
             <img class="historyIcon" src="@/assets/buttons/vacation.png">
             <h1>휴가 보유 정보</h1>
         </div>
+        <div class="vacations">
+            <div class="annual" v-if="userRole === 'ROLE_USER'">
+                <div class="vacationsTitle">
+                    <h3>휴가</h3>
+                    <img class="plusBtn" src="@/assets/buttons/plus.png">
+                </div>
+                <div class="vacationsNum">
+                    <h3>{{ annualVacationNum }}</h3>
+                </div>
+            </div>
+            <div class="month" v-if="userRole === 'ROLE_USER'">
+                <div class="vacationsTitle">
+                    <h3>정기 휴가</h3>
+                    <img class="plusBtn" src="@/assets/buttons/plus.png">
+                </div>
+                <div class="vacationsNum">
+                    <h3>{{ monthVacationNum }}</h3>
+                </div>
+            </div>
+            <div class="diretly" v-if="userRole === 'ROLE_USER'">
+                <div class="vacationsTitle">
+                    <h3>기타 휴가</h3>
+                    <img class="plusBtn" src="@/assets/buttons/plus.png">
+                </div>
+                <div class="vacationsNum">
+                    <h3>{{ directlyVacationNum }}</h3>
+                </div>
+            </div>
+        </div>
         <div class="search">  
             <select v-model="searchType" class="searchType">
                 <option value="name">이름</option>
@@ -64,11 +93,16 @@ const filteredInfo = ref([]);
 const userRole = ref('');
 const userId = ref('');
 
+const annualVacationNum = ref(0);
+const monthVacationNum = ref(0);
+const directlyVacationNum = ref(0);
+
 const getAllVacationInfo = async () => {
     try {
         const response = await axios.get("/api/vacation/info");
         allInfo.value = response.data.result;
         filteredInfo.value = allInfo.value; // 초기화 시 전체 데이터를 필터링된 데이터에 할당
+        calculateVacationNums();
     } catch (error) {
         console.error("Error:", error);
     }
@@ -79,6 +113,7 @@ const getUserVacationInfo = async () => {
         const response = await axios.get(`/api/vacation/info/${userId.value}`);
         allInfo.value = response.data.result;
         filteredInfo.value = allInfo.value; // 초기화 시 전체 데이터를 필터링된 데이터에 할당
+        calculateVacationNums();
         console.log(allInfo.value)
     } catch (error) {
         console.error("Error:", error);
@@ -92,6 +127,20 @@ const search = () => {
         filteredInfo.value = allInfo.value.filter(info => info.employeeNumber.includes(searchQuery.value));
     }
     currentPage.value = 1; // 검색 후 페이지를 1로 초기화
+};
+
+const calculateVacationNums = () => {
+    annualVacationNum.value = allInfo.value
+        .filter(info => info.typeId === 1 || info.typeId === 2)
+        .reduce((acc, info) => acc + info.vacationNum, 0);
+
+    monthVacationNum.value = allInfo.value
+        .filter(info => info.typeId === 4)
+        .reduce((acc, info) => acc + info.vacationNum, 0);
+
+    directlyVacationNum.value = allInfo.value
+        .filter(info => info.typeId === 3)
+        .reduce((acc, info) => acc + info.vacationNum, 0);
 };
 
 const paginatedInfo = computed(() => {
@@ -136,7 +185,6 @@ function parseJwt(token) {
     }
 }
 
-
 onBeforeMount(() => {
     const token = localStorage.getItem('access');
     if (token) {
@@ -150,14 +198,13 @@ onBeforeMount(() => {
     } else if (userRole.value === 'ROLE_USER') {
         getUserVacationInfo();
     }
-
 });
 </script>
 
 <style scoped>
 .historyAll {
     display: grid;
-    grid-template-rows: 18% 10% 4% 43% 10% 13%;
+    grid-template-rows: 18% 10% 4% 43% 10% 11%;
     grid-template-columns: 10% 80% 10%;
     height: 100%;
 }
@@ -195,6 +242,63 @@ onBeforeMount(() => {
 
 .searchType {
     grid-column-start: 2;
+}
+
+.vacations {
+    grid-row-start: 2;
+    grid-column-start: 2;
+    display: grid;
+    grid-template-columns: 20% 5% 20% 5% 20% 5% 25%;
+    margin-bottom:1%;
+}
+
+.vacationsTitle {
+    display: grid;
+    grid-template-columns: 85% 10% 5%;
+    align-items: center;
+    font-size: 12px;
+    height: 50%;
+}
+
+.plusBtn {
+    width: 100%;
+    cursor: pointer;
+}
+
+.annual {
+    width: calc(100% - 20px);
+    background-color: #F2F2F2;
+}
+
+.annual h3 {
+    font-size: 15px;
+    margin-left: 10px;
+    margin-top: 10px;
+}
+
+.month {
+    width: calc(100% - 20px);
+    background-color: #F2F2F2;
+    grid-column-start: 3;
+}
+
+.month h3 {
+    font-size: 15px;
+    margin-left: 10px;
+    margin-top: 10px;
+}
+
+.diretly {
+    width: calc(100% - 20px);
+    background-color: #F2F2F2;
+    grid-column-start: 5;
+    
+}
+
+.diretly h3 {
+    font-size: 15px;
+    margin-left: 10px;
+    margin-top: 10px;
 }
 
 .sortBox {
@@ -274,4 +378,17 @@ th {
     background-color: #dddddd;
     cursor: not-allowed;
 }
+
+.vacationsNum {
+    grid-column-start: 1;
+    display: grid;
+    grid-template-columns:90% 10%;
+    font-size: 10px;
+}
+
+.vacationsNum h3 {
+    font-size:13px;
+    font-weight: 600;
+}
 </style>
+
