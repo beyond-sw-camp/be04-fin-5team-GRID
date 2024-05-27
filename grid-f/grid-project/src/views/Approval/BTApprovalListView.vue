@@ -1,9 +1,15 @@
 <script setup>
   import {onMounted, reactive} from "vue";
+  import {useRoute} from "vue-router";
   import axios from "axios";
+
   import ApprovalList from "@/components/Approval/ApprovalList.vue";
 
   const typeId = 1;
+
+  const route = useRoute();
+  const employeeId = route.params.employeeId;
+
   const state = reactive({
     approvalList:[]
   });
@@ -25,7 +31,7 @@
   }
 
   onMounted(async() => {
-    await fetchApprovalList(1);
+    await fetchApprovalList(employeeId);
   })
 </script>
 

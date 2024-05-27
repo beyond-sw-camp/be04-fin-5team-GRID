@@ -76,27 +76,44 @@ const router = createRouter({
         },
         {
             path: '/bt',
+            path: '/bt/:employeeId',
             component: () => import('@/views/Approval/BTApprovalListView.vue')
         },
         {
-            path: '/overtime',
+            path: '/overtime/:employeeId',
             component: () => import('@/views/Approval/OApprovalListView.vue')
         },
         {
-            path: '/vacation',
+            path: '/vacation/:employeeId',
             component: () => import('@/views/Approval/VApprovalListView.vue')
         },
         {
-            path: '/approval',
+            path: '/approval/:employeeId',
             component: () => import('@/views/Approval/AllApprovalListView.vue')
         },
         {
-            path: '/approval-detail/:typeId/:approvalId',
+            path: '/approval/detail/:typeId/:approvalId',
             component: () => import('@/views/Approval/ApprovalDetailView.vue')
         },
         {
-            path: '/require',
+            path: '/required',
             component: () => import('@/views/Approval/RequiredApprovalListView.vue')
+        },
+        {
+            path: '/regist/bt',
+            component: () => import('@/views/Approval/RegistBTApprovalView.vue')
+        },
+        {
+            path: '/regist/overtime',
+            component: () => import('@/views/Approval/RegistOApprovalView.vue')
+        },
+        {
+            path: '/regist/rw',
+            component: () => import('@/views/Approval/RegistRWApprovalView.vue')
+        },
+        {
+            path: '/regist/vacation',
+            component: () => import('@/views/Approval/RegistVApprovalView.vue')
         }
     ]
 })

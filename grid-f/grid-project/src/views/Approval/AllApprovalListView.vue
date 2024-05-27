@@ -3,6 +3,10 @@
   import axios from "axios";
 
   import ApprovalList from "@/components/Approval/ApprovalList.vue";
+  import {useRoute} from "vue-router";
+
+  const route = useRoute();
+  const employeeId = route.params.employeeId;
 
   const state = reactive({
     approvalList: []
@@ -27,7 +31,7 @@
   onMounted(async() => {
     // 버튼 클릭에 따라 다르게 실행
     // 0: 전체, 1: 승인, 2: 반려, 3: 대기
-    await fetchApprovalList(1, 2, 0);
+    await fetchApprovalList(1, employeeId, 0);
   })
 </script>
 

@@ -8,7 +8,7 @@
   const router = useRouter();
 
   const approvalDetail = (typeId, approvalId) => {
-    router.push(`/approval-detail/${typeId}/${approvalId}`);
+    router.push(`/approval/detail/${typeId}/${approvalId}`);
   }
 </script>
 
