@@ -35,7 +35,6 @@
   const mainContentClass = computed(() => {
   return showLayout.value ? 'main-content' : 'main-content-full';
   });
->>>>>>> develop
 
 </script>
 
@@ -119,7 +118,7 @@ body {
     font-size: 10px;
     justify-self: flex-end;
 }
->>>>>>> develop
+
 
 .container-full {
   display: flex;
