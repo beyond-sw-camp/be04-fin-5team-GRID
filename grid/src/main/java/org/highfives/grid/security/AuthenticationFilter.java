@@ -11,7 +11,7 @@ import org.highfives.grid.user.command.aggregate.PrincipalDetails;
 import org.highfives.grid.user.command.aggregate.RefreshToken;
 import org.highfives.grid.user.command.aggregate.Role;
 import org.highfives.grid.user.command.repository.TokenReissueRepository;
-import org.highfives.grid.user.command.vo.ReqLogin;
+import org.highfives.grid.user.command.vo.ReqLoginVO;
 import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,6 +20,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
 
@@ -40,8 +41,8 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     public Authentication attemptAuthentication(HttpServletRequest request,
                                                 HttpServletResponse response) throws AuthenticationException {
         try {
-            ReqLogin requestLogin =
-                    new ObjectMapper().readValue(request.getInputStream(), ReqLogin.class);
+            ReqLoginVO requestLogin =
+                    new ObjectMapper().readValue(request.getInputStream(), ReqLoginVO.class);
 
             System.out.println("requestLogin = " + requestLogin);
             // 사용자가 전달한 id / pwd 를 사용해 authentication 토큰을 만듬
@@ -81,9 +82,12 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         RefreshToken redisToken = new RefreshToken(userId, refreshToken);
         tokenReissueRepository.save(redisToken);
 
-        // 생성한 토큰 헤더에 저장
-        response.addHeader("access", accessToken);
+        // 생성한 토큰 data/쿠키에 저장
         response.addCookie(jwtUtil.createCookie("refresh", refreshToken));
+        response.setContentType("application/json");
+        PrintWriter out = response.getWriter();
+        out.print("{\"access\": \"" + accessToken + "\"}");
+        out.flush();
     }
 
 }

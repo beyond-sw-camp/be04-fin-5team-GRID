@@ -2,6 +2,7 @@ package org.highfives.grid.user.command.controller;
 
 import org.highfives.grid.user.command.dto.UserDTO;
 import org.highfives.grid.user.command.service.UserService;
+import org.highfives.grid.user.command.vo.ReqResetPwdVO;
 import org.highfives.grid.user.command.vo.ResUserListVO;
 import org.highfives.grid.user.command.vo.ResUserVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController("UserCommandController")
 @RequestMapping("/users")
@@ -26,8 +29,6 @@ public class UserController {
     // 신규 유저 등록 (단일)
     @PostMapping
     public ResponseEntity<ResUserVO> addNewUser(@RequestBody UserDTO givenInfo) {
-
-        System.out.println("givenInfo = " + givenInfo);
 
         if(duplicateInfoCheck(givenInfo) != null)
             return duplicateInfoCheck(givenInfo);
@@ -134,12 +135,21 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @PutMapping("/password")
-    public ResponseEntity<ResUserVO> findPwd(@RequestBody String pwd) {
+    // 비밀번호 찾기 ( 리셋 )
+    @PutMapping("/pwd")
+    public ResponseEntity<ResUserVO> resetPwd(@RequestBody ReqResetPwdVO info) {
 
-        userService.findPwd(pwd);
+        Map<String, String> infos = new HashMap<>();
+        infos.put("email", info.getEmail());
+        infos.put("pwd", info.getPwd());
 
-        return null;
+        if (userService.resetPwd(infos)){
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResUserVO(200, "Success to reset password", "/", null));
+        }
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                new ResUserVO(400, "Failed to reset password", "/", null));
     }
 
     @GetMapping("/duplication")

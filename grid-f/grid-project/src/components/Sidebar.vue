@@ -30,7 +30,7 @@
         <li>
           <span @click="toggleMenu('hrManagement')">인사 관리</span>
           <ul v-show="activeMenus.hrManagement">
-            <li>인사 정보</li>
+            <li @click="toHR">인사 정보</li>
           </ul>
         </li>
         <li>
@@ -47,6 +47,16 @@
             <li @click="goToAddTeamReview">평가 생성</li>
           </ul>
         </li>
+        <li>
+          <span @click="toggleMenu('performanceReview')">업적 평가 관리</span>
+          <ul v-show="activeMenus.performanceReview">
+            <li @click="navigateTo('/performance-review-goal/add')">업적 평가 목표 작성</li>
+            <li @click="navigateTo('/performance-review-goal')">업적 평가 목표 조회</li>
+            <li>업적 평가 작성</li>
+            <li>업적 평가 조회</li>
+            <li>종합 업적 평가</li>
+          </ul>
+        </li>
       </ul>
     </nav>
   </aside>
@@ -54,13 +64,12 @@
 
 <script setup>
 import axios from 'axios';
-import { useRouter } from 'vue-router';
 import { ref, onMounted,reactive } from 'vue';
-const router = useRouter();
-
+import { useRouter } from 'vue-router';
 
 const employee = ref([]);
 const error = ref([]);
+const router = useRouter();
 
 const fetchEmployee = async () => {
   try {
@@ -96,6 +105,15 @@ const gotodepartmentInfo = () => {
 const goToAddTeamReview = () => {
   router.push('/addteamreview');
 }
+
+const navigateTo = (path) => {
+  router.push(path);
+};
+
+function toHR () {
+  router.push('/hr');
+}
+
 </script>
 
 <style scoped>
@@ -178,4 +196,4 @@ const goToAddTeamReview = () => {
 .menu li ul li {
   padding: 5px 0;
 }
-</style>
+</style>  

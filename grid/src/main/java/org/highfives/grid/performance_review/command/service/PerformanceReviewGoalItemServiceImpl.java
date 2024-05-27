@@ -8,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service(value = "commandGoalItemServiceImpl")
 public class PerformanceReviewGoalItemServiceImpl implements PerformanceReviewGoalItemService{
 
@@ -25,7 +28,6 @@ public class PerformanceReviewGoalItemServiceImpl implements PerformanceReviewGo
     @Override
     @Transactional
     public PerformanceReviewGoalItemDTO addGoalItem(PerformanceReviewGoalItemDTO performanceReviewGoalItemDTO) {
-        System.out.println(performanceReviewGoalItemDTO);
 
         PerformanceReviewGoalItem performanceReviewGoalItem = new PerformanceReviewGoalItem(
                 performanceReviewGoalItemDTO.getJobName(),
@@ -39,12 +41,6 @@ public class PerformanceReviewGoalItemServiceImpl implements PerformanceReviewGo
 
         PerformanceReviewGoalItem saveGoalItem = performanceReviewGoalItemRepository.save(performanceReviewGoalItem);
 
-//        PerformanceReviewGoalItem saveGoalItem = performanceReviewGoalItemRepository.findByGoal(
-//                performanceReviewGoalItem.getGoal()
-//        );
-
-        System.out.println(saveGoalItem);
-
         return modelMapper.map(saveGoalItem, PerformanceReviewGoalItemDTO.class);
     }
 
@@ -52,13 +48,10 @@ public class PerformanceReviewGoalItemServiceImpl implements PerformanceReviewGo
     @Override
     @Transactional
     public PerformanceReviewGoalItemDTO modifyGoalItem(PerformanceReviewGoalItemDTO performanceReviewGoalItemDTO) {
-        System.out.println(performanceReviewGoalItemDTO);
 
         PerformanceReviewGoalItem goalItem = performanceReviewGoalItemRepository
                                                         .findById(performanceReviewGoalItemDTO.getId())
                 .orElseThrow(IllegalArgumentException::new);
-
-        System.out.println(goalItem);
 
         if(goalItem != null) {
             goalItem.setJobName(performanceReviewGoalItemDTO.getJobName());
@@ -71,8 +64,6 @@ public class PerformanceReviewGoalItemServiceImpl implements PerformanceReviewGo
         PerformanceReviewGoalItem modifyGoalItem = performanceReviewGoalItemRepository.findById(
                 performanceReviewGoalItemDTO.getId())
                 .orElseThrow(IllegalArgumentException::new);
-
-        System.out.println(modifyGoalItem);
 
         return modelMapper.map(modifyGoalItem, PerformanceReviewGoalItemDTO.class);
     }
@@ -87,4 +78,18 @@ public class PerformanceReviewGoalItemServiceImpl implements PerformanceReviewGo
         return id;
     }
 
+    // 목표 항목 조회(평가 항목 추가 용도)
+    @Override
+    public List<PerformanceReviewGoalItemDTO> findByGoalId(int goalId) {
+        List<PerformanceReviewGoalItem> findItemList = performanceReviewGoalItemRepository.findByGoalId(goalId);
+
+        List<PerformanceReviewGoalItemDTO> performanceReviewGoalItemDTOList = new ArrayList<>();
+        for (PerformanceReviewGoalItem performanceReviewGoalItem : findItemList) {
+            performanceReviewGoalItemDTOList.add(
+                    modelMapper.map(performanceReviewGoalItem, PerformanceReviewGoalItemDTO.class)
+            );
+
+        }
+        return performanceReviewGoalItemDTOList;
+    }
 }

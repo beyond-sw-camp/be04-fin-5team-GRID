@@ -18,6 +18,7 @@ public class PerformanceReviewDTO {
     private  String writeTime;
     private int approverId;
     private String approvalTime;
+    private int goalId;
 
     public PerformanceReviewDTO(String type, int year, String reviewName, int writerId) {
         this.type = type;

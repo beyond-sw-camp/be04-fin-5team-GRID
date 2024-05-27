@@ -7,7 +7,9 @@ import org.highfives.grid.user.query.repository.ImgMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service("QueryUserService")
 public class UserServiceImpl implements UserService{
@@ -23,15 +25,30 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public UserDTO findUserByEmployeeNum(int eNum) {
+    public UserDTO findUserByEmployeeNum(String eNum) {
+
+        Map<String, Object> info = new HashMap<>();
+        info.put("eNum", eNum);
 
         try {
-            UserDTO result = userMapper.getUserInfo(eNum);
+            UserDTO result = userMapper.getUserInfo(info);
             result.setProfilePath(imgMapper.getProfileImg(result.getId()));
-            result.setPosition(userMapper.getPosition(result.getId()));
-            result.setDuties(userMapper.getDuties(result.getId()));
+            return result;
 
-            System.out.println("result = " + result);
+        } catch (NullPointerException e) {
+            return null;
+        }
+    }
+
+    @Override
+    public UserDTO findUserById(int id) {
+
+        Map<String, Object> info = new HashMap<>();
+        info.put("id", id);
+
+        try {
+            UserDTO result = userMapper.getUserInfo(info);
+            result.setProfilePath(imgMapper.getProfileImg(result.getId()));
             return result;
 
         } catch (NullPointerException e) {
@@ -48,11 +65,21 @@ public class UserServiceImpl implements UserService{
         // profile 이미지 조회 해서 입력
         for (int i = 0; i < userList.size(); i++) {
             UserDTO userDTO = userList.get(i);
-
             userDTO.setProfilePath(imgMapper.getProfileImg(userDTO.getId()));
-            userDTO.setPosition(userMapper.getPosition(userDTO.getId()));
-            userDTO.setDuties(userMapper.getDuties(userDTO.getId()));
+            userList.set(i, userDTO);
+        }
 
+        return userList;
+    }
+
+    @Override
+    public List<UserDTO> findUsersByName(String name) {
+
+        List<UserDTO> userList = userMapper.getUserListByName(name);
+
+        for (int i = 0; i < userList.size(); i++) {
+            UserDTO userDTO = userList.get(i);
+            userDTO.setProfilePath(imgMapper.getProfileImg(userDTO.getId()));
             userList.set(i, userDTO);
         }
 
@@ -82,5 +109,14 @@ public class UserServiceImpl implements UserService{
         return result;
     }
 
+    @Override
+    public Map<String, Object> checkNameByEmail(String email) {
+        try {
+            Map<String, Object> selectResult = userMapper.getUserInfoByEmail(email);
 
+            return selectResult;
+        } catch (NullPointerException e) {
+            return null;
+        }
+    }
 }

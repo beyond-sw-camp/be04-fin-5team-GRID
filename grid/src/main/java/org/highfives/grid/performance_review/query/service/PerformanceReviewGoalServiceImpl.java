@@ -1,6 +1,5 @@
 package org.highfives.grid.performance_review.query.service;
-
-import org.highfives.grid.performance_review.query.aggregate.PerformanceReviewGoal;
+;
 import org.highfives.grid.performance_review.query.dto.DetailGoalDTO;
 import org.highfives.grid.performance_review.query.dto.GoalItemDTO;
 import org.highfives.grid.performance_review.query.dto.PerformanceReviewGoalDTO;
@@ -9,9 +8,11 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-@Service
+@Service(value = "queryPerformanceReviewGoalServiceImpl")
 public class PerformanceReviewGoalServiceImpl implements PerformanceReviewGoalService{
 
     private final PerformanceReviewGoalMapper performanceReviewGoalMapper;
@@ -25,31 +26,37 @@ public class PerformanceReviewGoalServiceImpl implements PerformanceReviewGoalSe
 
     @Override
     public List<PerformanceReviewGoalDTO> findAllGoalByWriterId(int employeeId) {
-        System.out.println(employeeId);
         List<PerformanceReviewGoalDTO> findGoalList = performanceReviewGoalMapper.selectAllGoalByWriterId(employeeId);
-        System.out.println(findGoalList);
+
         return findGoalList;
     }
 
     @Override
     public List<PerformanceReviewGoalDTO> findAllGoalByApproverId(int employeeId) {
-        System.out.println(employeeId);
         List<PerformanceReviewGoalDTO> findGoalList = performanceReviewGoalMapper.selectAllGoalByApproverId(employeeId);
-        System.out.println(findGoalList);
+
         return findGoalList;
     }
 
     @Override
     public DetailGoalDTO findDetailGoalById(int id) {
-        System.out.println(id);
         DetailGoalDTO findDetailGoal = performanceReviewGoalMapper.selectDetailGoalById(id);
 
 
         List<GoalItemDTO> findGoalItemList = performanceReviewGoalMapper.selectAllGoalItemByGoalId(id);
-
         findDetailGoal.setGoalItemList(findGoalItemList);
-        System.out.println(findDetailGoal);
 
         return findDetailGoal;
+    }
+
+    @Override
+    public PerformanceReviewGoalDTO findGoalByWriterIdAndYear(int writerId, int year) {
+        Map<String, Integer> intMap = new HashMap();
+        intMap.put("writerId", writerId);
+        intMap.put("year", year);
+
+        PerformanceReviewGoalDTO performanceReviewGoalDTO = performanceReviewGoalMapper.selectGoalByWriterIdAndYear(intMap);
+
+        return performanceReviewGoalDTO;
     }
 }

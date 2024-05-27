@@ -32,11 +32,35 @@ class UserServiceImplTests {
         );
     }
 
+    @DisplayName("이름으로 유저 리스트 조회")
+    @Test
+    void findUsersByName() {
+        Assertions.assertDoesNotThrow(
+                () -> userService.findUsersByName("Admin")
+        );
+    }
+
     @DisplayName("사원 번호로 유저 정보 조회")
     @Test
     void findUserByEmployeeNumberTest() {
         Assertions.assertDoesNotThrow(
-                () -> userService.findUserByEmployeeNum(1)
+                () -> userService.findUserByEmployeeNum("1")
+        );
+    }
+
+    @DisplayName("id로 유저 정보 조회")
+    @Test
+    void findUserByIdTest() {
+        Assertions.assertDoesNotThrow(
+                () -> userService.findUserById(1)
+        );
+    }
+
+    @DisplayName("email로 유저 정보 조회")
+    @Test
+    void checkNameByEmailTest() {
+        Assertions.assertDoesNotThrow(
+                () -> userService.checkNameByEmail("gridpeople2024@gmail.com")
         );
     }
 }

@@ -23,6 +23,7 @@ class PerformanceReviewGoalServiceImplTest {
         int employeeId = 6;
         List<PerformanceReviewGoalDTO> findGoalList = performanceReviewGoalService.findAllGoalByWriterId(employeeId);
 
+        System.out.println(findGoalList);
         assertNotNull(findGoalList);
     }
 
@@ -32,6 +33,7 @@ class PerformanceReviewGoalServiceImplTest {
         int employeeId = 5;
         List<PerformanceReviewGoalDTO> findGoalList = performanceReviewGoalService.findAllGoalByApproverId(employeeId);
 
+        System.out.println(findGoalList);
         assertNotNull(findGoalList);
     }
 
@@ -42,5 +44,17 @@ class PerformanceReviewGoalServiceImplTest {
         DetailGoalDTO findGoal = performanceReviewGoalService.findDetailGoalById(id);
 
         assertNotNull(findGoal);
+    }
+
+    @DisplayName("6번 직원의 2024 업적 평가 목표 조회")
+    @Test
+    public void findGoalByWriterIdAndYear(){
+        int writerId = 6;
+        int year = 2024;
+
+        PerformanceReviewGoalDTO performanceReviewGoalDTO = performanceReviewGoalService.findGoalByWriterIdAndYear(writerId, year);
+
+        System.out.println(performanceReviewGoalDTO);
+        assertNotNull(performanceReviewGoalDTO);
     }
 }

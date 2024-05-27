@@ -1,5 +1,6 @@
 package org.highfives.grid.user.command.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.highfives.grid.user.command.aggregate.Employee;
 import org.highfives.grid.user.command.aggregate.Gender;
 import org.highfives.grid.user.command.aggregate.PrincipalDetails;
@@ -19,6 +20,7 @@ import java.util.*;
 import static org.highfives.grid.user.command.aggregate.YN.Y;
 
 @Service("UserCommandService")
+@Slf4j
 public class UserServiceImpl implements UserService{
 
     private final UserRepository userRepository;
@@ -38,7 +40,7 @@ public class UserServiceImpl implements UserService{
     @Transactional
     public UserDTO addNewUser(UserDTO givenInfo) {
 
-        givenInfo.setPwd(encodePwd(givenInfo));
+        givenInfo.setPwd(encodePwd(givenInfo.getPwd()));
 
         Employee addInfo = dTOtoEntity(givenInfo);
         userRepository.save(addInfo);
@@ -54,7 +56,7 @@ public class UserServiceImpl implements UserService{
 
         List<UserDTO> addResultList = new ArrayList<>();
         for (UserDTO userInfo : givenInfo) {
-            userInfo.setPwd(encodePwd(userInfo));
+            userInfo.setPwd(encodePwd(userInfo.getPwd()));
             Employee employee = dTOtoEntity(userInfo);
 
             userRepository.save(employee);
@@ -167,11 +169,21 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public void findPwd(String pwd) {
+    @Transactional
+    public boolean resetPwd(Map<String, String> infos) {
 
-
+        try{
+            Employee employee = userRepository.findByEmail(infos.get("email"));
+            employee.setPwd(encodePwd(infos.get("pwd")));
+            userRepository.save(employee);
+            return true;
+        } catch (Exception e) {
+            log.info("Exception occured: {}", e.getMessage());
+            return false;
+        }
     }
 
+    @Transactional
     public boolean changeGender(int userId) {
 
         Employee employee = userRepository.findById(userId).orElseThrow(NullPointerException::new);
@@ -209,9 +221,9 @@ public class UserServiceImpl implements UserService{
                 .build();
     }
 
-    private String encodePwd(UserDTO givenInfo) {
+    private String encodePwd(String pwd) {
 
-        return bCryptPasswordEncoder.encode(givenInfo.getPwd());
+        return bCryptPasswordEncoder.encode(pwd);
     }
 
     public boolean idCheck(int id, UserDTO givenInfo) {
@@ -224,7 +236,7 @@ public class UserServiceImpl implements UserService{
         return Employee.builder()
                 .id(oldInfo.getId())
                 .email(givenInfo.getEmail())
-                .pwd(encodePwd(givenInfo))
+                .pwd(oldInfo.getPwd())
                 .employeeName(givenInfo.getName())
                 .employeeNumber(oldInfo.getEmployeeNumber())
                 .gender(givenInfo.getGender())
