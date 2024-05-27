@@ -277,14 +277,9 @@ body {
 }
 
 .header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
 }
 
 .header-title {
-  display: flex;
-  align-items: center;
 }
 
 .header-title span {

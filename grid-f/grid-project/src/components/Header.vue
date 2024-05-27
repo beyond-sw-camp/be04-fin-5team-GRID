@@ -55,8 +55,15 @@ const fetchDepartments = async () => {
     departments.value = response.data.result.map(department => ({
       id: department.id,
       departmentName: department.departmentName,
-      // 필요한 다른 속성들도 추가
+      departmentStatus: department.departmentStatus,
+      startTime: department.startTime,
+      endTime: department.endTime,
+      memberCnt: department.memberCnt,
+      leaderId: department.leaderId,
+      departmentCode: department.departmentCode,
+      sequence: department.sequence
     }));
+    console.log(response.data);
   } catch (error) {
     console.error('부서 정보를 가져오는 데 실패했습니다:', error);
   }
@@ -67,10 +74,21 @@ const handleDragEnd = async () => {
     const updatedDepartments = departments.value.map((department, index) => ({
       id: department.id,
       departmentName: department.departmentName,
-      order: index + 1, // 서버가 기대하는 순서 값을 추가
+      departmentStatus: department.departmentStatus,
+      startTime: department.startTime,
+      endTime: department.endTime,
+      memberCnt: department.memberCnt,
+      leaderId: department.leaderId,
+      departmentCode: department.departmentCode,
+      sequence: index + 1
     }));
+    console.log(updatedDepartments);
 
-    await axios.put('http://localhost:8080/department/list', { departments: updatedDepartments });
+    await axios.put('http://localhost:8080/department/list', updatedDepartments, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
   } catch (error) {
     console.error('부서 순서를 업데이트하는 데 실패했습니다:', error);
   }

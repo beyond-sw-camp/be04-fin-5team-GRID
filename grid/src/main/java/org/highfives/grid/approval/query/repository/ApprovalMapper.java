@@ -14,7 +14,6 @@ public interface ApprovalMapper {
 
     List<OvertimeApprovalDTO> findOInWeekByEmployeeId(OvertimeInWeekDTO overtimeInWeek);
     List<BTApprovalDTO> findAllBTApproval();
-    List<ApprovalEmpDTO> findAllBTApprovalByEmployeeId(Map<String, Integer> params);
     List<ApprovalEmpDTO> findAllOApprovalByEmployeeId(int employeeId);
     List<ApprovalEmpDTO> findAllRWApprovalByEmployeeId(int employeeId);
     List<ApprovalEmpDTO> findAllVApprovalByEmployeeId(int employeeId);

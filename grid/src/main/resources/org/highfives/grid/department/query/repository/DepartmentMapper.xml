@@ -11,6 +11,7 @@
         <result column="department_status" property="departmentStatus"/>
         <result column="start_time" property="startTime"/>
         <result column="end_time" property="endTime"/>
+        <result column="sequence" property="sequence"/>
         <result column="department_code" property="departmentCode"/>
         <result column="leader_id" property="leaderId"/>
     </resultMap>
@@ -24,6 +25,7 @@
             , A.START_TIME
             , A.END_TIME
             , A.LEADER_ID
+            , A.SEQUENCE
             , A.DEPARTMENT_CODE
             , B.EMPLOYEE_NAME
          FROM DEPARTMENT A
