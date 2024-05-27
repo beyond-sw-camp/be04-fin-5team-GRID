@@ -3,6 +3,7 @@ package org.highfives.grid.work.command.service;
 import org.highfives.grid.work.common.dto.AdTimeDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -58,6 +59,17 @@ class AdTimeServiceImplTest {
         Assertions.assertDoesNotThrow(
                 () -> adTimeService.addEndTime(adTimeDTO)
         );
+    }
+
+    @DisplayName("날짜와 직원 id로 조회")
+    @Test
+    void findAdTime() {
+        String date = "2024-05-25";
+        int employeeId = 2;
+
+        AdTimeDTO adTimeDTO = adTimeService.findAdTime(date, employeeId);
+
+        Assertions.assertNotNull(adTimeDTO);
     }
 
 }

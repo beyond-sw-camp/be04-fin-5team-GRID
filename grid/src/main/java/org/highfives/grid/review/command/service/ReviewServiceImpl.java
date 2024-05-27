@@ -126,12 +126,13 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    @Transactional
     public ReviewListDTO addReviewList(ReviewListDTO reviewListDTO) {
 
         ReviewList reviewList = ReviewList.builder()
                 .listName(reviewListDTO.getListName())
                 .build();
+
+        reviewListRepository.save(reviewList);
 
         return mapper.map(reviewList, ReviewListDTO.class);
     }
@@ -144,6 +145,8 @@ public class ReviewServiceImpl implements ReviewService {
                 .id(reviewListDTO.getId())
                 .listName(reviewListDTO.getListName())
                 .build();
+
+        reviewListRepository.save(reviewList);
 
         return mapper.map(reviewList, ReviewListDTO.class);
     }

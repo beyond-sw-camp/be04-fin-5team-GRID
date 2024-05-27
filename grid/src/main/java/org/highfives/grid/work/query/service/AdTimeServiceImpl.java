@@ -30,6 +30,7 @@ public class AdTimeServiceImpl implements AdTimeService {
     @Override
     public List<AdTimeDTO> findAdTimeAll() {
 
+        System.out.println(adTimeMapper.selectAdTimeAll());
         return adTimeMapper.selectAdTimeAll();
     }
 }

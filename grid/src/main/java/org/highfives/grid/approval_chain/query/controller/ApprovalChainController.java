@@ -1,5 +1,7 @@
 package org.highfives.grid.approval_chain.query.controller;
 
+import org.highfives.grid.approval_chain.command.vo.ResApprovalChainVO;
+import org.highfives.grid.approval_chain.common.dto.ChainDTO;
 import org.highfives.grid.approval_chain.query.service.ApprovalChainService;
 import org.highfives.grid.approval_chain.common.dto.ApprovalChainDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,5 +32,21 @@ public class ApprovalChainController {
         List<ApprovalChainDTO> approvalChainDTOList = approvalChainService.findChainListByTypeId(typeId);
 
         return ResponseEntity.status(HttpStatus.OK).body(approvalChainDTOList);
+    }
+
+    @GetMapping("list/{typeId}/{approvalId}")
+    public ResponseEntity<ResApprovalChainVO> findChainByApprovalId(@PathVariable int typeId, @PathVariable int approvalId) {
+
+        List<ChainDTO> result = approvalChainService.findChainByApprovalId(typeId, approvalId);
+
+
+        ResApprovalChainVO response = ResApprovalChainVO.builder()
+                .statusCode(200)
+                .message("결재 라인 상세 조회 성공")
+                .href("")
+                .chainResultList(result)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

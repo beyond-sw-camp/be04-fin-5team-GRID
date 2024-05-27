@@ -119,8 +119,8 @@ public class ReviewController {
     }
 
     /* 설명. 평가 항목 삭제 기능 (ReviewList) */
-    @DeleteMapping("/list")
-    public ResponseEntity<ResponseAddReviewListVO> deleteReviewList(@RequestBody int id) {
+    @DeleteMapping("/list/{id}")
+    public ResponseEntity<ResponseAddReviewListVO> deleteReviewList(@PathVariable int id) {
         reviewService.deleteReviewList(id);
 
         ResponseAddReviewListVO responseAddReviewListVO = ResponseAddReviewListVO.builder()

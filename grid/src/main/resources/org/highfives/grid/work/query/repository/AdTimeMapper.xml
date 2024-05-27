@@ -9,25 +9,60 @@
         <result property="startTime" column="START_TIME"/>
         <result property="endTime" column="END_TIME"/>
         <result property="employeeId" column="EMPLOYEE_ID"/>
+        <result property="employeeName" column="EMPLOYEE_NAME"/>
+        <result property="employeeNumber" column="EMPLOYEE_NUMBER"/>
+        <result property="attendanceStatus" column="ATTENDANCE_STATUS"/>
     </resultMap>
 
     <select id="selectAdTimeByEmployee" resultMap="adTimeResultMap" parameterType="int">
+        <![CDATA[
         SELECT
-                ID
-              , START_TIME
-              , END_TIME
-              , EMPLOYEE_ID
-          FROM AD_TIME
-         WHERE EMPLOYEE_ID = #{employeeId}
+        A.ID,
+        A.START_TIME,
+        A.END_TIME,
+        A.EMPLOYEE_ID,
+        B.EMPLOYEE_NAME,
+        B.EMPLOYEE_NUMBER,
+        CASE
+        WHEN SUBSTRING(A.START_TIME, 12, 8) < '09:00:00' THEN '정시 출근'
+        ELSE '지각'
+        END AS ATTENDANCE_STATUS
+        FROM AD_TIME A
+        JOIN EMPLOYEE B ON A.EMPLOYEE_ID = B.ID
+        WHERE EMPLOYEE_ID = #{employeeId}
+        ]]>
     </select>
 
+<!--    <select id="selectAdTimeAll" resultMap="adTimeResultMap">-->
+<!--        SELECT-->
+<!--        A.ID-->
+<!--        , A.START_TIME-->
+<!--        , A.END_TIME-->
+<!--        , A.EMPLOYEE_ID-->
+<!--        , B.EMPLOYEE_NAME-->
+<!--        , B.EMPLOYEE_NUMBER-->
+<!--        FROM AD_TIME A-->
+<!--        JOIN EMPLOYEE B ON A.EMPLOYEE_ID = B.ID-->
+<!--    </select>-->
+
     <select id="selectAdTimeAll" resultMap="adTimeResultMap">
+        <![CDATA[
         SELECT
-                ID
-        , START_TIME
-        , END_TIME
-        , EMPLOYEE_ID
-        FROM AD_TIME
+        A.ID,
+        A.START_TIME,
+        A.END_TIME,
+        A.EMPLOYEE_ID,
+        B.EMPLOYEE_NAME,
+        B.EMPLOYEE_NUMBER,
+        CASE
+        WHEN SUBSTRING(A.START_TIME, 12, 8) < '09:00:00' THEN '정시 출근'
+        ELSE '지각'
+        END AS ATTENDANCE_STATUS
+        FROM AD_TIME A
+        JOIN EMPLOYEE B ON A.EMPLOYEE_ID = B.ID
+        ]]>
     </select>
+
+
 
 </mapper>

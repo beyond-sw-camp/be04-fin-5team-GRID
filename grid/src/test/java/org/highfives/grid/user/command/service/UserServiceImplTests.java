@@ -127,6 +127,15 @@ class UserServiceImplTests {
                 () -> userService.deleteUser("9999999")
         );
     }
+    
+    @DisplayName("성별 변경")
+    @Test
+    @Transactional
+    void changeGenderTest() {
+
+        Assertions.assertEquals(userService.changeGender(1),false);
+        Assertions.assertEquals(userService.changeGender(4),true);
+    }
 
     @DisplayName("비밀번호 리셋")
     @Test
