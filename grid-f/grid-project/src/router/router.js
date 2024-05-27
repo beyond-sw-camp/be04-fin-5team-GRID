@@ -81,7 +81,6 @@ const router = createRouter({
             component: () => import('../views/HumanResources/Add.vue')
         },
         {
-            path: '/bt',
             path: '/bt/:employeeId',
             component: () => import('@/views/Approval/BTApprovalListView.vue')
         },
