@@ -7,6 +7,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service(value = "queryTeamService")
 public class TeamServiceImpl implements TeamService {
 
@@ -28,4 +31,18 @@ public class TeamServiceImpl implements TeamService {
         return mapper.map(team, TeamDTO.class);
     }
 
+    @Override
+    public List<TeamDTO> findTeamList() {
+
+        List<Team> teamList = teamMapper.findTeamList();
+
+        List<TeamDTO> teamDTOList = new ArrayList<>();
+
+        for (Team team : teamList) {
+            teamDTOList.add(mapper.map(team, TeamDTO.class));
+        }
+
+        return teamDTOList;
+
+    }
 }

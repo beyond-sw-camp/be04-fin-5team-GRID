@@ -53,4 +53,17 @@ public class ReviewServiceImpl implements ReviewService {
         }
         return reviewHistoryDTOList;
     }
+
+    @Override
+    public List<ReviewHistoryDTO> findHistoryList() {
+        List<ReviewHistory> reviewHistoryList = reviewMapper.findHistoryList();
+
+        List<ReviewHistoryDTO> reviewHistoryDTOList = new ArrayList<>();
+
+        for (ReviewHistory reviewHistory : reviewHistoryList) {
+            reviewHistoryDTOList.add(mapper.map(reviewHistory, ReviewHistoryDTO.class));
+        }
+
+        return reviewHistoryDTOList;
+    }
 }
