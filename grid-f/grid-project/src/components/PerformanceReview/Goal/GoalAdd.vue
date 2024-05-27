@@ -133,13 +133,25 @@ const goalDetail = ref({
 // member, leader, manager
 const userRole = ref(null);
 
+// 현재 시간
+function getCurrentDateTimeString() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  const hours = String(now.getHours()).padStart(2, '0');
+  const minutes = String(now.getMinutes()).padStart(2, '0');
+  const seconds = String(now.getSeconds()).padStart(2, '0');
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
+
 
 const fetchGoalAdd = async () => {
   try {
     // 올해 생성된 목표가 있으면 조회 아니라면 새로 생성
 
-    const currentYear = new Date().getFullYear();
-    const currentTime = new Date()
+    const currentYear = new Date().getFullYear();   // 올해 년도
+    const currentTime = getCurrentDateTimeString()  // 현재 시간
 
     console.log(currentTime);
 
@@ -156,7 +168,7 @@ const fetchGoalAdd = async () => {
         "reviewName": `${currentYear} 인사평가`,
         "approvalStatus": "IP",
         "writerId": 6,
-        "writeTime": "2025-03-01 08:00:00",
+        "writeTime": currentTime,
         "approverId": 5
       }
 
@@ -249,7 +261,7 @@ const addRow = () => {
   if (emptyCheck || !lastItem) {
     const index = goalItemList.value.length;
     goalItemList.value.push({
-      id: index + 1,
+      id: '',
       jobName: '',
       goal: '',
       metric: '',
@@ -282,15 +294,16 @@ async function deleteItem(index) {
 
 // 팀원 저장(in-progress)
 async function memberSave() {
+  console.log(goalItemList.value);
   const sendData = {
     id: goalDetail.value.id,
     goalItemList: goalItemList.value.map(item => ({
       id: item.id || null,
       jobName: item.jobName,
       goal: item.goal,
-      metric: item.metric,
-      weight: item.weight,
-      plan: item.plan,
+      metric: item.metric || null,
+      weight: item.weight || 0,
+      plan: item.plan || null,
       objection: item.objection || null
     }))
   };
@@ -315,9 +328,9 @@ async function submit() {
       id: item.id || null,
       jobName: item.jobName,
       goal: item.goal,
-      metric: item.metric,
-      weight: item.weight,
-      plan: item.plan,
+      metric: item.metric || null,
+      weight: item.weight || 0,
+      plan: item.plan || null,
       objection: item.objection || null
     }))
   };

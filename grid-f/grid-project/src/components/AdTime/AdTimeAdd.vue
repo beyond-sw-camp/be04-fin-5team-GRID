@@ -1,16 +1,17 @@
 <template>
-  {{ today }}
-  <div>
-    <div v-if="adTime.startTime">{{ adTime.startTime }}</div>
-    <div v-else>00:00</div>
+  <div class="adTimeAddController">
+    {{ today }}
+    <div>
+      <div v-if="adTime.startTime">{{ adTime.startTime }}</div>
+      <div v-else>00:00</div>
+      <button @click="addArrivalTime()">출근</button>
+    </div>
+    <div>
+      <div v-if="adTime.endTime">{{ adTime.endTime }}</div>
+      <div v-else>00:00</div>
+      <button @click="addDepartureTime()">퇴근</button>
+    </div>
   </div>
-  <div>
-    <div v-if="adTime.endTime">{{ adTime.endTime }}</div>
-    <div v-else>00:00</div>
-  </div>
-  <button @click="addArrivalTime()">출근</button>
-  {{}}
-  <button @click="addDepartureTime()">퇴근</button>
 </template>
 
 <script setup>
@@ -91,6 +92,7 @@ const addArrivalTime = async () => {
       })
       .catch(error => {
         // 오류 발생 시 처리할 로직
+        alert('출근 시간이 존재합니다')
         console.error('에러 발생:', error);
         // console.error('출근 시간을 기록하는 중 오류가 발생했습니다:', error);
       });
@@ -114,7 +116,7 @@ const addDepartureTime = async () => {
         console.log('퇴근 시간이 기록되었습니다.');
       })
       .catch(error => {
-        // 오류 발생 시 처리할 로직
+        alert('퇴근 시간이 존재합니다');
         console.error('에러 발생:', error);
       });
 
