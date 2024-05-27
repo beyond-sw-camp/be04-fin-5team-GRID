@@ -61,6 +61,8 @@ const allInfo = ref([]);
 const currentPage = ref(1);
 const itemsPerPage = 10;
 const filteredInfo = ref([]);
+const userRole = ref('');
+const userId = ref('');
 
 const getAllVacationInfo = async () => {
     try {
@@ -68,7 +70,18 @@ const getAllVacationInfo = async () => {
         allInfo.value = response.data.result;
         filteredInfo.value = allInfo.value; // 초기화 시 전체 데이터를 필터링된 데이터에 할당
     } catch (error) {
-        console.error("Error fetching vacation info:", error);
+        console.error("Error:", error);
+    }
+};
+
+const getUserVacationInfo = async () => {
+    try {
+        const response = await axios.get(`/api/vacation/info/${userId.value}`);
+        allInfo.value = response.data.result;
+        filteredInfo.value = allInfo.value; // 초기화 시 전체 데이터를 필터링된 데이터에 할당
+        console.log(allInfo.value)
+    } catch (error) {
+        console.error("Error:", error);
     }
 };
 
@@ -109,9 +122,35 @@ const nextPage = () => {
     }
 };
 
+function parseJwt(token) {
+    try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        return JSON.parse(jsonPayload);
+    } catch (error) {
+        console.error('Invalid token', error);
+        return null;
+    }
+}
+
 
 onBeforeMount(() => {
-    getAllVacationInfo();
+    const token = localStorage.getItem('access');
+    if (token) {
+        const decodedToken = parseJwt(token);
+        userRole.value = decodedToken?.auth || '';
+        userId.value = decodedToken?.id || '';
+    }
+
+    if (userRole.value === 'ROLE_ADMIN') {
+        getAllVacationInfo();
+    } else if (userRole.value === 'ROLE_USER') {
+        getUserVacationInfo();
+    }
+
 });
 </script>
 

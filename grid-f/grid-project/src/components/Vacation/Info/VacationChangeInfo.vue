@@ -5,19 +5,19 @@
             <h1>휴가 변화 이력</h1>
         </div>
         <div class="vacations">
-            <div class="annual">
+            <div class="annual" v-if="userRole === 'ROLE_ADMIN'">
                 <div class="vacationsTitle">
                     <h3>연 단위 휴가 지급<br> (연차, 정기휴가)</h3>
                     <img class="plusBtn" @click=giveAnnual() src="@/assets/buttons/plus.png">
                 </div>
             </div>
-            <div class="month">
+            <div class="month"  v-if="userRole === 'ROLE_ADMIN'">
                 <div class="vacationsTitle">
                     <h3>월 단위 휴가 지급 <br> (월차, 보건휴가)</h3>
                     <img class="plusBtn" @click=giveMonth() src="@/assets/buttons/plus.png">
                 </div>
             </div>
-            <div class="diretly">
+            <div class="diretly"  v-if="userRole === 'ROLE_ADMIN'">
                 <div class="vacationsTitle">
                     <h3>휴가 직접 지급 <br> (관리자)</h3>
                     <img class="plusBtn" src="@/assets/buttons/plus.png">
@@ -82,6 +82,8 @@ const searchQuery = ref(''); // 검색어를 위한 변수
 const filteredHistories = ref([]); // 필터링된 기록
 const currentPage = ref(1);
 const itemsPerPage = 10;
+const userRole = ref('');
+const userId = ref('');
 
 const totalPages = computed(() => {
     return Math.ceil(filteredHistories.value.length / itemsPerPage);
@@ -99,6 +101,16 @@ const getAllVacationHistory = async () => {
         histories.value = response.data.result;
         filteredHistories.value = histories.value; // 처음에 모든 기록을 보여줌
         console.log(response.data.result);
+    } catch (error) {
+        console.error("Error fetching vacation details:", error);
+    }
+};
+
+const getUserVacationHistory = async () => {
+    try {
+        const response = await axios.get(`/api/vacation/details/${userId.value}`);
+        histories.value = response.data.result;
+        filteredHistories.value = histories.value; // 처음에 모든 기록을 보여줌
     } catch (error) {
         console.error("Error fetching vacation details:", error);
     }
@@ -171,6 +183,20 @@ function giveMonth() {
     }
 }
 
+function parseJwt(token) {
+    try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        return JSON.parse(jsonPayload);
+    } catch (error) {
+        console.error('Invalid token', error);
+        return null;
+    }
+}
+
 const prevPage = () => {
     if (currentPage.value > 1) {
         currentPage.value--;
@@ -188,7 +214,18 @@ const goToPage = (page) => {
 };
 
 onBeforeMount(() => {
-    getAllVacationHistory();
+    const token = localStorage.getItem('access');
+    if (token) {
+        const decodedToken = parseJwt(token);
+        userRole.value = decodedToken?.auth || '';
+        userId.value = decodedToken?.id || '';
+    }
+
+    if (userRole.value === 'ROLE_ADMIN') {
+        getAllVacationHistory();
+    } else if (userRole.value === 'ROLE_USER') {
+        getUserVacationHistory();
+    }
 });
 </script>
 
