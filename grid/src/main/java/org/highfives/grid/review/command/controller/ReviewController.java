@@ -152,11 +152,11 @@ public class ReviewController {
 
     /* 설명. 평가 작성 시 평가 내역 추가 기능 (ReviewHistory) */
     @PostMapping("/history")
-    public ResponseEntity<ResponseReviewHistoryVO> addReviewHistory(@RequestBody ReviewHistoryDTO historyDTO) {
+    public ResponseEntity<ResponseAddReviewHistoryVO> addReviewHistory(@RequestBody ReviewHistoryDTO historyDTO) {
 
-        ReviewHistoryDTO responseData = reviewService.addReviewHistory(historyDTO);
+        List<ReviewHistoryDTO> responseData = reviewService.addReviewHistory(historyDTO);
 
-        ResponseReviewHistoryVO responseReviewHistoryVO = ResponseReviewHistoryVO.builder()
+        ResponseAddReviewHistoryVO responseReviewHistoryVO = ResponseAddReviewHistoryVO.builder()
                 .message("create success")
                 .statusCode(201)
                 .href("/review/history")

@@ -15,7 +15,7 @@ public interface ReviewService {
 
     ReviewHistoryDTO findReviewHistoryById(int id);
 
-    ReviewHistoryDTO addReviewHistory(ReviewHistoryDTO historyDTO);
+    List<ReviewHistoryDTO> addReviewHistory(ReviewHistoryDTO historyDTO);
 
     ReviewHistoryDTO modifyReviewHistory(ReviewHistoryDTO historyDTO);
 

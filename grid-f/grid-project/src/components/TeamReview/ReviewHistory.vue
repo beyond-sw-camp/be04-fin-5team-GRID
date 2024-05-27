@@ -16,7 +16,6 @@
           <th>부서 명</th>
           <th>평가 명</th>
           <th>작성일</th>
-          <th>평가 기간</th>
           <th>분기</th>
           <th>대상자</th>
         </tr>
@@ -27,7 +26,6 @@
           <td>{{ review.departmentName }}</td>
           <td>{{ review.content }}</td>
           <td>{{ formatDate(review.writeTime) }}</td>
-          <td>{{ review.endTime }}</td>
           <td>{{ review.quarter }}</td>
           <td>{{ review.revieweeName }}</td>
         </tr>
@@ -60,7 +58,6 @@ const fetchReviews = async () => {
       review.departmentName = departmentResponse.data.result.departmentName;
     }));
     reviews.value = reviewList; 
-    console.log(reviews.value);
   } catch (error) {
     console.error('평가 내역을 가져오는 중 오류 발생:', error);
   }
@@ -75,6 +72,7 @@ const filteredReviews = computed(() => {
 });
 
 const formatDate = (datetime) => {
+  if (!datetime) return '-';
   const date = new Date(datetime);
   return date.toLocaleString(); 
 };
