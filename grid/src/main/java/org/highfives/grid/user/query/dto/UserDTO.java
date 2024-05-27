@@ -31,22 +31,21 @@ public class UserDTO {
     private YN absenceYn;
     private String absenceContent;
     private Role role;
-    private int dutiesId;
-    private String duties;
-    private int positionId;
-    private String position;
-    private int teamId;
-    private int departmentId;
+    private DepartmentDTO department;
+    private TeamDTO team;
+    private PositionDTO position;
+    private DutiesDTO duties;
     private String profilePath;
     private String sealPath;
 
     @Builder
-    public UserDTO(int id, String email, String pwd, String name, String employeeNumber,
-                   Gender gender, String phoneNumber, String callNumber, int zipCode, String address,
-                   String assignedTask, String joinTime, JoinType joinType, String resignTime, YN resignYn,
-                   WorkType workType, String contractStartTime, String contractEndTime, int salary, YN absenceYn,
-                   String absenceContent, int dutiesId, String duties, int positionId, String position, Role role,
-                   int teamId, int departmentId, String profilePath, String sealPath) {
+
+    public UserDTO(int id, String email, String pwd, String name, String employeeNumber, Gender gender,
+                   String phoneNumber, String callNumber, int zipCode, String address, String assignedTask,
+                   String joinTime, JoinType joinType, String resignTime, YN resignYn, WorkType workType,
+                   String contractStartTime, String contractEndTime, int salary, YN absenceYn, String absenceContent,
+                   Role role, DepartmentDTO department, TeamDTO team, PositionDTO position, DutiesDTO duties,
+                   String profilePath, String sealPath) {
         this.id = id;
         this.email = email;
         this.pwd = pwd;
@@ -69,14 +68,11 @@ public class UserDTO {
         this.absenceYn = absenceYn;
         this.absenceContent = absenceContent;
         this.role = role;
-        this.dutiesId = dutiesId;
-        this.duties = duties;
-        this.positionId = positionId;
+        this.department = department;
+        this.team = team;
         this.position = position;
-        this.teamId = teamId;
-        this.departmentId = departmentId;
+        this.duties = duties;
         this.profilePath = profilePath;
         this.sealPath = sealPath;
     }
-
 }

@@ -21,7 +21,16 @@ public class AdTimeServiceImpl implements AdTimeService {
     }
 
     @Override
+    @Transactional
     public AdTimeDTO addStartTime(AdTimeDTO adTimeDTO) {
+
+        String time = adTimeDTO.getStartTime().split(" ")[0]; // 날짜 부분만 저장
+
+        AdTime findAdTime = adTimeRepository.findAdTimeByEmployeeIdAndTime(time, adTimeDTO.getEmployeeId());
+
+        if (findAdTime != null) {
+            throw new RuntimeException("해당 날짜에 이미 출근 시간이 존재합니다.");
+        }
 
         AdTime adTime = new AdTime(
                 adTimeDTO.getStartTime(),
@@ -40,15 +49,26 @@ public class AdTimeServiceImpl implements AdTimeService {
 
         String time = adTimeDTO.getEndTime().split(" ")[0]; // 날짜 부분만 저장
 
-        /* 설명. 직원id와 출근 날짜로 조회, 변경할 endTime 추가*/
-        AdTime findAdTime = adTimeRepository.findAdTimeByEmployeeIdAndEndTime(time, adTimeDTO.getEmployeeId());
+        /* 설명. 직원id와 출근 날짜로 조회, 변경할 endTime 추가 */
+        AdTime findAdTime = adTimeRepository.findAdTimeByEmployeeIdAndTime(time, adTimeDTO.getEmployeeId());
 
         if (findAdTime != null) {
+            if(findAdTime.getEndTime() != null)
+                throw new RuntimeException("해당 날짜에 이미 퇴근 시간이 존재합니다.");
             findAdTime.setEndTime(adTimeDTO.getEndTime());
         }
 
-        AdTime addAdTime = adTimeRepository.findAdTimeByEmployeeIdAndEndTime(time, adTimeDTO.getEmployeeId());
+        AdTime addAdTime = adTimeRepository.findAdTimeByEmployeeIdAndTime(time, adTimeDTO.getEmployeeId());
 
         return modelMapper.map(addAdTime,  AdTimeDTO.class);
+    }
+
+    @Override
+    public AdTimeDTO findAdTime(String date, int employeeId) {
+
+        AdTime findAdTime = adTimeRepository.findAdTimeByEmployeeIdAndTime(date, employeeId);
+
+        System.out.println(findAdTime);
+        return modelMapper.map(findAdTime, AdTimeDTO.class);
     }
 }

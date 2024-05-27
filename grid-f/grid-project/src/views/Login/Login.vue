@@ -10,7 +10,6 @@
                 </div>
                 <div id="title-content2">
                     Have a nice day
-
                 </div>
                 <div class="email">
                     <div class="outBox" :class="{ 'existence': isExistence }">
@@ -126,7 +125,6 @@ async function Login() {
                 if (response.status == 200) {
                     console.log(response);
                     console.log(response.data.access);
-                    // console.log('[]: ', response.headers.getAccept().value);
                     localStorage.setItem('access', response.data.access)
                     alert('로그인 되었습니다');
                     isWrong.value = false;
