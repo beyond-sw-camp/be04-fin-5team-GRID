@@ -2,7 +2,7 @@
     <div class="historyAll">
         <div class="historyTitle">
             <img class="historyIcon" src="@/assets/buttons/vacation.png">
-            <h1>휴가 변화이력</h1>
+            <h1>휴가 변화 이력</h1>
         </div>
         <div class="vacations">
             <div class="annual">
@@ -195,7 +195,7 @@ onBeforeMount(() => {
 <style scoped>
     .historyAll {
         display: grid;
-        grid-template-rows: 18% 15% 4% 43% 5% 13%;
+        grid-template-rows: 18% 15% 4% 43% 8% 10%;
         grid-template-columns: 10% 80% 10%;
         height: 100%;
     }
@@ -214,6 +214,9 @@ onBeforeMount(() => {
 
     .historyTitle h1 {
         margin-left: 0.5%;
+        margin-bottom: 0;
+        font-size: 25px;
+        font-weight: 600;
     }
 
     .historyIcon {
@@ -236,6 +239,11 @@ onBeforeMount(() => {
         align-items: center;
         font-size: 12px;
         height: 10vh;
+    }
+
+    .vacations h3 {
+        font-size: 15px;
+        font-weight: 600;
     }
 
     .plusBtn {
@@ -268,6 +276,7 @@ onBeforeMount(() => {
         grid-column-start: 2;
         display: grid;
         grid-template-columns: 74% 5% 1% 15% 1% 4%;
+        font-size: 12px;
     }
 
     .searchType {
@@ -341,7 +350,7 @@ onBeforeMount(() => {
     }
 
     .pagination button.active {
-        background-color: darkorange;
+        background-color: #088A85;
         font-weight: bold;
         color: white;
     }

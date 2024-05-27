@@ -69,6 +69,9 @@ onBeforeMount(() => {
 
 .policyTitle h1 {
     margin-left:0.5%;
+    margin-bottom: 0;
+    font-size: 25px;
+    font-weight: 600;
 }
 
 .policyIcon {
@@ -95,10 +98,11 @@ onBeforeMount(() => {
     margin-top: 0;
     margin-bottom: 0;
     white-space: pre-wrap; /* 공백과 줄 바꿈을 유지 */
+    font-size: 13px;
 }
 
 .policyBox {
-    width: calc(100% - 20px); /* 부모 요소의 너비에 비례하여 폭을 설정 */
+    width: 100%; /* 부모 요소의 너비에 비례하여 폭을 설정 */
     padding: 10px; /* 내부 여백 추가 */
     margin-top: 10px;
     margin-bottom: 0;
