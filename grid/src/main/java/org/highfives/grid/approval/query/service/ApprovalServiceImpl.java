@@ -1,6 +1,7 @@
 package org.highfives.grid.approval.query.service;
 
 import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
 import com.lowagie.text.Font;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.BaseFont;
@@ -194,6 +195,8 @@ public class ApprovalServiceImpl implements ApprovalService{
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (DocumentException e) {
             throw new RuntimeException(e);
         } finally {
             document.close();
