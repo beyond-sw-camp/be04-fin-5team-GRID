@@ -15,11 +15,11 @@
                 </div>
                 <div id="other-info">
                     <div id="teamInfo">
-                        {{ result.team ? result.team.teamName : N / A }}
+                        {{ result.team ? result.team.teamName : 'N/A' }}
                     </div>
                     <div id="dot">•</div>
                     <div id="dutiesInfo">
-                        {{ result.duties ? result.duties.dutiesName : N / A }}
+                        {{ result.duties ? result.duties.dutiesName : 'N/A' }}
                     </div>
                     <div id="dot">•</div>
                     <div id="absenceInfo">
@@ -46,23 +46,19 @@
         <div class="content">
             <component :is="currentTabComponent" :result="result" :userRole="userRole"></component>
         </div>
-        <div class="content">
-            <ModifyView :user="result"/>
-        </div>
     </div>
 </template>
 
 <script setup>
 import HumanResourcesInfo from '@/components/HumanResources/HumanResourcesInfo.vue';
 import WB from '@/components/HumanResources/WorkVacation.vue';
-import ResetPwd from '@/components/Login/ResetPassword.vue';
 import { ref, computed, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import axios from 'axios';
 
 const currentTab = ref('human-resources');
 const route = useRoute();
-const result = ref('');
+const result = ref({});
 const isAbsence = ref(false);
 const userRole = ref('');
 const givenEmail = ref('');
@@ -109,6 +105,7 @@ onMounted(async () => {
         isAbsence.value = true;
     }
 
+    console.log('온마운트결과:', result.value);
     givenEmail.value = result.value.email;
 }
 

@@ -132,7 +132,7 @@
 </template>
 
 <script setup>
-import { defineProps, onMounted, ref } from 'vue';
+import { defineProps, onMounted, ref, watch } from 'vue';
 
 const props = defineProps({
     result: {
@@ -144,6 +144,17 @@ const props = defineProps({
         required: true
     }
 });
+
+const updateValues = () => {
+    console.log("Updated result:", props.result);
+    console.log("Updated userRole:", props.userRole);
+    console.log('퇴사 여부:', props.result.resignYn);
+    
+    joinType.value = props.result.joinType === 'NEW' ? '신입' : '경력';
+    workType.value = props.result.workType === 'R' ? '정규직' : '계약직';
+    isResigned.value = props.result.resignYn === 'N' ? '재직중' : '퇴사';
+    resignTime.value = props.result.resignTime != null ? props.result.resignTime : '';
+};
 
 const today = new Date();
 const year = today.getFullYear();
@@ -157,24 +168,11 @@ const resignTime = ref('');
 
 const currentTime = `${year}-${month}-${day}`;
 
-onMounted(() => {
-    if (props.result.joinType == 'NEW') {
-        joinType.value = '신입';
-    } else {
-        joinType.value = '경력';
-    }
-    if (props.result.workType == 'R') {
-        workType.value = '정규직';
-    } else {
-        workType.value = '계약직';
-    }
-    if (props.result.resignYn == 'Y') {
-        isResigned.value = true;
-    }
-    if (props.result.resignTime != null) {
-        resignTime.value = props.result.resignTime.value;
-    }
-});
+onMounted(updateValues);
+
+
+watch(() => props.result, updateValues, { immediate: true });
+watch(() => props.userRole, updateValues, { immediate: true });
 </script>
 
 <style scoped>
