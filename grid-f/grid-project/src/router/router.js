@@ -32,10 +32,10 @@ const router = createRouter({
             path: '/addteamreview',
             component: () => import('@/components/TeamReview/AddTeamReview.vue')
         },
-        {
-            path: '/team',
-            component: () => import('@/components/Department/Team.vue')
-        },
+        // {
+        //     path: '/team',
+        //     component: () => import('@/components/Department/Team.vue')
+        // },
         {
             path: '/performance-review-goal/add',
             component: () => import('../views/PerformanceReview/GoalAddView.vue')
