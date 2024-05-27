@@ -46,6 +46,16 @@
             <li>동료 평가 작성</li>
           </ul>
         </li>
+        <li>
+          <span @click="toggleMenu('performanceReview')">업적 평가 관리</span>
+          <ul v-show="activeMenus.performanceReview">
+            <li @click="navigateTo('/performance-review-goal/add')">업적 평가 목표 작성</li>
+            <li @click="navigateTo('/performance-review-goal')">업적 평가 목표 조회</li>
+            <li>업적 평가 작성</li>
+            <li>업적 평가 조회</li>
+            <li>종합 업적 평가</li>
+          </ul>
+        </li>
       </ul>
     </nav>
   </aside>
@@ -87,9 +97,15 @@ const toggleMenu = (menu) => {
   activeMenus[menu] = !activeMenus[menu];
 };
 
+const navigateTo = (path) => {
+  router.push(path);
+};
+
+
 function toHR () {
   router.push('/hr');
 }
+
 </script>
 
 <style scoped>

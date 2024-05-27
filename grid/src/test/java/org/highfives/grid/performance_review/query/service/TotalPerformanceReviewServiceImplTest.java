@@ -35,7 +35,7 @@ class TotalPerformanceReviewServiceImplTest {
 
     }
 
-    @DisplayName(" 종합 평가 전체 조회")
+    @DisplayName("종합 평가 전체 조회")
     @Test
     public void findAllTotal(){
 
@@ -45,7 +45,7 @@ class TotalPerformanceReviewServiceImplTest {
 
     }
 
-    @DisplayName(" 종합 평가 하나 조회")
+    @DisplayName("종합 평가 하나 조회")
     @Test
     public void findTotalById(){
         int id = 6;
@@ -53,6 +53,5 @@ class TotalPerformanceReviewServiceImplTest {
         assertNotNull(
                 totalPerformanceReviewService.findTotalById(id)
         );
-
     }
 }

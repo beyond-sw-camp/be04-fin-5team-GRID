@@ -31,6 +31,18 @@ const router = createRouter({
             component: () => import('@/components/Department/Department.vue')
         },
         {
+            path: '/performance-review-goal/add',
+            component: () => import('../views/PerformanceReview/GoalAddView.vue')
+        },
+        {
+            path: '/performance-review-goal',
+            component: () => import('../views/PerformanceReview/GoalListView.vue')
+        },
+        {
+            path: '/review-goal/detail/:id',
+            component: () => import('../views/PerformanceReview/GoalDetailView.vue')
+        },
+        {
             path: '/hr',
             component: () => import('../views/HumanResources/Main.vue')
         },
