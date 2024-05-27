@@ -15,9 +15,10 @@
           <ul v-show="activeMenus.workManagement">
             <li>근무 관리</li>
             <li>근무 정보</li>
-            <li>휴가 정책</li>
-            <li>휴가 보유 정보 목록</li>
-            <li>휴가 기록 목록</li>
+            <li @click="toVacationPolicy()">휴가 정책</li>
+            <li @click="toVacationInfo()">휴가 보유 정보</li>
+            <li @click="toVacationChangeInfo()">휴가 변화 이력</li>
+            <li @click="toVacationManage()">휴가 종류 관리</li>
           </ul>
         </li>
         <li>
@@ -114,6 +115,22 @@ function toHR () {
   router.push('/hr');
 }
 
+function toVacationManage() {
+  router.push('/vacation/manage');
+}
+
+function toVacationPolicy() {
+  router.push('/vacation/policy');
+}
+
+function toVacationInfo() {
+  router.push('/vacation/info');
+}
+
+function toVacationChangeInfo() {
+  router.push('/vacation/changeInfo');
+}
+
 </script>
 
 <style scoped>
@@ -125,7 +142,7 @@ function toHR () {
 }
 
 .sidebar {
-  width: 250px;
+  width: 200px;
   background: #fff;
   border-right: 1px solid #e5e5e5;
   height: 100vh;
