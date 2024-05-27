@@ -15,9 +15,10 @@
           <ul v-show="activeMenus.workManagement">
             <li>근무 관리</li>
             <li>근무 정보</li>
-            <li>휴가 정책</li>
-            <li>휴가 보유 정보 목록</li>
-            <li>휴가 기록 목록</li>
+            <li @click="toVacationPolicy()">휴가 정책</li>
+            <li @click="toVacationInfo()">휴가 보유 정보</li>
+            <li @click="toVacationChangeInfo()">휴가 변화 이력</li>
+            <li @click="toVacationManage()" v-if="userRole === 'ROLE_ADMIN'">휴가 종류 관리</li>
           </ul>
         </li>
         <li>
@@ -70,6 +71,7 @@ import { useRouter } from 'vue-router';
 const employee = ref([]);
 const error = ref([]);
 const router = useRouter();
+const userRole = ref('');
 
 const fetchEmployee = async () => {
   try {
@@ -81,7 +83,27 @@ const fetchEmployee = async () => {
   }
 };
 
+function parseJwt(token) {
+    try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        return JSON.parse(jsonPayload);
+    } catch (error) {
+        console.error('Invalid token', error);
+        return null;
+    }
+}
+
 onMounted(() => {
+  const token = localStorage.getItem('access');
+    if (token) {
+        const decodedToken = parseJwt(token);
+        userRole.value = decodedToken?.auth || '';
+    }
+
   fetchEmployee();
 });
 
@@ -114,6 +136,22 @@ function toHR () {
   router.push('/hr');
 }
 
+function toVacationManage() {
+  router.push('/vacation/manage');
+}
+
+function toVacationPolicy() {
+  router.push('/vacation/policy');
+}
+
+function toVacationInfo() {
+  router.push('/vacation/info');
+}
+
+function toVacationChangeInfo() {
+  router.push('/vacation/changeInfo');
+}
+
 </script>
 
 <style scoped>
@@ -125,7 +163,7 @@ function toHR () {
 }
 
 .sidebar {
-  width: 250px;
+  width: 200px;
   background: #fff;
   border-right: 1px solid #e5e5e5;
   height: 100vh;

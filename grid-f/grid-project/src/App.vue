@@ -69,7 +69,7 @@ body {
 .container {
     display: grid;
     grid-template-columns: 200px 1fr;
-    grid-template-rows: 60px auto 10px;
+    grid-template-rows: 60px auto 35px;
     grid-template-areas:
         "header header"
         "side body"
@@ -96,7 +96,7 @@ body {
     position: fixed;
     top: 60px;
     left: 0;
-    width: 180px;
+    width: 200px;
     height: calc(100vh - 60px);
     z-index: 800;
     font-size: 14px;
@@ -113,7 +113,7 @@ body {
     grid-area: footer;
     position: fixed;
     bottom: 0;
-    width: calc(100% - 180px);
+    width: calc(100% - 200px);
     z-index: 600;
     font-size: 10px;
     justify-self: flex-end;

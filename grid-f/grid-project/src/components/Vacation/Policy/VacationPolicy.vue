@@ -3,13 +3,13 @@
         <div class="policyTitle">
             <img class="policyIcon" src="@/assets/buttons/vacation.png">
             <h1>휴가정책</h1>
-            <button class="policyRegist" @click="registPolicy()">등록하기</button>
+            <button class="policyRegist" @click="registPolicy()" v-if="userRole=== 'ROLE_ADMIN'">등록하기</button>
         </div>
         <div class="policyContent">
             <div class="policyBox" v-for="policy in policies" :key="policy.id">
                 <div class="policyHeader">
                     <h3 class="policyName">{{ policy.typeName }}</h3>
-                    <img class="policyModify" src="@/assets/buttons/edit.png" @click="modifyPolicy(policy.id)">
+                    <img class="policyModify" src="@/assets/buttons/edit.png" @click="modifyPolicy(policy.id)" v-if="userRole === 'ROLE_ADMIN'">
                 </div>
                 <h5 class="policies" v-html="policy.content"></h5>
             </div>
@@ -23,6 +23,7 @@ import { onBeforeMount, ref } from 'vue';
 import axios from "axios";
 
 const policies = ref([]);
+const userRole = ref('');
 
 const getAllVacationPolicy = async () => {
     try {
@@ -42,7 +43,27 @@ function registPolicy() {
     router.push('/vacation/policy/regist');
 }
 
+function parseJwt(token) {
+    try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        return JSON.parse(jsonPayload);
+    } catch (error) {
+        console.error('Invalid token', error);
+        return null;
+    }
+}
+
 onBeforeMount(() => {
+    const token = localStorage.getItem('access');
+    if (token) {
+        const decodedToken = parseJwt(token);
+        userRole.value = decodedToken?.auth || '';
+    }
+
     getAllVacationPolicy();
 });
 </script>
@@ -69,6 +90,9 @@ onBeforeMount(() => {
 
 .policyTitle h1 {
     margin-left:0.5%;
+    margin-bottom: 0;
+    font-size: 25px;
+    font-weight: 600;
 }
 
 .policyIcon {
@@ -95,10 +119,11 @@ onBeforeMount(() => {
     margin-top: 0;
     margin-bottom: 0;
     white-space: pre-wrap; /* 공백과 줄 바꿈을 유지 */
+    font-size: 13px;
 }
 
 .policyBox {
-    width: calc(100% - 20px); /* 부모 요소의 너비에 비례하여 폭을 설정 */
+    width: 100%; /* 부모 요소의 너비에 비례하여 폭을 설정 */
     padding: 10px; /* 내부 여백 추가 */
     margin-top: 10px;
     margin-bottom: 0;
@@ -130,3 +155,5 @@ onBeforeMount(() => {
     width: 70%;
 }
 </style>
+
+
