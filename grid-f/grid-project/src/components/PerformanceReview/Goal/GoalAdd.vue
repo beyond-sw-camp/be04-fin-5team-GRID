@@ -201,6 +201,8 @@ const fetchGoalAdd = async () => {
         status: getApprovalStatus(goal.approvalStatus)
       };
 
+      // 문서 상태별 수정 가능 여부
+      // IP, D 수정 가능 S, R, V 수정x
     }
   } catch (error) {
     console.error('에러 발생:', error);
