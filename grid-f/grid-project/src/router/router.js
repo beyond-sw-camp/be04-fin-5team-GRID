@@ -132,6 +132,14 @@ const router = createRouter({
             path: '/vacation/info',
             component:() => import('../views/VacationInfoMainView.vue')
         },
+        {
+            path: '/performance-review',
+            component: () => import('../views/PerformanceReview/Review/PerformanceReviewListView.vue')
+        },
+        {
+            path: '/performance-review/detail/:id',
+            component: () => import('../views/PerformanceReview/Review/PerformanceReviewDetailView.vue')
+        },
     ]
 })
 
