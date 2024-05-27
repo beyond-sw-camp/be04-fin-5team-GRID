@@ -7,7 +7,9 @@ import org.highfives.grid.performance_review.query.repository.PerformanceReviewM
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service(value = "queryPerformanceReviewServiceImpl")
 public class PerformanceReviewServiceImpl implements PerformanceReviewService{
@@ -41,5 +43,16 @@ public class PerformanceReviewServiceImpl implements PerformanceReviewService{
         findReview.setReviewItemList(findReviewItem);
 
         return findReview;
+    }
+
+    @Override
+    public PerformanceReviewDTO findMidReviewByWriterIdAndYear(int writerId, int year) {
+        Map<String, Integer> intMap = new HashMap();
+        intMap.put("writerId", writerId);
+        intMap.put("year", year);
+
+        PerformanceReviewDTO performanceReviewDTO = performanceReviewMapper.selectMidReviewByWriterIdAndYear(intMap);
+
+        return performanceReviewDTO;
     }
 }
