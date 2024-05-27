@@ -81,9 +81,18 @@
           JOIN  bt_approval b
             ON  a.id = b.requester_id
          WHERE  a.id = #{employeeId}
-           AND  b.approval_status = 'A'
-           AND  b.cancel_yn = 'N'
-           AND  b.cancel_document_id = 0;
+        <if test="isApproval == 1">
+            AND  b.approval_status = 'A'
+            AND  b.cancel_yn = 'N'
+            AND  b.cancel_document_id = 0
+        </if>
+        <if test="isApproval == 2">
+            AND  b.approval_status = 'D'
+        </if>
+        <if test="isApproval == 3">
+            AND  b.approval_status = 'N'
+             OR  b.approval_status = 'V'
+        </if>
     </select>
 
     <select id="findAllOApprovalByEmployeeId" resultMap="approvalMap" parameterType="int">
@@ -103,9 +112,18 @@
           JOIN  overtime_approval b
             ON  a.id = b.requester_id
          WHERE  a.id = #{employeeId}
+         <if test="isApproval == 1">
            AND  b.approval_status = 'A'
            AND  b.cancel_yn = 'N'
-           AND  b.cancel_document_id = 0;
+           AND  b.cancel_document_id = 0
+        </if>
+        <if test="isApproval == 2">
+            AND  b.approval_status = 'D'
+        </if>
+        <if test="isApproval == 3">
+            AND  b.approval_status = 'N'
+             OR  b.approval_status = 'V'
+        </if>
     </select>
 
     <select id="findAllRWApprovalByEmployeeId" resultMap="approvalMap" parameterType="int">
@@ -128,9 +146,18 @@
           JOIN  rw_approval b
             ON  a.id = b.requester_id
          WHERE  a.id = #{employeeId}
+         <if test="isApproval == 1">
            AND  b.approval_status = 'A'
            AND  b.cancel_yn = 'N'
-           AND  b.cancel_document_id = 0;
+           AND  b.cancel_document_id = 0
+        </if>
+        <if test="isApproval == 2">
+            AND  b.approval_status = 'D'
+        </if>
+        <if test="isApproval == 3">
+            AND  b.approval_status = 'N'
+             OR  b.approval_status = 'V'
+        </if>
     </select>
 
     <select id="findAllVApprovalByEmployeeId" resultMap="approvalMap" parameterType="int">
@@ -151,9 +178,18 @@
           JOIN  vacation_approval b
             ON  a.id = b.requester_id
          WHERE  a.id = #{employeeId}
+         <if test="isApproval == 1">
            AND  b.approval_status = 'A'
            AND  b.cancel_yn = 'N'
-           AND  b.cancel_document_id = 0;
+           AND  b.cancel_document_id = 0
+        </if>
+        <if test="isApproval == 2">
+            AND  b.approval_status = 'D'
+        </if>
+        <if test="isApproval == 3">
+            AND  b.approval_status = 'N'
+             OR  b.approval_status = 'V'
+        </if>
     </select>
 
     <select id="findBTDetailByApprovalId" resultMap="approvalMap" parameterType="int">
@@ -207,17 +243,68 @@
 
     <select id="findVDetailByApprovalId" resultMap="approvalMap" parameterType="int">
         SELECT
-                id,
-                start_time,
-                end_time,
-                content,
-                info_id,
-                approval_status,
-                write_time,
-                cancel_yn,
-                cancel_document_id,
-                requester_id
-          FROM  vacation_approval
-         WHERE  id = #{approvalId};
+                a.id,
+                a.start_time,
+                a.end_time,
+                a.content,
+                a.info_id,
+                a.approval_status,
+                a.write_time,
+                a.cancel_yn,
+                a.cancel_document_id,
+                a.requester_id,
+                c.type_name
+          FROM  vacation_approval a
+          JOIN  vacation_info b
+            ON  a.info_id = b.id
+          JOIN  vacation_type c
+            ON  b.type_id = c.id
+         WHERE  a.id = #{approvalId};
+    </select>
+
+    <select id="findAllBTApprovalByApproverId" resultMap="approvalMap" parameterType="map">
+        SELECT
+                b.id,
+                b.content,
+                c.employee_name,
+                c.employee_number,
+                b.write_time,
+                b.approval_status
+          FROM
+                <if test="typeId == 1">
+                    bt_approval_chain a
+              JOIN  bt_approval b
+                </if>
+                <if test="typeId == 2">
+                    o_approval_chain a
+              JOIN  overtime_approval b
+                </if>
+                <if test="typeId == 3">
+                    rw_approval_chain a
+              JOIN  rw_approval b
+                </if>
+                <if test="typeId == 4">
+                    v_approval_chain a
+              JOIN  vacation_approval b
+                </if>
+            ON  a.approval_id = b.id
+          JOIN  employee c
+            ON  b.requester_id = c.id
+         WHERE  a.employee_id = #{approverId}
+        <if test="isApproval == 1">
+            AND  b.approval_status = 'A'
+        </if>
+        <if test="isApproval == 2">
+           AND  b.approval_status = 'D'
+        </if>
+        <if test="isApproval == 3">
+           AND  b.approval_status = 'N'
+            OR  b.approval_status = 'V'
+        </if>
+        <if test="isApproval == 4">
+            AND  (b.approval_status = 'N'
+             OR  b.approval_status = 'V')
+            AND  a.approval_status = 'W'
+        </if>
     </select>
 </mapper>

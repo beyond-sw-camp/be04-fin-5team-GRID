@@ -47,7 +47,7 @@ public class ApprovalController {
 
         ResApprovalVO response = ResApprovalVO.builder()
                 .statusCode(200)
-                .message("직원별 결재 조회 성공")
+                .message("작성자별 결재 목록 조회 성공")
                 .href("")
                 .approvalEmpResultList(result)
                 .build();
@@ -65,6 +65,36 @@ public class ApprovalController {
                 .message("결재 상세 조회 성공")
                 .href("")
                 .approvalEmpResult(result)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping("/overtime-count/{employeeId}")
+    public ResponseEntity<Integer> countOvertimeInWeek(@PathVariable int employeeId) {
+
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+        LocalDateTime now = LocalDateTime.now();
+
+        String sunday = now.with(LocalTime.MIN).with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY)).format(dateFormat);
+        String saturday = now.with(LocalTime.MAX).with(TemporalAdjusters.nextOrSame(DayOfWeek.SATURDAY)).format(dateFormat);
+
+        int count = approvalService.countOvertimeInWeek(new OvertimeInWeekDTO(sunday, saturday, employeeId));
+
+        return ResponseEntity.status(HttpStatus.OK).body(count);
+    }
+
+    @GetMapping("/approver/{typeId}/{employeeId}/{isApproval}")
+    public ResponseEntity<ResApprovalVO> findAllApprovalByApproverId(@PathVariable int typeId, @PathVariable int employeeId, @PathVariable int isApproval) {
+
+        List<ApprovalEmpDTO> result = approvalService.findAllApprovalByApproverId(typeId, employeeId, isApproval);
+
+        ResApprovalVO response = ResApprovalVO.builder()
+                .statusCode(200)
+                .message("결재자별 결재 목록 조회 성공")
+                .href("")
+                .approvalEmpResultList(result)
                 .build();
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
