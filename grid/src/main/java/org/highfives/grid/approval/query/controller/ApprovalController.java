@@ -57,7 +57,7 @@ public class ApprovalController {
 
         ResApprovalVO response = ResApprovalVO.builder()
                 .statusCode(200)
-                .message("직원별 결재 조회 성공")
+                .message("작성자별 결재 목록 조회 성공")
                 .href("")
                 .approvalEmpResultList(result)
                 .build();
@@ -95,4 +95,18 @@ public class ApprovalController {
         return ResponseEntity.status(HttpStatus.OK).body(count);
     }
 
+    @GetMapping("/approver/{typeId}/{employeeId}/{isApproval}")
+    public ResponseEntity<ResApprovalVO> findAllApprovalByApproverId(@PathVariable int typeId, @PathVariable int employeeId, @PathVariable int isApproval) {
+
+        List<ApprovalEmpDTO> result = approvalService.findAllApprovalByApproverId(typeId, employeeId, isApproval);
+
+        ResApprovalVO response = ResApprovalVO.builder()
+                .statusCode(200)
+                .message("결재자별 결재 목록 조회 성공")
+                .href("")
+                .approvalEmpResultList(result)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
 }

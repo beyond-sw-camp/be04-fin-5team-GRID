@@ -238,7 +238,7 @@ const addRow = () => {
   if (emptyCheck || !lastItem) {
     const index = goalItemList.value.length;
     goalItemList.value.push({
-      id: index + 1,
+      id: '',
       jobName: '',
       goal: '',
       metric: '',
@@ -277,9 +277,9 @@ async function memberSave() {
       id: item.id || null,
       jobName: item.jobName,
       goal: item.goal,
-      metric: item.metric,
-      weight: item.weight,
-      plan: item.plan,
+      metric: item.metric || null,
+      weight: item.weight || 0,
+      plan: item.plan || null,
       objection: item.objection || null
     }))
   };
@@ -304,9 +304,9 @@ async function submit() {
       id: item.id || null,
       jobName: item.jobName,
       goal: item.goal,
-      metric: item.metric,
-      weight: item.weight,
-      plan: item.plan,
+      metric: item.metric || null,
+      weight: item.weight || 0,
+      plan: item.plan || null,
       objection: item.objection || null
     }))
   };
@@ -325,27 +325,20 @@ async function submit() {
   }
 }
 
-const sendData = ref({
-  id: null,
-  goalItemList: []
-});
-
 // 팀장 확인중(read)
 async function leaderSave() {
-  sendData.value = {
+  const sendData = {
     id: goalDetail.value.id,
     goalItemList: goalItemList.value.map(item => ({
       id: item.id || null,
       jobName: item.jobName,
       goal: item.goal,
-      metric: item.metric,
-      weight: item.weight,
-      plan: item.plan,
+      metric: item.metric || null,
+      weight: item.weight || 0,
+      plan: item.plan || null,
       objection: item.objection || null
     }))
   };
-
-  console.log(sendData);
 
   try {
     const response = await axios.put(
@@ -363,20 +356,18 @@ async function leaderSave() {
 
 // 팀장 승인
 async function approval() {
-  sendData.value = {
+  const sendData = {
     id: goalDetail.value.id,
     goalItemList: goalItemList.value.map(item => ({
       id: item.id || null,
       jobName: item.jobName,
       goal: item.goal,
-      metric: item.metric,
-      weight: item.weight,
-      plan: item.plan,
+      metric: item.metric || null,
+      weight: item.weight || 0,
+      plan: item.plan || null,
       objection: item.objection || null
     }))
   };
-
-  console.log(sendData);
 
   try {
     const response = await axios.put(
@@ -391,7 +382,6 @@ async function approval() {
       console.log(href)
       router.push(`/${href}`);
     }
-    // window.location.reload();
     console.log("변경완료")
   } catch (error) {
     console.error('Error sending data:', error);
@@ -402,15 +392,15 @@ async function approval() {
 
 // 팀장 반려
 async function denied() {
-  sendData.value = {
+  const sendData = {
     id: goalDetail.value.id,
     goalItemList: goalItemList.value.map(item => ({
       id: item.id || null,
       jobName: item.jobName,
       goal: item.goal,
-      metric: item.metric,
-      weight: item.weight,
-      plan: item.plan,
+      metric: item.metric || null,
+      weight: item.weight || 0,
+      plan: item.plan || null,
       objection: item.objection || null
     }))
   };
@@ -428,7 +418,6 @@ async function denied() {
       const href = response.data.href;
       router.push(`/${href}`);
     }
-    // window.location.reload();
 
   } catch (error) {
     console.error('Error sending data:', error);

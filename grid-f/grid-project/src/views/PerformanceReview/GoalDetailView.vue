@@ -1,25 +1,11 @@
 <template>
     <div class="all">
-        <div class="header">
-            <Header />
-        </div>
-        <div class="sidebar">
-            <Sidebar />
-        </div>
-        <div class="content">
-            <GoalDetail />
-        </div>
-        <!-- <div class="footer"> 
-        <Footer/>
-    </div> -->
+      <GoalDetail />
     </div>
 </template>
 
 <script setup>
-import { RouterLink, RouterView, useRouter } from 'vue-router';
-import Header from '@/components/Header.vue';
-import Sidebar from '@/components/Sidebar.vue';
-import Footer from '@/components/Footer.vue';
+import { useRouter } from 'vue-router';
 import GoalDetail from '@/components/PerformanceReview/Goal/GoalDetail.vue';
 
 const router = useRouter();
@@ -39,27 +25,9 @@ body {
 
 .all {
     display: grid;
-    grid-template-rows: 100px minmax(764px, auto);
-    grid-template-columns: 250px minmax(1286px, auto);
+    grid-template-rows: minmax(764px, auto);
+    grid-template-columns: minmax(1286px, auto);
     width: 100%;
     height: 100vh;
-}
-
-.header {
-    grid-column-start: 1;
-    grid-column-end: 3;
-    background-color: #088A85;
-}
-
-.sidebar {
-    grid-column-start: 1;
-    grid-column-end: 2;
-    background-color: #F8F9FAFF;
-}
-
-.content {
-    grid-column-start: 2;
-    grid-column-end: 3;
-    background-color: white;
 }
 </style>
