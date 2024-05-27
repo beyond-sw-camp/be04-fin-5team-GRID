@@ -30,7 +30,7 @@
         <li>
           <span @click="toggleMenu('hrManagement')">인사 관리</span>
           <ul v-show="activeMenus.hrManagement">
-            <li>인사 정보</li>
+            <li @click="toHR">인사 정보</li>
           </ul>
         </li>
         <li>
@@ -53,12 +53,12 @@
 
 <script setup>
 import axios from 'axios';
-import { useRouter } from 'vue-router';
 import { ref, onMounted,reactive } from 'vue';
-
+import { useRouter } from 'vue-router';
 
 const employee = ref([]);
 const error = ref([]);
+const router = useRouter();
 
 const fetchEmployee = async () => {
   try {
@@ -86,6 +86,10 @@ const activeMenus = reactive({
 const toggleMenu = (menu) => {
   activeMenus[menu] = !activeMenus[menu];
 };
+
+function toHR () {
+  router.push('/hr');
+}
 </script>
 
 <style scoped>
@@ -168,4 +172,4 @@ const toggleMenu = (menu) => {
 .menu li ul li {
   padding: 5px 0;
 }
-</style>
+</style>  

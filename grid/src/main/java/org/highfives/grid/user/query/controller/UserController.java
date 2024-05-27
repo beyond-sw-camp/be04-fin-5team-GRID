@@ -31,7 +31,7 @@ public class UserController {
     // 전체 직원 조회
     @GetMapping("/list")
     public ResponseEntity<ResFindListVO> findAllUsers() {
-
+        String name = null;
         List<UserDTO> resultDTOs = userService.findAllUsers();
         List<SimpleInfo> resultList = DTOtoSimpleInfo(resultDTOs);
 
@@ -41,6 +41,27 @@ public class UserController {
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
+    @GetMapping("/list/{name}")
+    public ResponseEntity<ResFindListVO> findUsersByName(@PathVariable("name") String name) {
+        List<SimpleInfo> resultList = new ArrayList<>();
+
+        if(name == null || name.trim().isEmpty() ){
+            List<UserDTO> resultDTOs = userService.findAllUsers();
+            resultList = DTOtoSimpleInfo(resultDTOs);
+        }
+
+        if(name != null) {
+            List<UserDTO> resultDTOs = userService.findUsersByName(name);
+            resultList = DTOtoSimpleInfo(resultDTOs);
+        }
+
+        ResFindListVO response =
+                new ResFindListVO(200, "Success to find user list", "/users/{id}", resultList);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
 
     // 사번으로 직원 조회
     @GetMapping("/{employeeNumber}")
