@@ -87,8 +87,15 @@ public class UserServiceImpl implements UserService{
         List<Employee> employeeList = new ArrayList<>();
 
         for (UserDTO userDTO : modifyList) {
-            Employee oldInfo = userRepository.findById(userDTO.getId()).orElseThrow(NullPointerException::new);
-            employeeList.add(inputNewInfo(oldInfo, userDTO));
+            try {
+                Employee oldInfo = userRepository.findByEmail(userDTO.getEmail());
+                if (!oldInfo.getEmployeeName().equals(userDTO.getName())) { // 사번으로 유저를 검색해서 입력한 유저명과 이름이 같지 않으면 예외 발생(잘못된 유저 입력)
+                    throw new UsernameNotFoundException("유저명과 사번이 일치하지 않습니다.");
+                }
+                employeeList.add(inputNewMulitInfo(oldInfo, userDTO));
+            } catch (Exception e) {
+                log.info("Exception occurred: {}", e.getMessage());
+            }
         }
 
         userRepository.saveAll(employeeList);
@@ -191,7 +198,7 @@ public class UserServiceImpl implements UserService{
             userRepository.save(employee);
             return true;
         } catch (Exception e) {
-            log.info("Exception occured: {}", e.getMessage());
+            log.info("Exception occurred: {}", e.getMessage());
             return false;
         }
     }
@@ -265,6 +272,56 @@ public class UserServiceImpl implements UserService{
                 .role(Role.ROLE_USER)
                 .contractStartTime(oldInfo.getContractStartTime())
                 .contractEndTime(oldInfo.getContractEndTime())
+                .salary(oldInfo.getSalary())
+                .absenceYn(oldInfo.getAbsenceYn())
+                .absenceContent(oldInfo.getAbsenceContent())
+                .dutiesId(givenInfo.getDutiesId())
+                .positionId(givenInfo.getPositionId())
+                .teamId(givenInfo.getTeamId())
+                .departmentId(givenInfo.getDepartmentId())
+                .build();
+    }
+
+    private Employee inputNewMulitInfo(Employee oldInfo, UserDTO givenInfo) {
+
+        // 수정 받는 정보들 중에 null 값이 있을 시 기존 값으로 입력받음.
+        if(givenInfo.getDepartmentId() == 0)
+            givenInfo.setDepartmentId(oldInfo.getDepartmentId());
+        if(givenInfo.getTeamId() == 0)
+            givenInfo.setTeamId(oldInfo.getTeamId());
+        if(givenInfo.getPositionId() == 0)
+            givenInfo.setPositionId(oldInfo.getPositionId());
+        if(givenInfo.getDutiesId() == 0)
+            givenInfo.setDutiesId(oldInfo.getDutiesId());
+        if(givenInfo.getWorkType() == null)
+            givenInfo.setWorkType(oldInfo.getWorkType());
+        if(givenInfo.getContractEndTime() == null)
+            givenInfo.setContractEndTime(oldInfo.getContractEndTime());
+        if(givenInfo.getZipCode() == null)
+            givenInfo.setZipCode(oldInfo.getZipCode());
+        if(givenInfo.getAddress() == null)
+            givenInfo.setAddress(oldInfo.getAddress());
+
+        return Employee.builder()
+                .id(oldInfo.getId())
+                .email(oldInfo.getEmail())
+                .pwd(oldInfo.getPwd())
+                .employeeName(oldInfo.getEmployeeName())
+                .employeeNumber(oldInfo.getEmployeeNumber())
+                .gender(oldInfo.getGender())
+                .phoneNumber(oldInfo.getPhoneNumber())
+                .callNumber(oldInfo.getCallNumber())
+                .zipCode(givenInfo.getZipCode())
+                .address(givenInfo.getAddress())
+                .assignedTask(oldInfo.getAssignedTask())
+                .joinTime(oldInfo.getJoinTime())
+                .joinType(oldInfo.getJoinType())
+                .resignTime(oldInfo.getResignTime())
+                .resignYn(oldInfo.getResignYn())
+                .workType(givenInfo.getWorkType())
+                .role(Role.ROLE_USER)
+                .contractStartTime(oldInfo.getContractStartTime())
+                .contractEndTime(givenInfo.getContractEndTime())
                 .salary(oldInfo.getSalary())
                 .absenceYn(oldInfo.getAbsenceYn())
                 .absenceContent(oldInfo.getAbsenceContent())
