@@ -21,8 +21,8 @@
           <td>{{ (currentPage - 1) * itemsPerPage + index + 1 }}</td>
           <td>{{ item.year }}</td>
           <td>{{ item.reviewName }}</td>
-          <td>{{ getEmployeeName(item.writer) }}</td>
-          <td>{{ getEmployeeName(item.approver) }}</td>
+          <td>{{ getEmployeeName(item.reviewee) }}</td>
+          <td>{{ getEmployeeName(item.reviewer) }}</td>
           <td><button @click="goToDetailPage(item.id)">상세보기</button></td>
         </tr>
         </tbody>
@@ -98,31 +98,6 @@ const nextPage = () => {
 
 const goToPage = (page) => {
   currentPage.value = page;
-};
-
-const getApprovalStatus = (status) => {
-  switch (status) {
-    case 'IP':
-      return '작성 중';
-    case 'S':
-      return '상신';
-    case 'R':
-      return '확인 중';
-    case 'C':
-      return '평가 완료';
-    case 'V':
-      return '확정';
-    default:
-      return '기타';
-  }
-};
-
-const getType = (type) => {
-  if(type === 'M') {
-    return '중간 평가';
-  } else {
-    return '연말 평가';
-  }
 };
 
 const getEmployeeName = (employee) => {
