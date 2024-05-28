@@ -12,9 +12,10 @@
           <img src="@/assets/icon2.png" alt="Button 2" class="icon-image" />
         </button>
         <div class="dropdown">
-          <img src="https://talkimg.imbc.com/TVianUpload/tvian/TViews/image/2020/04/12/FydNALvKf23Z637223013461671479.jpg"
-            alt="profile" class="profile dropdown-toggle" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-          <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <img
+            src="https://talkimg.imbc.com/TVianUpload/tvian/TViews/image/2020/04/12/FydNALvKf23Z637223013461671479.jpg"
+            alt="profile" class="profile" @click="toggleDropdown">
+          <ul class="dropdown-menu" ref="dropdownMenu">
             <li><a class="dropdown-item" href="#" @click="goToProfile">개인 정보</a></li>
             <li><a class="dropdown-item" href="#" @click="logout">로그 아웃</a></li>
           </ul>
@@ -41,17 +42,19 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue';
 import axios from 'axios';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import { Dropdown } from 'bootstrap';
 import draggable from 'vuedraggable';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 
 const departments = ref([]);
-const info = ref();
 const router = useRouter();
 const store = useStore();
+const dropdownMenu = ref(null);
 
-const email = computed(() => store.state.email);
+const user = computed(() => store.state.user);
 
 const fetchDepartments = async () => {
   try {
@@ -59,21 +62,15 @@ const fetchDepartments = async () => {
     departments.value = response.data.result.map(department => ({
       id: department.id,
       departmentName: department.departmentName,
-      // 필요한 다른 속성들도 추가
     }));
   } catch (error) {
     console.error('부서 정보를 가져오는 데 실패했습니다:', error);
   }
 };
 
-const fetchUserInfo = async () => {
-  try {
-    console.log('email:', email.value);
-    const response = await axios.get(`http://localhost:8080/users/mail/${email.value}`);
-    info.value = response.data;
-    console.log('User info:', info.value);
-  } catch (error) {
-    console.error('사용자 정보를 가져오는 데 실패했습니다:', error);
+const goToProfile = () => {
+  if (user.value && user.value.employeeNumber) {
+    router.push(`/hr/profile/${user.value.employeeNumber}`);
   }
 };
 
@@ -82,7 +79,7 @@ const handleDragEnd = async () => {
     const updatedDepartments = departments.value.map((department, index) => ({
       id: department.id,
       departmentName: department.departmentName,
-      order: index + 1, // 서버가 기대하는 순서 값을 추가
+      order: index + 1,
     }));
 
     await axios.put('http://localhost:8080/department/list', { departments: updatedDepartments });
@@ -91,9 +88,12 @@ const handleDragEnd = async () => {
   }
 };
 
-const goToProfile = (employeeNumber) => {
-  console.log(info.value.employeeNumber);
-  router.push(`/hr/profile/${employeeNumber}`); // 개인 정보 페이지로 이동
+const toggleDropdown = () => {
+  if (dropdownMenu.value.style.display === 'block') {
+    dropdownMenu.value.style.display = 'none';
+  } else {
+    dropdownMenu.value.style.display = 'block';
+  }
 };
 
 const logout = async () => {
@@ -114,9 +114,12 @@ function main() {
 
 onMounted(() => {
   fetchDepartments();
-  fetchUserInfo();
+  // Bootstrap 드롭다운 초기화
+  const dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'));
+  dropdownElementList.map(function (dropdownToggleEl) {
+    return new Dropdown(dropdownToggleEl);
+  });
 });
-
 </script>
 
 <style scoped>
@@ -145,13 +148,6 @@ onMounted(() => {
 .logo img {
   height: 40px;
   margin-right: 10px;
-}
-
-.search {
-  padding: 5px;
-  border-radius: 10px;
-  border: none;
-  width: 400px;
 }
 
 .icons {
@@ -185,6 +181,34 @@ onMounted(() => {
 
 .list-group-item {
   cursor: move;
-  /* 드래그 가능한 커서를 추가 */
+}
+
+.dropdown {
+  position: relative;
+}
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: white;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  list-style: none;
+  padding: 10px 0;
+  margin: 0;
+}
+
+.dropdown-item {
+  padding: 8px 16px;
+  cursor: pointer;
+  text-decoration: none;
+  display: block;
+  color: black;
+}
+
+.dropdown-item:hover {
+  background-color: #f1f1f1;
 }
 </style>

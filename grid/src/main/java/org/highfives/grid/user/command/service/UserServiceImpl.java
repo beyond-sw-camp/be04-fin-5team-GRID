@@ -225,7 +225,7 @@ public class UserServiceImpl implements UserService{
                 .joinType(givenInfo.getJoinType())
                 .workType(givenInfo.getWorkType())
                 .contractStartTime(givenInfo.getContractStartTime())
-                .role(givenInfo.getRole())
+                .role(Role.ROLE_USER)
                 .dutiesId(givenInfo.getDutiesId())
                 .positionId(givenInfo.getPositionId())
                 .departmentId(givenInfo.getDepartmentId())
