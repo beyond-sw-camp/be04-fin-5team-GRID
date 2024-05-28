@@ -27,5 +27,5 @@ public interface UserMapper {
     Map<String, Object> getUserInfoByEmail(String email);
 
 
-
+    List<UserDTO> findTeamList(int teamId);
 }

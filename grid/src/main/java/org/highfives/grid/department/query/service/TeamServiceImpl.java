@@ -45,4 +45,20 @@ public class TeamServiceImpl implements TeamService {
         return teamDTOList;
 
     }
+
+    @Override
+    public List<TeamDTO> findSubDepartmentByDepartmentId(int id) {
+
+        List<Team> teamList = teamMapper.findSubDepartmentByDepartmentId(id);
+
+        List<TeamDTO> teamDTOList = new ArrayList<>();
+
+        for (Team team : teamList) {
+
+            teamDTOList.add(mapper.map(team, TeamDTO.class));
+
+        }
+        return teamDTOList;
+
+    }
 }

@@ -9,4 +9,5 @@ public interface TeamService {
 
     List<TeamDTO> findTeamList();
 
+    List<TeamDTO> findSubDepartmentByDepartmentId(int id);
 }

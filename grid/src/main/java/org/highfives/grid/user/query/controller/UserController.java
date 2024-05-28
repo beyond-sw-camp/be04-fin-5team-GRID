@@ -127,6 +127,24 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    // 팀 id로 해당 팀 직원들 조회
+    @GetMapping("/team-list/{teamId}")
+    public ResponseEntity<ResFindListVO> findTeamList(@PathVariable int teamId) {
+         List<UserDTO> userDTOList = userService.findTeamList(teamId);
+
+        List<SimpleInfo> simpleInfos = DTOtoSimpleInfo(userDTOList);
+
+        ResFindListVO resFindListVO = ResFindListVO.builder()
+                .message("success")
+                .href("/")
+                .statusCode(200)
+                .result(simpleInfos)
+                .build();
+
+
+        return ResponseEntity.status(HttpStatus.OK).body(resFindListVO);
+    }
+
     private List<SimpleInfo> DTOtoSimpleInfo(List<UserDTO> list) {
 
         List<SimpleInfo> result = new ArrayList<>();

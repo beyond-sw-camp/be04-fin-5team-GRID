@@ -119,4 +119,13 @@ public class UserServiceImpl implements UserService{
             return null;
         }
     }
+
+    @Override
+    public List<UserDTO> findTeamList(int teamId) {
+
+        List<UserDTO> userDTOList = userMapper.findTeamList(teamId);
+
+
+        return userDTOList;
+    }
 }
