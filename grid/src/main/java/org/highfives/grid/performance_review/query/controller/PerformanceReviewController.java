@@ -94,4 +94,22 @@ public class PerformanceReviewController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    // 중간 평가 조회
+    @GetMapping("final/{year}/{employeeId}")
+    public ResponseEntity<ResponsePerformanceReviewVO> findFinalReviewByYearAndEmployeeId(
+            @PathVariable int year,
+            @PathVariable int employeeId){
+
+        PerformanceReviewDTO performanceReviewDTO = performanceReviewService.findFinalReviewByWriterIdAndYear(employeeId, year);
+
+        ResponsePerformanceReviewVO response =
+                ResponsePerformanceReviewVO.builder()
+                        .statusCode(200)
+                        .message("평가 조회 성공")
+                        .href(null)
+                        .findReview(performanceReviewDTO)
+                        .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
 }

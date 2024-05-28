@@ -144,6 +144,10 @@ const router = createRouter({
             path: '/performance-review/mid',
             component: () => import('../views/PerformanceReview/Review/MidPerformanceReviewAddView.vue')
         },
+        {
+            path: '/performance-review/final',
+            component: () => import('../views/PerformanceReview/Review/FinalPerformanceReviewAddView.vue')
+        },
     ]
 })
 

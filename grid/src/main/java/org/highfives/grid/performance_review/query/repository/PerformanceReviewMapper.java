@@ -19,4 +19,6 @@ public interface PerformanceReviewMapper {
     List<ReviewItemDTO> selectReviewItemByReviewId(int id);
 
     PerformanceReviewDTO selectMidReviewByWriterIdAndYear(Map<String, Integer> intMap);
+
+    PerformanceReviewDTO selectFinalReviewByWriterIdAndYear(Map<String, Integer> intMap);
 }

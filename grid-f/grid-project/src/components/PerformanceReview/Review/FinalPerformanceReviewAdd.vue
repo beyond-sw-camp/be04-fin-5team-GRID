@@ -2,7 +2,7 @@
   <div class="reviewAddContainer">
     <div class="reviewTitle">
       <img class="reviewIcon" src="@/assets/icons/goal_icon.png">
-      <h1>중간 업적 평가 작성</h1>
+      <h1>연말 업적 평가 작성</h1>
     </div>
     <div class="titleTableContainer">
       <table>
@@ -168,8 +168,8 @@ function getCurrentDateTimeString() {
 
 const fetchReviewAdd = async () => {
   try {
-    // 중간 평가 기간이 아니라면 작성x
-    // 올해 생성된 중간 평가가 있으면 조회 아니라면 새로 생성
+    // 연말 평가 기간이 아니라면 작성x
+    // 올해 생성된 연말 평가가 있으면 조회 아니라면 새로 생성
 
     const currentYear = new Date().getFullYear();   // 올해 년도
     const currentTime = getCurrentDateTimeString()  // 현재 시간
@@ -177,7 +177,7 @@ const fetchReviewAdd = async () => {
     // 팀원인지 확인하는 기능 추가 필요
     userRole.value = "member";
 
-    const responseReview = await axios.get(`http://localhost:8080/performance-review/mid/${currentYear}/8`)
+    const responseReview = await axios.get(`http://localhost:8080/performance-review/final/${currentYear}/8`)
 
 
     console.log(responseReview);
@@ -185,7 +185,7 @@ const fetchReviewAdd = async () => {
     if(!responseReview.data.findReview){
       // 생성된 중간 평가 없을 때
       const sendData= {
-        type: "M",
+        type: "F",
         year: currentYear,
         reviewName: `${currentYear} 인사평가`,
         writerId: 8

@@ -55,4 +55,15 @@ public class PerformanceReviewServiceImpl implements PerformanceReviewService{
 
         return performanceReviewDTO;
     }
+
+    @Override
+    public PerformanceReviewDTO findFinalReviewByWriterIdAndYear(int writerId, int year) {
+        Map<String, Integer> intMap = new HashMap();
+        intMap.put("writerId", writerId);
+        intMap.put("year", year);
+
+        PerformanceReviewDTO performanceReviewDTO = performanceReviewMapper.selectFinalReviewByWriterIdAndYear(intMap);
+
+        return performanceReviewDTO;
+    }
 }
