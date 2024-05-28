@@ -250,6 +250,7 @@
         SELECT
         E.id,
         E.employee_name,
+        E.employee_number,
         T.id t_id
         FROM Employee E
         JOIN Team T ON E.team_id = T.id
