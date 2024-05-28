@@ -93,7 +93,7 @@ const router = createRouter({
             component: () => import('@/views/Approval/VApprovalListView.vue')
         },
         {
-            path: '/approval/:employeeId',
+            path: '/approval',
             component: () => import('@/views/Approval/AllApprovalListView.vue')
         },
         {

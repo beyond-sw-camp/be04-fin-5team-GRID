@@ -3,35 +3,44 @@
   import axios from "axios";
 
   import ApprovalList from "@/components/Approval/ApprovalList.vue";
-  import {useRoute} from "vue-router";
 
-  const route = useRoute();
-  const employeeId = route.params.employeeId;
+  const admin = 1;
+  const employeeId = 6;
 
   const state = reactive({
     approvalList: []
   });
 
-  const fetchApprovalList = async(typeId, employeeId, approvalStatus) => {
-    try {
-      const response = await axios.get(`http://localhost:8080/approval/list/${typeId}/${employeeId}/${approvalStatus}`);
+  const fetchApprovalList = async(typeId, approvalStatus, employeeId) => {
 
-      if (response.status !== 200) {
+    try {
+      let url = `http://localhost:8080/approval/all/${typeId}/${approvalStatus}`;
+      if (admin !== 1) {
+        url = `http://localhost:8080/approval/list/${typeId}/${approvalStatus}/${employeeId}`;
+      }
+
+      const response = await axios.get(url);
+
+      if (response === null || response.status !== 200) {
         throw new Error("response is not ok");
       }
 
+      // 상태 업데이트
       state.approvalList = response.data.approvalEmpResultList;
       state.approvalList.type = typeId;
+
+      console.log(state.approvalList);
 
     } catch (error) {
       console.error('Fetch error: ' + error.message);
     }
+
   }
 
   onMounted(async() => {
     // 버튼 클릭에 따라 다르게 실행
     // 0: 전체, 1: 승인, 2: 반려, 3: 대기
-    await fetchApprovalList(1, employeeId, 0);
+    await fetchApprovalList(1,4,  employeeId);
   })
 </script>
 

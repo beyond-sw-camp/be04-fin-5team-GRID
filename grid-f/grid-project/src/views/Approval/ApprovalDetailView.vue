@@ -48,7 +48,7 @@
   <div>
     <img :src="state.user['profilePath']" alt="profile">
     작성자: {{ state.user['name'] }}<br>
-    {{ state.user['duties'] }} / {{ state.user['teamId']}}
+    {{ state.user['duties'].dutiesName }} / {{ state.user['team'].teamName }}
     <hr>
     {{state.user['email']}}
     {{state.user['callNumber']}}
