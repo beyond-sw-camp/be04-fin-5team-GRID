@@ -13,7 +13,7 @@
   const fetchApprovalList = async(id) => {
     try {
 
-      const url = `http://localhost:8080/approval/list/${typeId}/5/${id}`;
+      const url = `http://localhost:8080/approval/all/${typeId}/5`;
 
       const response = await axios.get(url);
 
