@@ -35,6 +35,7 @@ public class TotalPerformanceReviewServiceImpl implements TotalPerformanceReview
     public List<TotalPerformanceReviewDTO> findAllTotal() {
         List<TotalPerformanceReviewDTO> totalPerformanceReviewDTOList = totalPerformanceReviewMapper.selectAllTotal();
 
+        System.out.println(totalPerformanceReviewDTOList);
         return totalPerformanceReviewDTOList;
     }
 

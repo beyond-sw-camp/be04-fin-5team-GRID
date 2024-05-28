@@ -55,7 +55,7 @@
             <li @click="navigateTo('/performance-review/mid')">중간 평가 작성</li>
             <li @click="navigateTo('/performance-review/final')">연말 평가 작성</li>
             <li @click="navigateTo('/performance-review')">평가 조회</li>
-            <li>종합 평가 조회</li>
+            <li @click="navigateTo('/performance-review/total')">종합 평가 조회</li>
           </ul>
         </li>
       </ul>

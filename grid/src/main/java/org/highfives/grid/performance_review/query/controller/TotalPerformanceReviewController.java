@@ -25,7 +25,7 @@ public class TotalPerformanceReviewController {
         this.totalPerformanceReviewService = totalPerformanceReviewService;
     }
 
-    @GetMapping("reviewee/{employeeId}")
+    @GetMapping("/reviewee/{employeeId}")
     public ResponseEntity<ResponseTotalPerformanceReviewVO> findTotalByRevieweeId(@PathVariable int employeeId){
         List<TotalPerformanceReviewDTO> findTotalList = totalPerformanceReviewService.findTotalByRevieweeId(employeeId);
 
@@ -39,7 +39,7 @@ public class TotalPerformanceReviewController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @GetMapping("reviewer/{employeeId}")
+    @GetMapping("/reviewer/{employeeId}")
     public ResponseEntity<ResponseTotalPerformanceReviewVO> findTotalByReviewerId(@PathVariable int employeeId){
         List<TotalPerformanceReviewDTO> findTotalList = totalPerformanceReviewService.findTotalByReviewerId(employeeId);
 
@@ -53,7 +53,7 @@ public class TotalPerformanceReviewController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<ResponseTotalPerformanceReviewVO> findAllTotal(){
         List<TotalPerformanceReviewDTO> findTotalList = totalPerformanceReviewService.findAllTotal();
 
