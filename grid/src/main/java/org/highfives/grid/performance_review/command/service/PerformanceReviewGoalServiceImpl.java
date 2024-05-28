@@ -28,7 +28,6 @@ public class PerformanceReviewGoalServiceImpl implements PerformanceReviewGoalSe
     @Override
     @Transactional
     public PerformanceReviewGoalDTO addNewGoal(PerformanceReviewGoalDTO performanceReviewGoalDTO) {
-        System.out.println(performanceReviewGoalDTO);
 
         // 작성중 기본값으로 변경
         PerformanceReviewGoal goal = new PerformanceReviewGoal(
@@ -42,17 +41,15 @@ public class PerformanceReviewGoalServiceImpl implements PerformanceReviewGoalSe
                 performanceReviewGoalDTO.getApprovalTime()
         );
 
-        System.out.println(goal);
-        performanceReviewGoalRepository.save(goal);
+        PerformanceReviewGoal saveGoal = performanceReviewGoalRepository.save(goal);
 
-        System.out.println("저장완료");
-        PerformanceReviewGoal saveGoal = performanceReviewGoalRepository.findByYearAndWriterId(
-                performanceReviewGoalDTO.getYear(),
-                performanceReviewGoalDTO.getWriterId()
-        );
-        System.out.println(saveGoal);
+//        PerformanceReviewGoal saveGoal = performanceReviewGoalRepository.findByYearAndWriterId(
+//                performanceReviewGoalDTO.getYear(),
+//                performanceReviewGoalDTO.getWriterId()
+//        );
+
         PerformanceReviewGoalDTO saveGoalDTO = modelMapper.map(saveGoal, PerformanceReviewGoalDTO.class);
-        System.out.println(saveGoalDTO);
+
         return saveGoalDTO;
     }
 
@@ -65,7 +62,7 @@ public class PerformanceReviewGoalServiceImpl implements PerformanceReviewGoalSe
 
         // 작성 중, 반려 상태 일 때 변경
         if(performanceReviewGoal.getApprovalStatus().equals(String.valueOf(GoalApprovalStatus.IP))
-            || performanceReviewGoal.getApprovalStatus().equals(String.valueOf(GoalApprovalStatus.D))
+                || performanceReviewGoal.getApprovalStatus().equals(String.valueOf(GoalApprovalStatus.D))
         ){
             LocalDateTime currentTime = LocalDateTime.now();
             DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -138,13 +135,14 @@ public class PerformanceReviewGoalServiceImpl implements PerformanceReviewGoalSe
 
     // 승인 상태로 변경
     @Override
+    @Transactional
     public PerformanceReviewGoalDTO modifyGoalStatusApproval(int id) {
         PerformanceReviewGoal performanceReviewGoal = performanceReviewGoalRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("해당 ID의 목표를 찾을 수 없습니다."));
 
         // 상신 또는 확인 중 상태일 때 변경
         if(performanceReviewGoal.getApprovalStatus().equals(String.valueOf(GoalApprovalStatus.S))
-            || performanceReviewGoal.getApprovalStatus().equals(String.valueOf(GoalApprovalStatus.R))){
+                || performanceReviewGoal.getApprovalStatus().equals(String.valueOf(GoalApprovalStatus.R))){
 
             LocalDateTime currentTime = LocalDateTime.now();
             DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -164,13 +162,14 @@ public class PerformanceReviewGoalServiceImpl implements PerformanceReviewGoalSe
 
     // 반려 상태로 변경
     @Override
+    @Transactional
     public PerformanceReviewGoalDTO modifyGoalStatusDenied(int id) {
         PerformanceReviewGoal performanceReviewGoal = performanceReviewGoalRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("해당 ID의 목표를 찾을 수 없습니다."));
 
         // 상신 또는 확인 중 상태일 때 변경
         if(performanceReviewGoal.getApprovalStatus().equals(String.valueOf(GoalApprovalStatus.S))
-            || performanceReviewGoal.getApprovalStatus().equals(String.valueOf(GoalApprovalStatus.R))){
+                || performanceReviewGoal.getApprovalStatus().equals(String.valueOf(GoalApprovalStatus.R))){
 
             LocalDateTime currentTime = LocalDateTime.now();
             DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -188,4 +187,3 @@ public class PerformanceReviewGoalServiceImpl implements PerformanceReviewGoalSe
         }
     }
 }
-

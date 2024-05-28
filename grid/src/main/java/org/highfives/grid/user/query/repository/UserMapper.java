@@ -31,4 +31,5 @@ public interface UserMapper {
     List<PositionDTO> findPositions();
 
     List<DutiesDTO> findDuties();
+
 }

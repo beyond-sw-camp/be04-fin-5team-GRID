@@ -1,16 +1,23 @@
 package org.highfives.grid.approval.query.service;
 
 import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
 import com.lowagie.text.Font;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
-import org.highfives.grid.approval.command.aggregate.ApprovalStatus;
-import org.highfives.grid.approval.command.aggregate.BTApproval;
 import org.highfives.grid.approval.command.repository.BTApprovalRepository;
 import org.highfives.grid.approval.common.dto.BTApprovalDTO;
+import org.highfives.grid.approval.common.dto.OvertimeApprovalDTO;
+import org.highfives.grid.approval.common.dto.OvertimeInWeekDTO;
+import org.highfives.grid.approval.query.dto.ApprovalEmpDTO;
+import org.highfives.grid.approval.query.repository.ApprovalMapper;
+import org.highfives.grid.user.query.dto.UserDTO;
+import org.highfives.grid.user.query.service.UserService;
+import org.highfives.grid.approval.command.aggregate.ApprovalStatus;
+import org.highfives.grid.approval.command.aggregate.BTApproval;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,30 +26,132 @@ import java.awt.*;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 
 @Service(value = "QueryApprovalService")
 public class ApprovalServiceImpl implements ApprovalService{
 
     private final ModelMapper mapper;
+    private final ApprovalMapper approvalMapper;
     private final BTApprovalRepository btApprovalRepository;
+    private final UserService userService;
 
     @Autowired
-    public ApprovalServiceImpl(ModelMapper mapper, BTApprovalRepository btApprovalRepository) {
+    public ApprovalServiceImpl(ModelMapper mapper, ApprovalMapper approvalMapper, BTApprovalRepository btApprovalRepository, UserService userService) {
         this.mapper = mapper;
+        this.approvalMapper = approvalMapper;
         this.btApprovalRepository = btApprovalRepository;
+        this.userService = userService;
     }
 
     @Override
-    public BTApprovalDTO findBTApprovalById(int btApprovalId) {
-
-        BTApproval btApproval = btApprovalRepository.findById(btApprovalId).orElseThrow();
-        if (btApproval.getApprovalStatus() == ApprovalStatus.A) return mapper.map(btApproval, BTApprovalDTO.class);
-
-        return null;
+    public List<BTApprovalDTO> findAllBTApproval() {
+        return approvalMapper.findAllBTApproval();
     }
 
     @Override
-    public void exportToPDF(BTApprovalDTO btApproval, String filePath) {
+    public List<ApprovalEmpDTO> findAllApprovalByEmployeeId(int typeId, int employeeId, int isApproval) {
+
+        List<ApprovalEmpDTO> approvalEmpList = new ArrayList<>();
+        Map<String, Integer> params = new HashMap<>();
+
+        params.put("employeeId", employeeId);
+        params.put("isApproval", isApproval);
+
+        switch (typeId) {
+            case 1:
+                approvalEmpList = approvalMapper.findAllBTApprovalByEmployeeId(params);
+                break;
+
+            case 2:
+                approvalEmpList = approvalMapper.findAllOApprovalByEmployeeId(params);
+                break;
+
+            case 3:
+                approvalEmpList = approvalMapper.findAllRWApprovalByEmployeeId(params);
+                break;
+
+            case 4:
+                approvalEmpList = approvalMapper.findAllVApprovalByEmployeeId(params);
+        }
+
+        return approvalEmpList;
+    }
+
+    @Override
+    public ApprovalEmpDTO findDetailByApprovalId(int typeId, int approvalId) {
+
+        ApprovalEmpDTO approvalEmp = new ApprovalEmpDTO();
+
+        switch (typeId) {
+            case 1:
+                approvalEmp = approvalMapper.findBTDetailByApprovalId(approvalId);
+                break;
+
+            case 2:
+                approvalEmp = approvalMapper.findODetailByApprovalId(approvalId);
+                break;
+
+            case 3:
+                approvalEmp = approvalMapper.findRWDetailByApprovalId(approvalId);
+                break;
+
+            case 4:
+                approvalEmp = approvalMapper.findVDetailByApprovalId(approvalId);
+                break;
+        }
+
+        UserDTO user = userService.findUserById(approvalEmp.getEmployeeId());
+        approvalEmp.setUser(user);
+
+        return approvalEmp;
+    }
+
+    @Override
+    public List<ApprovalEmpDTO> findAllApprovalByApproverId(int typeId, int approverId, int isApproval) {
+
+        List<ApprovalEmpDTO> approvalEmpList = new ArrayList<>();
+        Map<String, Integer> params = new HashMap<>();
+
+        params.put("typeId", typeId);
+        params.put("approverId", approverId);
+        params.put("isApproval", isApproval);
+
+        approvalEmpList = approvalMapper.findAllBTApprovalByApproverId(params);
+
+        return approvalEmpList;
+    }
+
+    @Override
+    public int countOvertimeInWeek(OvertimeInWeekDTO overtimeInWeek) {
+
+        List<OvertimeApprovalDTO> overtimeApprovalList = approvalMapper.findOInWeekByEmployeeId(overtimeInWeek);
+
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+        int sum = 0;
+
+        for (OvertimeApprovalDTO overtimeApproval : overtimeApprovalList) {
+            LocalDateTime startTime = LocalDateTime.parse(overtimeApproval.getStartTime(), dateFormat);
+            LocalDateTime endTime = LocalDateTime.parse(overtimeApproval.getEndTime(), dateFormat);
+
+            sum += ChronoUnit.HOURS.between(startTime, endTime.plusMinutes(1));
+        }
+
+        return sum;
+    }
+
+
+
+    @Override
+    public void BTexportToPDF(BTApprovalDTO btApproval, String filePath) {
 
         Document document = new Document();
 
@@ -86,6 +195,8 @@ public class ApprovalServiceImpl implements ApprovalService{
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (DocumentException e) {
             throw new RuntimeException(e);
         } finally {
             document.close();

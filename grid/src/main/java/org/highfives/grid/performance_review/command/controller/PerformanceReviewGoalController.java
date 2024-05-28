@@ -258,7 +258,7 @@ public class PerformanceReviewGoalController {
             ResponseGoalAndItemVO response = ResponseGoalAndItemVO.builder()
                     .statusCode(200)
                     .message("평가 목표 승인 수정 완료")
-                    .href("review-goal/detail/{goalId}")
+                    .href("performance-review-goal")
                     .goal(goal)
                     .itemList(null)
                     .build();
@@ -310,8 +310,8 @@ public class PerformanceReviewGoalController {
 
                 ResponseGoalAndItemVO response = ResponseGoalAndItemVO.builder()
                         .statusCode(200)
-                        .message("평가 목표 확인 중 수정 완료")
-                        .href("review-goal/detail/{goalId}")
+                        .message("평가 목표 반려 수정 완료")
+                        .href("performance-review-goal")
                         .goal(goal)
                         .itemList(responseList)
                         .build();

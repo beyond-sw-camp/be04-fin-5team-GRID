@@ -67,8 +67,6 @@ public class PerformanceReviewItemServiceImpl implements PerformanceReviewItemSe
         PerformanceReviewItem performanceReviewItem = performanceReviewItemRepository.findById(performanceReviewItemDTO.getId())
                 .orElseThrow(IllegalArgumentException::new);
 
-        System.out.println(performanceReviewItem);
-
         if (performanceReviewItem != null) {
             performanceReviewItem.setActionItem(performanceReviewItemDTO.getActionItem());
             performanceReviewItem.setDetailPlan(performanceReviewItemDTO.getDetailPlan());
@@ -95,8 +93,6 @@ public class PerformanceReviewItemServiceImpl implements PerformanceReviewItemSe
         List<PerformanceReviewItemDTO> performanceReviewItemDTOList = performanceReviewItemList.stream()
                 .map(performanceReviewItem -> modelMapper.map(performanceReviewItem, PerformanceReviewItemDTO.class))
                 .collect(Collectors.toList());
-
-        System.out.println(performanceReviewItemDTOList);
 
         return performanceReviewItemDTOList;
     }

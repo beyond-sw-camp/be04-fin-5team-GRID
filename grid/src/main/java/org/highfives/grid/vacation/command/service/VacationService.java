@@ -1,9 +1,7 @@
 package org.highfives.grid.vacation.command.service;
 
-import org.highfives.grid.vacation.command.vo.GiveVacation;
-import org.highfives.grid.vacation.command.vo.ModifyPolicy;
-import org.highfives.grid.vacation.command.vo.RegistPolicy;
-import org.highfives.grid.vacation.command.vo.RegistVacationType;
+import org.highfives.grid.vacation.command.vo.*;
+
 
 public interface VacationService {
     void modifyVacationPolicy(ModifyPolicy policyInfo, int id);
@@ -27,4 +25,9 @@ public interface VacationService {
     void minusVacationNum(int employeeId, int typeId);
 
     void plusVacationNum(int employeeId, int typeId);
+
+    void modifyVacationType(ModifyVacationType typeInfo, int id);
+
+    void deleteVacationType(int id);
+
 }

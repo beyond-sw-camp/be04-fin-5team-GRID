@@ -26,4 +26,5 @@ public interface UserService {
     List<PositionDTO> findPositions();
 
     List<DutiesDTO> findDuties();
+
 }

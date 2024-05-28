@@ -28,7 +28,7 @@ class PerformanceReviewGoalItemServiceImplTest {
                 40,
                 "매월 보안 취약점 스캔",
                 null,
-                4
+                1
         );
 
         System.out.println(performanceReviewGoalItemDTO);
@@ -43,17 +43,15 @@ class PerformanceReviewGoalItemServiceImplTest {
     @Transactional
     public void modifyGoalItem() {
         PerformanceReviewGoalItemDTO performanceReviewGoalItemDTO = new PerformanceReviewGoalItemDTO(
-                6,
+                1,
                 " 수정 웹 애플리케이션 보안 강화",
                 "수정 웹 애플리케이션의 보안 취약점을 보완하기 위한 작업",
                 "수정 해결된 보안 취약점 수",
                 40,
                 "수정 매월 보안 취약점 스캔",
                 null,
-                4
+                1
         );
-
-        System.out.println(performanceReviewGoalItemDTO);
 
         PerformanceReviewGoalItemDTO modifyGoalItem = performanceReviewGoalItemService.modifyGoalItem(performanceReviewGoalItemDTO);
 

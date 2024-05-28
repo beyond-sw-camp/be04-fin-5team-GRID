@@ -1,9 +1,7 @@
 package org.highfives.grid.vacation.query.controller;
 
 import org.highfives.grid.vacation.query.service.VacationService;
-import org.highfives.grid.vacation.query.vo.ResVacationHistoryVO;
-import org.highfives.grid.vacation.query.vo.ResVacationInfoVO;
-import org.highfives.grid.vacation.query.vo.ResVacationPolicyVO;
+import org.highfives.grid.vacation.query.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,27 +17,51 @@ public class VacationController {
         this.vacationService = vacationService;
     }
 
-    @GetMapping("/all")
+    @GetMapping("/info")
     public ResponseEntity<ResVacationInfoVO> getAllVacations() {
         ResVacationInfoVO vacations = vacationService.getAllVacations();
         return ResponseEntity.status(HttpStatus.OK).body(vacations);
     }
 
-    @GetMapping("/{employeeId}")
+    @GetMapping("/info/{employeeId}")
     public ResponseEntity<ResVacationInfoVO> getUserVacations(@PathVariable int employeeId) {
         ResVacationInfoVO vacations = vacationService.getUserVacations(employeeId);
         return ResponseEntity.status(HttpStatus.OK).body(vacations);
     }
 
-    @GetMapping("/policy/{typeId}")
-    public ResponseEntity<ResVacationPolicyVO> getVacationPolicy(@PathVariable int typeId) {
-        ResVacationPolicyVO policies = vacationService.getVacationPolicy(typeId);
+    @GetMapping("/policy/{id}")
+    public ResponseEntity<ResVacationPolicyVO> getVacationPolicy(@PathVariable int id) {
+        ResVacationPolicyVO policies = vacationService.getVacationPolicy(id);
+        return ResponseEntity.status(HttpStatus.OK).body(policies);
+    }
+
+    @GetMapping("/policy/all")
+    public ResponseEntity<ResVacationPolicyWithTypeNameVO> getAllVacationPolicy() {
+        ResVacationPolicyWithTypeNameVO policies = vacationService.getAllVacationPolicy();
         return ResponseEntity.status(HttpStatus.OK).body(policies);
     }
 
     @GetMapping("/details")
     public ResponseEntity<ResVacationHistoryVO> getAllVacationHistories() {
         ResVacationHistoryVO histories = vacationService.getAllVacationHistory();
+        return ResponseEntity.status(HttpStatus.OK).body(histories);
+    }
+
+    @GetMapping("/details/{employeeId}")
+    public ResponseEntity<ResVacationHistoryVO> getUserVacationHistories(@PathVariable int employeeId) {
+        ResVacationHistoryVO histories = vacationService.getUserVacationHistory(employeeId);
+        return ResponseEntity.status(HttpStatus.OK).body(histories);
+    }
+
+    @GetMapping("/details/search/name")
+    public ResponseEntity<ResVacationHistoryVO> searchVacationHistoriesByName(@RequestParam("employeeName") String employeeName) {
+        ResVacationHistoryVO histories = vacationService.searchVacationHistoryByName(employeeName);
+        return ResponseEntity.status(HttpStatus.OK).body(histories);
+    }
+
+    @GetMapping("/details/search/id")
+    public ResponseEntity<ResVacationHistoryVO> searchVacationHistoriesById(@RequestParam("employeeNumber") String employeeNumber) {
+        ResVacationHistoryVO histories = vacationService.searchVacationHistoryById(employeeNumber);
         return ResponseEntity.status(HttpStatus.OK).body(histories);
     }
 
@@ -62,5 +84,16 @@ public class VacationController {
         return ResponseEntity.status(HttpStatus.OK).body(vacations);
     }
 
+    @GetMapping("/type")
+    public ResponseEntity<ResVacationTypeVO> getVacationType() {
+        ResVacationTypeVO types = vacationService.getVacationType();
+        return ResponseEntity.status(HttpStatus.OK).body(types);
+    }
+
+    @GetMapping("/type/{id}")
+    public ResponseEntity<ResOneVacationTypeVO> getVacationTypeById(@PathVariable int id) {
+        ResOneVacationTypeVO types = vacationService.getVacationTypeById(id);
+        return ResponseEntity.status(HttpStatus.OK).body(types);
+    }
 
 }

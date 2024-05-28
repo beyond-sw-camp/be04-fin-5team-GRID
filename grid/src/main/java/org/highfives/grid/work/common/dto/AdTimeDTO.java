@@ -1,12 +1,10 @@
 package org.highfives.grid.work.common.dto;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 
-@RequiredArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 @ToString
@@ -15,6 +13,9 @@ public class AdTimeDTO {
     private String startTime;
     private String endTime;
     private int employeeId;
+    private String employeeName;
+    private String employeeNumber;
+    private String attendanceStatus;    // 출근 상태
 
     public AdTimeDTO(String startTime, int employeeId) {
         this.startTime = startTime;

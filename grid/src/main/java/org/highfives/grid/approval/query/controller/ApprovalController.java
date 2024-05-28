@@ -1,14 +1,28 @@
 package org.highfives.grid.approval.query.controller;
 
 import org.highfives.grid.approval.common.dto.BTApprovalDTO;
+
+import org.highfives.grid.approval.common.dto.OvertimeInWeekDTO;
+import org.highfives.grid.approval.common.vo.ResApprovalVO;
+import org.highfives.grid.approval.query.dto.ApprovalEmpDTO;
 import org.highfives.grid.approval.query.service.ApprovalService;
-import org.highfives.grid.approval.query.vo.ApprovalVO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.highfives.grid.approval.query.vo.ApprovalVO;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAdjusters;
+import java.util.List;
 
 @RestController(value = "QueryApprovalController")
 @RequestMapping("/approval")
@@ -21,12 +35,78 @@ public class ApprovalController {
         this.approvalService = approvalService;
     }
 
-    @GetMapping("/bt-pdf/{approvalId}")
-    public void addApprovalPDF(Model model, @PathVariable int approvalId) {
+    @GetMapping("/bt-all")
+    public ResponseEntity<ResApprovalVO> findAllBTApproval() {
 
-        BTApprovalDTO btApproval = approvalService.findBTApprovalById(approvalId);
-        if (btApproval != null) approvalService.exportToPDF(btApproval, "business_trip_approval.pdf");  // 생성 일시를 포함한 형태로 제목 수정
+        List<BTApprovalDTO> result = approvalService.findAllBTApproval();
+
+        ResApprovalVO response = ResApprovalVO.builder()
+                .statusCode(200)
+                .message("출장 결재 전체 조회 성공")
+                .href("")
+                .btResultList(result)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    @GetMapping("/list/{typeId}/{employeeId}/{isApproval}")
+    public ResponseEntity<ResApprovalVO> findAllApprovalByEmployeeId(@PathVariable int typeId, @PathVariable int employeeId, @PathVariable int isApproval) {
 
+        List<ApprovalEmpDTO> result = approvalService.findAllApprovalByEmployeeId(typeId, employeeId, isApproval);
+
+        ResApprovalVO response = ResApprovalVO.builder()
+                .statusCode(200)
+                .message("작성자별 결재 목록 조회 성공")
+                .href("")
+                .approvalEmpResultList(result)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping("/detail/{typeId}/{approvalId}")
+    public ResponseEntity<ResApprovalVO> findDetailByApprovalId(@PathVariable int typeId, @PathVariable int approvalId) {
+
+        ApprovalEmpDTO result = approvalService.findDetailByApprovalId(typeId, approvalId);
+
+        ResApprovalVO response = ResApprovalVO.builder()
+                .statusCode(200)
+                .message("결재 상세 조회 성공")
+                .href("")
+                .approvalEmpResult(result)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping("/overtime-count/{employeeId}")
+    public ResponseEntity<Integer> countOvertimeInWeek(@PathVariable int employeeId) {
+
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+        LocalDateTime now = LocalDateTime.now();
+
+        String sunday = now.with(LocalTime.MIN).with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY)).format(dateFormat);
+        String saturday = now.with(LocalTime.MAX).with(TemporalAdjusters.nextOrSame(DayOfWeek.SATURDAY)).format(dateFormat);
+
+        int count = approvalService.countOvertimeInWeek(new OvertimeInWeekDTO(sunday, saturday, employeeId));
+
+        return ResponseEntity.status(HttpStatus.OK).body(count);
+    }
+
+    @GetMapping("/approver/{typeId}/{employeeId}/{isApproval}")
+    public ResponseEntity<ResApprovalVO> findAllApprovalByApproverId(@PathVariable int typeId, @PathVariable int employeeId, @PathVariable int isApproval) {
+
+        List<ApprovalEmpDTO> result = approvalService.findAllApprovalByApproverId(typeId, employeeId, isApproval);
+
+        ResApprovalVO response = ResApprovalVO.builder()
+                .statusCode(200)
+                .message("결재자별 결재 목록 조회 성공")
+                .href("")
+                .approvalEmpResultList(result)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
 }

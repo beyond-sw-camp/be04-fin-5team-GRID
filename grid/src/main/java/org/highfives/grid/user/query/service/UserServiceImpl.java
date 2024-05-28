@@ -141,9 +141,7 @@ public class UserServiceImpl implements UserService{
     @Override
     public Map<String, Object> checkNameByEmail(String email) {
         try {
-            Map<String, Object> selectResult = userMapper.getUserInfoByEmail(email);
-
-            return selectResult;
+            return userMapper.getUserInfoByEmail(email);
         } catch (NullPointerException e) {
             return null;
         }

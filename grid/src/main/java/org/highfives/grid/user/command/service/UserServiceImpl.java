@@ -196,7 +196,6 @@ public class UserServiceImpl implements UserService{
         }
     }
 
-    @Transactional
     public boolean changeGender(int userId) {
 
         Employee employee = userRepository.findById(userId).orElseThrow(NullPointerException::new);

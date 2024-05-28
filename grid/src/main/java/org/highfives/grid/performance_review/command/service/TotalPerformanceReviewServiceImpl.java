@@ -60,6 +60,7 @@ public class TotalPerformanceReviewServiceImpl implements TotalPerformanceReview
         int totalId = calculateGrade(totalScore);
         System.out.println(totalId);
 
+
         // 종합 평가 생성
         TotalPerformanceReview totalPerformanceReview = new TotalPerformanceReview(
                 finReview.getYear(),

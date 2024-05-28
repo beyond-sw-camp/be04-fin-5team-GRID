@@ -16,4 +16,6 @@ public interface ApprovalChainMapper {
     int findTeamLeaderByEmployeeId(int employeeId);
     int findDeptLeaderByEmployeeId(int employeeId);
     ChainDTO findBTChainByApprovalAndChainId(Map<String, Integer> params);
+    List<ChainDTO> findChainByApprovalId(Map<String, Integer> params);
+
 }

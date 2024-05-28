@@ -18,6 +18,7 @@ const layoutHiddenPaths = [
   '/test'
 ];
 
+
 const showLayout = computed(() => {
   return !layoutHiddenPaths.some(hiddenPath => {
     const regex = new RegExp(`^${hiddenPath.replace(/:\w+/g, '[^/]+')}$`);
@@ -25,11 +26,17 @@ const showLayout = computed(() => {
   });
 });
 
+
+// 컨테이너 클래스 설정
 const containerClass = computed(() => {
+
   return showLayout.value ? 'container' : 'container-full';
 });
 
+
+// 메인 컨텐츠 클래스 설정
 const mainContentClass = computed(() => {
+
   return showLayout.value ? 'main-content' : 'main-content-full';
 });
 
@@ -56,64 +63,65 @@ const mainContentClass = computed(() => {
 
 <style scoped>
 body {
-    margin: 0;
-    padding: 0;
-    width: 100vw;
-    height: 100vh;
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
 }
 
 .container {
-    display: grid;
-    grid-template-columns: 200px 1fr;
-    grid-template-rows: 60px auto 10px;
-    grid-template-areas:
-        "header header"
-        "side body"
-        "side footer";
-    height: 100%;
-    min-width: 100%;
-    width: 100%;
-    margin: 0;
-    padding: 0;
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  grid-template-rows: 60px auto 35px;
+  grid-template-areas:
+    "header header"
+    "side body"
+    "side footer";
+  height: 100%;
+  min-width: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 .header {
-    grid-area: header;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 1000;
-    padding: 0;
+  grid-area: header;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  padding: 0;
 }
 
 .sidebar {
-    grid-area: side;
-    position: fixed;
-    top: 60px;
-    left: 0;
-    width: 180px;
-    height: calc(100vh - 60px);
-    z-index: 800;
-    font-size: 14px;
+  grid-area: side;
+  position: fixed;
+  top: 60px;
+  left: 0;
+  width: 200px;
+  height: calc(100vh - 60px);
+  z-index: 800;
+  font-size: 14px;
 }
 
 .main-content {
-    grid-area: body;
-    margin-top: 60px;
-    padding: 0 ;
-    height: calc(100vh - 60px);
+  grid-area: body;
+  margin-top: 60px;
+  padding: 0;
+  height: calc(100vh - 60px);
 }
 
 .footer {
-    grid-area: footer;
-    position: fixed;
-    bottom: 0;
-    width: calc(100% - 180px);
-    z-index: 600;
-    font-size: 10px;
-    justify-self: flex-end;
+  grid-area: footer;
+  position: fixed;
+  bottom: 0;
+  width: calc(100% - 200px);
+  z-index: 600;
+  font-size: 10px;
+  justify-self: flex-end;
 }
+
 
 .container-full {
   display: flex;
