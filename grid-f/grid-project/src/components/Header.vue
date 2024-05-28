@@ -2,7 +2,7 @@
   <div>
     <header class="header">
       <div class="logo">
-        <img src="@/assets/logo.png" @click="main()" class="logoimage">
+        <img src="@/assets/newLogo.png" @click="main()" class="logoimage">
       </div>
       <div class="icons">
         <button class="icon-button">
@@ -101,20 +101,16 @@ onMounted(fetchDepartments);
   background: #088A85;
   color: white;
   padding: 10px 20px;
-  display: flex;
+  display: grid;
+  grid-template-columns: 5% 85% 10%;
   justify-content: space-between;
   align-items: center;
   font-family: 'IBMPlexSansKR-Regular';
 }
 
-.logo {
-  display: flex;
-  align-items: center;
-}
-
 .logo img {
-  height: 40px;
-  margin-right: 10px;
+  width: 100%;
+  margin-bottom:3px;
 }
 
 .search {
@@ -125,8 +121,14 @@ onMounted(fetchDepartments);
 }
 
 .icons {
-  display: flex;
+  grid-column-start: 3;
   align-items: center;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.icons img {
+  margin:0;
 }
 
 .profile {
@@ -134,14 +136,12 @@ onMounted(fetchDepartments);
   height: 40px;
   border-radius: 50%;
   cursor: pointer;
-  margin-right: 50px;
   object-fit: cover;
 }
 
 .icon-button {
   background: none;
   border: none;
-  margin: 0 5px;
   padding: 5px;
   cursor: pointer;
   display: flex;
