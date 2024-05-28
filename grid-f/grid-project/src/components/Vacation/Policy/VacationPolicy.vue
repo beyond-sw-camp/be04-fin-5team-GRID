@@ -69,7 +69,7 @@
   import axios from 'axios';
   import { useRoute } from 'vue-router';
   import router from '@/router/router';
-  import Modal from '@/components/Vacation/Policy/Modal.vue'; // 모달 컴포넌트 임포트
+  import Modal from '@/components/Vacation/Policy/VacationPolicyModal.vue'; // 모달 컴포넌트 임포트
   
   const policies = ref([]);
   const userRole = ref('');

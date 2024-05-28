@@ -79,12 +79,20 @@
               <option v-for="type in types" :key="type.id" :value="type.id">{{ type.typeName }}</option>
             </select>
           </div>
-          <div class="registContent">
-            <h3>내용</h3>
-            <textarea v-model="content" placeholder="내용을 입력해주세요." class="inputField"></textarea>
+          <div class="vacationNum">
+            <h3 for="VacationNum">휴가일수</h3>
+            <input v-model="vacationNum" type="number" class="numInputField" placeholder="휴가일수를 입력해주세요.">
           </div>
+          <div class="employeeNum">
+            <h3 for="employeeNum">직원사번</h3>
+            <input v-model="employeeNum" class="empInputField" placeholder="직원사번을 입력해주세요.">
+          </div>
+          <div class="registContent">
+                <h3>휴가 사용기한</h3>
+                <VueDatePicker locale="ko" :enable-time-picker="false" v-model="date" class="inputField" />
+            </div>
           <div class="registBtnArea">
-            <button class="registBtn" @click="registPolicy">등록하기</button>
+            <button class="registBtn" @click="giveVacationDirectly">지급하기</button>
           </div>
         </div>
       </Modal>
@@ -94,7 +102,9 @@
 import { onBeforeMount, ref, computed } from 'vue';
 import axios from "axios";
 import router from '@/router/router';
-import Modal from '@/components/Vacation/Policy/Modal.vue';
+import Modal from '@/components/Vacation/Info/VacationInfoModal.vue';
+import VueDatePicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css'
 
 const histories = ref([]);
 const searchType = ref('name'); // 검색 유형을 위한 기본값 설정
@@ -106,6 +116,10 @@ const userRole = ref('');
 const userId = ref('');
 const showRegistModal = ref(false);
 const types = ref([]);
+const vacationNum = ref('');
+const employeeNum = ref('');
+const date = ref(null);
+const selectedType = ref('');
 
 const totalPages = computed(() => {
     return Math.ceil(filteredHistories.value.length / itemsPerPage);
@@ -122,7 +136,6 @@ const getAllVacationHistory = async () => {
         const response = await axios.get("/api/vacation/details");
         histories.value = response.data.result;
         filteredHistories.value = histories.value; // 처음에 모든 기록을 보여줌
-        console.log(response.data.result);
     } catch (error) {
         console.error("Error fetching vacation details:", error);
     }
@@ -131,7 +144,6 @@ const getAllVacationHistory = async () => {
 const getUserVacationHistory = async () => {
     try {
         const response = await axios.get(`/api/vacation/details/${userId.value}`);
-        histories.value = response.data.result;
         filteredHistories.value = histories.value; // 처음에 모든 기록을 보여줌
     } catch (error) {
         console.error("Error fetching vacation details:", error);
@@ -195,6 +207,55 @@ const getVacationType = async () => {
     }
   };
 
+  const giveVacationDirectly = async () => {
+    // 입력 값 검증 추가
+    if (!selectedType.value) {
+        alert('휴가타입을 선택해주세요.');
+        return;
+    }
+    if (!vacationNum.value) {
+        alert('지급일수를 입력해주세요.');
+        return;
+    }
+    if (!employeeNum.value) {
+        alert('사번을 입력해주세요.');
+        return;
+    }
+    if (!date.value) {
+        alert('사용기한을 선택해주세요.');
+        return;
+    }
+
+    try {
+        const confirmed = window.confirm('지급하시겠습니까?');
+        if (confirmed) {
+            const formattedDate = date.value.toISOString().split('T')[0];
+            const response = await axios.post('/api/vacation/payments', {
+                vacationNum: vacationNum.value,
+                endTime: formattedDate,
+                employeeNum: employeeNum.value,
+                typeId: selectedType.value
+            });
+
+            if (response.status === 200) {
+                alert('지급 완료되었습니다!');
+                showRegistModal.value = false; // 모달 닫기
+                window.location.reload();
+            } else {
+                alert('지급에 실패했습니다.');
+            }
+        }
+    } catch (error) {
+        if (error.response && error.response.status === 404) {
+            alert('지급 엔드포인트를 찾을 수 없습니다.');
+        } else {
+            console.error("Error:", error);
+            alert('지급 중 오류가 발생했습니다.');
+        }
+    }
+}
+
+
 function giveAnnual() {
     try {
         const confirmed = window.confirm('지급하시겠습니까?');
@@ -202,6 +263,7 @@ function giveAnnual() {
             giveAnnualVacation();
             giveRegularVacation();
             alert('지급 완료되었습니다!')
+            window.location.reload();
         }
     } catch (error) {
         alert(error.message)
@@ -215,6 +277,7 @@ function giveMonth() {
             giveHealthVacation();
             giveMonthVacation();
             alert('지급 완료되었습니다!')
+            window.location.reload();
         }
     } catch (error) {
         alert(error.message)
@@ -445,8 +508,8 @@ onBeforeMount(() => {
     }
 
     .registMain {
-    height: 80%;
-    width: calc(100% - 20px);
+    height: 100%;
+    width: 100%;
     padding: 10px;
     background-color: #F2F2F2;
   }
@@ -460,32 +523,52 @@ onBeforeMount(() => {
   .registTitle {
     margin-top: 2%;
     display: grid;
-    grid-template-columns: 5% 20% 75%;
+    grid-template-columns: 10% 20% 30% 10%;
     font-size: 14px;
     align-items: center;
   }
 
+  .registTitle h3 {
+    grid-column-start: 2;
+  }
+
   .registContent {
-    margin-top: 3%;
-    height: 50%;
+    margin-top: 2%;
     display: grid;
-    grid-template-columns: 5% 95%;
+    grid-template-columns: 10% 20% 50% 10%;
     font-size: 14px;
+    align-items: center;
+  }
+
+  .employeeNum {
+    margin-top: 2%;
+    display: grid;
+    grid-template-columns: 10% 20% 50% 10%;
+    font-size: 14px;
+    align-items: center;
+  }
+
+  .employeeNum h3 {
+    grid-column-start: 2;
+  }
+
+
+  .vacationNum {
+    margin-top: 2%;
+    display: grid;
+    grid-template-columns: 10% 20% 50% 10%;
+    font-size: 14px;
+    align-items: center;
+  }
+
+  .vacationNum h3 {
+    grid-column-start: 2;
   }
 
   .registContent h3 {
-    margin-top: 0;
+    grid-column-start: 2;
   }
 
-  .registContent textarea {
-    width: 100%;
-    height: 100%;
-    padding: 10px;
-    box-sizing: border-box;
-    resize: none;
-    height: 300px;
-    border: none;
-  }
 
   .registBtn{
     width: 100%;
@@ -497,16 +580,16 @@ onBeforeMount(() => {
     cursor: pointer;
     font-size: 12px;
     font-style: bold;
-    grid-column-start: 3;
+    grid-column-start: 2;
   }
 
   .registBtnArea {
     display: grid;
-    grid-template-columns: 40% 6% 8% 6% 40%;
+    grid-template-columns: 40% 20% 40%;
     place-items: center;
     grid-row-start: 3;
     grid-column-start: 2;
-    margin-top: 2%;
+    margin-top: 5%;
   }
 </style>
 
