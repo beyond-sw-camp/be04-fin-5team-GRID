@@ -51,11 +51,12 @@
         <li>
           <span @click="toggleMenu('performanceReview')">업적 평가 관리</span>
           <ul v-show="activeMenus.performanceReview">
-            <li @click="navigateTo('/performance-review-goal/add')">업적 평가 목표 작성</li>
-            <li @click="navigateTo('/performance-review-goal')">업적 평가 목표 조회</li>
-            <li>업적 평가 작성</li>
-            <li>업적 평가 조회</li>
-            <li>종합 업적 평가</li>
+            <li @click="navigateTo('/performance-review-goal/add')">목표 작성</li>
+            <li @click="navigateTo('/performance-review-goal')">목표 조회</li>
+            <li @click="navigateTo('/performance-review/mid')">중간 평가 작성</li>
+            <li @click="navigateTo('/performance-review/final')">연말 평가 작성</li>
+            <li @click="navigateTo('/performance-review')">평가 조회</li>
+            <li @click="navigateTo('/performance-review/total')">종합 평가 조회</li>
           </ul>
         </li>
       </ul>
