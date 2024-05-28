@@ -10,7 +10,7 @@
         <tr>
           <td><label>연도</label></td>
           <td>{{ reviewDetail.year }}</td>
-          <td><label>타입</label></td>
+          <td><label>유형</label></td>
           <td>{{ reviewDetail.type }}</td>
         </tr>
         <tr>
@@ -177,30 +177,64 @@ const fetchReviewAdd = async () => {
     // 팀원인지 확인하는 기능 추가 필요
     userRole.value = "member";
 
-    const route = router.currentRoute.value;
-    const id = route.params.id;
+    const responseReview = await axios.get(`http://localhost:8080/performance-review/mid/${currentYear}/8`)
 
-    const response = await axios.get(`http://localhost:8080/performance-review/detail/${id}`)
-    console.log(response.data);
-    const review = response.data.findDetailReview;
-    reviewItemList.value = review.reviewItemList;
 
-    reviewDetail.value = {
-      id: review.id,
-      year: review.year,
-      type: getType(review.type),
-      reviewName: review.reviewName,
-      writerName: review.writer ? review.writer.employeeName : '없음',
-      writeTime: review.writeTime || '없음',
-      approverName: review.approver ? review.approver.employeeName : '없음',
-      approvalTime: review.approvalTime || '없음',
-      status: getApprovalStatus(review.approvalStatus)
-    };
-    // 유저 체크 기능
-    userRole.value = "leader";
+    console.log(responseReview);
+
+    if(!responseReview.data.findReview){
+      // 생성된 중간 평가 없을 때
+      const sendData= {
+        type: "M",
+        year: currentYear,
+        reviewName: `${currentYear} 인사평가`,
+        writerId: 8
+      }
+
+      const responseAdd = await axios.post(
+          `http://localhost:8080/performance-review`,
+          sendData
+      );
+
+      const id = responseAdd.data.performanceReview.id
+      const response = await axios.get(`http://localhost:8080/performance-review/detail/${id}`);
+
+      const review = response.data.findDetailReview;
+      reviewItemList.value = review.reviewItemList;
+
+      reviewDetail.value = {
+        id: review.id,
+        year: review.year,
+        type: getType(review.type),
+        reviewName: review.reviewName,
+        writerName: review.writer ? review.writer.employeeName : '없음',
+        writeTime: review.writeTime || '없음',
+        approverName: review.approver ? review.approver.employeeName : '없음',
+        approvalTime: review.approvalTime || '없음',
+        status: getApprovalStatus(review.approvalStatus)
+      };
+    } else {
+      // 생성된 평가 있을 때
+      const id = responseReview.data.findReview.id
+      const response = await axios.get(`http://localhost:8080/performance-review/detail/${id}`);
+
+      const review = response.data.findDetailReview;
+      reviewItemList.value = review.reviewItemList;
+
+      reviewDetail.value = {
+        id: review.id,
+        year: review.year,
+        type: getType(review.type),
+        reviewName: review.reviewName,
+        writerName: review.writer ? review.writer.employeeName : '없음',
+        writeTime: review.writeTime || '없음',
+        approverName: review.approver ? review.approver.employeeName : '없음',
+        approvalTime: review.approvalTime || '없음',
+        status: getApprovalStatus(review.approvalStatus)
+      };
+    }
 
     // 팀원일 때 작성중 상태만 수정 가능
-    // 팀장일 때 상신, 확인중, 확인 완료 상태에 수정 가능
   } catch (error) {
     console.error('에러 발생:', error);
   }
