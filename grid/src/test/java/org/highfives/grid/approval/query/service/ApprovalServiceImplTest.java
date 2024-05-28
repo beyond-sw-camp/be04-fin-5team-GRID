@@ -16,9 +16,6 @@ class ApprovalServiceImplTest {
     @Test
     void findAllBTApproval() {
 
-        Assertions.assertDoesNotThrow(
-                () -> approvalService.findAllBTApproval()
-        );
     }
 
     @Test

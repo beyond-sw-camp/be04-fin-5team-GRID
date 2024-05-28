@@ -13,7 +13,7 @@ import java.util.Map;
 public interface ApprovalMapper {
 
     List<OvertimeApprovalDTO> findOInWeekByEmployeeId(OvertimeInWeekDTO overtimeInWeek);
-    List<BTApprovalDTO> findAllBTApproval();
+    List<ApprovalEmpDTO> findAllBTApproval(Map<String, Integer> params);
     List<ApprovalEmpDTO> findAllBTApprovalByEmployeeId(Map<String, Integer> params);
     List<ApprovalEmpDTO> findAllOApprovalByEmployeeId(Map<String, Integer> params);
     List<ApprovalEmpDTO> findAllRWApprovalByEmployeeId(Map<String, Integer> params);
