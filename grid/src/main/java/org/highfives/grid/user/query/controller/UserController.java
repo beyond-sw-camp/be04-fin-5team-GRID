@@ -1,6 +1,8 @@
 package org.highfives.grid.user.query.controller;
 
+import org.highfives.grid.user.query.dto.DutiesDTO;
 import org.highfives.grid.user.query.dto.LeaderInfoDTO;
+import org.highfives.grid.user.query.dto.PositionDTO;
 import org.highfives.grid.user.query.dto.UserDTO;
 import org.highfives.grid.user.query.service.UserService;
 import org.highfives.grid.user.query.vo.*;
@@ -42,6 +44,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    // 이름에 해당하는 직원 조회
     @GetMapping("/list/{name}")
     public ResponseEntity<ResFindListVO> findUsersByName(@PathVariable("name") String name) {
         List<SimpleInfo> resultList = new ArrayList<>();
@@ -80,24 +83,6 @@ public class UserController {
         }
     }
 
-    // 이메일로 이름 체크
-    @GetMapping("/{email}/name")
-    public ResponseEntity<ResCheckNameVO> checkNameByEmail(@PathVariable("email") String email) {
-
-        Map<String, Object> result = userService.checkNameByEmail(email);
-
-        if(result != null){
-            ResCheckNameVO response =
-                    new ResCheckNameVO(200, "Success to find user", "/users/list", result);
-            return ResponseEntity.status(HttpStatus.OK).body(response);
-        } else {
-            ResCheckNameVO response =
-                    new ResCheckNameVO(404, "No matching user", "/users/{employeeNumber}", null);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-        }
-    }
-
-
     //아이디로 사원 정보 조회
     @GetMapping("/id/{userID}")
     public ResponseEntity<ResFindUserVO> findUserById(@PathVariable("userID") int id) {
@@ -115,6 +100,40 @@ public class UserController {
         }
     }
 
+    //이메일로 사원 정보 조회
+    @GetMapping("/mail/{email}")
+    public ResponseEntity<ResFindUserVO> findUserByEmail(@PathVariable("email") String email) {
+
+        UserDTO userDTO = userService.findUserByEmail(email);
+
+        if(userDTO != null){
+            ResFindUserVO response =
+                    new ResFindUserVO(200, "Success to find user", "/users/list", userDTO);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } else {
+            ResFindUserVO response =
+                    new ResFindUserVO(404, "No matching user", "/users/{employeeNumber}", null);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+    }
+
+    // 이메일로 이름 체크
+    @GetMapping("/{email}/name")
+    public ResponseEntity<ResCheckNameVO> checkNameByEmail(@PathVariable("email") String email) {
+
+        Map<String, Object> result = userService.checkNameByEmail(email);
+
+        if(result != null){
+            ResCheckNameVO response =
+                    new ResCheckNameVO(200, "Success to find user", "/users/list", result);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } else {
+            ResCheckNameVO response =
+                    new ResCheckNameVO(404, "No matching user", "/users/{employeeNumber}", null);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+    }
+
     // 직원 id로 부서장/팀장 정보 조회
     @GetMapping("/{id}/leaders")
     public ResponseEntity<ResFindLeaderVO> findLeaderInfo(@PathVariable("id") int id) {
@@ -126,6 +145,32 @@ public class UserController {
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
+    //직위 목록 조회
+    @GetMapping("/positions")
+    public ResponseEntity<ResPositionVO> findPositions() {
+
+        List<PositionDTO> result = userService.findPositions();
+
+        ResPositionVO response =
+                new ResPositionVO(200, "Success to find positions", "/", result);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+
+    //직책 목록 조회
+    @GetMapping("/duties")
+    public ResponseEntity<ResDutiesVO> findDuties() {
+
+        List<DutiesDTO> result = userService.findDuties();
+
+        ResDutiesVO response =
+                new ResDutiesVO(200, "Success to find positions", "/", result);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
 
     private List<SimpleInfo> DTOtoSimpleInfo(List<UserDTO> list) {
 

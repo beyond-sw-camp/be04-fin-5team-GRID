@@ -14,7 +14,7 @@
                 <div class="email">
                     <div class="outBox" :class="{ 'existence': isExistence }">
                         <div class="inputBox">
-                            <input type="text" v-model="inputValue">
+                            <input type="text" v-model="inputValue" @keyup.enter="Login">
                             <label for="sampleId">이메일</label>
                         </div>
                     </div>
@@ -31,7 +31,7 @@
                 <div class="password">
                     <div class="outBox" :class="{ 'existence': isPwdExistence }">
                         <div class="inputBox">
-                            <input type="password" v-model="inputPwd">
+                            <input type="password" v-model="inputPwd" @keyup.enter="Login">
                             <label for="samplePwd">비밀번호</label>
                         </div>
                     </div>
@@ -86,7 +86,7 @@
 import { ref, watch } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
-
+import { useStore } from 'vuex';
 
 const inputValue = ref('');
 const inputPwd = ref('');
@@ -96,6 +96,7 @@ const isValueExistence = ref(false);
 const isValue2Existence = ref(false);
 const isWrong = ref(false);
 const router = useRouter();
+const store = useStore();
 
 async function Login() {
 
@@ -128,6 +129,7 @@ async function Login() {
                     localStorage.setItem('access', response.data.access)
                     alert('로그인 되었습니다');
                     isWrong.value = false;
+                    store.dispatch('updateEmail', inputValue.value);
                     router.push('/main');
                 }
             })
