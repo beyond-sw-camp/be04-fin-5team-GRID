@@ -46,7 +46,6 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
 
-
     @Override
     public DepartmentDTO registDepartment(DepartmentDTO departmentDTO) {
 
@@ -57,10 +56,10 @@ public class DepartmentServiceImpl implements DepartmentService {
         Department department = Department.builder()
                 .departmentName(departmentDTO.getDepartmentName())
                 .departmentStatus("Y")
-                .highDepartment(departmentDTO.getHighDepartment())
                 .departmentCode(departmentDTO.getDepartmentCode())
                 .leaderId(departmentDTO.getLeaderId())
                 .startTime(formattedDate)
+                .sequence(departmentDTO.getSequence())
                 .build();
 
         departmentRepository.save(department);
@@ -69,52 +68,56 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public List<DepartmentDTO> modifyAllDepartment(List<DepartmentDTO> departmentDTO) {
+    public List<DepartmentDTO> modifyAllDepartment(List<DepartmentDTO> departmentDTOList) {
+
         List<DepartmentDTO> updateList = new ArrayList<>();
 
-        for (DepartmentDTO modifyData : departmentDTO) {
+        for (DepartmentDTO modifyData : departmentDTOList) {
+
             DepartmentDTO currentDepartmentInfo = findDepartmentById(modifyData.getId());
-
-            if(!modifyData.getDepartmentStatus().equals("N")) {
-                Department department = Department.builder()
-                        .id(modifyData.getId())
-                        .departmentName(modifyData.getDepartmentName())
-                        .departmentStatus(modifyData.getDepartmentStatus())
-                        .startTime(currentDepartmentInfo.getStartTime())
-                        .endTime(currentDepartmentInfo.getEndTime())
-                        .highDepartment(modifyData.getHighDepartment())
-                        .memberCnt(currentDepartmentInfo.getMemberCnt())
-                        .leaderId(modifyData.getLeaderId())
-                        .departmentCode(modifyData.getDepartmentCode())
-                        .build();
-
-                departmentRepository.save(department);
-                updateList.add(mapper.map(department, DepartmentDTO.class));
-            }
 
             Date currentDate = new Date();
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String formattedDate = dateFormat.format(currentDate);
 
-            Department department = Department.builder()
-                    .id(modifyData.getId())
-                    .departmentName(modifyData.getDepartmentName())
-                    .departmentStatus(modifyData.getDepartmentStatus())
-                    .startTime(currentDepartmentInfo.getStartTime())
-                    .endTime(formattedDate)
-                    .highDepartment(modifyData.getHighDepartment())
-                    .memberCnt(currentDepartmentInfo.getMemberCnt())
-                    .leaderId(modifyData.getLeaderId())
-                    .departmentCode(modifyData.getDepartmentCode())
-                    .build();
+            String departmentStatus = modifyData.getDepartmentStatus() != null ? modifyData.getDepartmentStatus() : "Y";
 
-            departmentRepository.save(department);
-            updateList.add(mapper.map(department, DepartmentDTO.class));
+            if (!"N".equals(departmentStatus)) {
+                Department department = Department.builder()
+                        .id(modifyData.getId())
+                        .departmentName(modifyData.getDepartmentName())
+                        .departmentStatus(departmentStatus)
+                        .startTime(currentDepartmentInfo.getStartTime())
+                        .endTime(currentDepartmentInfo.getEndTime())
+                        .memberCnt(currentDepartmentInfo.getMemberCnt())
+                        .leaderId(modifyData.getLeaderId())
+                        .departmentCode(modifyData.getDepartmentCode())
+                        .sequence(modifyData.getSequence())
+                        .build();
+
+                departmentRepository.save(department);
+                updateList.add(mapper.map(department, DepartmentDTO.class));
+            } else {
+                Department department = Department.builder()
+                        .id(modifyData.getId())
+                        .departmentName(modifyData.getDepartmentName())
+                        .departmentStatus(departmentStatus)
+                        .startTime(currentDepartmentInfo.getStartTime())
+                        .endTime(formattedDate)
+                        .memberCnt(currentDepartmentInfo.getMemberCnt())
+                        .leaderId(modifyData.getLeaderId())
+                        .departmentCode(modifyData.getDepartmentCode())
+                        .sequence(modifyData.getSequence())
+                        .build();
+
+                departmentRepository.save(department);
+                updateList.add(mapper.map(department, DepartmentDTO.class));
+            }
         }
 
         return updateList;
-
     }
+
 
     @Override
     public DepartmentDTO modifyDepartment(DepartmentDTO departmentDTO) {
@@ -127,10 +130,10 @@ public class DepartmentServiceImpl implements DepartmentService {
                     .departmentStatus(departmentDTO.getDepartmentStatus())
                     .startTime(currentDepartmentInfo.getStartTime())
                     .endTime(currentDepartmentInfo.getEndTime())
-                    .highDepartment(departmentDTO.getHighDepartment())
                     .memberCnt(currentDepartmentInfo.getMemberCnt())
                     .leaderId(departmentDTO.getLeaderId())
                     .departmentCode(departmentDTO.getDepartmentCode())
+                    .sequence(departmentDTO.getSequence())
                     .build();
 
             departmentRepository.save(department);
@@ -147,9 +150,9 @@ public class DepartmentServiceImpl implements DepartmentService {
                     .departmentStatus(departmentDTO.getDepartmentStatus())
                     .startTime(currentDepartmentInfo.getStartTime())
                     .endTime(formattedDate)
-                    .highDepartment(departmentDTO.getHighDepartment())
                     .memberCnt(currentDepartmentInfo.getMemberCnt())
                     .leaderId(departmentDTO.getLeaderId())
+                    .sequence(departmentDTO.getSequence())
                     .departmentCode(departmentDTO.getDepartmentCode())
                     .build();
 

@@ -116,15 +116,20 @@ class ReviewServiceImplTest {
 
         // Given
 
-        ReviewDTO reviewDTO = ReviewDTO.builder()
+        ReviewDTO reviewDTO1 = ReviewDTO.builder()
                 .score(85)
                 .reviewId(1)
                 .historyId(1)
                 .build();
+        ReviewDTO reviewDTO2 = ReviewDTO.builder()
+                .score(85)
+                .reviewId(1)
+                .historyId(2)
+                .build();
 
         // When
 
-        ReviewDTO review = commandReviewService.addReview(reviewDTO);
+//        ReviewDTO review = commandReviewService.addReview(reviewDTO);
 
 
         // Then

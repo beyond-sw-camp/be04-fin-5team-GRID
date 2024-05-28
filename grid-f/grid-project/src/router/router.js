@@ -1,4 +1,6 @@
-import {createRouter, createWebHistory} from 'vue-router';
+
+import { createRouter, createWebHistory } from 'vue-router';
+
 
 const router = createRouter({
 
@@ -29,13 +31,9 @@ const router = createRouter({
             component: () => import('@/components/Department/Department.vue')
         },        
         {
-            path: '/addteamreview',
-            component: () => import('@/components/TeamReview/AddTeamReview.vue')
+            path: '/team',
+            component: () => import('@/components/Department/Team.vue')
         },
-        // {
-        //     path: '/team',
-        //     component: () => import('@/components/Department/Team.vue')
-        // },
         {
             path: '/performance-review-goal/add',
             component: () => import('../views/PerformanceReview/Goal/GoalAddView.vue')
@@ -70,6 +68,7 @@ const router = createRouter({
         },
         {
             path: '/hr/modify/:employeeNumber',
+            name: 'Modify',
             component: () => import('../views/HumanResources/Modify.vue')
         },
         {
@@ -81,58 +80,63 @@ const router = createRouter({
             component: () => import('../views/HumanResources/Add.vue')
         },
         {
-            path: '/bt',
+            path: '/bt/:employeeId',
             component: () => import('@/views/Approval/BTApprovalListView.vue')
         },
         {
-            path: '/overtime',
+            path: '/overtime/:employeeId',
             component: () => import('@/views/Approval/OApprovalListView.vue')
         },
         {
-            path: '/vacation',
+            path: '/vacation/:employeeId',
             component: () => import('@/views/Approval/VApprovalListView.vue')
         },
         {
-            path: '/approval',
+            path: '/approval/:employeeId',
             component: () => import('@/views/Approval/AllApprovalListView.vue')
         },
         {
-            path: '/approval-detail/:typeId/:approvalId',
+            path: '/approval/detail/:typeId/:approvalId',
             component: () => import('@/views/Approval/ApprovalDetailView.vue')
         },
         {
             path: '/vacation/policy',
-            component:() => import('../views/VacationPolicyView.vue')
+            component:() => import('../views/Vacation/VacationPolicyView.vue')
         },
         {
             path: '/vacation/policy/modify/:id',
-            component:() => import('../views/VacationPolicyModifyView.vue')
+            component:() => import('../views/Vacation/VacationPolicyModifyView.vue')
         },
         {
             path: '/vacation/policy/regist',
-            component:() => import('../views/VacationPolicyRegistView.vue')
+            component:() => import('../views/Vacation/VacationPolicyRegistView.vue')
         },
         {
             path: '/vacation/manage',
-            component:() => import('../views/VacationManageMainView.vue')
+            component:() => import('../views/Vacation/VacationManageMainView.vue')
         },
         {
             path: '/vacation/manage/regist',
-            component:() => import('../views/VacationManageRegistView.vue')
+            component:() => import('../views/Vacation/VacationManageRegistView.vue')
         },
         {
             path: '/vacation/manage/modify/:id',
-            component:() => import('../views/VacationManageDeleteView.vue')
+            component:() => import('../views/Vacation/VacationManageDeleteView.vue')
         },
         {
             path: '/vacation/history',
-            component:() => import('../views/VacationHistoryMainView.vue')
+            component:() => import('../views/Vacation/VacationHistoryMainView.vue')
+        },
+        {
+            path: '/vacation/changeInfo',
+            component:() => import('../views/Vacation/VacationChangeInfoMainView.vue')
         },
         {
             path: '/vacation/info',
-            component:() => import('../views/VacationInfoMainView.vue')
+            component:() => import('../views/Vacation/VacationInfoMainView.vue')
         },
         {
+
             path: '/performance-review',
             component: () => import('../views/PerformanceReview/Review/PerformanceReviewListView.vue')
         },
@@ -156,7 +160,78 @@ const router = createRouter({
             path: '/performance-review/total/detail/:id',
             component: () => import('../views/PerformanceReview/Total/TotalPerformanceReviewDetailView.vue')
         },
+        {
+            path: '/bt/:employeeId',
+            component: () => import('@/views/Approval/BTApprovalListView.vue')
+        },
+        {
+            path: '/overtime/:employeeId',
+            component: () => import('@/views/Approval/OApprovalListView.vue')
+        },
+        {
+            path: '/vacation/:employeeId',
+            component: () => import('@/views/Approval/VApprovalListView.vue')
+        },
+        {
+            path: '/approval/:employeeId',
+            component: () => import('@/views/Approval/AllApprovalListView.vue')
+        },
+        {
+            path: '/approval/detail/:typeId/:approvalId',
+            component: () => import('@/views/Approval/ApprovalDetailView.vue')
+        },
+        {
+            path: '/required',
+            component: () => import('@/views/Approval/RequiredApprovalListView.vue')
+        },
+        {
+            path: '/regist/bt',
+            component: () => import('@/views/Approval/RegistBTApprovalView.vue')
+        },
+        {
+            path: '/regist/overtime',
+            component: () => import('@/views/Approval/RegistOApprovalView.vue')
+        },
+        {
+            path: '/regist/rw',
+            component: () => import('@/views/Approval/RegistRWApprovalView.vue')
+        },
+        {
+            path: '/regist/vacation',
+            component: () => import('@/views/Approval/RegistVApprovalView.vue')
+        },
+        {
+            path: '/team-review/history',
+            component: () => import('@/components/TeamReview/ReviewHistory.vue')
+        },
+        {
+            path: '/team-review/add',
+            component: () => import('@/components/TeamReview/AddTeamReview.vue')
+        },
+        {
+            path: '/team-review/list',
+            component: () => import('@/components/TeamReview/ReviewList.vue')
+
+        },
+        {
+            path: '/regist/main',
+            component: () => import('@/views/Approval/RegistMainView.vue')
+        }
+
     ]
 })
+
+router.beforeEach((to, from, next) => {
+    const accessToken = localStorage.getItem('access');
+    const refreshToken = document.cookie.split('; ').find(row => row.startsWith('refresh='));
+
+    if (to.path === '/' && (accessToken || refreshToken)) {
+        next({ path: '/main' });
+    } else if (to.path !== '/' && !accessToken && !refreshToken) {
+        next({ path: '/' });
+    } else {
+        next();
+    }
+});
 
 export default router;

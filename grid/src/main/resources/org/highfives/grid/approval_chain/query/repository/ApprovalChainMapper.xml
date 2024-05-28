@@ -23,77 +23,78 @@
     </resultMap>
 
     <select id="findChainListByTypeId" resultMap="approvalChainMap" parameterType="int">
-         SELECT
-                id
-              , duty
-              , stage
-              , type_id
-           FROM approval_chain
-          WHERE type_id = #{typeId}
+        SELECT
+        id
+        , duty
+        , stage
+        , type_id
+        FROM approval_chain
+        WHERE type_id = #{typeId}
     </select>
 
     <select id="findTeamLeaderByEmployeeId" resultType="java.lang.Integer" parameterType="int">
-       SELECT
-              leader_id
-         FROM team
+        SELECT
+        leader_id
+        FROM team
         WHERE id = (SELECT
-                           team_id
-                      FROM employee
-                     WHERE id = #{employeeId});
+        team_id
+        FROM employee
+        WHERE id = #{employeeId});
     </select>
 
     <select id="findDeptLeaderByEmployeeId" resultType="java.lang.Integer" parameterType="int">
         SELECT
-               leader_id
-          FROM department
-         WHERE id = (SELECT
-                            department_id
-                       FROM employee
-                      WHERE id = #{employeeId});
+        leader_id
+        FROM department
+        WHERE id = (SELECT
+        department_id
+        FROM employee
+        WHERE id = #{employeeId});
     </select>
 
 
     <select id="findBTChainByApprovalAndChainId" resultMap="chainMap" parameterType="map">
         SELECT
-                a.stage,
-                b.id,
-                b.approval_time,
-                b.approval_status,
-                b.comment,
-                b.approval_id,
-                b.employee_id,
-                b.chain_id
-          FROM  approval_chain a
-          JOIN  bt_approval_chain b
-            ON  a.id = b.chain_id
-         WHERE  b.chain_id = #{chainId} and b.approval_id = #{approvalId};
+        a.stage,
+        b.id,
+        b.approval_time,
+        b.approval_status,
+        b.comment,
+        b.approval_id,
+        b.employee_id,
+        b.chain_id
+        FROM  approval_chain a
+        JOIN  bt_approval_chain b
+        ON  a.id = b.chain_id
+        WHERE  b.chain_id = #{chainId} and b.approval_id = #{approvalId};
     </select>
 
     <select id="findChainByApprovalId" resultMap="chainMap" parameterType="map">
         SELECT
-                a.stage,
-                b.id,
-                b.approval_time,
-                b.approval_status,
-                b.comment,
-                b.approval_id,
-                b.employee_id,
-                b.chain_id
-          FROM
-                <if test="typeId == 1">
-                    bt_approval_chain b
-                </if>
-                <if test="typeId == 2">
-                    o_approval_chain b
-                </if>
-                <if test="typeId == 3">
-                    rw_approval_chain b
-                </if>
-                <if test="typeId == 4">
-                    v_approval_chain b
-                </if>
-          JOIN  approval_chain a
-            ON  a.id = b.chain_id
-         WHERE  b.approval_id = #{approvalId};
+        a.stage,
+        b.id,
+        b.approval_time,
+        b.approval_status,
+        b.comment,
+        b.approval_id,
+        b.employee_id,
+        b.chain_id
+        FROM
+        <if test="typeId == 1">
+            bt_approval_chain b
+        </if>
+        <if test="typeId == 2">
+            o_approval_chain b
+        </if>
+        <if test="typeId == 3">
+            rw_approval_chain b
+        </if>
+        <if test="typeId == 4">
+            v_approval_chain b
+        </if>
+        JOIN  approval_chain a
+        ON  a.id = b.chain_id
+        WHERE  b.approval_id = #{approvalId}
+        ORDER BY  a.stage;
     </select>
 </mapper>

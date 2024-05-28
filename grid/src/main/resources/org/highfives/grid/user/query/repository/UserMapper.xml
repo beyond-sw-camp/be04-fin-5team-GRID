@@ -33,6 +33,32 @@
         WHERE E.id = #{id}
     </select>
 
+    <!--   직위 정보 불러오는 쿼리   -->
+    <resultMap id="positionInfo" type="org.highfives.grid.user.query.dto.PositionDTO">
+        <id property="id" column="id"/>
+        <result property="positionName" column="position_name"/>
+    </resultMap>
+    <select id="findPositions" resultMap="positionInfo">
+        SELECT
+        P.id,
+        P.position_name
+        FROM e_position P
+        ORDER BY P.id ASC;
+    </select>
+
+    <!--   직책 정보 불러오는 쿼리   -->
+    <resultMap id="dutiesInfo" type="org.highfives.grid.user.query.dto.DutiesDTO">
+        <id property="id" column="id"/>
+        <result property="dutiesName" column="duties_name"/>
+    </resultMap>
+    <select id="findDuties" resultMap="dutiesInfo">
+        SELECT
+        D.id,
+        D.duties_name
+        FROM duties D
+        ORDER By D.id DESC;
+    </select>
+
     <!--  부서장 정보 조회  -->
     <resultMap id="depLeaderInfo" type="org.highfives.grid.user.query.dto.LeaderInfoDTO">
         <id property="depLeaderName" column="employee_name"/>
@@ -198,11 +224,14 @@
         JOIN Department DEP ON E.department_id = DEP.id
         JOIN e_Position P ON E.position_id = P.id
         JOIN Duties D ON E.duties_id = D.id
-        <if test="id != null and eNum == null">
+        <if test="id != null and eNum == null and email == null">
             WHERE E.id = #{id}
         </if>
-        <if test="id == null and eNum != null">
+        <if test="id == null and eNum != null and email == null" >
             WHERE E.employee_number = #{eNum}
+        </if>
+        <if test="id == null and eNum == null and email != null" >
+            WHERE E.email = #{email}
         </if>
     </select>
 
@@ -244,6 +273,17 @@
         E.department_id
         FROM Employee E
         WHERE E.id = #{id}
+    </select>
+
+    <select id="findTeamList" parameterType="_int" resultMap="userInfo">
+        SELECT
+        E.id,
+        E.employee_name,
+        E.employee_number,
+        T.id t_id
+        FROM Employee E
+        JOIN Team T ON E.team_id = T.id
+        WHERE E.team_id = #{teamId}
     </select>
 
 </mapper>

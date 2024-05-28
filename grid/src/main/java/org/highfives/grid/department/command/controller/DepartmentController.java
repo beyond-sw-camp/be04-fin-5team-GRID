@@ -75,7 +75,7 @@ public class DepartmentController {
 
 
     /* 설명. 부서 전체 정보 수정 기능 */
-    @PutMapping("list")
+    @PutMapping("/list")
     public ResponseEntity<ResponseDepartmentListVO> modifyAllDepartment(@RequestBody List<DepartmentDTO> departmentDTO) {
         List<DepartmentDTO> departmentList = departmentService.modifyAllDepartment(departmentDTO);
 

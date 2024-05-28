@@ -33,8 +33,6 @@ public class Department {
     @Column(name = "end_time", length = 127)
     private String endTime;
 
-    @Column(name = "high_department", length = 127)
-    private String highDepartment;
 
     @Column(name = "leader_id", nullable = false)
     private int leaderId;
@@ -42,17 +40,20 @@ public class Department {
     @Column(name = "department_code", nullable = false)
     private String departmentCode;
 
+    @Column(name = "sequence")
+    private int sequence;
+
     @Builder
     public Department(int id, String departmentName, int memberCnt, String departmentStatus,
-                      String startTime, String endTime, String highDepartment, int leaderId, String departmentCode) {
+                      String startTime, String endTime, int leaderId, String departmentCode, int sequence) {
         this.id = id;
         this.departmentName = departmentName;
         this.memberCnt = memberCnt;
         this.departmentStatus = departmentStatus;
         this.startTime = startTime;
         this.endTime = endTime;
-        this.highDepartment = highDepartment;
         this.leaderId = leaderId;
         this.departmentCode = departmentCode;
+        this.sequence = sequence;
     }
 }
