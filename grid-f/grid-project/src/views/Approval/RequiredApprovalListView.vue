@@ -1,7 +1,7 @@
 <script setup>
-import {onMounted, reactive} from "vue";
+  import {onMounted, reactive} from "vue";
   import axios from "axios";
-import ApprovalList from "@/components/Approval/ApprovalList.vue";
+  import ApprovalList from "@/components/Approval/ApprovalList.vue";
 
   const state = reactive({
     approvalList: []
@@ -24,7 +24,7 @@ import ApprovalList from "@/components/Approval/ApprovalList.vue";
   }
 
   onMounted(async() => {
-    await fetchReqApprovalList(2, 1, 0);
+    await fetchReqApprovalList(1, 1, 0);
   })
 </script>
 

@@ -17,13 +17,13 @@ public class VacationController {
         this.vacationService = vacationService;
     }
 
-    @GetMapping("/all")
+    @GetMapping("/info")
     public ResponseEntity<ResVacationInfoVO> getAllVacations() {
         ResVacationInfoVO vacations = vacationService.getAllVacations();
         return ResponseEntity.status(HttpStatus.OK).body(vacations);
     }
 
-    @GetMapping("/{employeeId}")
+    @GetMapping("/info/{employeeId}")
     public ResponseEntity<ResVacationInfoVO> getUserVacations(@PathVariable int employeeId) {
         ResVacationInfoVO vacations = vacationService.getUserVacations(employeeId);
         return ResponseEntity.status(HttpStatus.OK).body(vacations);
@@ -44,6 +44,12 @@ public class VacationController {
     @GetMapping("/details")
     public ResponseEntity<ResVacationHistoryVO> getAllVacationHistories() {
         ResVacationHistoryVO histories = vacationService.getAllVacationHistory();
+        return ResponseEntity.status(HttpStatus.OK).body(histories);
+    }
+
+    @GetMapping("/details/{employeeId}")
+    public ResponseEntity<ResVacationHistoryVO> getUserVacationHistories(@PathVariable int employeeId) {
+        ResVacationHistoryVO histories = vacationService.getUserVacationHistory(employeeId);
         return ResponseEntity.status(HttpStatus.OK).body(histories);
     }
 

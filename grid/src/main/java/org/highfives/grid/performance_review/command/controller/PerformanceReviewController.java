@@ -45,6 +45,7 @@ public class PerformanceReviewController {
     public ResponseEntity<ResponseModifyPerformanceReviewVO> modifyPerformanceReviewStatusInProgress(
             @RequestBody RequestPerformanceReviewVO requestPerformanceReviewVO){
 
+        System.out.println(requestPerformanceReviewVO);
         ModifyPerformanceReviewDTO modifyPerformanceReviewDTO = performanceReviewService.modifyPerformanceReviewStatusInProgress(requestPerformanceReviewVO);
 
         ResponseModifyPerformanceReviewVO response = ResponseModifyPerformanceReviewVO.builder()
@@ -62,6 +63,7 @@ public class PerformanceReviewController {
     public ResponseEntity<ResponseModifyPerformanceReviewVO> modifyPerformanceReviewStatusSubmit(
             @RequestBody RequestPerformanceReviewVO requestPerformanceReviewVO){
 
+        System.out.println(requestPerformanceReviewVO);
         ModifyPerformanceReviewDTO modifyPerformanceReviewDTO = performanceReviewService.modifyPerformanceReviewStatusSubmit(requestPerformanceReviewVO);
 
         ResponseModifyPerformanceReviewVO response = ResponseModifyPerformanceReviewVO.builder()
@@ -79,6 +81,7 @@ public class PerformanceReviewController {
     public ResponseEntity<ResponseModifyPerformanceReviewVO> modifyPerformanceReviewStatusRead(
             @RequestBody RequestPerformanceReviewVO requestPerformanceReviewVO){
 
+        System.out.println(requestPerformanceReviewVO);
         ModifyPerformanceReviewDTO modifyPerformanceReviewDTO = performanceReviewService.modifyPerformanceReviewStatusRead(requestPerformanceReviewVO);
 
         ResponseModifyPerformanceReviewVO response = ResponseModifyPerformanceReviewVO.builder()
@@ -96,6 +99,7 @@ public class PerformanceReviewController {
     public ResponseEntity<ResponseModifyPerformanceReviewVO> modifyPerformanceReviewStatusComplete(
             @RequestBody RequestPerformanceReviewVO requestPerformanceReviewVO){
 
+        System.out.println(requestPerformanceReviewVO);
         ModifyPerformanceReviewDTO modifyPerformanceReviewDTO = performanceReviewService.modifyPerformanceReviewStatusComplete(requestPerformanceReviewVO);
 
         ResponseModifyPerformanceReviewVO response = ResponseModifyPerformanceReviewVO.builder()
