@@ -23,6 +23,7 @@ public class PerformanceReviewServiceImpl implements PerformanceReviewService{
     public List<PerformanceReviewDTO> findPerformanceReviewByWriterId(int employeeId) {
         List<PerformanceReviewDTO> findReviewList = performanceReviewMapper.selectReviewByWriterId(employeeId);
 
+        System.out.println(findReviewList);
         return findReviewList;
     }
 
@@ -30,14 +31,19 @@ public class PerformanceReviewServiceImpl implements PerformanceReviewService{
     public List<PerformanceReviewDTO> findPerformanceReviewByApproverId(int employeeId) {
         List<PerformanceReviewDTO> findReviewList = performanceReviewMapper.selectReviewByArroverId(employeeId);
 
+        System.out.println(findReviewList);
         return findReviewList;
     }
 
     @Override
     public DetailPerformanceReviewDTO findDetailPerformanceReviewById(int id) {
+        System.out.println(id);
         DetailPerformanceReviewDTO findReview = performanceReviewMapper.selectDetailReviewById(id);
 
         List<ReviewItemDTO> findReviewItem = performanceReviewMapper.selectReviewItemByReviewId(id);
+        System.out.println(findReviewItem);
+        System.out.println(findReview);
+
         findReview.setReviewItemList(findReviewItem);
 
         return findReview;

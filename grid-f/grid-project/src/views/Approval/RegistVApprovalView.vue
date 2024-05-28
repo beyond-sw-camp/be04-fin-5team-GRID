@@ -1,79 +1,84 @@
 <script setup>
-import {onMounted, reactive, watch} from "vue";
-import {useRoute} from "vue-router";
-import axios from "axios";
+  import {onMounted, reactive, watch} from "vue";
+  import {useRoute} from "vue-router";
+  import axios from "axios";
 
-const route = useRoute();
-const typeId = 2;
+  const route = useRoute();
+  const typeId = 2;
 
-let vacationType = [];
-const postData = reactive({
-  s_date: "",
-  s_time: "",
-  e_date: "",
-  e_time: "",
-  info_id: 0,
-  content: "",
-  requesterId: 2    // 작성자 id
-});
+  const state = reactive({
+    vacationType: [],
+  });
 
-const updateDateTime = () => {
-  postData.startTime = `${postData.s_date} ${postData.s_time}:00`;
-  postData.endTime = `${postData.e_date} ${postData.e_time}:00`;
-};
+  const postData = reactive({
+    s_date: "",
+    s_time: "00:00",
+    e_date: "",
+    e_time: "00:00",
+    infoId: 0,
+    content: "",
+    requesterId: 2    // 작성자 id
+  });
 
-const fetchVacationType = async() => {
-  try {
-    const response = await axios.get(`http://localhost:8080/vacation/type`);
+  const updateDateTime = () => {
+    postData.startTime = `${postData.s_date} ${postData.s_time}:00`;
+    postData.endTime = `${postData.e_date} ${postData.e_time}:00`;
+  };
 
-    if (response.status !== 200) {
-      throw new Error("response is not ok");
-    }
+  const fetchVacationType = async() => {
+    try {
+      const response = await axios.get(`http://localhost:8080/vacation/type`);
 
-    console.log(response.data);
-    vacationType = response.data;
-
-  } catch (error) {
-    console.error('Fetch error: ' + error.message);
-  }
-};
-
-const registApproval = async () => {
-
-  alert('결재를 제출하시겠습니까?');
-
-  try {
-    const response = await axios.post(`http://localhost:8080/approval/overtime`, postData, {
-      headers: {
-        'Content-Type': "application/json"
+      if (response.status !== 200) {
+        throw new Error("response is not ok");
       }
-    })
+
+      let typeList = response.data.result;
+
+      for (const type of typeList) {
+        state.vacationType.push({value: parseInt(type.id), text: type.typeName});
+      }
+
+    } catch (error) {
+      console.error('Fetch error: ' + error.message);
+    }
+  };
+
+  const registApproval = async () => {
+
+    alert('결재를 제출하시겠습니까?');
 
     console.log(postData);
-    console.log(response);
+    try {
 
-    if (response.status !== 201) {
-      throw new Error("response is not ok");
+      const response = await axios.post(`http://localhost:8080/approval/vacation`, postData, {
+        headers: {
+          'Content-Type': "application/json"
+        }
+      })
+      if (response.status !== 201) {
+        throw new Error("response is not ok");
+
+      }
+
+    } catch (error) {
+      console.error('Fail to post: ', error.message);
     }
-
-  } catch (error) {
-    console.error('Fail to post: ', error.message);
   }
-}
 
-watch(
-    () => [postData.s_date, postData.s_time],
-    updateDateTime
-);
+  watch(
+      () => [postData.s_date, postData.s_time],
+      updateDateTime
+  );
 
-watch(
-    () => [postData.e_date, postData.e_time],
-    updateDateTime
-);
+  watch(
+      () => [postData.e_date, postData.e_time],
+      updateDateTime
+  );
 
-onMounted(async() => {
-  await fetchVacationType();
-})
+  onMounted(async() => {
+    fetchVacationType();
+  })
 </script>
 
 <template>
@@ -81,7 +86,7 @@ onMounted(async() => {
     <b-card bg-variant="light">
       <b-form-group
           label-cols-lg="3"
-          label="시간 외 근무 결재"
+          label="휴가 결재"
           label-size="lg"
           label-class="font-weight-bold pt-0"
           class="mb-0"
@@ -112,7 +117,7 @@ onMounted(async() => {
             label-cols-sm="3"
             label-align-sm="right"
         >
-          <b-form-select v-model="selected" :options="options"></b-form-select>
+          <b-form-select v-model="postData.infoId" :options="state.vacationType"></b-form-select>
         </b-form-group>
 
         <b-form-group

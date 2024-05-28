@@ -73,6 +73,9 @@ onBeforeMount(() => {
 
     .manageTitle h1 {
         margin-left:0.5%;
+        margin-bottom: 0;
+        font-size: 25px;
+        font-weight: 600;
     }
 
     .manageIcon {
@@ -108,15 +111,19 @@ onBeforeMount(() => {
         grid-auto-rows: 150px; /* 행의 최소 크기 설정 */
         grid-gap: 10px; /* 아이템 간의 간격 설정 */
         grid-auto-flow: row dense; /* 아이템을 빈 공간에 자동으로 채우도록 설정 */
+    
     }
 
     .vacationsTitle {
         display: grid;
         grid-template-columns: 90% 10%;
-        align-items: center;
+        align-items: start;
+        margin-top: 5%;
     }
 
-    .vacationsTitle p {
+    .vacations h3 {
+        font-size: 15px;
+        font-weight: 600;
         margin: 0;
     }
 
@@ -127,6 +134,8 @@ onBeforeMount(() => {
     .typeBox {
         padding: 10px;
         background-color: #F2F2F2;
+        display: grid;
+        grid-template-rows: 75% 25%;
     }
 
     .vacationsNum {
@@ -134,7 +143,11 @@ onBeforeMount(() => {
         display: grid;
         grid-template-columns:90% 10%;
         font-size: 10px;
-        margin-top:10%;
+    }
+
+    .vacationsNum h3 {
+        font-size:12px;
+        font-weight: 600;
     }
 </style>
         
