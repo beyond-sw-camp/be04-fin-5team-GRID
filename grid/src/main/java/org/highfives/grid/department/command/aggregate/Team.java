@@ -37,9 +37,11 @@ public class Team {
     @Column(name = "leader_id")
     private int leaderId;
 
-    @Builder
+    @Column(name = "sequence")
+    private int sequence;
 
-    public Team(int id, String teamName, int memberCnt, TeamStatus teamStatus, String startTime, String endTime, int departmentId, int leaderId) {
+    @Builder
+    public Team(int id, String teamName, int memberCnt, TeamStatus teamStatus, String startTime, String endTime, int departmentId, int leaderId, int sequence) {
         this.id = id;
         this.teamName = teamName;
         this.memberCnt = memberCnt;
@@ -48,5 +50,6 @@ public class Team {
         this.endTime = endTime;
         this.departmentId = departmentId;
         this.leaderId = leaderId;
+        this.sequence = sequence;
     }
 }

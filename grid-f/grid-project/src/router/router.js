@@ -31,10 +31,6 @@ const router = createRouter({
             component: () => import('@/components/Department/Department.vue')
         },        
         {
-            path: '/addteamreview',
-            component: () => import('@/components/TeamReview/AddTeamReview.vue')
-        },
-        {
             path: '/team',
             component: () => import('@/components/Department/Team.vue')
         },
@@ -180,6 +176,17 @@ const router = createRouter({
             component: () => import('@/views/Approval/RegistVApprovalView.vue')
         },
         {
+            path: '/team-review/history',
+            component: () => import('@/components/TeamReview/ReviewHistory.vue')
+        },
+        {
+            path: '/team-review/add',
+            component: () => import('@/components/TeamReview/AddTeamReview.vue')
+        },
+        {
+            path: '/team-review/list',
+            component: () => import('@/components/TeamReview/ReviewList.vue')
+
             path: '/regist/main',
             component: () => import('@/views/Approval/RegistMainView.vue')
         }

@@ -316,6 +316,10 @@ body {
 }
 
 .header {
+}
+
+.header-title {
+
   grid-column-start: 2;
   display: grid;
   grid-template-columns: 90% 4.5% 1% 4.5%;
@@ -326,6 +330,7 @@ body {
   align-items: center;
   display: grid; 
   grid-template-columns: 3% 97%;
+
 }
 
 .header-title h1 {

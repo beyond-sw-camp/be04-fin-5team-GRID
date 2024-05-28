@@ -30,6 +30,7 @@ public interface UserMapper {
 
     List<PositionDTO> findPositions();
 
-    List<DutiesDTO> findDuties();
+    List<UserDTO> findTeamList(int teamId);
 
+    List<DutiesDTO> findDuties();
 }
