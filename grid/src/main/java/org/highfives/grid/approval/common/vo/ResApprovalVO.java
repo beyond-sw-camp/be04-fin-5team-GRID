@@ -34,11 +34,11 @@ public class ResApprovalVO {
 
     private List<BTApprovalDTO> btResultList;
 
-    private List<OvertimeApprovalDTO> oResultList;
+    private List<OvertimeApprovalDTO> overtimeResultList;
 
     private List<RWApprovalDTO> rwResultList;
 
-    private List<VacationApprovalDTO> vResultList;
+    private List<VacationApprovalDTO> vacationResultList;
 
     private List<ApprovalEmpDTO> approvalEmpResultList;
 }

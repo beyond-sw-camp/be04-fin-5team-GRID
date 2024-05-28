@@ -25,25 +25,25 @@ public class ApprovalController {
         this.approvalService = approvalService;
     }
 
-    @GetMapping("/bt-all")
-    public ResponseEntity<ResApprovalVO> findAllBTApproval() {
+    @GetMapping("/all/{typeId}/{isApproval}")
+    public ResponseEntity<ResApprovalVO> findAllBTApproval(@PathVariable int typeId, @PathVariable int isApproval) {
 
-        List<BTApprovalDTO> result = approvalService.findAllBTApproval();
+        List<ApprovalEmpDTO> result = approvalService.findAllBTApproval(typeId, isApproval);
 
         ResApprovalVO response = ResApprovalVO.builder()
                 .statusCode(200)
                 .message("출장 결재 전체 조회 성공")
                 .href("")
-                .btResultList(result)
+                .approvalEmpResultList(result)
                 .build();
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @GetMapping("/list/{typeId}/{employeeId}")
-    public ResponseEntity<ResApprovalVO> findAllApprovalByEmployeeId(@PathVariable int typeId, @PathVariable int employeeId) {
+    @GetMapping("/list/{typeId}/{isApproval}/{employeeId}")
+    public ResponseEntity<ResApprovalVO> findAllApprovalByEmployeeId(@PathVariable int typeId, @PathVariable int isApproval, @PathVariable int employeeId) {
 
-        List<ApprovalEmpDTO> result = approvalService.findAllApprovalByEmployeeId(typeId, employeeId);
+        List<ApprovalEmpDTO> result = approvalService.findAllApprovalByEmployeeId(typeId, isApproval, employeeId);
 
         ResApprovalVO response = ResApprovalVO.builder()
                 .statusCode(200)
@@ -85,8 +85,8 @@ public class ApprovalController {
         return ResponseEntity.status(HttpStatus.OK).body(count);
     }
 
-    @GetMapping("/approver/{typeId}/{employeeId}/{isApproval}")
-    public ResponseEntity<ResApprovalVO> findAllApprovalByApproverId(@PathVariable int typeId, @PathVariable int employeeId, @PathVariable int isApproval) {
+    @GetMapping("/approver/{typeId}/{isApproval}/{employeeId}")
+    public ResponseEntity<ResApprovalVO> findAllApprovalByApproverId(@PathVariable int typeId, @PathVariable int isApproval, @PathVariable int employeeId) {
 
         List<ApprovalEmpDTO> result = approvalService.findAllApprovalByApproverId(typeId, employeeId, isApproval);
 

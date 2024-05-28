@@ -46,18 +46,24 @@ public class ApprovalServiceImpl implements ApprovalService{
     }
 
     @Override
-    public List<BTApprovalDTO> findAllBTApproval() {
-        return approvalMapper.findAllBTApproval();
+    public List<ApprovalEmpDTO> findAllBTApproval(int typeId, int isApproval) {
+
+        Map<String, Integer> params = new HashMap<>();
+
+        params.put("typeId", typeId);
+        params.put("isApproval", isApproval);
+
+        return approvalMapper.findAllBTApproval(params);
     }
 
     @Override
-    public List<ApprovalEmpDTO> findAllApprovalByEmployeeId(int typeId, int employeeId) {
+    public List<ApprovalEmpDTO> findAllApprovalByEmployeeId(int typeId, int isApproval, int employeeId) {
 
         List<ApprovalEmpDTO> approvalEmpList = new ArrayList<>();
         Map<String, Integer> params = new HashMap<>();
 
-        params.put("employeeId", employeeId);
         params.put("isApproval", isApproval);
+        params.put("employeeId", employeeId);
 
         switch (typeId) {
             case 1:
@@ -109,18 +115,15 @@ public class ApprovalServiceImpl implements ApprovalService{
     }
 
     @Override
-    public List<ApprovalEmpDTO> findAllApprovalByApproverId(int typeId, int approverId, int isApproval) {
+    public List<ApprovalEmpDTO> findAllApprovalByApproverId(int typeId, int isApproval, int approverId) {
 
-        List<ApprovalEmpDTO> approvalEmpList = new ArrayList<>();
         Map<String, Integer> params = new HashMap<>();
 
         params.put("typeId", typeId);
-        params.put("approverId", approverId);
         params.put("isApproval", isApproval);
+        params.put("approverId", approverId);
 
-        approvalEmpList = approvalMapper.findAllBTApprovalByApproverId(params);
-
-        return approvalEmpList;
+        return approvalMapper.findAllBTApprovalByApproverId(params);
     }
 
     @Override
