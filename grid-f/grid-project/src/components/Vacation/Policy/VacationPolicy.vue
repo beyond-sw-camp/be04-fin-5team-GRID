@@ -90,7 +90,6 @@
     try {
       const response = await axios.get('/api/vacation/policy/all');
       policies.value = response.data.result;
-      console.log(response.data.result);
     } catch (error) {
       console.error('Error:', error);
     }
@@ -100,7 +99,6 @@
     try {
       const response = await axios.get('/api/vacation/type');
       types.value = response.data.result;
-      console.log(response.data.result);
     } catch (error) {
       console.error('Error:', error);
     }
