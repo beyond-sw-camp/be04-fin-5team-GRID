@@ -1,16 +1,16 @@
 package org.highfives.grid.vacation.query.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.highfives.grid.vacation.query.entity.VacationType;
 import org.highfives.grid.vacation.query.dto.VacationHistoryDTO;
 import org.highfives.grid.vacation.query.dto.VacationInfoDTO;
 import org.highfives.grid.vacation.query.dto.VacationPolicyDTO;
+import org.highfives.grid.vacation.query.dto.VacationTypeDTO;
 import org.highfives.grid.vacation.query.entity.VacationHistory;
 import org.highfives.grid.vacation.query.entity.VacationInfo;
 import org.highfives.grid.vacation.query.entity.VacationPolicy;
 import org.highfives.grid.vacation.query.repository.VacationMapper;
-import org.highfives.grid.vacation.query.vo.ResVacationHistoryVO;
-import org.highfives.grid.vacation.query.vo.ResVacationInfoVO;
-import org.highfives.grid.vacation.query.vo.ResVacationPolicyVO;
+import org.highfives.grid.vacation.query.vo.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -55,25 +55,25 @@ public class VacationServiceImpl implements VacationService {
     }
 
     @Override
-    public ResVacationPolicyVO getVacationPolicy(int typeId) {
-        List<VacationPolicy> policies = vacationMapper.selectAllPolicy(typeId);
+    public ResVacationPolicyVO getVacationPolicy(int id) {
+        VacationPolicyWithTypeName policies = vacationMapper.selectAllPolicy(id);
 
         ResVacationPolicyVO resVacationPolicyVO = new ResVacationPolicyVO();
         resVacationPolicyVO.setStatusCode(200);
         resVacationPolicyVO.setMessage("조회 성공");
-        resVacationPolicyVO.setResult(policies.stream().map(policy -> modelMapper.map(policy, VacationPolicyDTO.class)).collect(Collectors.toList()));
+        resVacationPolicyVO.setResult(policies);
 
         return resVacationPolicyVO;
     }
 
     @Override
     public ResVacationHistoryVO getAllVacationHistory() {
-        List<VacationHistory> histories = vacationMapper.selectAllHistories();
+        List<VacationHistoryDTO> histories = vacationMapper.vacationHistoryTable();
 
         ResVacationHistoryVO resVacationHistoryVO = new ResVacationHistoryVO();
         resVacationHistoryVO.setStatusCode(200);
         resVacationHistoryVO.setMessage("조회 성공");
-        resVacationHistoryVO.setResult(histories.stream().map(history -> modelMapper.map(history, VacationHistoryDTO.class)).collect(Collectors.toList()));
+        resVacationHistoryVO.setResult(histories);
 
         return resVacationHistoryVO;
     }
@@ -112,6 +112,66 @@ public class VacationServiceImpl implements VacationService {
         resVacationHistoryVO.setResult(histories.stream().map(history -> modelMapper.map(history, VacationHistoryDTO.class)).collect(Collectors.toList()));
 
         return resVacationHistoryVO;
+    }
+
+    @Override
+    public ResVacationHistoryVO searchVacationHistoryByName(String employeeName) {
+        List<VacationHistory> histories = vacationMapper.searchVacationHistoryByName(employeeName);
+
+        ResVacationHistoryVO resVacationHistoryVO = new ResVacationHistoryVO();
+        resVacationHistoryVO.setStatusCode(200);
+        resVacationHistoryVO.setMessage("조회 성공");
+        resVacationHistoryVO.setResult(histories.stream().map(history -> modelMapper.map(history, VacationHistoryDTO.class)).collect(Collectors.toList()));
+
+        return resVacationHistoryVO;
+    }
+
+    @Override
+    public ResVacationHistoryVO searchVacationHistoryById(String employeeNumber) {
+        List<VacationHistory> histories = vacationMapper.searchVacationHistoryById(employeeNumber);
+
+        ResVacationHistoryVO resVacationHistoryVO = new ResVacationHistoryVO();
+        resVacationHistoryVO.setStatusCode(200);
+        resVacationHistoryVO.setMessage("조회 성공");
+        resVacationHistoryVO.setResult(histories.stream().map(history -> modelMapper.map(history, VacationHistoryDTO.class)).collect(Collectors.toList()));
+
+        return resVacationHistoryVO;
+    }
+
+    @Override
+    public ResVacationPolicyWithTypeNameVO getAllVacationPolicy() {
+        List<VacationPolicyWithTypeName> policies = vacationMapper.selectRealAllPolicy();
+
+        ResVacationPolicyWithTypeNameVO resVacationPolicyVO = new ResVacationPolicyWithTypeNameVO();
+        resVacationPolicyVO.setStatusCode(200);
+        resVacationPolicyVO.setMessage("조회 성공");
+        resVacationPolicyVO.setResult(policies);
+
+        return resVacationPolicyVO;
+    }
+
+    @Override
+    public ResVacationTypeVO getVacationType() {
+        List<VacationTypeDTO> types = vacationMapper.selectAllType();
+
+        ResVacationTypeVO resVacationTypeVO = new ResVacationTypeVO();
+        resVacationTypeVO.setStatusCode(200);
+        resVacationTypeVO.setMessage("조회 성공");
+        resVacationTypeVO.setResult(types);
+
+        return resVacationTypeVO;
+    }
+
+    @Override
+    public ResOneVacationTypeVO getVacationTypeById(int id) {
+        VacationTypeDTO type = vacationMapper.selectTypeById(id);
+
+        ResOneVacationTypeVO resOneVacationTypeVO = new ResOneVacationTypeVO();
+        resOneVacationTypeVO.setStatusCode(200);
+        resOneVacationTypeVO.setMessage("조회 성공");
+        resOneVacationTypeVO.setResult(type);
+
+        return resOneVacationTypeVO;
     }
 
 }

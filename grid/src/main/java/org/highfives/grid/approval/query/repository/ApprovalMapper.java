@@ -7,6 +7,7 @@ import org.highfives.grid.approval.common.dto.OvertimeInWeekDTO;
 import org.highfives.grid.approval.query.dto.ApprovalEmpDTO;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface ApprovalMapper {

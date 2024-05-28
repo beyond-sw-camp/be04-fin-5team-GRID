@@ -55,6 +55,7 @@ public class TotalPerformanceReviewServiceImpl implements TotalPerformanceReview
         // 등급 조회
         int totalId = calculateGrade(totalScore);
 
+
         // 종합 평가 생성
         TotalPerformanceReview totalPerformanceReview = new TotalPerformanceReview(
                 finReview.getYear(),
@@ -86,7 +87,6 @@ public class TotalPerformanceReviewServiceImpl implements TotalPerformanceReview
             }
         }
 
-        // 최저 등급 설정
         return 5;
     }
 }

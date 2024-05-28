@@ -13,4 +13,7 @@ public interface ReviewMapper {
     List<ReviewHistoryAndScore> findHistoryAndScoreById(int historyId, int revieweeId);
 
     List<ReviewHistory> findAssignedReviewByReviewerId(int reviewerId);
+
+    List<ReviewHistory> findHistoryList();
+
 }

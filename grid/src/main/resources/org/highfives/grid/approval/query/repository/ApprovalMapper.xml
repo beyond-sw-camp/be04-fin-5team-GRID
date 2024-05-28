@@ -14,11 +14,14 @@
         <result property="renameName" column="rename_name"/>
         <result property="path" column="path"/>
         <result property="infoId" column="info_id"/>
+        <result property="vacationType" column="type_name"/>
         <result property="approvalStatus" column="approval_status"/>
         <result property="writeTime" column="write_time"/>
         <result property="cancelYn" column="cancel_yn"/>
         <result property="cancelDocId" column="cancel_document_id"/>
         <result property="employeeId" column="requester_id"/>
+        <result property="employeeName" column="employee_name"/>
+        <result property="employeeNumber" column="employee_number"/>
     </resultMap>
 
     <resultMap id="oApprovalMap" type="org.highfives.grid.approval.common.dto.OvertimeApprovalDTO">
@@ -100,7 +103,7 @@
                 </if>
     </select>
 
-    <select id="findAllBTApprovalByEmployeeId" resultMap="approvalMap" parameterType="int">
+    <select id="findAllBTApprovalByEmployeeId" resultMap="approvalMap" parameterType="map">
         SELECT
                 a.employee_name,
                 a.employee_number,
@@ -144,7 +147,7 @@
             </if>
     </select>
 
-    <select id="findAllOApprovalByEmployeeId" resultMap="approvalMap" parameterType="int">
+    <select id="findAllOApprovalByEmployeeId" resultMap="approvalMap" parameterType="map">
         SELECT
                 a.employee_name,
                 a.employee_number,
@@ -187,7 +190,7 @@
         </if>
     </select>
 
-    <select id="findAllRWApprovalByEmployeeId" resultMap="approvalMap" parameterType="int">
+    <select id="findAllRWApprovalByEmployeeId" resultMap="approvalMap" parameterType="map">
         SELECT
                 a.employee_name,
                 a.employee_number,
@@ -233,7 +236,7 @@
         </if>
     </select>
 
-    <select id="findAllVApprovalByEmployeeId" resultMap="approvalMap" parameterType="int">
+    <select id="findAllVApprovalByEmployeeId" resultMap="approvalMap" parameterType="map">
         SELECT
                 a.employee_name,
                 a.employee_number,

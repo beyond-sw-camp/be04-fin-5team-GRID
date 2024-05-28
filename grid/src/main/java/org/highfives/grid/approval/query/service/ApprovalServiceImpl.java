@@ -1,6 +1,7 @@
 package org.highfives.grid.approval.query.service;
 
 import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
 import com.lowagie.text.Font;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.BaseFont;
@@ -15,6 +16,8 @@ import org.highfives.grid.approval.query.dto.ApprovalEmpDTO;
 import org.highfives.grid.approval.query.repository.ApprovalMapper;
 import org.highfives.grid.user.query.dto.UserDTO;
 import org.highfives.grid.user.query.service.UserService;
+import org.highfives.grid.approval.command.aggregate.ApprovalStatus;
+import org.highfives.grid.approval.command.aggregate.BTApproval;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,7 +30,10 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 
 @Service(value = "QueryApprovalService")
 public class ApprovalServiceImpl implements ApprovalService{
@@ -67,7 +73,7 @@ public class ApprovalServiceImpl implements ApprovalService{
 
         switch (typeId) {
             case 1:
-                approvalEmpList = approvalMapper.findAllBTApprovalByEmployeeId(employeeId);
+                approvalEmpList = approvalMapper.findAllBTApprovalByEmployeeId(params);
                 break;
 
             case 2:
@@ -131,7 +137,6 @@ public class ApprovalServiceImpl implements ApprovalService{
 
         List<OvertimeApprovalDTO> overtimeApprovalList = approvalMapper.findOInWeekByEmployeeId(overtimeInWeek);
 
-        System.out.println(overtimeApprovalList);
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
         int sum = 0;
@@ -140,8 +145,7 @@ public class ApprovalServiceImpl implements ApprovalService{
             LocalDateTime startTime = LocalDateTime.parse(overtimeApproval.getStartTime(), dateFormat);
             LocalDateTime endTime = LocalDateTime.parse(overtimeApproval.getEndTime(), dateFormat);
 
-            sum += ChronoUnit.HOURS.between(startTime, endTime);
-            System.out.println(startTime + " " + endTime);
+            sum += ChronoUnit.HOURS.between(startTime, endTime.plusMinutes(1));
         }
 
         return sum;
@@ -176,7 +180,6 @@ public class ApprovalServiceImpl implements ApprovalService{
             PdfPCell t_cell1 = new PdfPCell(new Paragraph("시작 날짜", tableFont));
             PdfPCell t_cell2 = new PdfPCell(new Paragraph("종료 날짜", tableFont));
             PdfPCell t_cell3 = new PdfPCell(new Paragraph("출장지", tableFont));
-
             t_cell1.setBackgroundColor(Color.LIGHT_GRAY);
             t_cell2.setBackgroundColor(Color.LIGHT_GRAY);
             t_cell3.setBackgroundColor(Color.LIGHT_GRAY);
@@ -196,10 +199,10 @@ public class ApprovalServiceImpl implements ApprovalService{
             throw new RuntimeException(e);
         } catch (IOException e) {
             throw new RuntimeException(e);
+        } catch (DocumentException e) {
+            throw new RuntimeException(e);
         } finally {
             document.close();
         }
     }
-
-
 }

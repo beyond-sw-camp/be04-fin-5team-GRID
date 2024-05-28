@@ -12,6 +12,8 @@ import org.highfives.grid.review.command.repository.ReviewHistoryRepository;
 import org.highfives.grid.review.command.repository.ReviewListRepository;
 import org.highfives.grid.review.command.repository.ReviewRepository;
 import org.highfives.grid.review.command.aggregate.Review;
+import org.highfives.grid.user.command.aggregate.Employee;
+import org.highfives.grid.user.command.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,16 +34,20 @@ public class ReviewServiceImpl implements ReviewService {
 
     private final ReviewHistoryRepository reviewHistoryRepository;
 
+    private final UserRepository userRepository;
+
     private final ModelMapper mapper;
 
     @Autowired
     public ReviewServiceImpl(ReviewRepository reviewRepository, ReviewListRepository reviewListRepository,
-                             ReviewHistoryRepository reviewHistoryRepository, ModelMapper mapper) {
+                             ReviewHistoryRepository reviewHistoryRepository, UserRepository userRepository, ModelMapper mapper) {
         this.reviewRepository = reviewRepository;
         this.reviewListRepository = reviewListRepository;
         this.reviewHistoryRepository = reviewHistoryRepository;
+        this.userRepository = userRepository;
         this.mapper = mapper;
     }
+
 
     @Override
     public ReviewDTO findReviewById(int id) {
@@ -62,16 +68,23 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional
-    public ReviewDTO addReview(ReviewDTO reviewDTO) {
+    public List<ReviewDTO> addReview(List<ReviewDTO> reviewDTO) {
 
-        Review review = Review.builder()
-                .score(reviewDTO.getScore())
-                .reviewId(reviewDTO.getReviewId())
-                .historyId(reviewDTO.getHistoryId())
-                .build();
+        List<ReviewDTO> reviewList = new ArrayList<>();
 
-        reviewRepository.save(review);
-        return mapper.map(review, ReviewDTO.class);
+        for (ReviewDTO reviewdata : reviewDTO) {
+            Review review = Review.builder()
+                    .score(reviewdata.getScore())
+                    .reviewId(reviewdata.getReviewId())
+                    .historyId(reviewdata.getHistoryId())
+                    .build();
+            reviewRepository.save(review);
+
+            reviewList.add(mapper.map(review, ReviewDTO.class));
+        }
+
+
+        return reviewList;
 
     }
 
@@ -113,12 +126,13 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    @Transactional
     public ReviewListDTO addReviewList(ReviewListDTO reviewListDTO) {
 
         ReviewList reviewList = ReviewList.builder()
                 .listName(reviewListDTO.getListName())
                 .build();
+
+        reviewListRepository.save(reviewList);
 
         return mapper.map(reviewList, ReviewListDTO.class);
     }
@@ -131,6 +145,8 @@ public class ReviewServiceImpl implements ReviewService {
                 .id(reviewListDTO.getId())
                 .listName(reviewListDTO.getListName())
                 .build();
+
+        reviewListRepository.save(reviewList);
 
         return mapper.map(reviewList, ReviewListDTO.class);
     }
@@ -154,21 +170,36 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional
-    public ReviewHistoryDTO addReviewHistory(ReviewHistoryDTO historyDTO) {
+    public List<ReviewHistoryDTO> addReviewHistory(ReviewHistoryDTO historyDTO) {
 
-        ReviewHistory reviewHistory = ReviewHistory.builder()
-                .content(historyDTO.getContent())
-                .year(historyDTO.getYear())
-                .quarter(historyDTO.getQuarter())
-                .reviewStatus(ReviewStatus.INCOMPLETE)
-                .reviewerId(historyDTO.getReviewerId())
-                .revieweeId(historyDTO.getRevieweeId())
-                .build();
+        Employee employees = userRepository.findById(historyDTO.getRevieweeId()).orElseThrow(() -> new IllegalArgumentException("Employee not found"));
+
+        List<Employee> departmentEmployees = userRepository.findByDepartmentId(employees.getDepartmentId());
+
+        List<ReviewHistoryDTO> reviewHistoryDTOList = new ArrayList<>();
+        for (Employee departmentInEmployee : departmentEmployees) {
+            if (departmentInEmployee.getId() == (historyDTO.getRevieweeId())) {
+                continue;
+            }
+
+            ReviewHistory reviewHistory = ReviewHistory.builder()
+                    .content(historyDTO.getContent())
+                    .year(historyDTO.getYear())
+                    .quarter(historyDTO.getQuarter())
+                    .reviewStatus(ReviewStatus.N)
+                    .writeTime(null)
+                    .reviewerId(departmentInEmployee.getId())
+                    .revieweeId(historyDTO.getRevieweeId())
+                    .build();
+
+            reviewHistoryRepository.save(reviewHistory);
+            reviewHistoryDTOList.add(mapper.map(reviewHistory, ReviewHistoryDTO.class));
+        }
 
 
-        reviewHistoryRepository.save(reviewHistory);
 
-        return mapper.map(reviewHistory, ReviewHistoryDTO.class);
+
+        return reviewHistoryDTOList;
     }
 
     @Override
@@ -185,10 +216,10 @@ public class ReviewServiceImpl implements ReviewService {
                 .content(reviewHistory.getContent())
                 .year(reviewHistory.getYear())
                 .quarter(reviewHistory.getQuarter())
-                .reviewStatus(ReviewStatus.COMPLETE)
+                .reviewStatus(ReviewStatus.Y)
                 .writeTime(formattedDate)
-                .reviewerId(historyDTO.getReviewerId())
-                .revieweeId(historyDTO.getRevieweeId())
+                .reviewerId(reviewHistory.getReviewerId())
+                .revieweeId(reviewHistory.getRevieweeId())
                 .build();
 
         reviewHistoryRepository.save(updateReviewHistory);
@@ -204,4 +235,6 @@ public class ReviewServiceImpl implements ReviewService {
         reviewHistoryRepository.deleteById(id);
 
     }
+
+
 }

@@ -57,6 +57,7 @@ public class PerformanceReviewGoalServiceImpl implements PerformanceReviewGoalSe
 
         PerformanceReviewGoalDTO performanceReviewGoalDTO = performanceReviewGoalMapper.selectGoalByWriterIdAndYear(intMap);
 
+
         return performanceReviewGoalDTO;
     }
 }

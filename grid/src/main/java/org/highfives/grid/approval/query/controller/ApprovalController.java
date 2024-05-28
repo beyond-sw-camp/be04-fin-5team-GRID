@@ -1,17 +1,27 @@
 package org.highfives.grid.approval.query.controller;
 
 import org.highfives.grid.approval.common.dto.BTApprovalDTO;
+
+import org.highfives.grid.approval.common.dto.OvertimeInWeekDTO;
 import org.highfives.grid.approval.common.vo.ResApprovalVO;
 import org.highfives.grid.approval.query.dto.ApprovalEmpDTO;
 import org.highfives.grid.approval.query.service.ApprovalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.highfives.grid.approval.query.vo.ApprovalVO;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 
 @RestController(value = "QueryApprovalController")

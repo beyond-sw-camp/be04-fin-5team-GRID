@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController(value="QueryAdTimeController")
-@RequestMapping("ad-times")
+@RequestMapping("ad-time")
 public class AdTimeController {
     private final AdTimeService adTimeService;
 
@@ -28,10 +28,12 @@ public class AdTimeController {
     public ResponseEntity<ResponseAdTimeListVO> findAdTimeByEmployeeId(@PathVariable int employeeId) {
         List<AdTimeDTO> adTimeList = adTimeService.findAdTimeByEmployeeId(employeeId);
 
-        ResponseAdTimeListVO response = new ResponseAdTimeListVO(
-                "조회 성공",
-                adTimeList
-        );
+        ResponseAdTimeListVO response = ResponseAdTimeListVO.builder()
+                .statusCode(200)
+                .message("출퇴근 목록 조회 성공")
+                .href("")
+                .adTimeDTOList(adTimeList)
+                .build();
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
@@ -40,13 +42,13 @@ public class AdTimeController {
     public ResponseEntity<ResponseAdTimeListVO> findAdTimeAll() {
         List<AdTimeDTO> adTimeList = adTimeService.findAdTimeAll();
 
-        ResponseAdTimeListVO response = new ResponseAdTimeListVO(
-                "조회 성공",
-                adTimeList
-        );
+        ResponseAdTimeListVO response = ResponseAdTimeListVO.builder()
+                .statusCode(200)
+                .message("출퇴근 목록 조회 성공")
+                .href("")
+                .adTimeDTOList(adTimeList)
+                .build();
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
-
-
 }

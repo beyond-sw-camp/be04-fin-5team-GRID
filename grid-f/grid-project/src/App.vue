@@ -1,11 +1,6 @@
 <script setup>
-  import { RouterLink, RouterView, useRouter } from 'vue-router';
-  import Header from '@/components/Header.vue';
-  import Sidebar from '@/components/Sidebar.vue';
-  import Footer from '@/components/Footer.vue';
-
   import { computed } from 'vue';
-  import {RouterLink, RouterView, useRoute, useRouter} from 'vue-router';
+  import { RouterView, useRoute } from 'vue-router';
   import Header from '@/components/Header.vue';
   import Sidebar from '@/components/Sidebar.vue';
   import Footer from '@/components/Footer.vue';
@@ -43,45 +38,98 @@
 
 </script>
 
-<template>
 
-  <RouterView/>
+<template>
+  <div class="container" :class="containerClass">
+    <div class="header" v-if="showLayout">
+      <Header />
+    </div>
+    <div class="sidebar" v-if="showLayout">
+      <Sidebar />
+    </div>
+    <div class="main-content" :class="mainContentClass">
+      <RouterView />
+    </div>
+    <div class="footer" v-if="showLayout">
+<!--      <Footer />-->
+    </div>
+  </div>
 
 </template>
 
 <style scoped>
-  .header {
-  position: fixed;
-  top: 0;
-  left: 0;
+
+body {
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+}
+
+.container {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    grid-template-rows: 60px auto 10px;
+    grid-template-areas:
+        "header header"
+        "side body"
+        "side footer";
+    height: 100%;
+    min-width: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.header {
+    grid-area: header;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    padding: 0;
+}
+
+.sidebar {
+    grid-area: side;
+    position: fixed;
+    top: 60px;
+    left: 0;
+    width: 180px;
+    height: calc(100vh - 60px);
+    z-index: 800;
+    font-size: 14px;
+}
+
+.main-content {
+    grid-area: body;
+    margin-top: 60px;
+    padding: 0 ;
+    height: calc(100vh - 60px);
+}
+
+.footer {
+    grid-area: footer;
+    position: fixed;
+    bottom: 0;
+    width: calc(100% - 180px);
+    z-index: 600;
+    font-size: 10px;
+    justify-self: flex-end;
+}
+
+
+.container-full {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   width: 100%;
-  z-index: 1000;
-  }
+  padding: 0;
+}
 
-  .sidebar {
-  position: fixed;
-  top: 60px; /* Header 높이만큼 아래로 */
-  left: 0;
-  width: 250px;
-  height: calc(100vh - 60px); /* Header 높이만큼 뺀 높이 */
-  z-index: 800;
-  }
-
-  .content {
-  margin-top: 60px; /* Header 높이만큼 아래로 */
-  margin-left: 250px; /* Sidebar 너비만큼 왼쪽 여백 추가 */
-  z-index: 500;
-  }
-
-  .footer {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  z-index: 600;
-  }
+.main-content-full {
+  padding: 0;
+  margin: 0;
+}
 </style>
-
-
-
-

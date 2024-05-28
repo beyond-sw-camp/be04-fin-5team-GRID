@@ -30,6 +30,10 @@ public class ApprovalEmpDTO {
 
     private int employeeId;
 
+    private String employeeName;
+
+    private int employeeNumber;
+
     private String destination;
 
     private String originName;
@@ -39,6 +43,8 @@ public class ApprovalEmpDTO {
     private String path;
 
     private int infoId;
+
+    private String vacationType;
 
     private UserDTO user;
 }

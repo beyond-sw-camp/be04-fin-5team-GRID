@@ -30,13 +30,13 @@
         <li>
           <span @click="toggleMenu('hrManagement')">인사 관리</span>
           <ul v-show="activeMenus.hrManagement">
-            <li>인사 정보</li>
+            <li @click="toHR">인사 정보</li>
           </ul>
         </li>
         <li>
           <span @click="toggleMenu('departmentManagement')">부서 관리</span>
           <ul v-show="activeMenus.departmentManagement">
-            <li>부서 정보</li>
+            <li @click="gotodepartmentInfo">부서 정보</li>
           </ul>
         </li>
         <li>
@@ -44,6 +44,17 @@
           <ul v-show="activeMenus.departmentEvaluation">
             <li>본인 평가 목록</li>
             <li>동료 평가 작성</li>
+            <li @click="goToAddTeamReview">평가 생성</li>
+          </ul>
+        </li>
+        <li>
+          <span @click="toggleMenu('performanceReview')">업적 평가 관리</span>
+          <ul v-show="activeMenus.performanceReview">
+            <li @click="navigateTo('/performance-review-goal/add')">업적 평가 목표 작성</li>
+            <li @click="navigateTo('/performance-review-goal')">업적 평가 목표 조회</li>
+            <li>업적 평가 작성</li>
+            <li>업적 평가 조회</li>
+            <li>종합 업적 평가</li>
           </ul>
         </li>
       </ul>
@@ -53,12 +64,12 @@
 
 <script setup>
 import axios from 'axios';
-import { useRouter } from 'vue-router';
 import { ref, onMounted,reactive } from 'vue';
-
+import { useRouter } from 'vue-router';
 
 const employee = ref([]);
 const error = ref([]);
+const router = useRouter();
 
 const fetchEmployee = async () => {
   try {
@@ -86,6 +97,23 @@ const activeMenus = reactive({
 const toggleMenu = (menu) => {
   activeMenus[menu] = !activeMenus[menu];
 };
+
+const gotodepartmentInfo = () => {
+  router.push('/department');
+}
+
+const goToAddTeamReview = () => {
+  router.push('/addteamreview');
+}
+
+const navigateTo = (path) => {
+  router.push(path);
+};
+
+function toHR () {
+  router.push('/hr');
+}
+
 </script>
 
 <style scoped>
@@ -168,4 +196,4 @@ const toggleMenu = (menu) => {
 .menu li ul li {
   padding: 5px 0;
 }
-</style>
+</style>  

@@ -1,10 +1,8 @@
 package org.highfives.grid.vacation.command.controller;
 
 import org.highfives.grid.vacation.command.service.VacationService;
-import org.highfives.grid.vacation.command.vo.GiveVacation;
-import org.highfives.grid.vacation.command.vo.ModifyPolicy;
-import org.highfives.grid.vacation.command.vo.RegistPolicy;
-import org.highfives.grid.vacation.command.vo.RegistVacationType;
+import org.highfives.grid.vacation.command.vo.*;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -50,6 +48,17 @@ public class VacationController {
     @PostMapping("/type")
     public ResponseEntity<Object> registVacationType(@RequestBody RegistVacationType typeInfo) {
         vacationService.registVacationType(typeInfo);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/type/{id}")
+    public ResponseEntity<Object> modifyVacationType(@RequestBody ModifyVacationType typeInfo,@PathVariable int id) {
+        vacationService.modifyVacationType(typeInfo, id);
+        return ResponseEntity.ok().build();
+    }
+    @DeleteMapping("/type/{id}")
+    public ResponseEntity<Object> deleteVacationType(@PathVariable int id) {
+        vacationService.deleteVacationType(id);
         return ResponseEntity.ok().build();
     }
 

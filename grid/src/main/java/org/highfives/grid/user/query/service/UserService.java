@@ -16,4 +16,7 @@ public interface UserService {
     UserDTO findUserById(int id);
 
     Map<String, Object> checkNameByEmail(String email);
+
+    List<UserDTO> findUsersByName(String name);
+
 }

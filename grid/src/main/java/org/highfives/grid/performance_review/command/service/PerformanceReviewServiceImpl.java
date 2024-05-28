@@ -277,7 +277,6 @@ public class PerformanceReviewServiceImpl implements PerformanceReviewService{
 
         // 연말 평가를 확정하면 종합 평가 생성
         if(performanceReview.getType().equals("F")) {
-
             // GoalId로 중간, 연말 평가 조회
             List<PerformanceReview> performanceReviewList = performanceReviewRepository.findByGoalId(performanceReview.getGoalId());
 

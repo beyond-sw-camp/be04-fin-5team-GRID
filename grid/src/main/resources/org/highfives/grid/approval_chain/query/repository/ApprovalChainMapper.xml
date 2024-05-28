@@ -11,7 +11,7 @@
         <id property="typeId" column="type_id"/>
     </resultMap>
 
-    <resultMap id="btChainMap" type="org.highfives.grid.approval_chain.common.dto.ChainDTO">
+    <resultMap id="chainMap" type="org.highfives.grid.approval_chain.common.dto.ChainDTO">
         <id property="stage" column="stage"/>
         <result property="id" column="id"/>
         <result property="approvalTime" column="approval_time"/>
@@ -23,13 +23,13 @@
     </resultMap>
 
     <select id="findChainListByTypeId" resultMap="approvalChainMap" parameterType="int">
-        SELECT
+         SELECT
                 id
               , duty
               , stage
               , type_id
-         FROM approval_chain
-        WHERE type_id = #{typeId}
+           FROM approval_chain
+          WHERE type_id = #{typeId}
     </select>
 
     <select id="findTeamLeaderByEmployeeId" resultType="java.lang.Integer" parameterType="int">
@@ -52,7 +52,8 @@
                       WHERE id = #{employeeId});
     </select>
 
-    <select id="findBTChainByApprovalAndChainId" resultMap="btChainMap" parameterType="map">
+
+    <select id="findBTChainByApprovalAndChainId" resultMap="chainMap" parameterType="map">
         SELECT
                 a.stage,
                 b.id,
