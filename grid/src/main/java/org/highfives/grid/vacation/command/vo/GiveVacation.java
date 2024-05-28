@@ -9,7 +9,7 @@ import lombok.*;
 public class GiveVacation {
     private double vacationNum;
     private String endTime;
-    private int employeeId;
+    private String employeeNum;
     private int typeId;
 
 }
