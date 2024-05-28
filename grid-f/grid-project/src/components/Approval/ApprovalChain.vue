@@ -2,7 +2,7 @@
   import axios from "axios";
   import {onMounted, reactive} from "vue";
 
-  const employeeId = 6;
+  const employeeId = 1;
 
   const props = defineProps({
     typeId: 0,

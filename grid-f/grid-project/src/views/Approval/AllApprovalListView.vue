@@ -4,8 +4,8 @@
 
   import ApprovalList from "@/components/Approval/ApprovalList.vue";
 
-  const admin = 1;
-  const employeeId = 6;
+  const admin = 0;
+  const employeeId = 2;
 
   const state = reactive({
     approvalList: []
@@ -15,6 +15,7 @@
 
     try {
       let url = `http://localhost:8080/approval/all/${typeId}/${approvalStatus}`;
+
       if (admin !== 1) {
         url = `http://localhost:8080/approval/list/${typeId}/${approvalStatus}/${employeeId}`;
       }
@@ -29,8 +30,6 @@
       state.approvalList = response.data.approvalEmpResultList;
       state.approvalList.type = typeId;
 
-      console.log(state.approvalList);
-
     } catch (error) {
       console.error('Fetch error: ' + error.message);
     }
@@ -40,7 +39,7 @@
   onMounted(async() => {
     // 버튼 클릭에 따라 다르게 실행
     // 0: 전체, 1: 승인, 2: 반려, 3: 대기
-    await fetchApprovalList(1,4,  employeeId);
+    await fetchApprovalList(2,0,  employeeId);
   })
 </script>
 

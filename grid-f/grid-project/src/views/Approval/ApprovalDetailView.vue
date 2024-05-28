@@ -26,8 +26,6 @@
       state.approval = response.data.approvalEmpResult;
       state.user = state.approval.user;
 
-      console.log(state.approval);
-
     } catch (error) {
       console.error('Fetch error: ' + error.message);
     }
@@ -45,10 +43,10 @@
     <h1 v-if="typeId === '3'">단축</h1>
     <h1 v-if="typeId === '4'">휴가</h1>
   </div>
-  <div>
+  <div v-if="state.approval && state.approval.user && state.approval.user.duties">
     <img :src="state.user['profilePath']" alt="profile">
     작성자: {{ state.user['name'] }}<br>
-    {{ state.user['duties'].dutiesName }} / {{ state.user['team'].teamName }}
+    {{ state.approval.user.duties.dutiesName }} / {{ state.user['team'].teamName }}
     <hr>
     {{state.user['email']}}
     {{state.user['callNumber']}}
