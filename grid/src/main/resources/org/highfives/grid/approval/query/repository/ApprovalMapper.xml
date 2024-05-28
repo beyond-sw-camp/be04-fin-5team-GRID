@@ -128,13 +128,13 @@
             </if>
             <!-- 대기 -->
             <if test="isApproval == 3">
-                AND  b.approval_status = 'N'
-                OR  b.approval_status = 'V'
+                AND  (b.approval_status = 'N'
+                 OR  b.approval_status = 'V')
             </if>
             <!-- 취소 -->
             <if test="isApproval == 4">
-                AND  b.cancel_yn = 'Y'
-                OR  b.cancel_document_id != 0
+                AND  (b.cancel_yn = 'Y'
+                 OR  b.cancel_document_id != 0)
             </if>
             <!-- 승인(취소 제외) <목록> -->
             <if test="isApproval == 5">
@@ -171,13 +171,13 @@
         </if>
         <!-- 대기 -->
         <if test="isApproval == 3">
-            AND  b.approval_status = 'N'
-            OR  b.approval_status = 'V'
+            AND  (b.approval_status = 'N'
+             OR  b.approval_status = 'V')
         </if>
         <!-- 취소 -->
         <if test="isApproval == 4">
-            AND  b.cancel_yn = 'Y'
-            OR  b.cancel_document_id != 0
+            AND  (b.cancel_yn = 'Y'
+             OR  b.cancel_document_id != 0)
         </if>
         <!-- 승인(취소 제외) <목록> -->
         <if test="isApproval == 5">
@@ -217,13 +217,13 @@
         </if>
         <!-- 대기 -->
         <if test="isApproval == 3">
-            AND  b.approval_status = 'N'
-             OR  b.approval_status = 'V'
+            AND  (b.approval_status = 'N'
+             OR  b.approval_status = 'V')
         </if>
         <!-- 취소 -->
         <if test="isApproval == 4">
-            AND  b.cancel_yn = 'Y'
-            OR  b.cancel_document_id != 0
+            AND  (b.cancel_yn = 'Y'
+             OR  b.cancel_document_id != 0)
         </if>
         <!-- 승인(취소 제외) <목록> -->
         <if test="isApproval == 5">
@@ -246,10 +246,13 @@
                 b.write_time,
                 b.cancel_yn,
                 b.cancel_document_id,
-                b.requester_id
+                b.requester_id,
+                c.type_name
           FROM  employee a
           JOIN  vacation_approval b
             ON  a.id = b.requester_id
+          JOIN  vacation_type c
+            ON  c.id = b.info_id
          WHERE  a.id = #{employeeId}
         <!-- 승인 -->
         <if test="isApproval == 1">
@@ -261,13 +264,13 @@
         </if>
         <!-- 대기 -->
         <if test="isApproval == 3">
-            AND  b.approval_status = 'N'
-             OR  b.approval_status = 'V'
+            AND  (b.approval_status = 'N'
+             OR  b.approval_status = 'V')
         </if>
         <!-- 취소 -->
         <if test="isApproval == 4">
-            AND  b.cancel_yn = 'Y'
-             OR  b.cancel_document_id != 0
+            AND  (b.cancel_yn = 'Y'
+             OR  b.cancel_document_id != 0)
         </if>
         <!-- 승인(취소 제외) <목록> -->
         <if test="isApproval == 5">
@@ -386,13 +389,13 @@
         </if>
         <!-- 대기 -->
         <if test="isApproval == 3">
-            AND  b.approval_status = 'N'
-             OR  b.approval_status = 'V'
+            AND  (b.approval_status = 'N'
+             OR  b.approval_status = 'V')
         </if>
         <!-- 취소 -->
         <if test="isApproval == 4">
-            AND  cancel_yn = 'Y'
-             OR  cancel_document_id != 0
+            AND  (cancel_yn = 'Y'
+             OR  cancel_document_id != 0)
         </if>
         <!-- 결재 필요 <메인> -->
         <if test="isApproval == 5">
