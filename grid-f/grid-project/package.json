@@ -9,8 +9,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fullcalendar/core": "^6.1.13",
+    "@fullcalendar/daygrid": "^6.1.13",
+    "@fullcalendar/interaction": "^6.1.13",
+    "@fullcalendar/list": "^6.1.13",
+    "@fullcalendar/timegrid": "^6.1.13",
     "@json2csv/plainjs": "^7.0.6",
     "axios": "^1.6.8",
+    "bootstrap-vue-3": "^0.5.1",
     "element-plus": "^2.7.3",
     "file-saver": "^2.0.5",
     "js-cookie": "^3.0.5",

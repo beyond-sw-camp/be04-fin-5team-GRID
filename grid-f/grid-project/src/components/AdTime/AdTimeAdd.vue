@@ -1,5 +1,10 @@
 <template>
   <div class="adTimeAddController">
+<!--    <div class="adTimeListTitle">-->
+<!--      <img class="adTimeIcon" src="@/assets/icons/goal_icon.png">-->
+<!--      <h1>Main</h1>-->
+<!--    </div>-->
+    <div class="adTimeBox">
     {{ today }}
     <div>
       <div v-if="adTime.startTime">{{ adTime.startTime }}</div>
@@ -12,12 +17,18 @@
       <button @click="addDepartureTime()">퇴근</button>
     </div>
   </div>
+  <div class="weekCalender" id="app">
+    <div id="calendar"></div>
+  </div>
+  </div>
 </template>
 
 <script setup>
 import {ref, onMounted} from 'vue';
 import {useRouter} from 'vue-router';
 import axios from 'axios';
+import {Calendar} from '@fullcalendar/core';
+import dayGridPlugin from '@fullcalendar/daygrid';
 
 const router = useRouter();
 
@@ -68,8 +79,72 @@ const fetchAdTime = async () => {
   }
 }
 
-onMounted(() => {
+// 일주일 근태 조회
+const events = ref([]);
+
+let calendar;
+const initCalendar = async (events) => {
+  let calendarEl = document.getElementById('calendar');
+  if (calendarEl) {
+    calendar = new Calendar(calendarEl, {
+      plugins: [dayGridPlugin],
+      initialView: 'dayGridWeek',
+      headerToolbar: {
+        left:'',
+        center: 'title',
+        right: 'prev,next today'
+      },
+      events: events.value
+    });
+    calendar.render();
+  } else {
+    console.error("Calendar element not found");
+  }
+}
+
+const updateCalendarEvents = (events) => {
+  if (calendar) {
+    calendar.removeAllEvents();  // 기존 이벤트 제거
+    calendar.addEventSource(events);  // 새로운 이벤트 추가
+  }
+}
+
+const fetchEvent = async ()  => {
+  try {
+    // 출근 조회
+    const responseAdTime = await axios.get(`http://localhost:8080/ad-time/2`);
+
+    const adTime = responseAdTime.data.adTimeDTOList;
+    console.log(adTime);
+    events.value = transformEvents(adTime);
+    console.log(adTime.attendanceStatus);
+    console.log(events.value);
+    // updateCalendarEvents(events.value);
+    // 휴가 조회
+
+
+    // 시간외 근무 조회
+    // 단축 근무 조회
+    // 출장 조회
+
+  } catch (error) {
+    console.error('에러 발생:', error);
+  }
+};
+
+function transformEvents(list) {
+  return list.map(item => ({
+    title: `${item.attendanceStatus}`,
+    start: item.startTime? item.startTime.replace(" ", "T"): 0,
+    end: item.endTime? item.endTime.replace(" ", "T"): null
+  }));
+}
+
+
+onMounted(async () => {
   fetchAdTime();
+  await fetchEvent();
+  initCalendar(events);
 });
 
 
@@ -126,5 +201,47 @@ const addDepartureTime = async () => {
 </script>
 
 <style scoped>
+.adTimeAddController {
+  display: grid;
+  grid-template-rows: 18% 4% auto 5% 13%;
+  grid-template-columns: 10% 80% 10%;
+  height: 100%;
+}
+
+.adTimeListTitle {
+  grid-column-start: 2;
+  grid-column-end: 3;
+  font-size: 12px;
+  font-weight: 0;
+  margin-top: 2%;
+  color: #000000;
+  display: grid;
+  grid-template-columns: 3% 97%;
+  align-items: center;
+}
+
+.adTimeListTitle h1 {
+  margin-left: 0.5%;
+}
+
+.adTimeIcon {
+  width: 80%;
+}
+
+.adTimeBox {
+  grid-column-start: 2;
+  grid-column-end: 3;
+}
+
+.weekCalender {
+  grid-row-start: 3;
+  grid-column-start: 2;
+  grid-column-end: 3;
+}
+
+#calendar {
+  width: 100%;
+  max-height: 25%
+}
 
 </style>

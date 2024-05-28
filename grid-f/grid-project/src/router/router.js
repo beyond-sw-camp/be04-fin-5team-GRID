@@ -216,6 +216,10 @@ const router = createRouter({
         {
             path: '/regist/main',
             component: () => import('@/views/Approval/RegistMainView.vue')
+        },
+        {
+            path: '/work-calendar/:id',
+            component: () => import('@/views/AdTime/WorkCalendarView.vue')
         }
 
     ]
