@@ -1,5 +1,13 @@
 package org.highfives.grid.approval.command.service;
 
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Font;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.pdf.BaseFont;
+import com.lowagie.text.pdf.PdfPCell;
+import com.lowagie.text.pdf.PdfPTable;
+import com.lowagie.text.pdf.PdfWriter;
 import org.highfives.grid.approval.command.aggregate.*;
 import org.highfives.grid.approval.command.repository.BTApprovalRepository;
 import org.highfives.grid.approval.command.repository.OApprovalRepository;
@@ -20,6 +28,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.awt.*;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -78,6 +91,52 @@ public class ApprovalServiceImpl implements ApprovalService {
 
         LocalDateTime startDate = LocalDateTime.parse(startTime, dateFormat);
         LocalDateTime endDate = LocalDateTime.parse(endTime, dateFormat);
+
+        String sunday = startDate.with(LocalTime.MIN).with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY)).format(dateFormat);
+        String saturday = startDate.with(LocalTime.MAX).with(TemporalAdjusters.nextOrSame(DayOfWeek.SATURDAY)).format(dateFormat);
+
+        double count = approvalService.countOvertimeInWeek(new OvertimeInWeekDTO(sunday, saturday, overtimeApprovalVO.getRequesterId()));
+
+        double todayCount = 0;
+
+        if (startDate.getDayOfWeek() == DayOfWeek.SATURDAY && endDate.getDayOfWeek() == DayOfWeek.SUNDAY) {
+
+            todayCount = ChronoUnit.MINUTES.between(startDate, LocalDateTime.parse(saturday, dateFormat))/60.0;
+            sunday = startDate.with(LocalTime.MIN).with(TemporalAdjusters.next(DayOfWeek.SUNDAY)).format(dateFormat);
+
+            if (count + todayCount < 12) {
+
+                System.out.println(count + " " + todayCount);
+
+                OvertimeApproval overtimeApproval = OvertimeApproval.builder()
+                        .startTime(overtimeApprovalVO.getStartTime())
+                        .endTime(saturday)
+                        .content(overtimeApprovalVO.getContent())
+                        .writeTime(LocalDateTime.now().format(dateFormat))
+                        .requesterId(overtimeApprovalVO.getRequesterId())
+                        .build();
+
+                oApprovalRepository.save(overtimeApproval);
+
+                OvertimeApproval overtimeApproval2 = OvertimeApproval.builder()
+                        .startTime(sunday)
+                        .endTime(overtimeApprovalVO.getEndTime())
+                        .content(overtimeApprovalVO.getContent())
+                        .writeTime(LocalDateTime.now().format(dateFormat))
+                        .requesterId(overtimeApprovalVO.getRequesterId())
+                        .build();
+
+                oApprovalRepository.save(overtimeApproval2);
+
+                ReqAddApprovalChainVO request = new ReqAddApprovalChainVO(2, overtimeApproval.getId(), overtimeApproval.getRequesterId());
+                ReqAddApprovalChainVO request2 = new ReqAddApprovalChainVO(2, overtimeApproval2.getId(), overtimeApproval.getRequesterId());
+
+                approvalChainService.addOApprovalChain(request);
+                approvalChainService.addOApprovalChain(request2);
+
+                return mapper.map(overtimeApproval, OvertimeApprovalDTO.class);
+            }
+        }
 
 //        int startDay = startDate.toLocalDate().getDayOfWeek().getValue();
 //        int endDay = endDate.toLocalDate().getDayOfWeek().getValue();
@@ -417,6 +476,4 @@ public class ApprovalServiceImpl implements ApprovalService {
 
         return mapper.map(vacationApproval, VacationApprovalDTO.class);
     }
-
-
 }

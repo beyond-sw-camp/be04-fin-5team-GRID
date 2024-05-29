@@ -4,7 +4,6 @@
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="org.highfives.grid.approval.query.repository.ApprovalMapper">
-
     <resultMap id="approvalMap" type="org.highfives.grid.approval.query.dto.ApprovalEmpDTO">
         <id property="id" column="id"/>
         <result property="startTime" column="start_time"/>
@@ -49,21 +48,59 @@
             AND (STR_TO_DATE(start_time, '%Y-%m-%d %H:%i:%s') BETWEEN #{sunday} AND #{saturday});
     </select>
 
-    <select id="findAllBTApproval" resultMap="approvalMap">
+    <select id="findAllBTApproval" resultMap="approvalMap" parameterType="map">
          SELECT
-                id,
-                start_time,
-                end_time,
-                content,
-                approval_status,
-                write_time,
-                cancel_yn,
-                cancel_document_id,
-                requester_id
-          FROM  bt_approval
-         WHERE  approval_status = 'A'
-           AND  cancel_yn = 'N'
-           AND  cancel_document_id = 0
+                a.employee_name,
+                a.employee_number,
+                b.id,
+                b.start_time,
+                b.end_time,
+                b.content,
+                b.approval_status,
+                b.write_time,
+                b.cancel_yn,
+                b.cancel_document_id,
+                b.requester_id
+          FROM  employee a
+          JOIN
+                <if test="typeId == 1">
+                    bt_approval b
+                </if>
+                <if test="typeId == 2">
+                    overtime_approval b
+                </if>
+                <if test="typeId == 3">
+                    rw_approval b
+                </if>
+                <if test="typeId == 4">
+                    vacation_approval b
+                </if>
+                ON  a.id = b.requester_id
+          WHERE
+                <!-- 승인 -->
+                <if test="isApproval == 1">
+                    b.approval_status = 'A'
+                </if>
+                <!-- 반려 -->
+                <if test="isApproval == 2">
+                    b.approval_status = 'D'
+                </if>
+                <!-- 대기 -->
+                <if test="isApproval == 3">
+                    b.approval_status = 'N'
+                    OR  b.approval_status = 'V'
+                </if>
+                <!-- 취소 -->
+                <if test="isApproval == 4">
+                    b.cancel_yn = 'Y'
+                    OR  b.cancel_document_id != 0
+                </if>
+                <!-- 승인(취소 제외) <목록> -->
+                <if test="isApproval == 5">
+                    b.approval_status = 'A'
+                    AND  b.cancel_yn = 'N'
+                    AND  b.cancel_document_id = 0
+                </if>
     </select>
 
     <select id="findAllBTApprovalByEmployeeId" resultMap="approvalMap" parameterType="map">
@@ -84,18 +121,30 @@
           JOIN  bt_approval b
             ON  a.id = b.requester_id
          WHERE  a.id = #{employeeId}
-        <if test="isApproval == 1">
-            AND  b.approval_status = 'A'
-            AND  b.cancel_yn = 'N'
-            AND  b.cancel_document_id = 0
-        </if>
-        <if test="isApproval == 2">
-            AND  b.approval_status = 'D'
-        </if>
-        <if test="isApproval == 3">
-            AND  b.approval_status = 'N'
-             OR  b.approval_status = 'V'
-        </if>
+            <!-- 승인 -->
+            <if test="isApproval == 1">
+                AND  b.approval_status = 'A'
+            </if>
+            <!-- 반려 -->
+            <if test="isApproval == 2">
+                AND  b.approval_status = 'D'
+            </if>
+            <!-- 대기 -->
+            <if test="isApproval == 3">
+                AND  (b.approval_status = 'N'
+                 OR  b.approval_status = 'V')
+            </if>
+            <!-- 취소 -->
+            <if test="isApproval == 4">
+                AND  (b.cancel_yn = 'Y'
+                 OR  b.cancel_document_id != 0)
+            </if>
+            <!-- 승인(취소 제외) <목록> -->
+            <if test="isApproval == 5">
+                AND  b.approval_status = 'A'
+                AND  b.cancel_yn = 'N'
+                AND  b.cancel_document_id = 0
+            </if>
     </select>
 
     <select id="findAllOApprovalByEmployeeId" resultMap="approvalMap" parameterType="map">
@@ -115,17 +164,29 @@
           JOIN  overtime_approval b
             ON  a.id = b.requester_id
          WHERE  a.id = #{employeeId}
-         <if test="isApproval == 1">
-           AND  b.approval_status = 'A'
-           AND  b.cancel_yn = 'N'
-           AND  b.cancel_document_id = 0
+        <!-- 승인 -->
+        <if test="isApproval == 1">
+            AND  b.approval_status = 'A'
         </if>
+        <!-- 반려 -->
         <if test="isApproval == 2">
             AND  b.approval_status = 'D'
         </if>
+        <!-- 대기 -->
         <if test="isApproval == 3">
-            AND  b.approval_status = 'N'
-             OR  b.approval_status = 'V'
+            AND  (b.approval_status = 'N'
+             OR  b.approval_status = 'V')
+        </if>
+        <!-- 취소 -->
+        <if test="isApproval == 4">
+            AND  (b.cancel_yn = 'Y'
+             OR  b.cancel_document_id != 0)
+        </if>
+        <!-- 승인(취소 제외) <목록> -->
+        <if test="isApproval == 5">
+            AND  b.approval_status = 'A'
+            AND  b.cancel_yn = 'N'
+            AND  b.cancel_document_id = 0
         </if>
     </select>
 
@@ -149,17 +210,29 @@
           JOIN  rw_approval b
             ON  a.id = b.requester_id
          WHERE  a.id = #{employeeId}
+        <!-- 승인 -->
          <if test="isApproval == 1">
            AND  b.approval_status = 'A'
-           AND  b.cancel_yn = 'N'
-           AND  b.cancel_document_id = 0
         </if>
+        <!-- 반려 -->
         <if test="isApproval == 2">
             AND  b.approval_status = 'D'
         </if>
+        <!-- 대기 -->
         <if test="isApproval == 3">
-            AND  b.approval_status = 'N'
-             OR  b.approval_status = 'V'
+            AND  (b.approval_status = 'N'
+             OR  b.approval_status = 'V')
+        </if>
+        <!-- 취소 -->
+        <if test="isApproval == 4">
+            AND  (b.cancel_yn = 'Y'
+             OR  b.cancel_document_id != 0)
+        </if>
+        <!-- 승인(취소 제외) <목록> -->
+        <if test="isApproval == 5">
+            AND  b.approval_status = 'A'
+            AND  b.cancel_yn = 'N'
+            AND  b.cancel_document_id = 0
         </if>
     </select>
 
@@ -177,26 +250,36 @@
                 b.cancel_yn,
                 b.cancel_document_id,
                 b.requester_id,
-                d.type_name
+                c.type_name
           FROM  employee a
           JOIN  vacation_approval b
             ON  a.id = b.requester_id
-          JOIN  vacation_info c
+          JOIN  vacation_type c
             ON  c.id = b.info_id
-          JOIN  vacation_type d
-            ON  c.type_id = d.id
          WHERE  a.id = #{employeeId}
-         <if test="isApproval == 1">
+        <!-- 승인 -->
+        <if test="isApproval == 1">
            AND  b.approval_status = 'A'
-           AND  b.cancel_yn = 'N'
-           AND  b.cancel_document_id = 0
         </if>
+        <!-- 반려 -->
         <if test="isApproval == 2">
             AND  b.approval_status = 'D'
         </if>
+        <!-- 대기 -->
         <if test="isApproval == 3">
-            AND  b.approval_status = 'N'
-             OR  b.approval_status = 'V'
+            AND  (b.approval_status = 'N'
+             OR  b.approval_status = 'V')
+        </if>
+        <!-- 취소 -->
+        <if test="isApproval == 4">
+            AND  (b.cancel_yn = 'Y'
+             OR  b.cancel_document_id != 0)
+        </if>
+        <!-- 승인(취소 제외) <목록> -->
+        <if test="isApproval == 5">
+            AND  b.approval_status = 'A'
+            AND  b.cancel_yn = 'N'
+            AND  b.cancel_document_id = 0
         </if>
     </select>
 
@@ -278,38 +361,47 @@
                 c.employee_number,
                 b.write_time,
                 b.approval_status
-          FROM
-                <if test="typeId == 1">
-                    bt_approval_chain a
-              JOIN  bt_approval b
-                </if>
-                <if test="typeId == 2">
-                    o_approval_chain a
-              JOIN  overtime_approval b
-                </if>
-                <if test="typeId == 3">
-                    rw_approval_chain a
-              JOIN  rw_approval b
-                </if>
-                <if test="typeId == 4">
-                    v_approval_chain a
-              JOIN  vacation_approval b
-                </if>
-            ON  a.approval_id = b.id
-          JOIN  employee c
-            ON  b.requester_id = c.id
-         WHERE  a.employee_id = #{approverId}
+        FROM
+        <if test="typeId == 1">
+            bt_approval_chain a
+            JOIN  bt_approval b
+        </if>
+        <if test="typeId == 2">
+            o_approval_chain a
+            JOIN  overtime_approval b
+        </if>
+        <if test="typeId == 3">
+            rw_approval_chain a
+            JOIN  rw_approval b
+        </if>
+        <if test="typeId == 4">
+            v_approval_chain a
+            JOIN  vacation_approval b
+        </if>
+          ON  a.approval_id = b.id
+        JOIN  employee c
+          ON  b.requester_id = c.id
+        WHERE  a.employee_id = #{approverId}
+        <!-- 승인 -->
         <if test="isApproval == 1">
             AND  b.approval_status = 'A'
         </if>
+        <!-- 반려 -->
         <if test="isApproval == 2">
-           AND  b.approval_status = 'D'
+            AND  b.approval_status = 'D'
         </if>
+        <!-- 대기 -->
         <if test="isApproval == 3">
-           AND  b.approval_status = 'N'
-            OR  b.approval_status = 'V'
+            AND  (b.approval_status = 'N'
+             OR  b.approval_status = 'V')
         </if>
+        <!-- 취소 -->
         <if test="isApproval == 4">
+            AND  (cancel_yn = 'Y'
+             OR  cancel_document_id != 0)
+        </if>
+        <!-- 결재 필요 <메인> -->
+        <if test="isApproval == 5">
             AND  (b.approval_status = 'N'
              OR  b.approval_status = 'V')
             AND  a.approval_status = 'W'
