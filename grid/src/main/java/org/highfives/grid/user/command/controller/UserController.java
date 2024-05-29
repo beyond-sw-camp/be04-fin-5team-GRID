@@ -95,7 +95,17 @@ public class UserController {
     // 회원 정보 일괄 수정
     @PutMapping("/list")
     public ResponseEntity<ResUserListVO> modifyMultiUser(@RequestBody List<UserDTO> modifyList) {
-        System.out.println("modifyList = " + modifyList);
+
+        //받아온 데이터 간의 중복 체크가 정상적으로 종료 시, DB의 데이터와 중복 체크
+        for(UserDTO info : modifyList) {
+            if( duplicateInfoCheck(info) != null ){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(new ResUserListVO (
+                                400, duplicateInfoCheck(info).getBody().getMessage(),
+                                "/users", null));
+            }
+        }
+
         List<UserDTO> result = userService.modifyMultiUser(modifyList);
         ResUserListVO response =
                 new ResUserListVO(200, "Success to modify all infos", "/users/list", result);

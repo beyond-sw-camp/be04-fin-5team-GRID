@@ -21,23 +21,22 @@ public class DepartmentDTO {
 
     private String endTime;
 
-    private String highDepartment;
+    private int sequence;
 
     private int leaderId;
 
     private String departmentCode;
 
     @Builder
-
-    public DepartmentDTO(int id, String departmentName, int memberCnt,
-                         String departmentStatus, String startTime, String endTime, String highDepartment, int leaderId, String departmentCode) {
+    public DepartmentDTO(int id, String departmentName, int memberCnt, String departmentStatus, String startTime,
+                         String endTime, int sequence, int leaderId, String departmentCode) {
         this.id = id;
         this.departmentName = departmentName;
         this.memberCnt = memberCnt;
         this.departmentStatus = departmentStatus;
         this.startTime = startTime;
         this.endTime = endTime;
-        this.highDepartment = highDepartment;
+        this.sequence = sequence;
         this.leaderId = leaderId;
         this.departmentCode = departmentCode;
     }

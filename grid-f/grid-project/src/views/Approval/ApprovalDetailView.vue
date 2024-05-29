@@ -26,6 +26,8 @@
       state.approval = response.data.approvalEmpResult;
       state.user = state.approval.user;
 
+      console.log(state.approval);
+
     } catch (error) {
       console.error('Fetch error: ' + error.message);
     }
@@ -53,7 +55,7 @@
     <hr>
   </div>
   <ApprovalCard :approval="state.approval"/>
-  <ApprovalChain :typeId="typeId" :approvalId="approvalId"/>
+  <ApprovalChain :typeId="typeId" :approvalId="approvalId" :approvalStatus="state.approval['approvalStatus']" :requesterId="state.approval['employeeId']" :cancelStatus="state.approval['cancelYN']"/>
 </template>
 
 <style scoped>

@@ -358,7 +358,7 @@ const resignUser = async () => {
         alert('퇴사 처리 되었습니다.');
         console.log('퇴사 처리 완료:', response.data);
         router.push(`/hr/profile/${user.value.employeeNumber}`);
-
+        // 필요한 후속 조치를 추가하세요
     } catch (error) {
         console.error("퇴사 처리 중 오류 발생: ", error);
     }
