@@ -363,15 +363,29 @@ public class VacationServiceImpl implements VacationService {
     public void giveVacationByManager(GiveVacation vacationInfo) {
         LocalDate today = LocalDate.now();
         String day = today.toString();
+        String employeeNum = vacationInfo.getEmployeeNum();
+        int employeeId = userService.findUserByEmployeeNum(employeeNum).getId();
+
         VacationInfo inputVacationInfo = VacationInfo.builder()
                 .addTime(day)
                 .vacationNum(vacationInfo.getVacationNum())
                 .endTime(vacationInfo.getEndTime())
-                .employeeId(vacationInfo.getEmployeeId())
+                .employeeId(employeeId)
                 .typeId(vacationInfo.getTypeId())
                 .build();
 
         vacationInfoRepository.save(inputVacationInfo);
+
+        VacationHistory inputVacationHistory = VacationHistory.builder()
+                .changeTime(day)
+                .changeReason("관리자에 의한 직접 지급")
+                .typeId(vacationInfo.getTypeId())
+                .changeTypeId(1)
+                .employeeId(employeeId)
+                .build();
+
+
+        vacationHistoryRepository.save(inputVacationHistory);
     }
 
     @Override
