@@ -41,11 +41,12 @@
           </ul>
         </li>
         <li>
-          <span @click="toggleMenu('departmentEvaluation')">부서 평가</span>
+          <span @click="toggleMenu('departmentEvaluation')">동료 평가</span>
           <ul v-show="activeMenus.departmentEvaluation">
             <li>본인 평가 목록</li>
-            <li>동료 평가 작성</li>
+            <li @click="goToTeamReviewList">동료 평가 작성</li>
             <li @click="goToAddTeamReview">평가 생성</li>
+            <li @click="goToTeamReviewHistory">전체 평가 내역</li>
           </ul>
         </li>
         <li>
@@ -126,6 +127,14 @@ const gotodepartmentInfo = () => {
 
 const goToAddTeamReview = () => {
   router.push('/team-review/add');
+}
+
+const goToTeamReviewHistory = () => {
+  router.push('/team-review/history');
+}
+
+const goToTeamReviewList = () => {
+  router.push('/team-review/list');
 }
 
 const navigateTo = (path) => {

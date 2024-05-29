@@ -66,7 +66,7 @@ public class ReviewController {
         List<ReviewHistoryDTO> ReviewList = reviewService.findHistoryList();
 
         ResponseReviewHistoryVO responseReviewHistoryVO = ResponseReviewHistoryVO.builder()
-                .href("/review/assigned-review/{reviewerId}")
+                .href("/review/history-list")
                 .statusCode(200)
                 .message("SUCCESS")
                 .result(ReviewList)

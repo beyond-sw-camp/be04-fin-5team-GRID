@@ -28,11 +28,13 @@ const router = createRouter({
         },
         {
             path: '/department',
-            component: () => import('@/components/Department/Department.vue')
+            component: () => import('@/components/Department/Department.vue'),
+            props: true
         },        
         {
-            path: '/team',
-            component: () => import('@/components/Department/Team.vue')
+            path: '/team/:id',
+            component: () => import('@/components/Department/Team.vue'),
+            props: true
         },
         {
             path: '/performance-review-goal/add',
@@ -186,9 +188,14 @@ const router = createRouter({
         {
             path: '/team-review/list',
             component: () => import('@/components/TeamReview/ReviewList.vue')
-
+        },
+        {
             path: '/regist/main',
             component: () => import('@/views/Approval/RegistMainView.vue')
+        },
+        {
+            path: '/team/member-list/:teamId',
+            component: () => import('@/components/Department/TeamMemberList.vue')
         }
     ]
 })

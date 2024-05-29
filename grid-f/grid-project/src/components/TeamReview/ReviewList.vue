@@ -9,8 +9,6 @@
       <input type="text" v-model="searchQuery" placeholder="Title" />
     </div>
 
-    <button @click="openAddNewModal">Add New</button> <!-- Add New 버튼 추가 -->
-
     <table>
       <thead>
         <tr>
@@ -43,38 +41,6 @@
         </tr>
       </tbody>
     </table>
-
-    <!-- Add New Review Modal -->
-    <div v-if="isAddNewModalOpen" class="modal">
-      <div class="modal-content">
-        <span class="close" @click="closeAddNewModal">&times;</span>
-        <div>
-          <h2>Add New Review</h2>
-          <!-- 평가 대상자 선택 -->
-          <div>
-            <label for="newRevieweeId">평가 대상자:</label>
-            <select v-model="newRevieweeId" id="newRevieweeId">
-              <option v-for="employee in employees" :key="employee.id" :value="employee.id">
-                {{ employee.name }}
-              </option>
-            </select>
-          </div>
-          <div>
-            <label for="newReviewContent">평가 제목:</label>
-            <input type="text" v-model="newReviewContent" id="newReviewContent" />
-          </div>
-          <div>
-            <label for="newReviewYear">연도:</label>
-            <input type="number" v-model="newReviewYear" id="newReviewYear" />
-          </div>
-          <div>
-            <label for="newReviewQuarter">분기:</label>
-            <input type="number" v-model="newReviewQuarter" id="newReviewQuarter" />
-          </div>
-          <button @click="addNewReview">Add Review</button>
-        </div>
-      </div>
-    </div>
 
     <!-- Review Modal -->
     <div v-if="isModalOpen" class="modal">
@@ -130,14 +96,6 @@ const selectedReview = ref(null);
 const reviewItems = ref([]);
 const selectedOptions = ref([]);
 
-// New state for Add New modal
-const isAddNewModalOpen = ref(false);
-const employees = ref([]);
-const newReviewContent = ref('');
-const newReviewYear = ref(new Date().getFullYear());
-const newReviewQuarter = ref(1);
-const newRevieweeId = ref('');
-
 const optionToScoreMap = {
   S: 95,
   A: 85,
@@ -170,15 +128,6 @@ const fetchReviews = async () => {
   }
 };
 
-const fetchEmployees = async () => {
-  try {
-    const response = await axios.get('http://localhost:8080/users/list');
-    employees.value = response.data.result;
-  } catch (error) {
-    console.error('Error fetching employees:', error);
-  }
-};
-
 const fetchReviewItems = async (reviewId) => {
   try {
     const response = await axios.get(`http://localhost:8080/review/list`);
@@ -194,10 +143,7 @@ const fetchReviewItems = async (reviewId) => {
   }
 };
 
-onMounted(() => {
-  fetchReviews();
-  fetchEmployees();
-});
+onMounted(fetchReviews);
 
 const filteredReviews = computed(() => {
   return reviews.value.filter(review =>
@@ -225,33 +171,6 @@ const openModal = async (review) => {
 const closeModal = () => {
   isModalOpen.value = false;
   selectedReview.value = null;
-};
-
-// Functions for Add New modal
-const openAddNewModal = () => {
-  isAddNewModalOpen.value = true;
-};
-
-const closeAddNewModal = () => {
-  isAddNewModalOpen.value = false;
-};
-
-const addNewReview = async () => {
-  const newReview = {
-    content: newReviewContent.value,
-    year: newReviewYear.value,
-    quarter: newReviewQuarter.value,
-    revieweeId: newRevieweeId.value,
-    reviewerId: 1 // 현재 로그인한 리뷰어 ID를 사용합니다.
-  };
-
-  try {
-    await axios.post('http://localhost:8080/review/history', newReview);
-    await fetchReviews();
-    closeAddNewModal();
-  } catch (error) {
-    console.error('Error adding new review:', error);
-  }
 };
 
 const selectOption = (itemIndex, option) => {
@@ -290,62 +209,4 @@ const submitReview = async () => {
     console.error('Error submitting review:', error);
   }
 };
-
 </script>
-
-<style scoped>
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.modal-content {
-  background: #fff;
-  padding: 20px;
-  border-radius: 5px;
-  width: 90%;
-  max-width: 800px;
-  position: relative;
-}
-
-.close {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  cursor: pointer;
-}
-
-.reviewee-image {
-  width: 100px;
-  height: 100px;
-}
-
-button {
-  margin: 5px;
-}
-
-.button-group {
-  display: flex;
-  gap: 5px;
-}
-
-.option-button {
-  padding: 10px 20px;
-  margin: 5px;
-  border: 1px solid #ccc;
-  background: #f9f9f9;
-  cursor: pointer;
-}
-
-.option-button.selected {
-  background-color: #4CAF50; /* 선택된 버튼의 배경색 */
-  color: white; /* 선택된 버튼의 글자색 */
-}
-</style>

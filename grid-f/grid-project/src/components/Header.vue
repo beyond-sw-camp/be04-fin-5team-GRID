@@ -15,7 +15,7 @@
           <img src="https://talkimg.imbc.com/TVianUpload/tvian/TViews/image/2020/04/12/FydNALvKf23Z637223013461671479.jpg"
             alt="profile" class="profile dropdown-toggle" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
           <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <li><a class="dropdown-item" href="#" @click="goToProfile">개인 정보</a></li>
+            <li><a class="dropdown-item" href="#" @click="goToProfile(employeeNumber)">개인 정보</a></li>
             <li><a class="dropdown-item" href="#" @click="logout">로그 아웃</a></li>
           </ul>
         </div>
@@ -41,7 +41,7 @@
                       {{ team.teamName }}
                     </div>
                     <ul v-if="team.showEmployees">
-                      <li v-for="employee in team.employees" :key="employee.id" @click="goToProfile(employee.id)" style="cursor: pointer;">
+                      <li v-for="employee in team.employees" :key="employee.id" @click="goToProfile(employee.employeeNumber)" style="cursor: pointer;">
                         {{ employee.name }}
                       </li>
                     </ul>
@@ -82,7 +82,6 @@ const fetchDepartments = async () => {
       showTeams: false,  // 팀 리스트를 보여줄지 여부
       teams: []  // 팀 데이터
     }));
-    console.log(response.data);
   } catch (error) {
     console.error('부서 정보를 가져오는 데 실패했습니다:', error);
   }
@@ -186,15 +185,15 @@ const handleTeamDragEnd = async (event) => {
     if (team) {
       team.departmentId = newDepartmentId;
       try {
-        await axios.put(`http://localhost:8080/team`, {
+        await axios.put(`http://localhost:8080/team/modify`, {
           id: team.id,
           teamName: team.teamName,
           teamStatus: team.teamStatus,
           startTime: team.startTime,
           endTime: team.endTime,
           leaderId: team.leaderId,
-          departmentId: team.departmentId
-          
+          departmentId: team.departmentId,
+          sequence: team.sequence
         }, {
           headers: {
             'Content-Type': 'application/json'
@@ -212,8 +211,8 @@ const handleTeamDragEnd = async (event) => {
   }
 };
 
-const goToProfile = (employeeId) => {
-  router.push(`/hr/profile/${employeeId}`); // 개인 정보 페이지로 이동
+const goToProfile = (employeeNumber) => {
+  router.push(`/hr/profile/${employeeNumber}`); // 개인 정보 페이지로 이동
 };
 
 const logout = () => {

@@ -219,4 +219,31 @@ border-bottom: 1px solid #dee2e6;
 border-top: 1px solid #dee2e6;
 }
 
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+  table-layout: fixed;
+}
+
+th, td {
+  padding: 6px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+  word-wrap: break-word;
+}
+
+th {
+  background-color: #f8f8f8;
+}
+
+td {
+  font-size: 14px;
+}
+
+tr:hover {
+  background-color: #f1f1f1;
+}
+
 </style>
