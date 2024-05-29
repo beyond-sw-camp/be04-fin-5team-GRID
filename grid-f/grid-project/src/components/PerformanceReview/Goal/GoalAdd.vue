@@ -64,7 +64,7 @@
                   v-model="item.jobName"
                   type="text"
               />
-              <span v-else>{{item.jobName}}</span>
+              <span v-else>{{ item.jobName }}</span>
             </td>
             <td>
               <input
@@ -72,7 +72,7 @@
                   v-model="item.goal"
                   type="text"
               />
-              <span v-else>{{item.goal}}</span>
+              <span v-else>{{ item.goal }}</span>
             </td>
             <td>
               <input
@@ -80,7 +80,7 @@
                   v-model="item.metric"
                   type="text"
               />
-              <span v-else>{{item.metric}}</span>
+              <span v-else>{{ item.metric }}</span>
             </td>
             <td>
               <input
@@ -88,7 +88,7 @@
                   v-model="item.weight"
                   type="int"
               />
-              <span v-else>{{item.weight}}</span>
+              <span v-else>{{ item.weight }}</span>
             </td>
             <td>
               <input
@@ -96,7 +96,7 @@
                   v-model="item.plan"
                   type="text"
               />
-              <span v-else>{{item.plan}}</span>
+              <span v-else>{{ item.plan }}</span>
             </td>
             <td>{{ item.objection }}</td>
             <td v-if="!isReadOnly">
@@ -109,7 +109,7 @@
     </div>
     <div class="addButton">
       <div>
-      <button class="btn btn-dark" @click="addRow()"  v-if="!isReadOnly">목표 추가</button>
+        <button class="btn btn-dark" @click="addRow()" v-if="!isReadOnly">목표 추가</button>
       </div>
     </div>
   </div>
@@ -119,7 +119,7 @@
 import {ref, onMounted, computed} from 'vue';
 import {useRouter} from 'vue-router';
 import axios from 'axios';
-import { useStore } from 'vuex';
+import {useStore} from 'vuex';
 
 const store = useStore();
 const user = computed(() => store.state.user);
@@ -167,7 +167,7 @@ const fetchGoalAdd = async () => {
     const responseGoal = await axios.get(`http://localhost:8080/review-goal/${currentYear}/${user.value.id}`);
 
     // 생성된 목표 없으면
-    if(!responseGoal.data.findGoal){
+    if (!responseGoal.data.findGoal) {
       const sandData = {
         "year": currentYear,
         "reviewName": `${currentYear} 인사평가`,
@@ -247,8 +247,11 @@ const getApprovalStatus = (status) => {
 };
 
 onMounted(() => {
-  if(user.value.duties.dutiesName === '팀원' ){
-    fetchGoalAdd();
+  try {
+    if (user.value.duties.dutiesName === '팀원')
+      fetchGoalAdd();
+  } catch (error) {
+    console.log("에러 발생: ", error);
   }
 });
 

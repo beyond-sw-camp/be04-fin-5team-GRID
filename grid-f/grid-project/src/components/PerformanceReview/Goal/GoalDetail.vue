@@ -247,8 +247,6 @@ onMounted(() => {
   } catch (error) {
     console.log("에러 발생: ", error);
   }
-
-
 });
 
 // 목표 추가
