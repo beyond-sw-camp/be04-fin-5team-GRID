@@ -8,7 +8,6 @@
             <div class="annual" v-if="userRole === 'ROLE_USER'">
                 <div class="vacationsTitle">
                     <h3>휴가</h3>
-                    <img class="plusBtn" src="@/assets/buttons/plus.png">
                 </div>
                 <div class="vacationsNum">
                     <h3>{{ annualVacationNum }}</h3>
@@ -17,7 +16,6 @@
             <div class="month" v-if="userRole === 'ROLE_USER'">
                 <div class="vacationsTitle">
                     <h3>정기 휴가</h3>
-                    <img class="plusBtn" src="@/assets/buttons/plus.png">
                 </div>
                 <div class="vacationsNum">
                     <h3>{{ monthVacationNum }}</h3>
@@ -26,7 +24,6 @@
             <div class="diretly" v-if="userRole === 'ROLE_USER'">
                 <div class="vacationsTitle">
                     <h3>기타 휴가</h3>
-                    <img class="plusBtn" src="@/assets/buttons/plus.png">
                 </div>
                 <div class="vacationsNum">
                     <h3>{{ directlyVacationNum }}</h3>
@@ -263,11 +260,6 @@ onBeforeMount(() => {
     align-items: center;
     font-size: 12px;
     height: 50%;
-}
-
-.plusBtn {
-    width: 100%;
-    cursor: pointer;
 }
 
 .annual {
