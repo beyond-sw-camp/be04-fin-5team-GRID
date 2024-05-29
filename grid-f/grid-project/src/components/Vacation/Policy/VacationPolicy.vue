@@ -1,26 +1,18 @@
 <template>
     <div class="policyAll">
-      <div class="policyTitle">
-        <img class="policyIcon" src="@/assets/buttons/vacation.png">
-        <h1>휴가정책</h1>
-        <button class="policyRegist" @click="showRegistModal = true" v-if="userRole === 'ROLE_ADMIN'">등록하기</button>
-      </div>
-      <div class="policyContent">
-      <div class="policyBox" v-for="(policy, index) in displayedPolicies" :key="policy.id">
-        <div class="policyHeader">
-          <h3 class="policyName">{{ policy.typeName }}</h3>
-          <img class="policyModify" src="@/assets/buttons/edit.png" @click="openModifyModal(policy.id)" v-if="userRole === 'ROLE_ADMIN'">
+        <div class="policyTitle">
+            <img class="policyIcon" src="@/assets/buttons/vacation.png">
+            <h1>휴가정책</h1>
+            <button class="policyRegist" @click="showRegistModal = true" v-if="userRole === 'ROLE_ADMIN'">등록하기</button>
         </div>
-        <h5 class="policies" v-html="policy.content"></h5>
-      </div>
-    </div>
-    <div class="pagingButtons">
-      <button class="pre" @click="previousPage" :disabled="currentPage === 1">Previous</button>
-      <div class="pageNumberButtons">
-        <button v-for="page in totalPages" :key="page" @click="goToPage(page)" :class="{ active: currentPage === page }">{{ page }}</button>
-      </div>
-      <button class="next" @click="nextPage" :disabled="currentPage === totalPages">Next</button>
-    </div>
+        <div class="vacations">
+            <div class="typeBox" v-for="policy in policies" :key="policy.id">
+                <div class="vacationsTitle">
+                    <h3>{{ policy.typeName + " " + "정책"}}</h3>
+                    <img class="plusBtn" @click="openDetailModal(policy.id)" src="@/assets/buttons/plus.png">
+                </div>
+            </div>
+        </div>
 
   
       
@@ -61,6 +53,23 @@
             </div>
         </div>
       </Modal>
+
+      <!-- 내용확인 모달 -->
+      <Modal v-if="showDetailModal" @close="showDetailModal = false">
+        <div class="detailMain">
+          <div class="detailTitle">
+            <h3>타입</h3>
+            <p class="titleContent">{{ detailPolicy.typeName }}</p>
+          </div>
+          <div class="detailContent">
+            <h3>내용</h3>
+            <pre class="detail" >{{ detailPolicyContent }}</pre>
+          </div>
+          <div class="registBtnArea" v-if="userRole === 'ROLE_ADMIN'">
+            <button class="registBtn" @click="openModifyModal(detailPolicy.id)">수정하기</button>
+          </div>
+        </div>
+      </Modal>
     </div>
   </template>
   
@@ -75,16 +84,27 @@
   const userRole = ref('');
   const showRegistModal = ref(false);
   const showModifyModal = ref(false);
+  const showDetailModal = ref(false);
   const selectedType = ref('');
   const content = ref('');
   const types = ref([]);
+
+  const detailPolicy = ref({
+    typeName: '',
+    content: ''
+  });
   
   const modifyPolicy = ref({
     typeName: '',
     content: ''
   });
   const modifyPolicyContent = ref('');
+  const detailPolicyContent = ref('');
   const route = useRoute();
+
+  const formattedDetailPolicyContent = computed(() => {
+    return detailPolicyContent.value.replace(/\n/g, '<br>');
+});
   
   const getAllVacationPolicy = async () => {
     try {
@@ -124,6 +144,7 @@
   
   const openModifyModal = async (id) => {
     try {
+      showDetailModal.value = false;
       const response = await axios.get(`/api/vacation/policy/${id}`);
       modifyPolicy.value = response.data.result;
       modifyPolicyContent.value = modifyPolicy.value.content.replace(/<br\s*\/?>/gi, '\n');
@@ -132,11 +153,21 @@
       console.error("Error:", error);
     }
   };
+
+  const openDetailModal = async (id) => {
+    try {
+        const response = await axios.get(`/api/vacation/policy/${id}`);
+        detailPolicy.value = response.data.result;
+        detailPolicyContent.value = detailPolicy.value.content.replace(/<br\s*\/?>/gi, '\n');
+        showDetailModal.value = true;
+    } catch (error) {
+        console.error("Error:", error);
+    }
+};
   
   const modifyContent = async (id) => {
     try {
       const confirmed = window.confirm('수정하시겠습니까?');
-      console.log(id)
       if (confirmed) {
         modifyPolicy.value.content = modifyPolicyContent.value.replace(/\n/g, '<br>');
         const response = await axios.put(`/api/vacation/policy/${id}`, { content: modifyPolicy.value.content });
@@ -223,9 +254,9 @@ const nextPage = () => {
     currentPage.value++;
   }
 };
-  </script>
+</script>
   
-  <style scoped>
+<style scoped>
   .policyAll {
     display: grid;
     grid-template-rows: 18% minmax(75%, max-content) 5% 2%;
@@ -254,44 +285,6 @@ const nextPage = () => {
   
   .policyIcon {
     width: 80%;
-  }
-  
-  .policyName {
-    margin-top: 0;
-    margin-bottom: 0;
-    font-size: 15px;
-    grid-column-start: 1;
-    grid-column-end: 2;
-  }
-  
-  .policyContent {
-    margin-top: 2%;
-    margin-bottom: 0;
-    grid-column-start: 2;
-    grid-column-end: 3;
-    font-size: 15px;
-    overflow-y: visible;
-  }
-
-  .policyContent::-webkit-scrollbar {
-    width: 0; /* 너비를 0으로 설정하여 스크롤바를 감춥니다. */
-}
-  
-  .policies {
-    margin-top: 0;
-    margin-bottom: 0;
-    white-space: pre-wrap;
-    font-size: 13px;
-  }
-  
-  .policyBox {
-    width: 100%;
-    padding: 10px;
-    margin-top: 10px;
-    margin-bottom: 0;
-    background-color: white;
-    border: 3px solid #088A85;
-    border-radius: 4px;
   }
   
   .policyRegist {
@@ -520,5 +513,83 @@ const nextPage = () => {
         cursor: not-allowed;
     }
 
-  </style>
+
+    .vacations {
+        margin-top: 2%;
+        grid-column-start: 2;
+        grid-column-end: 3;
+        grid-row: 2;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr; /* 3개의 열로 구성 */
+        grid-auto-rows: 150px; /* 행의 최소 크기 설정 */
+        grid-gap: 10px; /* 아이템 간의 간격 설정 */
+        grid-auto-flow: row dense; /* 아이템을 빈 공간에 자동으로 채우도록 설정 */
+    
+    }
+
+    .vacationsTitle {
+        display: grid;
+        grid-template-columns: 90% 10%;
+        align-items: start;
+        margin-top: 5%;
+    }
+
+    .vacations h3 {
+        font-size: 15px;
+        font-weight: 600;
+        margin: 0;
+    }
+
+    .plusBtn {
+        width: 100%;
+    }
+
+    .typeBox {
+        padding: 10px;
+        background-color: #F2F2F2;
+        display: grid;
+        grid-template-rows: 75% 25%;
+    }
+
+    /* 디테일 모달 css */
+    .detailMain {
+    height: 80%;
+    width: calc(100% - 20px);
+    padding: 10px;
+    background-color: #F2F2F2;
+  }
+
+  .detailMain h3 {
+    font-size: 15px;
+    margin: 0;
+    font-weight: 600;
+  }
+  
+  .detailTitle {
+    margin-top: 2%;
+    display: grid;
+    grid-template-columns: 5% 30% 65%;
+    font-size: 14px;
+    align-items: center;
+  }
+  
+  .detailContent {
+    margin-top: 3%;
+    height: 50%;
+    display: grid;
+    grid-template-columns: 5% 95%;
+    font-size: 14px;
+  }
+  
+  .detailContent h3 {
+    margin-top: 0;
+  }
+  
+  .detail {
+    background-color: #F8F9FAFF;
+    padding: 10px;
+    margin-bottom: 0;
+    height: auto;
+  }
+</style>
   
