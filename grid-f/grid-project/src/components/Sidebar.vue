@@ -15,10 +15,10 @@
           <ul v-show="activeMenus.workManagement">
             <li>근무 관리</li>
             <li>근무 정보</li>
+            <li @click="toVacationManage()">휴가 종류</li>
             <li @click="toVacationPolicy()">휴가 정책</li>
             <li @click="toVacationInfo()">휴가 보유 정보</li>
             <li @click="toVacationChangeInfo()">휴가 변화 이력</li>
-            <li @click="toVacationManage()" v-if="userRole === 'ROLE_ADMIN'">휴가 종류 관리</li>
           </ul>
         </li>
         <li>

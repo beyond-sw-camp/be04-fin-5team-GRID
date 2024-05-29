@@ -2,16 +2,14 @@
     <div class="manageAll">
         <div class="manageTitle">
             <img class = "manageIcon" src="@/assets/buttons/vacation.png">
-            <h1>휴가 관리</h1>
-        </div>
-        <div class="manageRegist">
-            <button class="manageBtn" type="button" @click="showRegistModal = true">등록하기</button>
+            <h1>휴가 종류</h1>
+            <button class="manageRegist" type="button" @click="showRegistModal = true" v-if="userRole === 'ROLE_ADMIN'">등록하기</button>
         </div>
         <div class="vacations">
             <div class="typeBox" v-for="type in types" :key="type.id">
                 <div class="vacationsTitle">
                     <h3>{{ type.typeName }}</h3>
-                    <img class="plusBtn" @click="openModifyModal(type.id)" src="@/assets/buttons/plus.png">
+                    <img class="plusBtn" v-if="userRole === 'ROLE_ADMIN'" @click="openModifyModal(type.id)" src="@/assets/buttons/plus.png">
                 </div>
                 <div class="vacationsNum">
                     <h3>{{ type.vacationExplain }}</h3>
@@ -82,10 +80,8 @@ import Modal from '@/components/Vacation/Manage/VacationManageModal.vue';
 const types = ref([]);
 const showRegistModal = ref(false);
 const showModifyModal = ref(false);
-const typeName = ref('');
-const vacationNum = ref('');
-const dateOfUse = ref('');
-const vacationExplain = ref('');
+const userRole = ref('');
+const userId =ref('');
 const modifyType = ref({
     id: '',
     typeName: '',
@@ -180,16 +176,28 @@ const getAllVacationType = async () => {
     }
 };
 
-// function modifyType(id) {
-//     router.push(`/vacation/manage/modify/${id}`);
-// }
-
-// function registType() {
-//     router.push('/vacation/manage/regist');
-// }
+function parseJwt(token) {
+    try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        return JSON.parse(jsonPayload);
+    } catch (error) {
+        console.error('Invalid token', error);
+        return null;
+    }
+}
 
 
 onBeforeMount(() => {
+    const token = localStorage.getItem('access');
+    if (token) {
+        const decodedToken = parseJwt(token);
+        userRole.value = decodedToken?.auth || '';
+        userId.value = decodedToken?.id || '';
+    }
     getAllVacationType();
 });
 </script>
@@ -197,7 +205,7 @@ onBeforeMount(() => {
 <style scoped>
     .manageAll {
         display: grid;
-        grid-template-rows: 18% 4% minmax(75%,auto) 3% ;
+        grid-template-rows: 18% minmax(75%,auto) 5% 2% ;
         grid-template-columns: 10% 80% 10%;
         height: 100%;
     }
@@ -226,14 +234,6 @@ onBeforeMount(() => {
     }
 
     .manageRegist {
-        display: grid;
-        grid-template-columns: 87% 8% 5%;
-        grid-column-start:2 ;
-    }
-
-    .manageBtn {
-        grid-column-start: 3;
-        width: 100%;
         background-color: #088A85;
         color: white;
         padding: 5px 5px;
@@ -242,13 +242,14 @@ onBeforeMount(() => {
         cursor: pointer;
         font-size: 11px;
         font-style: bold;
+        width: 100%;
     }
 
     .vacations {
         margin-top: 2%;
         grid-column-start: 2;
         grid-column-end: 3;
-        grid-row: 3;
+        grid-row: 2;
         display: grid;
         grid-template-columns: 1fr 1fr 1fr 1fr; /* 3개의 열로 구성 */
         grid-auto-rows: 150px; /* 행의 최소 크기 설정 */
