@@ -142,6 +142,54 @@
         , superior_id
         , superior_score
         FROM performance_review_item
-        WHERE review_id = #{reviewId};
+        WHERE review_id = #{reviewId}
+    </select>
+
+<!--  중간 평가 년도 조회-->
+    <select id="selectMidReviewByWriterIdAndYear" resultMap="performanceReviewResultMap" parameterType="hashmap">
+        SELECT
+        A.id as 'ID'
+        , A.type as 'TYPE'
+        , A.year as 'YEAR'
+        , A.review_name as 'REVIEW_NAME'
+        , A.approval_status as 'APPROVAL_STATUS'
+        , writer.id as 'WRITER_ID'
+        , writer.employee_name as 'WRITER_NAME'
+        , A.write_time as 'WRITE_TIME'
+        , approver.id as 'APPROVER_ID'
+        , approver.employee_name as 'APPROVER_NAME'
+        , A.approval_time as 'APPROVAL_TIME'
+        FROM performance_review as A
+        JOIN (SELECT * FROM employee WHERE duties_id = 4) as writer
+        ON A.writer_id = writer.id
+        JOIN (SELECT * FROM employee WHERE duties_id = 3) as approver
+        ON A.approver_id = approver.id
+        WHERE A.writer_id = #{writerId}
+        AND A.year = #{year}
+        AND A.type = 'M'
+    </select>
+
+    <!--  연말 평가 년도 조회-->
+    <select id="selectFinalReviewByWriterIdAndYear" resultMap="performanceReviewResultMap" parameterType="hashmap">
+        SELECT
+        A.id as 'ID'
+        , A.type as 'TYPE'
+        , A.year as 'YEAR'
+        , A.review_name as 'REVIEW_NAME'
+        , A.approval_status as 'APPROVAL_STATUS'
+        , writer.id as 'WRITER_ID'
+        , writer.employee_name as 'WRITER_NAME'
+        , A.write_time as 'WRITE_TIME'
+        , approver.id as 'APPROVER_ID'
+        , approver.employee_name as 'APPROVER_NAME'
+        , A.approval_time as 'APPROVAL_TIME'
+        FROM performance_review as A
+        JOIN (SELECT * FROM employee WHERE duties_id = 4) as writer
+        ON A.writer_id = writer.id
+        JOIN (SELECT * FROM employee WHERE duties_id = 3) as approver
+        ON A.approver_id = approver.id
+        WHERE A.writer_id = #{writerId}
+        AND A.year = #{year}
+        AND A.type = 'F'
     </select>
 </mapper>
