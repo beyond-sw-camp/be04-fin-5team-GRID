@@ -27,5 +27,7 @@ public class VacationApprovalDTO {
 
     private int cancelDocId;
 
+    private int requesterId;
+
     private int infoId;
 }
