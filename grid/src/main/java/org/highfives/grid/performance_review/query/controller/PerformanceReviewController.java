@@ -4,7 +4,6 @@ import org.highfives.grid.performance_review.query.dto.DetailPerformanceReviewDT
 import org.highfives.grid.performance_review.query.dto.PerformanceReviewDTO;
 import org.highfives.grid.performance_review.query.service.PerformanceReviewService;
 import org.highfives.grid.performance_review.query.vo.ResponseDetailReviewVO;
-import org.highfives.grid.performance_review.query.vo.ResponsePerformanceReviewListVO;
 import org.highfives.grid.performance_review.query.vo.ResponsePerformanceReviewVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,11 +28,11 @@ public class PerformanceReviewController {
 
     // 팀원의 작성한 평가 목록 조회
     @GetMapping("member/{employeeId}")
-    public ResponseEntity<ResponsePerformanceReviewListVO> findPerformanceReviewByWriterId(@PathVariable int employeeId){
+    public ResponseEntity<ResponsePerformanceReviewVO> findPerformanceReviewByWriterId(@PathVariable int employeeId){
         List<PerformanceReviewDTO> findReview = performanceReviewService.findPerformanceReviewByWriterId(employeeId);
 
-        ResponsePerformanceReviewListVO response =
-                new ResponsePerformanceReviewListVO().builder()
+        ResponsePerformanceReviewVO response =
+                new ResponsePerformanceReviewVO().builder()
                         .statusCode(200)
                         .message("평가 목록 조회 성공")
                         .href("")
@@ -43,13 +42,13 @@ public class PerformanceReviewController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    // 팀장의 요청 받은 평가 목록 조회
+    // 팀장의 요청 받음 평가 목록 조회
     @GetMapping("leader/{employeeId}")
-    public ResponseEntity<ResponsePerformanceReviewListVO> findPerformanceReviewByApproverId(@PathVariable int employeeId){
+    public ResponseEntity<ResponsePerformanceReviewVO> findPerformanceReviewByApproverId(@PathVariable int employeeId){
         List<PerformanceReviewDTO> findReview = performanceReviewService.findPerformanceReviewByApproverId(employeeId);
 
-        ResponsePerformanceReviewListVO response =
-                new ResponsePerformanceReviewListVO().builder()
+        ResponsePerformanceReviewVO response =
+                new ResponsePerformanceReviewVO().builder()
                         .statusCode(200)
                         .message("평가 목록 조회 성공")
                         .href("")
@@ -59,7 +58,7 @@ public class PerformanceReviewController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    // 평가 상세 조회
+    // 목표 상세 조회
     @GetMapping("detail/{id}")
     public ResponseEntity<ResponseDetailReviewVO> findDetailReviewById(@PathVariable int id){
         DetailPerformanceReviewDTO findDetailReview = performanceReviewService.findDetailPerformanceReviewById(id);
@@ -75,43 +74,4 @@ public class PerformanceReviewController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    // 중간 평가 조회
-    @GetMapping("mid/{year}/{employeeId}")
-    public ResponseEntity<ResponsePerformanceReviewVO> findMidReviewByYearAndEmployeeId(
-            @PathVariable int year,
-            @PathVariable int employeeId){
-
-        PerformanceReviewDTO performanceReviewDTO = performanceReviewService.findMidReviewByWriterIdAndYear(employeeId, year);
-
-        ResponsePerformanceReviewVO response =
-        ResponsePerformanceReviewVO.builder()
-                .statusCode(200)
-                .message("평가 조회 성공")
-                .href(null)
-                .findReview(performanceReviewDTO)
-                .build();
-
-        return ResponseEntity.status(HttpStatus.OK).body(response);
-    }
-
-    // 중간 평가 조회
-    @GetMapping("final/{year}/{employeeId}")
-    public ResponseEntity<ResponsePerformanceReviewVO> findFinalReviewByYearAndEmployeeId(
-            @PathVariable int year,
-            @PathVariable int employeeId){
-
-        PerformanceReviewDTO performanceReviewDTO = performanceReviewService.findFinalReviewByWriterIdAndYear(employeeId, year);
-
-        ResponsePerformanceReviewVO response =
-                ResponsePerformanceReviewVO.builder()
-                        .statusCode(200)
-                        .message("평가 조회 성공")
-                        .href(null)
-                        .findReview(performanceReviewDTO)
-                        .build();
-
-        return ResponseEntity.status(HttpStatus.OK).body(response);
-    }
 }
-
-

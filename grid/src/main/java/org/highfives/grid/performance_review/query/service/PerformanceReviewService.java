@@ -11,8 +11,4 @@ public interface PerformanceReviewService {
     List<PerformanceReviewDTO> findPerformanceReviewByApproverId(int employeeId);
 
     DetailPerformanceReviewDTO findDetailPerformanceReviewById(int id);
-
-    PerformanceReviewDTO findMidReviewByWriterIdAndYear(int employeeId, int year);
-
-    PerformanceReviewDTO findFinalReviewByWriterIdAndYear(int employeeId, int year);
 }

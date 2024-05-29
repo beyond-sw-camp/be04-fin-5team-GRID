@@ -20,7 +20,7 @@
             <div class="diretly"  v-if="userRole === 'ROLE_ADMIN'">
                 <div class="vacationsTitle">
                     <h3>휴가 직접 지급 <br> (관리자)</h3>
-                    <img class="plusBtn" @click="showRegistModal = true" src="@/assets/buttons/plus.png">
+                    <img class="plusBtn" src="@/assets/buttons/plus.png">
                 </div>
             </div>
         </div>
@@ -69,32 +69,12 @@
             <button @click="nextPage" :disabled="currentPage === totalPages">Next</button>
         </div>
     </div>
-
-    <Modal v-if="showRegistModal" @close="showRegistModal = false">
-        <div class="registMain">
-          <div class="registTitle">
-            <h3 for="type">타입</h3>
-            <select id="type" v-model="selectedType" class="selectField">
-              <option value="">선택해주세요.</option>
-              <option v-for="type in types" :key="type.id" :value="type.id">{{ type.typeName }}</option>
-            </select>
-          </div>
-          <div class="registContent">
-            <h3>내용</h3>
-            <textarea v-model="content" placeholder="내용을 입력해주세요." class="inputField"></textarea>
-          </div>
-          <div class="registBtnArea">
-            <button class="registBtn" @click="registPolicy">등록하기</button>
-          </div>
-        </div>
-      </Modal>
 </template>
 
 <script setup>
 import { onBeforeMount, ref, computed } from 'vue';
 import axios from "axios";
 import router from '@/router/router';
-import Modal from '@/components/Vacation/Policy/Modal.vue';
 
 const histories = ref([]);
 const searchType = ref('name'); // 검색 유형을 위한 기본값 설정
@@ -104,8 +84,6 @@ const currentPage = ref(1);
 const itemsPerPage = 10;
 const userRole = ref('');
 const userId = ref('');
-const showRegistModal = ref(false);
-const types = ref([]);
 
 const totalPages = computed(() => {
     return Math.ceil(filteredHistories.value.length / itemsPerPage);
@@ -185,24 +163,11 @@ const giveMonthVacation = async () => {
     }
 }
 
-const getVacationType = async () => {
-    try {
-      const response = await axios.get('/api/vacation/type');
-      types.value = response.data.result;
-      console.log(response.data.result);
-    } catch (error) {
-      console.error('Error:', error);
-    }
-  };
-
 function giveAnnual() {
     try {
-        const confirmed = window.confirm('지급하시겠습니까?');
-        if(confirmed) {
-            giveAnnualVacation();
-            giveRegularVacation();
-            alert('지급 완료되었습니다!')
-        }
+        giveAnnualVacation();
+        giveRegularVacation();
+        alert('지급 완료되었습니다!')
     } catch (error) {
         alert(error.message)
     }
@@ -210,17 +175,13 @@ function giveAnnual() {
 
 function giveMonth() {
     try {
-        const confirmed = window.confirm('지급하시겠습니까?');
-        if(confirmed) {
-            giveHealthVacation();
-            giveMonthVacation();
-            alert('지급 완료되었습니다!')
-        }
+        giveHealthVacation();
+        giveMonthVacation();
+        alert('지급 완료되었습니다!')
     } catch (error) {
         alert(error.message)
     }
 }
-
 
 function parseJwt(token) {
     try {
@@ -259,8 +220,6 @@ onBeforeMount(() => {
         userRole.value = decodedToken?.auth || '';
         userId.value = decodedToken?.id || '';
     }
-
-    getVacationType();
 
     if (userRole.value === 'ROLE_ADMIN') {
         getAllVacationHistory();
@@ -443,71 +402,6 @@ onBeforeMount(() => {
         display: flex;
         align-items: center;
     }
-
-    .registMain {
-    height: 80%;
-    width: calc(100% - 20px);
-    padding: 10px;
-    background-color: #F2F2F2;
-  }
-
-  .registMain h3 {
-    font-size: 15px;
-    margin: 0;
-    font-weight: 600;
-  }
-
-  .registTitle {
-    margin-top: 2%;
-    display: grid;
-    grid-template-columns: 5% 20% 75%;
-    font-size: 14px;
-    align-items: center;
-  }
-
-  .registContent {
-    margin-top: 3%;
-    height: 50%;
-    display: grid;
-    grid-template-columns: 5% 95%;
-    font-size: 14px;
-  }
-
-  .registContent h3 {
-    margin-top: 0;
-  }
-
-  .registContent textarea {
-    width: 100%;
-    height: 100%;
-    padding: 10px;
-    box-sizing: border-box;
-    resize: none;
-    height: 300px;
-    border: none;
-  }
-
-  .registBtn{
-    width: 100%;
-    background-color: #088A85;
-    color: white;
-    padding: 5px 5px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 12px;
-    font-style: bold;
-    grid-column-start: 3;
-  }
-
-  .registBtnArea {
-    display: grid;
-    grid-template-columns: 40% 6% 8% 6% 40%;
-    place-items: center;
-    grid-row-start: 3;
-    grid-column-start: 2;
-    margin-top: 2%;
-  }
 </style>
 
 

@@ -22,7 +22,7 @@
             <table>
                 <thead>
                     <tr>
-                        <th>변경할 사원 사번</th>
+                        <th>사번</th>
                         <th>이름</th>
                         <th>부서</th>
                         <th>팀</th>
@@ -36,10 +36,11 @@
                 </thead>
                 <tbody>
                     <tr v-for="(employee, index) in employees" :key="index">
-                        <td><input v-model="employee.employeeNumber" class="no-border" required></td>
-                        <td><input v-model="employee.name" class="no-border" required></td>
+                        <td><input v-model="employee.employeeNumber" class="no-border" required placeholder="사원 번호"></td>
+                        <td><input v-model="employee.name" class="no-border" required placeholder="이름"></td>
                         <td>
                             <select v-model="employee.departmentId">
+                                <option disabled value="">선택</option>
                                 <option v-for="department in departments" :key="department.value" :value="department.value">
                                     {{ department.text }}
                                 </option>
@@ -47,6 +48,7 @@
                         </td>
                         <td>
                             <select v-model="employee.teamId">
+                                <option disabled value="">선택</option>
                                 <option v-for="team in teams" :key="team.value" :value="team.value">
                                     {{ team.text }}
                                 </option>
@@ -54,6 +56,7 @@
                         </td>
                         <td>
                             <select v-model="employee.positionId">
+                                <option disabled value="">선택</option>
                                 <option v-for="position in positions" :key="position.value" :value="position.value">
                                     {{ position.text }}
                                 </option>
@@ -61,6 +64,7 @@
                         </td>
                         <td>
                             <select v-model="employee.dutiesId">
+                                <option disabled value="">선택</option>
                                 <option v-for="duty in dutiesList" :key="duty.value" :value="duty.value">
                                     {{ duty.text }}
                                 </option>
@@ -68,17 +72,27 @@
                         </td>
                         <td>
                             <select v-model="employee.workType">
+                                <option disabled value="">선택</option>
                                 <option value="R">정규직</option>
                                 <option value="C">계약직</option>
                             </select>
                         </td>
                         <td><input v-model="employee.contractEndDate" type="date" class="no-border" required></td>
-                        <td style="min-width: 300px;">
-                            <button class="searchBtn">검색</button>
-                            <input v-model="employee.address1" class="no-border" placeholder="주소 1" required>
-                            <input v-model="employee.address2" class="no-border" placeholder="주소 2" required>
+                        <td style="min-width: 350px;">
+                            <div class="address-container">
+                                <div>
+                                    <button class="searchBtn" @click="execDaumPostcode(employee)">검색</button>
+                                    <input v-model="employee.zipCode" placeholder="우편 번호" style="width: 23%;" required readonly>
+                                    <input v-model="employee.address1" placeholder="주소" style="width: 57%;" required readonly>
+                                </div>
+                                <div id="address-container2">
+                                    <input v-model="employee.address2" placeholder="상세 주소" style="width: 82%;" required>
+                                </div>
+                            </div>
                         </td>
-                        <td style="width: 60px;"><button @click="removeEmployee(index)" class="deleteBtn">삭제</button></td>
+                        <td style="width: 60px;">
+                            <button @click="removeEmployee(index)" class="deleteBtn">삭제</button>
+                        </td>
                     </tr>
                 </tbody>
             </table>
@@ -100,13 +114,11 @@
     <div class="modal fade" id="guideModal" tabindex="-1" aria-labelledby="guideModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-
                 <!-- Modal Header -->
                 <div class="modal-header">
                     <h4 class="modal-title" id="guideModalLabel">CSV 작성 가이드</h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-
                 <!-- Modal body -->
                 <div class="modal-body">
                     <div class="example">
@@ -122,12 +134,10 @@
                         <p>6. 엑셀 이외의 프로그램(메모장, 노트패드 등...)으로 편집시 쉼표(,)를 구분자로 사용하세요.</p>
                     </div>
                 </div>
-
                 <!-- Modal footer -->
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
                 </div>
-
             </div>
         </div>
     </div>
@@ -172,13 +182,14 @@ const openModal = () => {
 const addEmployee = () => {
     employees.push({
         employeeNumber: '',
-        name:'',
-        departmentId: null,
-        teamId: null,
-        positionId: null,
-        dutiesId: null,
-        workType: '',
+        name: '',
+        departmentId: '',
+        teamId: '',
+        positionId: '',
+        dutiesId: '',
+        workType: null,
         contractEndDate: '',
+        zipCode: '',
         address1: '',
         address2: ''
     });
@@ -198,14 +209,43 @@ const formattedEmployees = computed(() =>
         dutiesId: emp.dutiesId,
         workType: emp.workType,
         contractEndDate: emp.contractEndDate,
-        address1: emp.address1,
-        address2: emp.address2,
+        zipCode: emp.zipCode,
+        address: `${emp.address1} ${emp.address2}`
     }))
 );
 
+const execDaumPostcode = (employee) => {
+    new daum.Postcode({
+        oncomplete: function(data) {
+            let addr = '';
+            let extraAddr = '';
+
+            if (data.userSelectedType === 'R') {
+                addr = data.roadAddress;
+            } else {
+                addr = data.jibunAddress;
+            }
+
+            if (data.userSelectedType === 'R') {
+                if (data.bname !== '' && /[동|로|가]$/g.test(data.bname)) {
+                    extraAddr += data.bname;
+                }
+                if (data.buildingName !== '' && data.apartment === 'Y') {
+                    extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+                }
+                if (extraAddr !== '') {
+                    extraAddr = ' (' + extraAddr + ')';
+                }
+            }
+            employee.zipCode = data.zonecode;
+            employee.address1 = addr;
+        }
+    }).open();
+};
+
 const downloadCSV = () => {
     const csvData = [
-        ['변경할 사원 사번', '이름', '부서', '팀', '직위', '직책', '근무 유형', '계약 종료일', '주소 1', '주소 2'],
+        ['사번', '이름', '부서', '팀', '직위', '직책', '근무 유형', '계약 종료일', '우편 번호', '주소', '상세 주소'],
         ...employees.map(emp => [
             emp.employeeNumber,
             emp.name,
@@ -215,8 +255,9 @@ const downloadCSV = () => {
             emp.dutiesId,
             emp.workType,
             emp.contractEndDate,
-            emp.address1,
-            emp.address2,
+            emp.zipCode,
+            emp.address,
+            emp.address2
         ])
     ];
     const csv = Papa.unparse(csvData, {
@@ -239,7 +280,7 @@ const handleFileUpload = (event) => {
                 results.data.forEach(row => {
                     console.log('Processing row:', row); // 디버깅을 위한 콘솔 출력
                     employees.push({
-                        employeeNumber: (row['변경할 사원 사번'] || '').trim(),
+                        employeeNumber: (row['사번'] || '').trim(),
                         name: (row['이름'] || '').trim(),
                         departmentId: (row['부서'] || '').trim(),
                         teamId: (row['팀'] || '').trim(),
@@ -247,8 +288,9 @@ const handleFileUpload = (event) => {
                         dutiesId: (row['직책'] || '').trim(),
                         workType: (row['근무 유형'] || '').trim(),
                         contractEndDate: (row['계약 종료일'] || '').trim(),
-                        address1: (row['주소 1'] || '').trim(),
-                        address2: (row['주소 2'] || '').trim(),
+                        zipCode: (row['우편 번호'] || '').trim(),
+                        address1: (row['주소'].split(' ')[0] || '').trim(),
+                        address2: (row['상세 주소'] || '')
                     });
                 });
             }
@@ -272,10 +314,13 @@ watch(formattedEmployees, (newVal) => {
 const submitForm = async () => {
     const filteredEmployees = formattedEmployees.value.filter(emp => {
         return Object.values(emp).some(value => value !== null && value !== '');
+    }).map(emp => {
+        const { workType, ...rest } = emp;
+        return workType ? emp : rest;
     });
 
     try {
-        const response = await axios.post('http://localhost:8080/users/list', filteredEmployees);
+        const response = await axios.put('http://localhost:8080/users/list', filteredEmployees);
         alert('일괄 수정이 성공하였습니다.');
         router.push(0);
     } catch (e) {
@@ -387,8 +432,16 @@ button {
     width: 100%;
 }
 
-input,
-select {
+.address-container input {
+    border: none;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.2rem;
+    color: #000000;
+}
+
+select,
+input {
     border: none;
     width: 100%;
     box-sizing: border-box;
@@ -531,7 +584,20 @@ thead th {
     font-style: bold;
     min-height: 20px;
     min-width: 40px;
+    max-height: 20px;
+    max-width: 40px;
     margin-bottom: 5px;
+    margin-right: 5%;
+}
+
+.address-container {
+    display: flex;
+    flex-direction: column;
+}
+
+#address-container2 {
+    display: flex;
+    justify-content: flex-end;
 }
 
 .downloadBtn img {
@@ -563,5 +629,13 @@ thead th {
     margin: 1% 3% 1% 0;
     filter: invert(100%) sepia(65%) saturate(424%) hue-rotate(91deg) brightness(129%) contrast(107%);
     transition: transform 0.3s ease;
+}
+
+.address-container input::placeholder {
+    text-align: left;
+}
+
+.address-container input {
+    text-align: left;
 }
 </style>

@@ -11,5 +11,5 @@ public interface TeamMapper {
 
     List<Team> findTeamList();
 
-    List<Team> findSubDepartmentByDepartmentId(int id);
+
 }
