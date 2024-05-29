@@ -50,7 +50,7 @@
           <img :src="selectedReview.revieweeImage" alt="Reviewee Image" class="reviewee-image" />
           <h2>{{ selectedReview.revieweeName }}</h2>
           <h3>{{ selectedReview.revieweePosition }}</h3>
-          <table>
+          <table class="table table-striped table-hover">
             <thead>
               <tr>
                 <th>항목</th>
@@ -210,3 +210,94 @@ const submitReview = async () => {
   }
 };
 </script>
+
+<style scoped>
+@font-face {
+  font-family: 'IBMPlexSansKR-Regular';
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_20-07@1.0/IBMPlexSansKR-Regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+  table-layout: fixed;
+}
+
+th, td {
+  padding: 8px;
+  text-align: left;
+  border-top: 1px solid #ddd; /* 테이블 상단에만 선 추가 */
+  border-bottom: 1px solid #ddd; /* 테이블 하단에만 선 추가 */
+}
+
+th {
+  background-color: #f2f2f2;
+  color: #333;
+}
+
+td {
+  font-size: 14px;
+}
+
+tr:hover {
+  background-color: #f1f1f1;
+}
+
+.modal {
+  display: block; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.reviewee-image {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+}
+
+.option-button {
+  margin: 5px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.option-button.selected {
+  background-color: #088A85;
+  color: white;
+}
+</style>

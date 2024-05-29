@@ -162,6 +162,39 @@ const addNewReview = async () => {
 </script>
 
 <style>
+/* 테이블 스타일 */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+  table-layout: fixed;
+}
+
+/* 테이블 헤더와 셀 스타일 */
+th, td {
+  padding: 8px;
+  text-align: left;
+  border-top: 1px solid #ddd; /* 테이블 상단에만 선 추가 */
+  border-bottom: 1px solid #ddd; /* 테이블 하단에만 선 추가 */
+}
+
+/* 테이블 헤더 스타일 */
+th {
+  background-color: #f2f2f2;
+  color: #333;
+}
+
+/* 테이블 데이터 셀 스타일 */
+td {
+  font-size: 14px;
+}
+
+/* 테이블 행 호버 스타일 */
+tr:hover {
+  background-color: #f1f1f1;
+}
+
+/* 모달 스타일 */
 .modal {
   display: flex;
   justify-content: center;
@@ -176,6 +209,7 @@ const addNewReview = async () => {
   background-color: rgba(0, 0, 0, 0.5);
 }
 
+/* 모달 콘텐츠 스타일 */
 .modal-content {
   background-color: white;
   padding: 20px;
@@ -184,6 +218,7 @@ const addNewReview = async () => {
   max-width: 80%;
 }
 
+/* 닫기 버튼 스타일 */
 .close {
   color: #aaa;
   float: right;
@@ -191,6 +226,7 @@ const addNewReview = async () => {
   font-weight: bold;
 }
 
+/* 닫기 버튼 호버 및 포커스 스타일 */
 .close:hover,
 .close:focus {
   color: black;
