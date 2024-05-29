@@ -94,7 +94,7 @@ public class PerformanceReviewController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    // 업적 평가 평가 확인
+    // 업적 평가 평가 완료
     @PutMapping("/complete")
     public ResponseEntity<ResponseModifyPerformanceReviewVO> modifyPerformanceReviewStatusComplete(
             @RequestBody RequestPerformanceReviewVO requestPerformanceReviewVO){
@@ -112,7 +112,7 @@ public class PerformanceReviewController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    // 업적 평가 평가 확정
+    // 업적 평가 평가 완료
     @PutMapping("/valid")
     public ResponseEntity<ResponseModifyPerformanceReviewVO> modifyPerformanceReviewStatusValid(
             @RequestBody RequestPerformanceReviewVO requestPerformanceReviewVO){

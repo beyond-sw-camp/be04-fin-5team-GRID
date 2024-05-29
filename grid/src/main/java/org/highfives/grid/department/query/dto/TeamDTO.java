@@ -24,10 +24,8 @@ public class TeamDTO {
 
     private int leaderId;
 
-    private int sequence;
-
     @Builder
-    public TeamDTO(int id, String teamName, int memberCnt, TeamStatus teamStatus, String startTime, String endTime, int departmentId, int leaderId, int sequence) {
+    public TeamDTO(int id, String teamName, int memberCnt, TeamStatus teamStatus, String startTime, String endTime, int departmentId, int leaderId) {
         this.id = id;
         this.teamName = teamName;
         this.memberCnt = memberCnt;
@@ -36,6 +34,5 @@ public class TeamDTO {
         this.endTime = endTime;
         this.departmentId = departmentId;
         this.leaderId = leaderId;
-        this.sequence = sequence;
     }
 }

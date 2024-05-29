@@ -40,12 +40,9 @@ public class Department {
     @Column(name = "department_code", nullable = false)
     private String departmentCode;
 
-    @Column(name = "sequence")
-    private int sequence;
-
     @Builder
     public Department(int id, String departmentName, int memberCnt, String departmentStatus,
-                      String startTime, String endTime, int leaderId, String departmentCode, int sequence) {
+                      String startTime, String endTime, int leaderId, String departmentCode) {
         this.id = id;
         this.departmentName = departmentName;
         this.memberCnt = memberCnt;
@@ -54,6 +51,5 @@ public class Department {
         this.endTime = endTime;
         this.leaderId = leaderId;
         this.departmentCode = departmentCode;
-        this.sequence = sequence;
     }
 }

@@ -122,17 +122,25 @@ async function Login() {
         });
 
         if (response.status === 200) {
-            localStorage.setItem('access', response.data.access);
+            const token = response.data.access;
+            
+            const response2 = await axios.get(`http://localhost:8080/users/mail/${inputValue.value}`);
+            const user = response2.data.result;
+
+            // 이메일과 토큰을 로컬 스토리지에 저장
+            localStorage.setItem('email', inputValue.value);
+            localStorage.setItem('access', token);
+
             alert('로그인 되었습니다');
             isWrong.value = false;
 
-            await store.dispatch('fetchUserByEmail', inputValue.value);
             router.push('/main');
         }
     } catch (e) {
         isWrong.value = true;
     }
 }
+
 
 function findId() {
     router.push('/find/id');

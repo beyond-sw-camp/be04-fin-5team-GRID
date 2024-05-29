@@ -4,8 +4,8 @@
       <!-- 추후 이미지 파일 업로드로 받아오기. -->
       <img src="@/assets/profile.png" alt="Profile Picture" class="profile-pic" />
       <div class="profile-info">
-        <h3>{{employee.name}}</h3>
-        <p>{{employee.email}} </p>
+        <h3>{{ user?.name }}</h3>
+        <p>{{ user?.email }}</p>
       </div>
     </div>
     <nav class="menu">
@@ -51,12 +51,11 @@
         <li>
           <span @click="toggleMenu('performanceReview')">업적 평가 관리</span>
           <ul v-show="activeMenus.performanceReview">
-            <li @click="navigateTo('/performance-review-goal/add')">목표 작성</li>
-            <li @click="navigateTo('/performance-review-goal')">목표 조회</li>
-            <li @click="navigateTo('/performance-review/mid')">중간 평가 작성</li>
-            <li @click="navigateTo('/performance-review/final')">연말 평가 작성</li>
-            <li @click="navigateTo('/performance-review')">평가 조회</li>
-            <li @click="navigateTo('/performance-review/total')">종합 평가 조회</li>
+            <li @click="navigateTo('/performance-review-goal/add')">업적 평가 목표 작성</li>
+            <li @click="navigateTo('/performance-review-goal')">업적 평가 목표 조회</li>
+            <li>업적 평가 작성</li>
+            <li>업적 평가 조회</li>
+            <li>종합 업적 평가</li>
           </ul>
         </li>
       </ul>
@@ -66,46 +65,48 @@
 
 <script setup>
 import axios from 'axios';
-import { ref, onMounted,reactive } from 'vue';
+import { ref, onMounted, reactive, computed } from 'vue';
 import { useRouter } from 'vue-router';
+import { useStore } from 'vuex';
 
 const employee = ref([]);
 const error = ref([]);
 const router = useRouter();
 const userRole = ref('');
+const store = useStore();
 
-const fetchEmployee = async () => {
-  try {
-    const response = await axios.get(`http://localhost:8080/users/240201`); // ${employeeNumber}로 수정예정
-    employee.value = response.data.result;
-  } catch (err) {
-    console.error('Error fetching employee:', err);
-    error.value = 'Failed to fetch employee data.';
-  }
-};
+const user = computed(() => store.state.user);
+
+// const fetchEmployee = async () => {
+//   try {
+//     const response = await axios.get(`http://localhost:8080/users/mail/${user.value.employeeNumber}`); // ${employeeNumber}로 수정예정
+//     employee.value = response.data.result;
+//   } catch (err) {
+//     console.error('Error fetching employee:', err);
+//     error.value = 'Failed to fetch employee data.';
+//   }
+// };
 
 function parseJwt(token) {
-    try {
-        const base64Url = token.split('.')[1];
-        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
-            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-        }).join(''));
-        return JSON.parse(jsonPayload);
-    } catch (error) {
-        console.error('Invalid token', error);
-        return null;
-    }
+  try {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+    return JSON.parse(jsonPayload);
+  } catch (error) {
+    console.error('Invalid token', error);
+    return null;
+  }
 }
 
-onMounted(() => {
-  const token = localStorage.getItem('access');
-    if (token) {
-        const decodedToken = parseJwt(token);
-        userRole.value = decodedToken?.auth || '';
-    }
+onMounted(async () => {
 
-  fetchEmployee();
+  const dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'));
+  dropdownElementList.map(function (dropdownToggleEl) {
+    return new Dropdown(dropdownToggleEl);
+  });
 });
 
 
@@ -126,14 +127,14 @@ const gotodepartmentInfo = () => {
 }
 
 const goToAddTeamReview = () => {
-  router.push('/team-review/add');
+  router.push('/addteamreview');
 }
 
 const navigateTo = (path) => {
   router.push(path);
 };
 
-function toHR () {
+function toHR() {
   router.push('/hr');
 }
 
@@ -157,10 +158,10 @@ function toVacationChangeInfo() {
 
 <style scoped>
 @font-face {
-    font-family: 'IBMPlexSansKR-Regular';
-    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_20-07@1.0/IBMPlexSansKR-Regular.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
+  font-family: 'IBMPlexSansKR-Regular';
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_20-07@1.0/IBMPlexSansKR-Regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
 }
 
 .sidebar {
@@ -171,11 +172,13 @@ function toVacationChangeInfo() {
   overflow-y: auto;
   font-family: 'IBMPlexSansKR-Regular';
 }
-.sidebar{
-   -ms-overflow-style: none;
+
+.sidebar {
+  -ms-overflow-style: none;
 }
-.sidebar::-webkit-scrollbar{
-  display:none;
+
+.sidebar::-webkit-scrollbar {
+  display: none;
 }
 
 .profile {
@@ -235,4 +238,4 @@ function toVacationChangeInfo() {
 .menu li ul li {
   padding: 5px 0;
 }
-</style>  
+</style>

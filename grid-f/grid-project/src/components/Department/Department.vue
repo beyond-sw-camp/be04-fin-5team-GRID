@@ -3,16 +3,14 @@
     <div class="header">
       <div class="header-title">
         <img src="@/assets/department_icon.png" alt="department_icon" class="department-pic">
-        <h1>부서 정보</h1>
+        <span>부서 정보</span>
       </div>
-      <button class="addbtn" @click="showModal('addNewModal')">추가하기</button>
-      <button class="modifybtn" @click="">수정하기</button>
+      <button class="btn btn-primary" @click="showModal('addNewModal')">+ Add new</button>
     </div>
-    <div class="search">
-      <input type="text" class="searchBox" placeholder="부서명 검색">
-      <button @click="search" class="searchBtn">검색</button>
+    <div class="search-bar">
+      <input type="text" placeholder="NAME 검색">
     </div>
-    <table class="deptTable">
+    <table>
       <thead>
         <tr>
           <th style="width: 10%;"></th>
@@ -272,108 +270,45 @@ body {
 }
 
 .container {
-  display: grid;
-  grid-template-columns: 10% 80% 10%;
-  grid-template-rows: 18% 3% 2% 65% 2% 5% 5%;
   width: 80%;
+  margin: auto;
+  margin-top: 130px;
   font-family: 'IBMPlexSansKR-Regular';
 }
 
-.search {
-  grid-row-start: 2;
-  grid-column-start: 2;
-  display: grid;
-  grid-template-columns: 74% 5% 1% 15% 1% 4%;
-  font-size: 12px;
-}
-
-.searchBox {
-    grid-column-start: 4;
-    margin-left: 2%;
-    padding: 5px 5px;
-    border-radius: 4px;
-    font-size: 12px;
-    font-style: bold;
-}
-
-.searchBtn {
-    grid-column-start: 6;
-    margin-left: 2%;
-    width: 100%;
-    background-color: #088A85;
-    color: white;
-    padding: 5px 5px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 12px;
-    font-style: bold;
-}
-
-.deptTable {
-  grid-column-start: 2;
-  grid-row-start: 4;
-}
-
 .header {
-}
-
-.header-title {
-
-  grid-column-start: 2;
-  display: grid;
-  grid-template-columns: 90% 4.5% 1% 4.5%;
+  display: flex;
+  justify-content: space-between;
   align-items: center;
 }
 
 .header-title {
+  display: flex;
   align-items: center;
-  display: grid; 
-  grid-template-columns: 3% 97%;
-
 }
 
-.header-title h1 {
-  font-size: 25px;
-  font-weight: 600;
-  margin-left: 0.5%;
-  margin-bottom: 0;
+.header-title span {
+  font-size: 24px;
+  margin-left: 10px;
 }
 
-.addbtn {
-  padding: 5px 5px;
-  background-color: #088A85;
+.header button {
+  padding: 10px 20px;
+  background-color: #ff6b6b;
   border: none;
   color: white;
-  border-radius: 4px;
-  font-size: 11px;
-  cursor: pointer;
-  grid-column-start: 2;
-}
-
-.modifybtn {
-  grid-column-start:4 ;
-  padding: 5px 5px;
-  background-color: #088A85;
-  border: none;
-  color: white;
-  border-radius: 4px;
-  font-size: 11px;
+  border-radius: 5px;
   cursor: pointer;
 }
 
 .search-bar {
-  grid-row-start:2;
-  grid-column-start: 2;
-  display: grid;
-  grid-template-columns: 90% 10%;
+  margin: 20px 0;
 }
 
 .search-bar input {
-  grid-column-start:2 ;
-  width: 100%;
+  width: 20%;
+  padding: 10px;
   border: 1px solid #ddd;
-  padding: 5px;
   border-radius: 5px;
 }
 
@@ -404,10 +339,9 @@ tr:hover {
 }
 
 .pagination {
-  grid-row-start:6;
-  grid-column-start: 2;
   display: flex;
   justify-content: center;
+  margin-top: 20px;
 }
 
 .pagination a {
@@ -420,14 +354,14 @@ tr:hover {
 }
 
 .pagination a.active {
-  background-color: #088A85;
+  background-color: #ff6b6b;
   color: white;
   border: none;
 }
 
 .department-pic {
-  width: 80%;
-  grid-column-start: 1;
+  width: 50px;
+  height: 50px;
 }
 
 .modal-header {

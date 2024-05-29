@@ -21,8 +21,6 @@ public interface UserService {
 
     List<UserDTO> findUsersByName(String name);
 
-    List<UserDTO> findTeamList(int teamId);
-
     UserDTO findUserByEmail(String email);
 
     List<PositionDTO> findPositions();

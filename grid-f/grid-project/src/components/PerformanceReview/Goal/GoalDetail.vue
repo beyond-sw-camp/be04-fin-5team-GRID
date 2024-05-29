@@ -430,7 +430,7 @@ async function denied() {
 <style scoped>
 .goalDetailContainer {
   display: grid;
-  grid-template-rows: 18% 21% 8% minmax(50%, auto) 8% 13%;
+  grid-template-rows: 18% 21% 8% minmax(10%, auto) 8% 13%;
   grid-template-columns: 10% 80% 10%;
   height: 100%;
 }
@@ -497,7 +497,7 @@ async function denied() {
   /* 가로 스크롤을 필요로 하는 경우 */
   overflow-y: auto;
   /* 세로 스크롤을 필요로 하는 경우 */
-  max-height: 500px;
+  max-height: 200px;
   /* 원하는 높이로 설정 */
 }
 

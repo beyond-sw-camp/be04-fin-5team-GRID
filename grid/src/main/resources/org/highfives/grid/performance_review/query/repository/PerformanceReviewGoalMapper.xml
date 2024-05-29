@@ -130,7 +130,6 @@
         WHERE goal_id = #{goal_id};
     </select>
 
-<!--    평가 년도 조회-->
     <select id="selectGoalByWriterIdAndYear" resultMap="goalResultMap" parameterType="hashmap">
         SELECT
         A.id as 'ID'
@@ -151,4 +150,5 @@
         WHERE A.writer_id = #{writerId}
         AND A.year = #{year};
     </select>
+
 </mapper>
