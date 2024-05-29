@@ -2,7 +2,7 @@
   <div>
     <header class="header">
       <div class="logo">
-        <img src="@/assets/logo.png" @click="main()" class="logoimage">
+        <img src="@/assets/logo.png" @click="main()" class="logoimage" style="cursor: pointer;">
       </div>
       <div class="icons">
         <button class="icon-button">

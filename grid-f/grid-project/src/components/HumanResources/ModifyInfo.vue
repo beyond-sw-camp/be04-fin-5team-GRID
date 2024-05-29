@@ -34,7 +34,7 @@
                 {{ user.team ? user.team.teamName : 'N/A' }}
             </div>
             <div id="hr-info-content">
-                {{ user.assignedTask }}
+                {{ assignedTask }}
             </div>
             <div id="hr-info-content">
                 {{ user.position ? user.position.positionName : 'N/A' }}
@@ -46,7 +46,8 @@
         <div class="modify-hr-info">
             <div id="modify-hr-info">
                 <select v-model="newDepartmentId" :class="{ modified: newDepartmentId !== user.department.id }">
-                    <option v-for="dept in departmentInfo" :key="dept.id" :value="dept.id">{{ dept.departmentName }}</option>
+                    <option v-for="dept in departmentInfo" :key="dept.id" :value="dept.id">{{ dept.departmentName }}
+                    </option>
                 </select>
             </div>
             <div id="modify-hr-info">
@@ -55,11 +56,13 @@
                 </select>
             </div>
             <div id="modify-hr-info">
-                <input type="text" v-model="newAssignedTask" :class="{ modified: newAssignedTask !== user.assignedTask }">
+                <input type="text" v-model="newAssignedTask"
+                    :class="{ modified: newAssignedTask !== user.assignedTask }">
             </div>
             <div id="modify-hr-info">
                 <select v-model="newPositionId" :class="{ modified: newPositionId !== user.position.id }">
-                    <option v-for="position in positionInfo" :key="position.id" :value="position.id">{{ position.positionName }}</option>
+                    <option v-for="position in positionInfo" :key="position.id" :value="position.id">{{
+                        position.positionName }}</option>
                 </select>
             </div>
             <div id="modify-hr-info">
@@ -123,22 +126,25 @@
                 <input type="text" v-model="newName" :class="{ modified: newName !== user.name }">
             </div>
             <div id="modify-basic-info">
-                <input type="text" v-model="newEmployeeNumber" @blur="checkDuplicate('employeeNumber')" :class="{ modified: newEmployeeNumber !== user.employeeNumber }">
+                <input type="text" v-model="newEmployeeNumber" @blur="checkDuplicate('employeeNumber')"
+                    :class="{ modified: newEmployeeNumber !== user.employeeNumber }">
                 <span v-if="duplicateWarning.employeeNumber" class="warning">중복된 사번입니다.</span>
             </div>
             <div id="modify-basic-info">
-                <input type="text" v-model="newEmail" @blur="checkDuplicate('email')" :class="{ modified: newEmail !== user.email }">
+                <input type="text" v-model="newEmail" @blur="checkDuplicate('email')"
+                    :class="{ modified: newEmail !== user.email }">
                 <span v-if="duplicateWarning.email" class="warning">중복된 이메일입니다.</span>
             </div>
             <div id="modify-basic-info">
-                <input type="text" v-model="newPhoneNumber" @blur="checkDuplicate('phoneNumber')" :class="{ modified: newPhoneNumber !== user.phoneNumber }">
+                <input type="text" v-model="newPhoneNumber" @blur="checkDuplicate('phoneNumber')"
+                    :class="{ modified: newPhoneNumber !== user.phoneNumber }">
                 <span v-if="duplicateWarning.phoneNumber" class="warning">중복된 휴대전화번호입니다.</span>
             </div>
             <div id="modify-basic-info">
                 <input type="text" v-model="newCallNum" :class="{ modified: newCallNum !== user.callNumber }">
             </div>
-            <div id="modify-basic-info">
-                <input type="text" v-model="newJoinTime" :class="{ modified: newJoinTime !== user.joinTime }">
+            <div id="modify-admin-info">
+                <input v-model="newJoinTime" :class="{ modified: newJoinTime !== user.joinTime }" type="date" required>
             </div>
         </div>
         <div class="admin-info-title">
@@ -152,11 +158,19 @@
             </div>
             <div id="admin-info-name" style="margin-top: 20%;">
                 <img src="@/assets/HR/time.png" alt="시간 표시" class="info-img">
+                입사 유형
+            </div>
+            <div id="admin-info-name">
+                <img src="@/assets/HR/time.png" alt="시간 표시" class="info-img">
                 고용 유형
             </div>
             <div id="admin-info-name">
                 <img src="@/assets/HR/time.png" alt="시간 표시" class="info-img">
-                입사 유형
+                계약 시작일
+            </div>
+            <div id="admin-info-name">
+                <img src="@/assets/HR/time.png" alt="시간 표시" class="info-img">
+                계약 종료일
             </div>
             <div id="admin-info-name">
                 <img src="@/assets/HR/time.png" alt="시간 표시" class="info-img">
@@ -168,22 +182,35 @@
                 {{ user.zipCode }} <br>
                 {{ user.address }}
             </div>
-            <div id="admin-info-content">
+            <div id="admin-info-content" style="margin-top: 20%;">
                 {{ joinType }}
             </div>
             <div id="admin-info-content">
                 {{ workType }}
             </div>
             <div id="admin-info-content">
-                {{ isResigned ? '퇴사' : '재직중' }} {{ resignTime }}
+                {{ user.contractStartTime }}
+            </div>
+            <div id="admin-info-content">
+                {{ user.contractEndTime }}
+            </div>
+            <div id="admin-info-content">
+                {{ isResigned ? '퇴사' : '재직' }} &nbsp ({{ resignTime }})
             </div>
         </div>
         <div class="modify-admin-info">
             <div id="modify-admin-info">
-                <input type="text" v-model="newZipCode" readonly :class="{ modified: newZipCode !== user.zipCode }">
-                <button @click="execDaumPostcode">검색</button><br>
-                <input type="text" v-model="newAddress" readonly :class="{ modified: newAddress !== user.address }">
-                <input type="text" v-model="newAddressDetail" placeholder="상세 주소" :class="{ modified: newAddressDetail !== '' }">
+                <div id="modify-admin-info-sub1">
+                    <button @click="execDaumPostcode">검색</button><br>
+                    <input type="text" v-model="newZipCode" readonly :class="{ modified: newZipCode !== user.zipCode }"
+                    placeholder="우편 번호" id="sub-1-1">
+                    <input type="text" v-model="newAddress" readonly :class="{ modified: newAddress !== user.address }"
+                    placeholder="기본 주소" id="sub-1-2">
+                </div>
+                <div id="modify-admin-info-sub2">
+                    <input type="text" v-model="newAddressDetail" placeholder="상세 주소"
+                        :class="{ modified: newAddressDetail !== '' }">
+                </div>
             </div>
             <div id="modify-admin-info">
                 <select v-model="newJoinType" :class="{ modified: newJoinType !== user.joinType }">
@@ -196,6 +223,12 @@
                     <option value="R">정규직</option>
                     <option value="C">계약직</option>
                 </select>
+            </div>
+            <div id="modify-admin-info">
+                <input v-model="newContractStartTime" type="date" required>
+            </div>
+            <div id="modify-admin-info">
+                <input v-model="newContractEndTime" type="date" required>
             </div>
             <div id="modify-admin-info">
                 <button @click="confirmResignation">퇴사</button>
@@ -220,6 +253,7 @@ const props = defineProps({
 const emit = defineEmits(['update-user']);
 
 const callNum = ref('');
+const assignedTask = ref('');
 const joinType = ref('');
 const workType = ref('');
 const isResigned = ref(false);
@@ -253,6 +287,8 @@ const newJoinType = ref('');
 const newWorkType = ref('');
 const newIsResigned = ref('N');
 const resignedTime = ref('');
+const newContractEndTime = ref('');
+const newContractStartTime = ref('');
 
 const resultAddress = computed(() => `${newAddress.value} ${newAddressDetail.value}`);
 
@@ -260,14 +296,13 @@ const changeValues = (user) => {
     if (!user) return;
     console.log('props 확인: ', user);
     console.log('props 확인: ', user.name);
-    if (user.callNumber == null) {
-        callNum.value = '-';
-    } else {
-        callNum.value = user.callNumber;
-    }
+
+    callNum.value = user.callNumber != null ? user.callNumber : '-';
+    assignedTask.value = user.assignedTask != null ? user.assignedTask.value : '-';
     joinType.value = user.joinType === 'NEW' ? '신입' : '경력';
     workType.value = user.workType === 'R' ? '정규직' : '계약직';
     isResigned.value = user.resignYn === 'Y';
+
     if (user.resignTime != null) {
         resignTime.value = user.resignTime;
     }
@@ -287,6 +322,8 @@ const changeValues = (user) => {
     newWorkType.value = user.workType;
     newIsResigned.value = user.resignYn ? 'Y' : 'N';
     resignedTime.value = user.resignTime || '';
+    newContractStartTime.value = user.contractStartTime;
+    newContractEndTime.value = user.contractEndTime;
 };
 
 onMounted(async () => {
@@ -316,7 +353,7 @@ const checkDuplicate = async (field) => {
 
 const execDaumPostcode = () => {
     new daum.Postcode({
-        oncomplete: function(data) {
+        oncomplete: function (data) {
             let addr = '';
             let extraAddr = '';
 
@@ -357,7 +394,7 @@ const resignUser = async () => {
         });
         alert('퇴사 처리 되었습니다.');
         console.log('퇴사 처리 완료:', response.data);
-        router.push(`/hr/profile/${user.value.employeeNumber}`);
+        router.push(`/hr/profile/${props.user.employeeNumber}`);
 
     } catch (error) {
         console.error("퇴사 처리 중 오류 발생: ", error);
@@ -520,14 +557,75 @@ hr {
     width: 100%;
 }
 
+.modify-admin-info button {
+    width: 10%;
+    min-width: 36.8px;
+    background-color: #df2517;
+    color: white;
+    padding: 5px 5px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    font-style: bold;
+}
+
 #hr-info-content,
-#basic-info-content,
-#admin-info-content,
-#modify-hr-info,
-#modify-basic-info,
-#modify-admin-info {
+#basic-info-content {
     margin-top: 1%;
     margin-bottom: 8.5%;
+}
+
+#admin-info-content {
+    margin-top: 1%;
+    margin-bottom: 6.7%;
+}
+
+#modify-hr-info,
+#modify-basic-info {
+    margin-top: 1%;
+    margin-bottom: 4.5%;
+}
+
+#modify-admin-info {
+    margin-top: 1%;
+    margin-bottom: 4%;
+}
+
+#modify-admin-info-sub1 {
+    display: flex;
+    margin-bottom: 2%;
+}
+
+#modify-admin-info-sub1 button {
+    width: 10%;
+    min-width: 36.8px;
+    background-color: #088A85;
+    color: white;
+    padding: 5px 5px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    font-style: bold;
+}
+
+#sub-1-1 {
+    margin-left: 2%;
+    margin-right: 2%;
+    width: 23%;
+    min-width: 95px;
+}
+
+#sub-1-2 {
+    min-width: 220px;
+    width: 100%;
+}
+
+
+#modify-admin-info-sub2 input {
+    width: 100%;
+    min-width: 300px; 
 }
 
 .basic-info-title {

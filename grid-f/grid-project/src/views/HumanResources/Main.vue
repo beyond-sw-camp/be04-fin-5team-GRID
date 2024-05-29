@@ -25,7 +25,7 @@
                             등록</a></li>
                 </ul>
             </div>
-            <input class="sortBox" v-model="searchCondition" type="text" placeholder="검색" @keyup.enter="findUser">
+            <input class="sortBox" v-model="searchCondition" type="text" placeholder="이름" @keyup.enter="findUser">
             <button class="searchBtn" @click="findUser">검색</button>
         </div>
         <div class="tableContainer">

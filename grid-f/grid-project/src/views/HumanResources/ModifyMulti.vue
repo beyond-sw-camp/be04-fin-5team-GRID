@@ -36,12 +36,22 @@
                 </thead>
                 <tbody>
                     <tr v-for="(employee, index) in employees" :key="index">
-                        <td><input v-model="employee.employeeNumber" class="no-border" required placeholder="사원 번호"></td>
-                        <td><input v-model="employee.name" class="no-border" required placeholder="이름"></td>
+                        <td>
+                            <input v-model="employee.employeeNumber"
+                                :class="{ 'invalid-input': employee.invalid && !employee.employeeNumber }" required
+                                placeholder="사원 번호"
+                                :style="{ color: employee.invalid && !employee.employeeNumber ? 'red' : '' }">
+                        </td>
+                        <td>
+                            <input v-model="employee.name"
+                                :class="{ 'invalid-input': employee.invalid && !employee.name }" required placeholder="이름"
+                                :style="{ color: employee.invalid && !employee.name ? 'red' : '' }">
+                        </td>
                         <td>
                             <select v-model="employee.departmentId">
                                 <option disabled value="">선택</option>
-                                <option v-for="department in departments" :key="department.value" :value="department.value">
+                                <option v-for="department in departments" :key="department.value"
+                                    :value="department.value">
                                     {{ department.text }}
                                 </option>
                             </select>
@@ -82,8 +92,10 @@
                             <div class="address-container">
                                 <div>
                                     <button class="searchBtn" @click="execDaumPostcode(employee)">검색</button>
-                                    <input v-model="employee.zipCode" placeholder="우편 번호" style="width: 23%;" required readonly>
-                                    <input v-model="employee.address1" placeholder="주소" style="width: 57%;" required readonly>
+                                    <input v-model="employee.zipCode" placeholder="우편 번호" style="width: 23%;" required
+                                        readonly>
+                                    <input v-model="employee.address1" placeholder="주소" style="width: 57%;" required
+                                        readonly>
                                 </div>
                                 <div id="address-container2">
                                     <input v-model="employee.address2" placeholder="상세 주소" style="width: 82%;" required>
@@ -191,7 +203,8 @@ const addEmployee = () => {
         contractEndDate: '',
         zipCode: '',
         address1: '',
-        address2: ''
+        address2: '',
+        invalid: false // Add invalid field for validation
     });
 };
 
@@ -210,13 +223,13 @@ const formattedEmployees = computed(() =>
         workType: emp.workType,
         contractEndDate: emp.contractEndDate,
         zipCode: emp.zipCode,
-        address: `${emp.address1} ${emp.address2}`
+        address: emp.address1 ? `${emp.address1} ${emp.address2}`.trim() : null
     }))
 );
 
 const execDaumPostcode = (employee) => {
     new daum.Postcode({
-        oncomplete: function(data) {
+        oncomplete: function (data) {
             let addr = '';
             let extraAddr = '';
 
@@ -290,7 +303,8 @@ const handleFileUpload = (event) => {
                         contractEndDate: (row['계약 종료일'] || '').trim(),
                         zipCode: (row['우편 번호'] || '').trim(),
                         address1: (row['주소'].split(' ')[0] || '').trim(),
-                        address2: (row['상세 주소'] || '')
+                        address2: (row['상세 주소'] || ''),
+                        invalid: false // Add invalid field for validation
                     });
                 });
             }
@@ -312,17 +326,48 @@ watch(formattedEmployees, (newVal) => {
 }, { deep: true });
 
 const submitForm = async () => {
-    const filteredEmployees = formattedEmployees.value.filter(emp => {
-        return Object.values(emp).some(value => value !== null && value !== '');
-    }).map(emp => {
-        const { workType, ...rest } = emp;
-        return workType ? emp : rest;
-    });
+    let hasInvalid = false;
+    let hasData = false;
+
+    const cleanedEmployees = formattedEmployees.value
+        .filter(emp => Object.values(emp).some(value => value !== null && value !== ''))
+        .map(emp => {
+            const cleanedEmp = {};
+            Object.keys(emp).forEach(key => {
+                if (emp[key] !== null && emp[key] !== '') {
+                    cleanedEmp[key] = emp[key];
+                }
+            });
+            return cleanedEmp;
+        })
+        .filter(emp => Object.values(emp).some(value => value !== null && value !== ''));
+    
+    if(cleanedEmployees.length == 0) {
+        alert('수정할 데이터가 없습니다.');
+        return;
+    }
+
+    employees.forEach(emp => {
+
+        if (!emp.employeeNumber || !emp.name) {
+            emp.invalid = true;
+            hasInvalid = true;
+        } else {
+            emp.invalid = false;
+        }
+    }
+    );
+
+    if (hasInvalid) {
+        alert('사번과 이름을 입력해주세요.');
+        return;
+    }
 
     try {
-        const response = await axios.put('http://localhost:8080/users/list', filteredEmployees);
-        alert('일괄 수정이 성공하였습니다.');
-        router.push(0);
+        console.log('보낼 데이터: ', cleanedEmployees)
+        await axios.put('http://localhost:8080/users/list', cleanedEmployees);
+        alert('수정에 성공하였습니다.');
+        router.push('/hr');
     } catch (e) {
         const errorMessage = e.response && e.response.data && e.response.data.message ? e.response.data.message : e.message;
         alert('수정에 실패하였습니다. 입력 정보를 확인해주세요! : ' + errorMessage);
@@ -637,5 +682,9 @@ thead th {
 
 .address-container input {
     text-align: left;
+}
+
+.invalid-input::placeholder {
+    color: rgb(240, 125, 125);
 }
 </style>

@@ -3,12 +3,14 @@ package org.highfives.grid.user.command.controller;
 import org.highfives.grid.user.command.dto.UserDTO;
 import org.highfives.grid.user.command.service.UserService;
 import org.highfives.grid.user.command.vo.ReqResetPwdVO;
+import org.highfives.grid.user.command.vo.ResImgUploadVO;
 import org.highfives.grid.user.command.vo.ResUserListVO;
 import org.highfives.grid.user.command.vo.ResUserVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,14 +30,19 @@ public class UserController {
 
     // 신규 유저 등록 (단일)
     @PostMapping
-    public ResponseEntity<ResUserVO> addNewUser(@RequestBody UserDTO givenInfo) {
+    public ResponseEntity<ResUserVO> addNewUser(@RequestBody UserDTO givenInfo,
+                                                MultipartFile multipartFile) throws Exception{
+
+        Map<String, String> uploadResult = new HashMap<>();
+
+        if(multipartFile != null) {
+            uploadResult = userService.imgUpload(multipartFile);
+        }
 
         if(duplicateInfoCheck(givenInfo) != null)
             return duplicateInfoCheck(givenInfo);
 
-        givenInfo.setContractStartTime(givenInfo.getJoinTime());
-
-        UserDTO result = userService.addNewUser(givenInfo);
+        UserDTO result = userService.addNewUser(givenInfo, uploadResult);
 
         ResUserVO response = new ResUserVO(
             201, "Success to add new user", "/user", result);
@@ -47,6 +54,7 @@ public class UserController {
     @PostMapping("/list")
     public ResponseEntity<ResUserListVO> addMultiUser(@RequestBody List<UserDTO> infoList) {
 
+        System.out.println("infoList = " + infoList);
         //받아온 데이터 간 중복 체크
         if(!userService.multiInfoInputCheck(infoList).equals("P"))
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -54,7 +62,7 @@ public class UserController {
                             400, "Some given infos are duplicated..",
                             "/users/list", null));
 
-        //계약일 자동 입력을 위한 List 객체 생성
+        //DB데이터 체크를 위한 List 객체 생성
         List<UserDTO> givenInfo = new ArrayList<>();
 
         for (UserDTO info : infoList) {
@@ -63,7 +71,6 @@ public class UserController {
                         .body(new ResUserListVO (
                         400, duplicateInfoCheck(info).getBody().getMessage(),"/users", null));
             }
-            info.setContractStartTime(info.getJoinTime());
             givenInfo.add(info);
         }
 
@@ -90,6 +97,19 @@ public class UserController {
                 new ResUserVO(200, "Success to modify user info", "/users/{id}", result);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @PutMapping("/img")
+    public ResponseEntity<ResImgUploadVO> uploadImage(@RequestPart("file") MultipartFile file) {
+        try {
+            System.out.println("file.getOriginalFilename() = " + file.getOriginalFilename());
+            Map<String, String> result = userService.imgUpload(file);
+            System.out.println("result = " + result);
+            System.out.println(" 성공했습니다 " );
+            return null;
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     // 회원 정보 일괄 수정

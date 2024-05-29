@@ -9,8 +9,18 @@
                 <img src="https://talkimg.imbc.com/TVianUpload/tvian/TViews/image/2020/04/12/FydNALvKf23Z637223013461671479.jpg"
                     alt="">
             </div>
+            <div class="infoBtn">
+                <div style="margin: 1% 2% 0 0">
+                    <button class="pwdBtn" @click="triggerFileUpload('fileInput')">프로필 업로드</button>
+                    <input type="file" ref="fileInput" @change="uploadProfileImage" style="display: none;">
+                </div>
+                <div style="margin: 1% 2% 4% 0">
+                    <button class="pwdBtn" @click="triggerFileUpload('sealFileInput')">인감 업로드</button>
+                    <input type="file" ref="sealFileInput" @change="uploadSealImage" style="display: none;">
+                </div>
+            </div>
             <div class="button">
-                <div style="margin-right: 2%;">
+                <div style="margin-right: 2%">
                     <button class="pwdBtn" data-bs-toggle="modal" data-bs-target="#myModal">비밀번호 변경</button>
                 </div>
                 <div>
@@ -57,6 +67,9 @@ const user = ref();
 const updatedUser = ref(null);
 const givenEmail = ref('');
 
+const fileInput = ref(null);
+const sealFileInput = ref(null);
+
 const cleanUserData = (userData) => {
     return {
         id: user.value.id,
@@ -79,6 +92,53 @@ const cleanUserData = (userData) => {
         positionId: userData.positionId,
         dutiesId: userData.dutiesId,
     };
+};
+
+const triggerFileUpload = (inputType) => {
+    const input = inputType === 'fileInput' ? fileInput.value : sealFileInput.value;
+    if (input) {
+        input.click();
+    }
+};
+
+const uploadProfileImage = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+        const response = await axios.put('http://localhost:8080/users/img', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
+        alert("프로필 이미지가 업로드 되었습니다.");
+    } catch (error) {
+        console.error("이미지 업로드 중 오류 발생: ", error);
+        alert("이미지 업로드 중 오류가 발생했습니다.");
+    }
+};
+
+const uploadSealImage = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+        const response = await axios.put('http://localhost:8080/users/seal', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
+        alert("인감 이미지가 업로드 되었습니다.");
+    } catch (error) {
+        console.error("이미지 업로드 중 오류 발생: ", error);
+        alert("이미지 업로드 중 오류가 발생했습니다.");
+    }
 };
 
 const submitModifications = async () => {
@@ -227,6 +287,13 @@ body {
 
 #absenceInfo {
     font-size: 13px;
+}
+
+.infoBtn {
+    grid-column-start: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
 }
 
 .button {

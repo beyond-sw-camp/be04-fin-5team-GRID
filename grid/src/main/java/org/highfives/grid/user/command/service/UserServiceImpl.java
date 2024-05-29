@@ -1,20 +1,24 @@
 package org.highfives.grid.user.command.service;
 
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.highfives.grid.user.command.aggregate.Employee;
-import org.highfives.grid.user.command.aggregate.Gender;
-import org.highfives.grid.user.command.aggregate.PrincipalDetails;
-import org.highfives.grid.user.command.aggregate.Role;
+import org.highfives.grid.user.command.aggregate.*;
 import org.highfives.grid.user.command.dto.UserDTO;
 import org.highfives.grid.user.command.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -27,23 +31,31 @@ public class UserServiceImpl implements UserService{
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final AmazonS3Client amazonS3Client;
+
+    @Value("${cloud.aws.s3.bucketName}")
+    private String bucketName;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository,
                            ModelMapper modelMapper,
-                           BCryptPasswordEncoder bCryptPasswordEncoder) {
+                           BCryptPasswordEncoder bCryptPasswordEncoder,
+                           AmazonS3Client amazonS3Client) {
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.amazonS3Client = amazonS3Client;
     }
 
     @Override
     @Transactional
-    public UserDTO addNewUser(UserDTO givenInfo) {
+    public UserDTO addNewUser(UserDTO givenInfo,
+                              Map<String, String> uploadedImg) {
 
-        givenInfo.setPwd(encodePwd(givenInfo.getPwd()));
+        UserDTO submitInfo = inputSubData(givenInfo);
+        submitInfo.setPwd(encodePwd(submitInfo.getPwd()));
 
-        Employee addInfo = dTOtoEntity(givenInfo);
+        Employee addInfo = dTOtoEntity(submitInfo);
         userRepository.save(addInfo);
 
         Employee addResult = userRepository.findByEmployeeNumber(givenInfo.getEmployeeNumber());
@@ -57,8 +69,11 @@ public class UserServiceImpl implements UserService{
 
         List<UserDTO> addResultList = new ArrayList<>();
         for (UserDTO userInfo : givenInfo) {
-            userInfo.setPwd(encodePwd(userInfo.getPwd()));
-            Employee employee = dTOtoEntity(userInfo);
+
+            UserDTO submitInfo = inputSubData(userInfo);
+
+            submitInfo.setPwd(encodePwd(submitInfo.getPwd()));
+            Employee employee = dTOtoEntity(submitInfo);
 
             userRepository.save(employee);
 
@@ -87,13 +102,13 @@ public class UserServiceImpl implements UserService{
 
         // 유저 검증 단계
         for (UserDTO userDTO : modifyList) {
-            Employee oldInfo = userRepository.findByEmail(userDTO.getEmail());
+            Employee oldInfo = userRepository.findByEmployeeNumber(userDTO.getEmployeeNumber());
             if (oldInfo == null || !oldInfo.getEmployeeName().equals(userDTO.getName())) {
                 throw new UsernameNotFoundException("유저명과 사번이 일치하지 않습니다: " + userDTO.getEmail());
             }
             employeeList.add(inputNewMulitInfo(oldInfo, userDTO));
         }
-
+        System.out.println("employeeList = " + employeeList);
         // 검증에 성공한 경우 수정 단계
         userRepository.saveAll(employeeList);
 
@@ -168,10 +183,10 @@ public class UserServiceImpl implements UserService{
         Set<String> eNumCheck = new HashSet<>();
         Set<String> phoneNumCheck = new HashSet<>();
 
-        for (int i = 0; i < modifyList.size(); i++) {
-            emailCheck.add(modifyList.get(i).getEmail());
-            eNumCheck.add(modifyList.get(i).getEmployeeNumber());
-            phoneNumCheck.add(modifyList.get(i).getPhoneNumber());
+        for (UserDTO userDTO : modifyList) {
+            emailCheck.add(userDTO.getEmail());
+            eNumCheck.add(userDTO.getEmployeeNumber());
+            phoneNumCheck.add(userDTO.getPhoneNumber());
         }
 
         if (emailCheck.size() != modifyList.size() ||
@@ -196,6 +211,46 @@ public class UserServiceImpl implements UserService{
             log.info("Exception occurred: {}", e.getMessage());
             return false;
         }
+    }
+
+    @Override
+    public Map<String, String> imgUpload(MultipartFile multipartFile) throws IOException {
+
+        System.out.println(" 여기까지1 ");
+        System.out.println("multipartFile = " + multipartFile);
+        Map<String, String> result = new HashMap<>();
+
+        String originFileName = multipartFile.getOriginalFilename();
+        String extension = originFileName.substring(originFileName.lastIndexOf("."), originFileName.length());
+
+        System.out.println("extension = " + extension);
+
+        UUID uuid = UUID.randomUUID();
+        String newFileName = uuid.toString() + extension;
+
+        System.out.println("newFileName = " + newFileName);
+        long size = multipartFile.getSize(); // 파일 크기
+
+        ObjectMetadata objectMetaData = new ObjectMetadata();
+        objectMetaData.setContentType(multipartFile.getContentType());
+        objectMetaData.setContentLength(size);
+
+        System.out.println("objectMetaData = " + objectMetaData);
+
+        amazonS3Client.putObject(
+                new PutObjectRequest(bucketName, newFileName, multipartFile.getInputStream(), objectMetaData)
+                .withCannedAcl(CannedAccessControlList.PublicRead));
+
+        System.out.println(" 성공하나? ");
+        String imagePath = amazonS3Client.getUrl(bucketName, newFileName).toString(); // 접근가능한 URL 가져오기
+
+        System.out.println("imagePath = " + imagePath);
+        result.put("origin",originFileName);
+        result.put("new",newFileName);
+        result.put("path",imagePath);
+
+        System.out.println("imagePath = " + imagePath);
+        return result;
     }
 
     public boolean changeGender(int userId) {
@@ -227,11 +282,14 @@ public class UserServiceImpl implements UserService{
                 .joinType(givenInfo.getJoinType())
                 .workType(givenInfo.getWorkType())
                 .contractStartTime(givenInfo.getContractStartTime())
+                .contractEndTime(givenInfo.getContractEndTime())
                 .role(Role.ROLE_USER)
                 .dutiesId(givenInfo.getDutiesId())
                 .positionId(givenInfo.getPositionId())
                 .departmentId(givenInfo.getDepartmentId())
                 .teamId(givenInfo.getTeamId())
+                .resignYn(givenInfo.getResignYn())
+                .absenceYn(givenInfo.getAbsenceYn())
                 .build();
     }
 
@@ -337,5 +395,18 @@ public class UserServiceImpl implements UserService{
         }
 
         return new PrincipalDetails(tokenInfo, true, true);
+    }
+
+    private UserDTO inputSubData(UserDTO givenInfo) {
+
+        if(givenInfo.getContractStartTime() == null)
+            givenInfo.setContractStartTime(givenInfo.getJoinTime());
+        if(givenInfo.getContractEndTime() == null)
+            givenInfo.setContractEndTime("-");
+
+        givenInfo.setAbsenceYn(YN.N);
+        givenInfo.setResignYn(YN.N);
+
+        return givenInfo;
     }
 }

@@ -3,12 +3,14 @@ package org.highfives.grid.user.command.service;
 import org.highfives.grid.user.command.dto.UserDTO;
 import org.highfives.grid.user.command.vo.ReqResetPwdVO;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
 public interface UserService extends UserDetailsService {
-    UserDTO addNewUser(UserDTO givenInfo);
+    UserDTO addNewUser(UserDTO givenInfo, Map<String, String> uploadedImg);
 
     String duplicateInfoCheck(UserDTO givenInfo);
 
@@ -27,4 +29,6 @@ public interface UserService extends UserDetailsService {
     boolean resetPwd(Map<String, String> infos);
 
     boolean changeGender(int userId);
+
+    Map<String, String> imgUpload(MultipartFile multipartFile) throws IOException;
 }
