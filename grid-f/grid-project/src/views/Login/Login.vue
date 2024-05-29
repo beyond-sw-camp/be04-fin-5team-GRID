@@ -131,6 +131,9 @@ async function Login() {
             localStorage.setItem('email', inputValue.value);
             localStorage.setItem('access', token);
 
+            // Vuex 스토어에 사용자 정보와 이메일 저장
+            store.commit('setUser', user);
+
             alert('로그인 되었습니다');
             isWrong.value = false;
 

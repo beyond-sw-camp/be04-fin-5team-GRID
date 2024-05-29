@@ -102,7 +102,6 @@ function parseJwt(token) {
 }
 
 onMounted(async () => {
-
   const dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'));
   dropdownElementList.map(function (dropdownToggleEl) {
     return new Dropdown(dropdownToggleEl);
