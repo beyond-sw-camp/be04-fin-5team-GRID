@@ -62,7 +62,7 @@ const registType = async () => {
 <style scoped>
     .manageRegistAll {
         display: grid;
-        grid-template-rows: 18% 70% 12% ;
+        grid-template-rows: 18% 65% 12% 5%;
         grid-template-columns: 10% 80% 10%;
         height: 100%;
     }
@@ -79,6 +79,13 @@ const registType = async () => {
         align-items: center;
     }
 
+    .manageTitle h1 {
+        margin-left:0.5%;
+        margin-bottom: 0;
+        font-size: 25px;
+        font-weight: 600;
+    }
+
     .registIcon {
         width:80%;
     }
@@ -92,6 +99,12 @@ const registType = async () => {
         width: calc(100% - 20px); /* 부모 요소의 너비에 비례하여 폭을 설정 */
         padding: 10px; /* 내부 여백 추가 */
         background-color: #F2F2F2;
+    }
+
+    .registMain h3 {
+        font-size: 15px;
+        margin: 0;
+        font-weight: 600;
     }
 
     .vacationType textarea {

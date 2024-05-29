@@ -2,25 +2,25 @@
     <div class="historyAll">
         <div class="historyTitle">
             <img class="historyIcon" src="@/assets/buttons/vacation.png">
-            <h1>휴가 변화이력</h1>
+            <h1>휴가 변화 이력</h1>
         </div>
         <div class="vacations">
-            <div class="annual">
+            <div class="annual" v-if="userRole === 'ROLE_ADMIN'">
                 <div class="vacationsTitle">
                     <h3>연 단위 휴가 지급<br> (연차, 정기휴가)</h3>
                     <img class="plusBtn" @click=giveAnnual() src="@/assets/buttons/plus.png">
                 </div>
             </div>
-            <div class="month">
+            <div class="month"  v-if="userRole === 'ROLE_ADMIN'">
                 <div class="vacationsTitle">
                     <h3>월 단위 휴가 지급 <br> (월차, 보건휴가)</h3>
                     <img class="plusBtn" @click=giveMonth() src="@/assets/buttons/plus.png">
                 </div>
             </div>
-            <div class="diretly">
+            <div class="diretly"  v-if="userRole === 'ROLE_ADMIN'">
                 <div class="vacationsTitle">
                     <h3>휴가 직접 지급 <br> (관리자)</h3>
-                    <img class="plusBtn" src="@/assets/buttons/plus.png">
+                    <img class="plusBtn" @click="showRegistModal = true" src="@/assets/buttons/plus.png">
                 </div>
             </div>
         </div>
@@ -69,12 +69,32 @@
             <button @click="nextPage" :disabled="currentPage === totalPages">Next</button>
         </div>
     </div>
+
+    <Modal v-if="showRegistModal" @close="showRegistModal = false">
+        <div class="registMain">
+          <div class="registTitle">
+            <h3 for="type">타입</h3>
+            <select id="type" v-model="selectedType" class="selectField">
+              <option value="">선택해주세요.</option>
+              <option v-for="type in types" :key="type.id" :value="type.id">{{ type.typeName }}</option>
+            </select>
+          </div>
+          <div class="registContent">
+            <h3>내용</h3>
+            <textarea v-model="content" placeholder="내용을 입력해주세요." class="inputField"></textarea>
+          </div>
+          <div class="registBtnArea">
+            <button class="registBtn" @click="registPolicy">등록하기</button>
+          </div>
+        </div>
+      </Modal>
 </template>
 
 <script setup>
 import { onBeforeMount, ref, computed } from 'vue';
 import axios from "axios";
 import router from '@/router/router';
+import Modal from '@/components/Vacation/Policy/Modal.vue';
 
 const histories = ref([]);
 const searchType = ref('name'); // 검색 유형을 위한 기본값 설정
@@ -82,6 +102,10 @@ const searchQuery = ref(''); // 검색어를 위한 변수
 const filteredHistories = ref([]); // 필터링된 기록
 const currentPage = ref(1);
 const itemsPerPage = 10;
+const userRole = ref('');
+const userId = ref('');
+const showRegistModal = ref(false);
+const types = ref([]);
 
 const totalPages = computed(() => {
     return Math.ceil(filteredHistories.value.length / itemsPerPage);
@@ -99,6 +123,16 @@ const getAllVacationHistory = async () => {
         histories.value = response.data.result;
         filteredHistories.value = histories.value; // 처음에 모든 기록을 보여줌
         console.log(response.data.result);
+    } catch (error) {
+        console.error("Error fetching vacation details:", error);
+    }
+};
+
+const getUserVacationHistory = async () => {
+    try {
+        const response = await axios.get(`/api/vacation/details/${userId.value}`);
+        histories.value = response.data.result;
+        filteredHistories.value = histories.value; // 처음에 모든 기록을 보여줌
     } catch (error) {
         console.error("Error fetching vacation details:", error);
     }
@@ -151,11 +185,24 @@ const giveMonthVacation = async () => {
     }
 }
 
+const getVacationType = async () => {
+    try {
+      const response = await axios.get('/api/vacation/type');
+      types.value = response.data.result;
+      console.log(response.data.result);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
 function giveAnnual() {
     try {
-        giveAnnualVacation();
-        giveRegularVacation();
-        alert('지급 완료되었습니다!')
+        const confirmed = window.confirm('지급하시겠습니까?');
+        if(confirmed) {
+            giveAnnualVacation();
+            giveRegularVacation();
+            alert('지급 완료되었습니다!')
+        }
     } catch (error) {
         alert(error.message)
     }
@@ -163,11 +210,29 @@ function giveAnnual() {
 
 function giveMonth() {
     try {
-        giveHealthVacation();
-        giveMonthVacation();
-        alert('지급 완료되었습니다!')
+        const confirmed = window.confirm('지급하시겠습니까?');
+        if(confirmed) {
+            giveHealthVacation();
+            giveMonthVacation();
+            alert('지급 완료되었습니다!')
+        }
     } catch (error) {
         alert(error.message)
+    }
+}
+
+
+function parseJwt(token) {
+    try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        return JSON.parse(jsonPayload);
+    } catch (error) {
+        console.error('Invalid token', error);
+        return null;
     }
 }
 
@@ -188,14 +253,27 @@ const goToPage = (page) => {
 };
 
 onBeforeMount(() => {
-    getAllVacationHistory();
+    const token = localStorage.getItem('access');
+    if (token) {
+        const decodedToken = parseJwt(token);
+        userRole.value = decodedToken?.auth || '';
+        userId.value = decodedToken?.id || '';
+    }
+
+    getVacationType();
+
+    if (userRole.value === 'ROLE_ADMIN') {
+        getAllVacationHistory();
+    } else if (userRole.value === 'ROLE_USER') {
+        getUserVacationHistory();
+    }
 });
 </script>
 
 <style scoped>
     .historyAll {
         display: grid;
-        grid-template-rows: 18% 15% 4% 43% 5% 13%;
+        grid-template-rows: 18% 15% 4% 43% 8% 10%;
         grid-template-columns: 10% 80% 10%;
         height: 100%;
     }
@@ -214,6 +292,9 @@ onBeforeMount(() => {
 
     .historyTitle h1 {
         margin-left: 0.5%;
+        margin-bottom: 0;
+        font-size: 25px;
+        font-weight: 600;
     }
 
     .historyIcon {
@@ -236,6 +317,11 @@ onBeforeMount(() => {
         align-items: center;
         font-size: 12px;
         height: 10vh;
+    }
+
+    .vacations h3 {
+        font-size: 15px;
+        font-weight: 600;
     }
 
     .plusBtn {
@@ -268,6 +354,7 @@ onBeforeMount(() => {
         grid-column-start: 2;
         display: grid;
         grid-template-columns: 74% 5% 1% 15% 1% 4%;
+        font-size: 12px;
     }
 
     .searchType {
@@ -341,7 +428,7 @@ onBeforeMount(() => {
     }
 
     .pagination button.active {
-        background-color: darkorange;
+        background-color: #088A85;
         font-weight: bold;
         color: white;
     }
@@ -356,6 +443,71 @@ onBeforeMount(() => {
         display: flex;
         align-items: center;
     }
+
+    .registMain {
+    height: 80%;
+    width: calc(100% - 20px);
+    padding: 10px;
+    background-color: #F2F2F2;
+  }
+
+  .registMain h3 {
+    font-size: 15px;
+    margin: 0;
+    font-weight: 600;
+  }
+
+  .registTitle {
+    margin-top: 2%;
+    display: grid;
+    grid-template-columns: 5% 20% 75%;
+    font-size: 14px;
+    align-items: center;
+  }
+
+  .registContent {
+    margin-top: 3%;
+    height: 50%;
+    display: grid;
+    grid-template-columns: 5% 95%;
+    font-size: 14px;
+  }
+
+  .registContent h3 {
+    margin-top: 0;
+  }
+
+  .registContent textarea {
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    resize: none;
+    height: 300px;
+    border: none;
+  }
+
+  .registBtn{
+    width: 100%;
+    background-color: #088A85;
+    color: white;
+    padding: 5px 5px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    font-style: bold;
+    grid-column-start: 3;
+  }
+
+  .registBtnArea {
+    display: grid;
+    grid-template-columns: 40% 6% 8% 6% 40%;
+    place-items: center;
+    grid-row-start: 3;
+    grid-column-start: 2;
+    margin-top: 2%;
+  }
 </style>
 
 

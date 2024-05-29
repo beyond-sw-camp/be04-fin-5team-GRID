@@ -94,7 +94,7 @@ onBeforeMount(() => {
 <style scoped>
     .manageDeleteAll {
         display: grid;
-        grid-template-rows: 18% 70% 12% ;
+        grid-template-rows: 18% 65% 12% 5%;
         grid-template-columns: 10% 80% 10%;
         height: 100%;
     }
@@ -109,6 +109,13 @@ onBeforeMount(() => {
         display: grid;
         grid-template-columns: 3% 97%;
         align-items: center;
+    }
+
+    .manageTitle h1 {
+        margin-left:0.5%;
+        margin-bottom: 0;
+        font-size: 25px;
+        font-weight: 600;
     }
 
     .deleteIcon {
@@ -126,13 +133,17 @@ onBeforeMount(() => {
         background-color: #F2F2F2;
     }
 
+    .deleteMain h3 {
+        font-size: 15px;
+        margin: 0;
+        font-weight: 600;
+    }
+
     .vacationType {
         margin-top: 2%;
         display: grid;
         grid-template-columns: 10% 90%;
-        align-items: center;
-        font-size: 14px;
-
+        font-size: 14px; 
     }
 
     .vacationGiveNum {
@@ -203,9 +214,20 @@ onBeforeMount(() => {
     .titleContent {
         background-color: #F8F9FAFF;
         padding: 10px;
+        margin: 0;
     }
 
     .vacationGiveNum textarea {
+        width: 100%;
+        height: 100%;
+        padding: 10px;
+        box-sizing: border-box;
+        resize: none; /* textarea 크기 변경 비활성화 */
+        height: 50px; /* 고정 높이 설정 */
+        border: none;
+    }
+
+    .vacationType textarea {
         width: 100%;
         height: 100%;
         padding: 10px;

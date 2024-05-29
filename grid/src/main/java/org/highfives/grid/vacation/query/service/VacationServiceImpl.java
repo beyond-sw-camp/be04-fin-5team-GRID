@@ -79,6 +79,18 @@ public class VacationServiceImpl implements VacationService {
     }
 
     @Override
+    public ResVacationHistoryVO getUserVacationHistory(int employeeId) {
+        List<VacationHistoryDTO> histories = vacationMapper.userVacationHistoryTable(employeeId);
+
+        ResVacationHistoryVO resVacationHistoryVO = new ResVacationHistoryVO();
+        resVacationHistoryVO.setStatusCode(200);
+        resVacationHistoryVO.setMessage("조회 성공");
+        resVacationHistoryVO.setResult(histories);
+
+        return resVacationHistoryVO;
+    }
+
+    @Override
     public ResVacationInfoVO searchVacationInfoByName(String name) {
         List<VacationInfo> vacations = vacationMapper.searchVacationInfoByName(name);
 

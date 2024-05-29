@@ -14,7 +14,7 @@
                 <div class="email">
                     <div class="outBox" :class="{ 'existence': isExistence }">
                         <div class="inputBox">
-                            <input type="text" v-model="inputValue">
+                            <input type="text" v-model="inputValue" @keyup.enter="Login">
                             <label for="sampleId">이메일</label>
                         </div>
                     </div>
@@ -31,7 +31,7 @@
                 <div class="password">
                     <div class="outBox" :class="{ 'existence': isPwdExistence }">
                         <div class="inputBox">
-                            <input type="password" v-model="inputPwd">
+                            <input type="password" v-model="inputPwd" @keyup.enter="Login">
                             <label for="samplePwd">비밀번호</label>
                         </div>
                     </div>
@@ -86,7 +86,7 @@
 import { ref, watch } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
-
+import { useStore } from 'vuex';
 
 const inputValue = ref('');
 const inputPwd = ref('');
@@ -96,45 +96,43 @@ const isValueExistence = ref(false);
 const isValue2Existence = ref(false);
 const isWrong = ref(false);
 const router = useRouter();
+const store = useStore();
 
 async function Login() {
-
     isValueExistence.value = false;
     isValue2Existence.value = false;
     isWrong.value = false;
 
-    if (inputValue.value == '') {
+    if (inputValue.value === '') {
         isValueExistence.value = true;
-        return ;
+        return;
     }
 
-    if (inputPwd.value == '') {
+    if (inputPwd.value === '') {
         isValue2Existence.value = true;
-        return ;
+        return;
     }
 
     try {
-        await axios.post('http://localhost:8080/login',
-            {
-                email: inputValue.value,
-                pwd: inputPwd.value
-            }, {
+        const response = await axios.post('http://localhost:8080/login', {
+            email: inputValue.value,
+            pwd: inputPwd.value
+        }, {
             withCredentials: true
-        })
-            .then((response) => {
-                if (response.status == 200) {
-                    console.log(response);
-                    console.log(response.data.access);
-                    localStorage.setItem('access', response.data.access)
-                    alert('로그인 되었습니다');
-                    isWrong.value = false;
-                    router.push('/main');
-                }
-            })
+        });
+
+        if (response.status === 200) {
+            localStorage.setItem('access', response.data.access);
+            alert('로그인 되었습니다');
+            isWrong.value = false;
+
+            await store.dispatch('fetchUserByEmail', inputValue.value);
+            router.push('/main');
+        }
     } catch (e) {
         isWrong.value = true;
     }
-};
+}
 
 function findId() {
     router.push('/find/id');

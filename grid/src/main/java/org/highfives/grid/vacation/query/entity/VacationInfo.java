@@ -16,4 +16,7 @@ public class VacationInfo {
     private String endTime;
     private int employeeId;
     private int typeId;
+    private String typeName;
+    private String employeeName;
+    private String employeeNumber;
 }
