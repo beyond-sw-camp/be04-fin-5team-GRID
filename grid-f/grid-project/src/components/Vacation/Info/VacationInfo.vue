@@ -8,7 +8,6 @@
             <div class="annual" v-if="userRole === 'ROLE_USER'">
                 <div class="vacationsTitle">
                     <h3>휴가</h3>
-                    <img class="plusBtn" src="@/assets/buttons/plus.png">
                 </div>
                 <div class="vacationsNum">
                     <h3>{{ annualVacationNum }}</h3>
@@ -17,7 +16,6 @@
             <div class="month" v-if="userRole === 'ROLE_USER'">
                 <div class="vacationsTitle">
                     <h3>정기 휴가</h3>
-                    <img class="plusBtn" src="@/assets/buttons/plus.png">
                 </div>
                 <div class="vacationsNum">
                     <h3>{{ monthVacationNum }}</h3>
@@ -26,7 +24,6 @@
             <div class="diretly" v-if="userRole === 'ROLE_USER'">
                 <div class="vacationsTitle">
                     <h3>기타 휴가</h3>
-                    <img class="plusBtn" src="@/assets/buttons/plus.png">
                 </div>
                 <div class="vacationsNum">
                     <h3>{{ directlyVacationNum }}</h3>
@@ -55,6 +52,11 @@
                     </tr>
                 </thead>
                 <tbody>
+                    <template v-if="paginatedInfo.length === 0">
+                        <tr>
+                            <td colspan="7" class="no-data">휴가 보유 정보가 없습니다.</td>
+                        </tr>
+                    </template>
                     <tr v-for="(info, index) in paginatedInfo" :key="info.id">
                         <td>{{ (currentPage - 1) * itemsPerPage + index + 1 }}</td>
                         <td>{{ info.employeeName }}</td>
@@ -260,11 +262,6 @@ onBeforeMount(() => {
     height: 50%;
 }
 
-.plusBtn {
-    width: 100%;
-    cursor: pointer;
-}
-
 .annual {
     width: calc(100% - 20px);
     background-color: #F2F2F2;
@@ -390,5 +387,10 @@ th {
     font-size:13px;
     font-weight: 600;
 }
+
+.no-data {
+    text-align: center;
+    vertical-align: middle;
+}  
 </style>
 
