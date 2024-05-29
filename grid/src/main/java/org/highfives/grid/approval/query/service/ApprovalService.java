@@ -12,6 +12,5 @@ public interface ApprovalService {
     List<ApprovalEmpDTO> findAllApprovalByEmployeeId(int typeId, int isApproval, int employeeId);
     ApprovalEmpDTO findDetailByApprovalId(int typeId, int approvalId);
     List<ApprovalEmpDTO> findAllApprovalByApproverId(int typeId, int isApproval, int approverId);
-    int countOvertimeInWeek(OvertimeInWeekDTO overtimeInWeek);
-    void BTexportToPDF(BTApprovalDTO btApproval, String filePath);
+    double countOvertimeInWeek(OvertimeInWeekDTO overtimeInWeek);
 }

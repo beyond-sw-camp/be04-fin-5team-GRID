@@ -81,7 +81,7 @@ public class ApprovalController {
     }
 
     @GetMapping("/overtime-count/{employeeId}")
-    public ResponseEntity<Integer> countOvertimeInWeek(@PathVariable int employeeId) {
+    public ResponseEntity<Double> countOvertimeInWeek(@PathVariable int employeeId) {
 
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
@@ -90,7 +90,7 @@ public class ApprovalController {
         String sunday = now.with(LocalTime.MIN).with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY)).format(dateFormat);
         String saturday = now.with(LocalTime.MAX).with(TemporalAdjusters.nextOrSame(DayOfWeek.SATURDAY)).format(dateFormat);
 
-        int count = approvalService.countOvertimeInWeek(new OvertimeInWeekDTO(sunday, saturday, employeeId));
+        double count = approvalService.countOvertimeInWeek(new OvertimeInWeekDTO(sunday, saturday, employeeId));
 
         return ResponseEntity.status(HttpStatus.OK).body(count);
     }
