@@ -1,14 +1,12 @@
 <script setup>
   import {onMounted, reactive} from "vue";
-  import {useRoute} from "vue-router";
   import axios from "axios";
 
   import ApprovalList from "@/components/Approval/ApprovalList.vue";
 
   const typeId = 1;
 
-  const route = useRoute();
-  const employeeId = route.params.employeeId;
+  const admin = 1;
 
   const state = reactive({
     approvalList:[]
@@ -16,7 +14,13 @@
 
   const fetchApprovalList = async(id) => {
     try {
-      const response = await axios.get(`http://localhost:8080/approval/list/${typeId}/${id}/0`);
+      let url = `http://localhost:8080/approval/all/${typeId}/5`;
+
+      if (admin !== 1) {
+        url = `http://localhost:8080/approval/list/${typeId}/5/${id}`;
+      }
+
+      const response = await axios.get(url);
 
       if (response.status !== 200) {
         throw new Error("response is not ok");
@@ -31,7 +35,7 @@
   }
 
   onMounted(async() => {
-    await fetchApprovalList(employeeId);
+    await fetchApprovalList(2);
   })
 </script>
 

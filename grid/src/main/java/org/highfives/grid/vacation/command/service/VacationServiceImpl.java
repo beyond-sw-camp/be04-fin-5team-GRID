@@ -443,6 +443,7 @@ public class VacationServiceImpl implements VacationService {
                 .build();
 
         vacationHistoryRepository.save(inputVacationHistory);
+
     }
 
     @Override

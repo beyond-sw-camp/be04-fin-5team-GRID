@@ -48,4 +48,3 @@ public class ApprovalEmpDTO {
 
     private UserDTO user;
 }
-

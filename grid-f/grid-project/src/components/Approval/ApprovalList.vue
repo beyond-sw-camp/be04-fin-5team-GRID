@@ -24,7 +24,7 @@
       <th>사번</th>
       <th>작성자</th>
       <th>출장지</th>
-      <th>출장기간</th>
+      <th>출장 기간</th>
     </tr>
     </thead>
     <tbody>
@@ -47,6 +47,27 @@
       <th>사번</th>
       <th>작성자</th>
       <th>근무 기간</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr v-for="(approval, index) in props.approvalList" :key="approval.id">
+      <td>{{ index + 1 }}</td>
+      <td>{{ approval.content }}</td>
+      <td>{{ approval.employeeNumber }}</td>
+      <td>{{ approval.employeeName }}</td>
+      <td>{{ approval.startTime.substring(0, 16) }} ~ {{ approval.endTime.substring(0, 16) }}</td>
+    </tr>
+    </tbody>
+  </table>
+
+  <table v-else-if="props.approvalList.type === 'rw'">
+    <thead>
+    <tr>
+      <th>번호</th>
+      <th>내용</th>
+      <th>사번</th>
+      <th>작성자</th>
+      <th>단축 근무 기간</th>
     </tr>
     </thead>
     <tbody>

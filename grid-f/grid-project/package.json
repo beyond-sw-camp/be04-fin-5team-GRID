@@ -14,9 +14,13 @@
     "axios": "^1.6.8",
     "bootstrap": "^5.3.3",
     "bootstrap-vue-3": "^0.5.1",
+    "date-fns": "^3.6.0",
+
     "element-plus": "^2.7.3",
     "file-saver": "^2.0.5",
+    "js-cookie": "^3.0.5",
     "json2csv": "^6.0.0-alpha.2",
+    "papaparse": "^5.4.1",
     "primeicons": "^7.0.0",
     "primevue": "^3.52.0",
     "tailwindcss": "^3.4.3",
@@ -25,7 +29,8 @@
     "vue-draggable-nested-tree": "^2.3.0-beta.1",
     "vue-ripple-directive": "^2.0.1",
     "vue-router": "^4.3.2",
-    "vuedraggable": "^4.1.0"
+    "vuedraggable": "^4.1.0",
+    "vuex": "^4.0.2"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.4",

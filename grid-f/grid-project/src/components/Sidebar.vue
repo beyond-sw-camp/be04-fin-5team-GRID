@@ -14,7 +14,7 @@
           <span @click="toggleMenu('workManagement')">근태 관리</span>
           <ul v-show="activeMenus.workManagement">
             <li>근무 관리</li>
-            <li>근무 정보</li>
+            <li @click="navigateTo('/work')">근무 정보</li>
             <li @click="toVacationManage()">휴가 종류</li>
             <li @click="toVacationPolicy()">휴가 정책</li>
             <li @click="toVacationInfo()">휴가 보유 정보</li>
@@ -24,8 +24,8 @@
         <li>
           <span @click="toggleMenu('paymentManagement')">결재 관리</span>
           <ul v-show="activeMenus.paymentManagement">
-            <li>결재 문서 작성</li>
-            <li>결재 문서 목록</li>
+            <li @click="navigateTo('/regist/main')">결재 문서 작성</li>
+            <li @click="navigateTo('/approval')">결재 문서 목록</li>
           </ul>
         </li>
         <li>
@@ -51,11 +51,12 @@
         <li>
           <span @click="toggleMenu('performanceReview')">업적 평가 관리</span>
           <ul v-show="activeMenus.performanceReview">
-            <li @click="navigateTo('/performance-review-goal/add')">업적 평가 목표 작성</li>
-            <li @click="navigateTo('/performance-review-goal')">업적 평가 목표 조회</li>
-            <li>업적 평가 작성</li>
-            <li>업적 평가 조회</li>
-            <li>종합 업적 평가</li>
+            <li @click="navigateTo('/performance-review-goal/add')">목표 작성</li>
+            <li @click="navigateTo('/performance-review-goal')">목표 조회</li>
+            <li @click="navigateTo('/performance-review/mid')">중간 평가 작성</li>
+            <li @click="navigateTo('/performance-review/final')">연말 평가 작성</li>
+            <li @click="navigateTo('/performance-review')">평가 조회</li>
+            <li @click="navigateTo('/performance-review/total')">종합 평가 조회</li>
           </ul>
         </li>
       </ul>
@@ -125,7 +126,7 @@ const gotodepartmentInfo = () => {
 }
 
 const goToAddTeamReview = () => {
-  router.push('/addteamreview');
+  router.push('/team-review/add');
 }
 
 const navigateTo = (path) => {

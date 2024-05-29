@@ -35,25 +35,25 @@ public class ApprovalController {
         this.approvalService = approvalService;
     }
 
-    @GetMapping("/bt-all")
-    public ResponseEntity<ResApprovalVO> findAllBTApproval() {
+    @GetMapping("/all/{typeId}/{isApproval}")
+    public ResponseEntity<ResApprovalVO> findAllBTApproval(@PathVariable int typeId, @PathVariable int isApproval) {
 
-        List<BTApprovalDTO> result = approvalService.findAllBTApproval();
+        List<ApprovalEmpDTO> result = approvalService.findAllBTApproval(typeId, isApproval);
 
         ResApprovalVO response = ResApprovalVO.builder()
                 .statusCode(200)
                 .message("출장 결재 전체 조회 성공")
                 .href("")
-                .btResultList(result)
+                .approvalEmpResultList(result)
                 .build();
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @GetMapping("/list/{typeId}/{employeeId}/{isApproval}")
-    public ResponseEntity<ResApprovalVO> findAllApprovalByEmployeeId(@PathVariable int typeId, @PathVariable int employeeId, @PathVariable int isApproval) {
+    @GetMapping("/list/{typeId}/{isApproval}/{employeeId}")
+    public ResponseEntity<ResApprovalVO> findAllApprovalByEmployeeId(@PathVariable int typeId, @PathVariable int isApproval, @PathVariable int employeeId) {
 
-        List<ApprovalEmpDTO> result = approvalService.findAllApprovalByEmployeeId(typeId, employeeId, isApproval);
+        List<ApprovalEmpDTO> result = approvalService.findAllApprovalByEmployeeId(typeId, isApproval, employeeId);
 
         ResApprovalVO response = ResApprovalVO.builder()
                 .statusCode(200)
@@ -81,7 +81,7 @@ public class ApprovalController {
     }
 
     @GetMapping("/overtime-count/{employeeId}")
-    public ResponseEntity<Integer> countOvertimeInWeek(@PathVariable int employeeId) {
+    public ResponseEntity<Double> countOvertimeInWeek(@PathVariable int employeeId) {
 
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
@@ -90,13 +90,13 @@ public class ApprovalController {
         String sunday = now.with(LocalTime.MIN).with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY)).format(dateFormat);
         String saturday = now.with(LocalTime.MAX).with(TemporalAdjusters.nextOrSame(DayOfWeek.SATURDAY)).format(dateFormat);
 
-        int count = approvalService.countOvertimeInWeek(new OvertimeInWeekDTO(sunday, saturday, employeeId));
+        double count = approvalService.countOvertimeInWeek(new OvertimeInWeekDTO(sunday, saturday, employeeId));
 
         return ResponseEntity.status(HttpStatus.OK).body(count);
     }
 
-    @GetMapping("/approver/{typeId}/{employeeId}/{isApproval}")
-    public ResponseEntity<ResApprovalVO> findAllApprovalByApproverId(@PathVariable int typeId, @PathVariable int employeeId, @PathVariable int isApproval) {
+    @GetMapping("/approver/{typeId}/{isApproval}/{employeeId}")
+    public ResponseEntity<ResApprovalVO> findAllApprovalByApproverId(@PathVariable int typeId, @PathVariable int isApproval, @PathVariable int employeeId) {
 
         List<ApprovalEmpDTO> result = approvalService.findAllApprovalByApproverId(typeId, employeeId, isApproval);
 

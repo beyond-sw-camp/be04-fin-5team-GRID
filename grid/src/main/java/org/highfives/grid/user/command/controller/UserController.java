@@ -51,7 +51,7 @@ public class UserController {
         if(!userService.multiInfoInputCheck(infoList).equals("P"))
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new ResUserListVO(
-                            400, "Some infos are duplicated..!",
+                            400, "Some given infos are duplicated..",
                             "/users/list", null));
 
         //계약일 자동 입력을 위한 List 객체 생성
@@ -96,13 +96,6 @@ public class UserController {
     @PutMapping("/list")
     public ResponseEntity<ResUserListVO> modifyMultiUser(@RequestBody List<UserDTO> modifyList) {
 
-        //받아온 데이터 간 중복 체크
-        if(!userService.multiInfoInputCheck(modifyList).equals("P"))
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ResUserListVO(
-                            400, "Some infos are duplicated..!",
-                            "/users/list", null));
-
         //받아온 데이터 간의 중복 체크가 정상적으로 종료 시, DB의 데이터와 중복 체크
         for(UserDTO info : modifyList) {
             if( duplicateInfoCheck(info) != null ){
@@ -143,6 +136,8 @@ public class UserController {
         infos.put("email", info.getEmail());
         infos.put("pwd", info.getPwd());
 
+
+        System.out.println("infos = " + infos);
         if (userService.resetPwd(infos)){
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResUserVO(200, "Success to reset password", "/", null));

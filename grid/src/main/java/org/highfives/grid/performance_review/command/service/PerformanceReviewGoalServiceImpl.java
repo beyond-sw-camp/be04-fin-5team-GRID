@@ -62,7 +62,7 @@ public class PerformanceReviewGoalServiceImpl implements PerformanceReviewGoalSe
 
         // 작성 중, 반려 상태 일 때 변경
         if(performanceReviewGoal.getApprovalStatus().equals(String.valueOf(GoalApprovalStatus.IP))
-            || performanceReviewGoal.getApprovalStatus().equals(String.valueOf(GoalApprovalStatus.D))
+                || performanceReviewGoal.getApprovalStatus().equals(String.valueOf(GoalApprovalStatus.D))
         ){
             LocalDateTime currentTime = LocalDateTime.now();
             DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -142,7 +142,7 @@ public class PerformanceReviewGoalServiceImpl implements PerformanceReviewGoalSe
 
         // 상신 또는 확인 중 상태일 때 변경
         if(performanceReviewGoal.getApprovalStatus().equals(String.valueOf(GoalApprovalStatus.S))
-            || performanceReviewGoal.getApprovalStatus().equals(String.valueOf(GoalApprovalStatus.R))){
+                || performanceReviewGoal.getApprovalStatus().equals(String.valueOf(GoalApprovalStatus.R))){
 
             LocalDateTime currentTime = LocalDateTime.now();
             DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -169,7 +169,7 @@ public class PerformanceReviewGoalServiceImpl implements PerformanceReviewGoalSe
 
         // 상신 또는 확인 중 상태일 때 변경
         if(performanceReviewGoal.getApprovalStatus().equals(String.valueOf(GoalApprovalStatus.S))
-            || performanceReviewGoal.getApprovalStatus().equals(String.valueOf(GoalApprovalStatus.R))){
+                || performanceReviewGoal.getApprovalStatus().equals(String.valueOf(GoalApprovalStatus.R))){
 
             LocalDateTime currentTime = LocalDateTime.now();
             DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -187,4 +187,3 @@ public class PerformanceReviewGoalServiceImpl implements PerformanceReviewGoalSe
         }
     }
 }
-
