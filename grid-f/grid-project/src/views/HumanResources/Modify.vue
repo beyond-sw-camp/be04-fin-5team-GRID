@@ -107,7 +107,9 @@ const uploadProfileImage = async (event) => {
 
     const formData = new FormData();
     formData.append('file', file);
-
+    formData.append('id', user.value.id);
+    formData.append('typeId', 2);
+    
     try {
         const response = await axios.put('http://localhost:8080/users/img', formData, {
             headers: {

@@ -1,6 +1,7 @@
 package org.highfives.grid.user.command.controller;
 
 import org.highfives.grid.user.command.dto.UserDTO;
+import org.highfives.grid.user.command.service.ImgService;
 import org.highfives.grid.user.command.service.UserService;
 import org.highfives.grid.user.command.vo.ReqResetPwdVO;
 import org.highfives.grid.user.command.vo.ResImgUploadVO;
@@ -22,10 +23,13 @@ import java.util.Map;
 public class UserController {
 
     private final UserService userService;
+    private final ImgService imgService;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService,
+                          ImgService imgService) {
         this.userService = userService;
+        this.imgService =imgService;
     }
 
     // 신규 유저 등록 (단일)
@@ -99,13 +103,15 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @PutMapping("/img")
-    public ResponseEntity<ResImgUploadVO> uploadImage(@RequestPart("file") MultipartFile file) {
+    // 이미지 업로드
+    @PutMapping("/profile/img")
+    public ResponseEntity<ResImgUploadVO> uploadImage(@RequestPart("file") MultipartFile file,
+                                                      @RequestParam("id") int id,
+                                                      @RequestParam("typeId") int typeId) {
         try {
-            System.out.println("file.getOriginalFilename() = " + file.getOriginalFilename());
             Map<String, String> result = userService.imgUpload(file);
-            System.out.println("result = " + result);
-            System.out.println(" 성공했습니다 " );
+            imgService.uploadImage(result, id, typeId);
+
             return null;
         } catch (Exception e) {
             return null;
