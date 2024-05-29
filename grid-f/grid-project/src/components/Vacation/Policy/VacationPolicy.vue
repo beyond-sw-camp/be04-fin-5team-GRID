@@ -542,6 +542,7 @@ const nextPage = () => {
 
     .plusBtn {
         width: 100%;
+        cursor: pointer;
     }
 
     .typeBox {
