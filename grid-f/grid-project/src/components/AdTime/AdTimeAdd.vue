@@ -30,6 +30,8 @@ import axios from 'axios';
 import {Calendar} from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 
+
+
 const router = useRouter();
 
 const adTime = ref({
@@ -38,6 +40,25 @@ const adTime = ref({
   endTime: '',
   employeeId: '',
 });
+
+const userRole = ref('');
+const userId = ref('');
+
+// 유저 확인
+function parseJwt(token) {
+  try {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+    return JSON.parse(jsonPayload);
+  } catch (error) {
+    console.error('Invalid token', error);
+    return null;
+  }
+}
+
 
 // 현재 시간
 function getCurrentDateTimeString() {
@@ -62,8 +83,8 @@ const fetchAdTime = async () => {
     today.value = currentDate;
 
     console.log(currentDate);
-    const response = await axios.get(`http://localhost:8080/ad-time/${currentDate}/2`);
-    console.log(response.data);
+    const response = await axios.get(`http://localhost:8080/ad-time/${currentDate}/${userId.value}`);
+    console.log('출근 조회: ', response.data);
     const data = response.data.adTimeDTO;
     console.log(response.data.adTimeDTO);
     adTime.value = {
@@ -109,7 +130,32 @@ const updateCalendarEvents = (events) => {
   }
 }
 
-const fetchEvent = async ()  => {
+// 관리자용
+const fetchEmployeeEvent = async ()  => {
+  try {
+    // 출근 조회
+    const responseAdTime = await axios.get(`http://localhost:8080/ad-time/${userId.value}`);
+
+    const adTime = responseAdTime.data.adTimeDTOList;
+    console.log(adTime);
+    events.value = transformEvents(adTime);
+    console.log(adTime.attendanceStatus);
+    console.log(events.value);
+    // updateCalendarEvents(events.value);
+    // 휴가 조회
+
+
+    // 시간외 근무 조회
+    // 단축 근무 조회
+    // 출장 조회
+
+  } catch (error) {
+    console.error('에러 발생:', error);
+  }
+};
+
+// 직원용
+const fetchAllEvent = async ()  => {
   try {
     // 출근 조회
     const responseAdTime = await axios.get(`http://localhost:8080/ad-time/2`);
@@ -132,19 +178,39 @@ const fetchEvent = async ()  => {
   }
 };
 
+
+
+
 function transformEvents(list) {
   return list.map(item => ({
     title: `${item.attendanceStatus}`,
-    start: item.startTime? item.startTime.replace(" ", "T"): 0,
+    start: item.startTime? item.startTime.replace(" ", "T"): null,
     end: item.endTime? item.endTime.replace(" ", "T"): null
   }));
 }
 
 
 onMounted(async () => {
-  fetchAdTime();
-  await fetchEvent();
-  initCalendar(events);
+
+  // 유저 확인
+  const token = localStorage.getItem('access');
+  if (token) {
+    const decodedToken = parseJwt(token);
+    userRole.value = decodedToken?.auth || '';
+    userId.value = decodedToken?.id || '';
+  }
+
+  if (userRole.value === 'ROLE_ADMIN') {
+    fetchAllAdTime();
+    await fetchAllEvent();
+    initCalendar(events);
+  } else if (userRole.value === 'ROLE_USER') {
+    console.log('조회');
+    fetchAdTime();
+    await fetchEmployeeEvent();
+    initCalendar(events);
+  }
+
 });
 
 
@@ -158,18 +224,15 @@ const addArrivalTime = async () => {
         id: null,
         startTime: currentTime,
         endTime: null,
-        employeeId: 2   // 로그인한 사람
+        employeeId: userId.value   // 로그인한 사람
       })
       .then(response => {
-        // 성공적으로 처리된 경우에 실행할 로직
         window.location.reload();
         console.log('출근 시간이 기록되었습니다.');
       })
       .catch(error => {
-        // 오류 발생 시 처리할 로직
         alert('출근 시간이 존재합니다')
         console.error('에러 발생:', error);
-        // console.error('출근 시간을 기록하는 중 오류가 발생했습니다:', error);
       });
 }
 
@@ -183,10 +246,10 @@ const addDepartureTime = async () => {
         id: null,
         startTime: null,
         endTime: currentTime,
-        employeeId: 2   // 로그인한 사람
+        employeeId: userId.value   // 로그인한 사람
       })
       .then(response => {
-        // 성공적으로 처리된 경우에 실행할 로직
+
         window.location.reload();
         console.log('퇴근 시간이 기록되었습니다.');
       })
