@@ -1,12 +1,9 @@
 <script setup>
-import { computed, onMounted } from 'vue';
+import { computed } from 'vue';
 import { RouterView, useRoute } from 'vue-router';
 import Header from '@/components/Header.vue';
 import Sidebar from '@/components/Sidebar.vue';
 import Footer from '@/components/Footer.vue';
-import { useStore } from 'vuex';
-
-const store = useStore();
 
 // 현재 경로를 가져오는 useRoute 훅 사용
 const route = useRoute();
@@ -43,14 +40,6 @@ const mainContentClass = computed(() => {
   return showLayout.value ? 'main-content' : 'main-content-full';
 });
 
-onMounted(async () => {
-  const email = localStorage.getItem('email');
-  if (email) {
-    store.commit('setEmail', email);
-    await store.dispatch('fetchUserByEmail', email);
-  }
-});
-
 </script>
 
 
@@ -66,7 +55,7 @@ onMounted(async () => {
       <RouterView />
     </div>
     <div class="footer" v-if="showLayout">
-      <Footer />
+<!--      <Footer />-->
     </div>
   </div>
 

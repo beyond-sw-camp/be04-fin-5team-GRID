@@ -83,23 +83,28 @@ public class UserServiceImpl implements UserService{
     @Override
     @Transactional
     public List<UserDTO> modifyMultiUser(List<UserDTO> modifyList) {
+
         List<Employee> employeeList = new ArrayList<>();
 
-        // 유저 검증 단계
         for (UserDTO userDTO : modifyList) {
-            Employee oldInfo = userRepository.findByEmail(userDTO.getEmail());
-            if (oldInfo == null || !oldInfo.getEmployeeName().equals(userDTO.getName())) {
-                throw new UsernameNotFoundException("유저명과 사번이 일치하지 않습니다: " + userDTO.getEmail());
+            try {
+                Employee oldInfo = userRepository.findByEmail(userDTO.getEmail());
+                if (!oldInfo.getEmployeeName().equals(userDTO.getName())) { // 사번으로 유저를 검색해서 입력한 유저명과 이름이 같지 않으면 예외 발생(잘못된 유저 입력)
+                    throw new UsernameNotFoundException("유저명과 사번이 일치하지 않습니다.");
+                }
+                employeeList.add(inputNewMulitInfo(oldInfo, userDTO));
+            } catch (Exception e) {
+                log.info("Exception occurred: {}", e.getMessage());
             }
-            employeeList.add(inputNewMulitInfo(oldInfo, userDTO));
         }
 
-        // 검증에 성공한 경우 수정 단계
         userRepository.saveAll(employeeList);
 
         List<UserDTO> resultList = new ArrayList<>();
-        for (Employee employee : employeeList) {
-            Employee result = userRepository.findById(employee.getId()).orElseThrow(NullPointerException::new);
+
+        for (int i = 0; i < employeeList.size(); i++) {
+            Employee result =
+                    userRepository.findById(modifyList.get(i).getId()).orElseThrow(NullPointerException::new);
             resultList.add(modelMapper.map(result, UserDTO.class));
         }
 

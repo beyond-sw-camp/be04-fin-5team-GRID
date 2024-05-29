@@ -37,6 +37,7 @@ public class TeamServiceImpl implements TeamService{
                 .startTime(formattedDate)
                 .leaderId(teamDTO.getLeaderId())
                 .departmentId(teamDTO.getDepartmentId())
+                .sequence(teamDTO.getSequence())
                 .build();
 
         teamRepository.save(team);
@@ -63,6 +64,7 @@ public class TeamServiceImpl implements TeamService{
                     .endTime(formattedDate)
                     .leaderId(teamDTO.getLeaderId())
                     .departmentId(teamDTO.getDepartmentId())
+                    .sequence(teamDTO.getSequence())
                     .build();
 
             teamRepository.save(team);
@@ -78,6 +80,7 @@ public class TeamServiceImpl implements TeamService{
                 .startTime(currentTeamData.getStartTime())
                 .leaderId(teamDTO.getLeaderId())
                 .departmentId(teamDTO.getDepartmentId())
+                .sequence(teamDTO.getSequence())
                 .build();
 
         teamRepository.save(team);
