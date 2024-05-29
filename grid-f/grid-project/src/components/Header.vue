@@ -12,9 +12,10 @@
           <img src="@/assets/icon2.png" alt="Button 2" class="icon-image" />
         </button>
         <div class="dropdown">
-          <img src="https://talkimg.imbc.com/TVianUpload/tvian/TViews/image/2020/04/12/FydNALvKf23Z637223013461671479.jpg"
-            alt="profile" class="profile dropdown-toggle" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-          <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <img
+            src="https://talkimg.imbc.com/TVianUpload/tvian/TViews/image/2020/04/12/FydNALvKf23Z637223013461671479.jpg"
+            alt="profile" class="profile" @click="toggleDropdown">
+          <ul class="dropdown-menu" ref="dropdownMenu">
             <li><a class="dropdown-item" href="#" @click="goToProfile">개인 정보</a></li>
             <li><a class="dropdown-item" href="#" @click="logout">로그 아웃</a></li>
           </ul>
@@ -59,12 +60,18 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import { Dropdown } from 'bootstrap';
 import draggable from 'vuedraggable';
 import { useRouter } from 'vue-router';
 
 const departments = ref([]);
 const router = useRouter();
+const store = useStore();
+const dropdownMenu = ref(null);
+
+const user = computed(() => store.state.user);
 
 const fetchDepartments = async () => {
   try {
@@ -87,6 +94,11 @@ const fetchDepartments = async () => {
     console.error('부서 정보를 가져오는 데 실패했습니다:', error);
   }
 };
+
+
+const goToProfile = () => {
+  if (user.value && user.value.employeeNumber) {
+    router.push(`/hr/profile/${user.value.employeeNumber}`);
 
 const fetchTeams = async (departmentId) => {
   try {
@@ -147,6 +159,7 @@ const handleDragEnd = async () => {
     const updatedDepartments = departments.value.map((department, index) => ({
       id: department.id,
       departmentName: department.departmentName,
+      order: index + 1,
       departmentStatus: department.departmentStatus,
       startTime: department.startTime,
       endTime: department.endTime,
@@ -164,6 +177,15 @@ const handleDragEnd = async () => {
     });
   } catch (error) {
     console.error('부서 순서를 업데이트하는 데 실패했습니다:', error);
+  }
+};
+
+
+const toggleDropdown = () => {
+  if (dropdownMenu.value.style.display === 'block') {
+    dropdownMenu.value.style.display = 'none';
+  } else {
+    dropdownMenu.value.style.display = 'block';
   }
 };
 
@@ -216,6 +238,14 @@ const goToProfile = (employeeId) => {
   router.push(`/hr/profile/${employeeId}`); // 개인 정보 페이지로 이동
 };
 
+onMounted(() => {
+  fetchDepartments();
+  // Bootstrap 드롭다운 초기화
+  const dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'));
+  dropdownElementList.map(function (dropdownToggleEl) {
+    return new Dropdown(dropdownToggleEl);
+  });
+});
 const logout = () => {
   localStorage.removeItem('access');
   document.cookie = 'refresh=; Max-Age=0; path=/;';
@@ -253,13 +283,6 @@ onMounted(fetchDepartments);
   margin-right: 10px;
 }
 
-.search {
-  padding: 5px;
-  border-radius: 10px;
-  border: none;
-  width: 400px;
-}
-
 .icons {
   display: flex;
   align-items: center;
@@ -291,6 +314,35 @@ onMounted(fetchDepartments);
 
 .list-group-item {
   cursor: move;
-  /* 드래그 가능한 커서를 추가 */
 }
+
+.dropdown {
+  position: relative;
+}
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: white;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  list-style: none;
+  padding: 10px 0;
+  margin: 0;
+}
+
+.dropdown-item {
+  padding: 8px 16px;
+  cursor: pointer;
+  text-decoration: none;
+  display: block;
+  color: black;
+}
+
+.dropdown-item:hover {
+  background-color: #f1f1f1;
+}
+
 </style>

@@ -99,44 +99,40 @@ const router = useRouter();
 const store = useStore();
 
 async function Login() {
-
     isValueExistence.value = false;
     isValue2Existence.value = false;
     isWrong.value = false;
 
-    if (inputValue.value == '') {
+    if (inputValue.value === '') {
         isValueExistence.value = true;
-        return ;
+        return;
     }
 
-    if (inputPwd.value == '') {
+    if (inputPwd.value === '') {
         isValue2Existence.value = true;
-        return ;
+        return;
     }
 
     try {
-        await axios.post('http://localhost:8080/login',
-            {
-                email: inputValue.value,
-                pwd: inputPwd.value
-            }, {
+        const response = await axios.post('http://localhost:8080/login', {
+            email: inputValue.value,
+            pwd: inputPwd.value
+        }, {
             withCredentials: true
-        })
-            .then((response) => {
-                if (response.status == 200) {
-                    console.log(response);
-                    console.log(response.data.access);
-                    localStorage.setItem('access', response.data.access)
-                    alert('로그인 되었습니다');
-                    isWrong.value = false;
-                    store.dispatch('updateEmail', inputValue.value);
-                    router.push('/main');
-                }
-            })
+        });
+
+        if (response.status === 200) {
+            localStorage.setItem('access', response.data.access);
+            alert('로그인 되었습니다');
+            isWrong.value = false;
+
+            await store.dispatch('fetchUserByEmail', inputValue.value);
+            router.push('/main');
+        }
     } catch (e) {
         isWrong.value = true;
     }
-};
+}
 
 function findId() {
     router.push('/find/id');

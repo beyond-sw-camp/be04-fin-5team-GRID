@@ -13,16 +13,18 @@
                 <img src="@/assets/buttons/modify-btn.png" alt="modify button">
                 Modify
             </button>
-            <button type="button" class="addBtn" data-bs-toggle="dropdown" @click="toggleAddDropdown">
-                <img src="@/assets/buttons/plus.png" :class="{ rotated: isAddDropdownOpen }" alt="add button">
-                Add new
-            </button>
-            <ul class="dropdown-menu">
-                <li style="margin-bottom: 5%;"><a class="dropdown-item" href="#"><img src="@/assets/buttons/add-one.png"
-                            alt="유저 추가 버튼">신규 직원 등록</a></li>
-                <li><a class="dropdown-item" href="#"><img src="@/assets/buttons/add-multi.png" alt="다중 유저 추가 버튼">일괄
-                        등록</a></li>
-            </ul>
+            <div class="dropdown-container">
+                <button type="button" class="addBtn" @click="toggleAddDropdown">
+                    <img src="@/assets/buttons/plus.png" :class="{ rotated: isAddDropdownOpen }" alt="add button">
+                    Add new
+                </button>
+                <ul class="dropdown-menu" ref="dropdownMenu" :class="{ show: isAddDropdownOpen }">
+                    <li style="margin-bottom: 5%;"><a class="dropdown-item" href="#" @click="toAdd"><img src="@/assets/buttons/add-one.png"
+                                alt="유저 추가 버튼">신규 직원 등록</a></li>
+                    <li><a class="dropdown-item" href="#" @click="toAddMulti"><img src="@/assets/buttons/add-multi.png" alt="다중 유저 추가 버튼">일괄
+                            등록</a></li>
+                </ul>
+            </div>
             <input class="sortBox" v-model="searchCondition" type="text" placeholder="검색" @keyup.enter="findUser">
             <button class="searchBtn" @click="findUser">검색</button>
         </div>
@@ -45,7 +47,6 @@
                     <tr v-for="employee in employeeList" :key="employee.id" @click="toInfo(employee.employeeNumber)">
                         <td><img src="https://talkimg.imbc.com/TVianUpload/tvian/TViews/image/2020/04/12/FydNALvKf23Z637223013461671479.jpg"
                                 alt="profile" class="profile-image"></td>
-                        <!-- <td><img :src="employee.profilePath" alt="profile" class="profile-image"></td> -->
                         <td>{{ employee.name }}</td>
                         <td>{{ employee.employeeNumber }}</td>
                         <td>{{ employee.department }}</td>
@@ -74,26 +75,19 @@ const searchCondition = ref('');
 
 const toggleAddDropdown = () => {
     isAddDropdownOpen.value = !isAddDropdownOpen.value;
-    console.log("Add Dropdown:", isAddDropdownOpen.value);
 };
 
-
-async function findUser() {
-
+const findUser = async () => {
     let response = null;
-
     const url = searchCondition.value.trim() === ''
         ? 'http://localhost:8080/users/list'
         : `http://localhost:8080/users/list/${encodeURIComponent(searchCondition.value)}`;
 
     response = await axios.get(url);
-
     employeeList.value = response.data.result;
-    console.log(employeeList.value);
-}
+};
 
-function downloadCSV() {
-
+const downloadCSV = () => {
     const csvData = employeeList.value.map(
         item => ({
             name: item.name,
@@ -105,45 +99,41 @@ function downloadCSV() {
             absenceYn: item.absenceYn,
             absenceContent: item.absenceContent
         })
-    )
+    );
 
     const fields = ['name', 'employeeNumber', 'department', 'team', 'position', 'duties', 'absenceYn', 'absenceContent'];
     const json2csvParser = new Parser({ fields });
     const csv = json2csvParser.parse(csvData);
-
     const bom = '\uFEFF';
     const blob = new Blob([bom + csv], { type: 'text/csv;charset=utf-8;' });
-
 
     saveAs(blob, '사원 명단.csv');
 };
 
-function toModify() {
+const toModify = () => {
     router.push('/hr/modify/list')
-}
+};
 
-function toAddMulit() {
+const toAddMulti = () => {
     router.push('/hr/add/list')
-}
+};
 
-function toAdd() {
+const toAdd = () => {
     router.push('/hr/add')
-}
+};
 
-function toInfo(employeeNumber) {
+const toInfo = (employeeNumber) => {
     router.push(`/hr/profile/${employeeNumber}`)
-}
+};
 
 onMounted(async () => {
-    isAddDropdownOpen.value = false;
     document.addEventListener('click', handleDocumentClick);
-
     try {
         await findUser();
     } catch {
         console.error('axios error: 데이터를 받아오지 못했습니다.');
     }
-})
+});
 
 onUnmounted(() => {
     document.removeEventListener('click', handleDocumentClick);
@@ -152,11 +142,10 @@ onUnmounted(() => {
 const handleDocumentClick = (event) => {
     const target = event.target;
     const dropdownButton = document.querySelector('.addBtn');
-    if (!dropdownButton.contains(target)) {
+    if (!dropdownButton.contains(target) && !dropdownMenu.value.contains(target)) {
         isAddDropdownOpen.value = false;
     }
 };
-
 </script>
 
 <style scoped>
@@ -167,14 +156,15 @@ button {
 .hr-main {
     display: grid;
     grid-template-columns: 10% 80% 10%;
-    grid-template-rows: 18% 5% 43% 5% 13%;
-
+    grid-template-rows: 18% 4% 43% 5% 13%;
     height: 100%;
 }
 
 .hr-title {
     grid-column-start: 2;
     grid-column-end: 3;
+
+    font-weight: 600;
     margin-top: 2%;
     color: #000000;
     display: grid;
@@ -184,59 +174,13 @@ button {
 
 .hr-title h1 {
     margin-left: 0.5%;
-    font-weight: bold;
-    font-size: 14pt;
+    font-weight: 600;
+    font-size: 25px;
 }
 
 .hr-icon {
     width: 80%;
     filter: invert(0%) sepia(64%) saturate(7%) hue-rotate(334deg) brightness(85%) contrast(101%);
-}
-
-.vacations {
-    grid-column-start: 2;
-    grid-column-end: 3;
-    display: grid;
-    grid-template-columns: 10% 5% 20% 5% 20% 30%;
-    align-items: center;
-    margin-bottom: 5%;
-}
-
-.vacationsTitle {
-    margin-left: 5%;
-    display: grid;
-    grid-template-columns: 85% 10% 5%;
-    align-items: center;
-    height: 10vh;
-}
-
-.vacationsTitle h3 {
-    font-size: 12pt;
-}
-
-.plusBtn {
-    width: 100%;
-    cursor: pointer;
-}
-
-.annual {
-    width: calc(100% - 20px);
-    background-color: #F2F2F2;
-    font-size: 15px;
-}
-
-.month {
-    width: calc(100% - 20px);
-    background-color: #F2F2F2;
-    grid-column-start: 3;
-    font-size: 15px;
-}
-
-.diretly {
-    width: calc(100% - 20px);
-    background-color: #F2F2F2;
-    grid-column-start: 5;
-    font-size: 15px;
 }
 
 .search {
@@ -279,6 +223,13 @@ button {
     font-style: bold;
     justify-self: flex-start;
     width: 100%;
+}
+
+.dropdown-container {
+    grid-column-start: 4;
+    margin-left: 5px;
+    position: relative;
+    display: inline-block;
 }
 
 .addBtn {
@@ -327,6 +278,7 @@ button {
 }
 
 .dropdown-menu {
+    display: none;
     font-size: 12px;
     position: absolute;
     z-index: 999;
@@ -336,8 +288,12 @@ button {
     padding: 10px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     margin-top: 5px;
-    overflow: hidden;
-    transition: max-height 0.5s ease-in-out;
+    left: 0; /* 버튼 바로 아래에 위치시키기 */
+    top: 100%; /* 버튼 바로 아래에 위치시키기 */
+}
+
+.dropdown-menu.show {
+    display: block;
 }
 
 .dropdown-menu img {
@@ -385,7 +341,6 @@ button {
     font-style: bold;
 }
 
-
 .tableContainer {
     grid-column-start: 2;
     grid-column-end: 3;
@@ -400,12 +355,11 @@ table {
 
 th,
 td {
-    border: 1px solid #ffffff;
+    border: 1px solid #dddddd;
     text-align: center;
     vertical-align: middle;
     color: #a7a4a4;
     padding: 1rem;
-    /* 각 셀에 여백 추가 */
 }
 
 th {
