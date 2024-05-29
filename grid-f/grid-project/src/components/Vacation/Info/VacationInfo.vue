@@ -55,6 +55,11 @@
                     </tr>
                 </thead>
                 <tbody>
+                    <template v-if="paginatedInfo.length === 0">
+                        <tr>
+                            <td colspan="7" class="no-data">휴가 보유 정보가 없습니다.</td>
+                        </tr>
+                    </template>
                     <tr v-for="(info, index) in paginatedInfo" :key="info.id">
                         <td>{{ (currentPage - 1) * itemsPerPage + index + 1 }}</td>
                         <td>{{ info.employeeName }}</td>
@@ -390,5 +395,10 @@ th {
     font-size:13px;
     font-weight: 600;
 }
+
+.no-data {
+    text-align: center;
+    vertical-align: middle;
+}  
 </style>
 

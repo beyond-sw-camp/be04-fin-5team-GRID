@@ -46,15 +46,22 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(history, index) in paginatedHistories" :key="history.id">
-                        <td>{{ (currentPage - 1) * itemsPerPage + index + 1 }}</td>
-                        <td>{{ history.employeeName }}</td>
-                        <td>{{ history.employeeNumber }}</td>
-                        <td>{{ history.changeTypeName }}</td>
-                        <td>{{ history.typeName }}</td>
-                        <td>{{ history.changeTime }}</td>
-                        <td>{{ history.changeReason }}</td>
-                    </tr>
+                    <template v-if="paginatedHistories.length === 0">
+                        <tr>
+                            <td colspan="7" class="no-data">휴가 변화 이력이 없습니다.</td>
+                        </tr>
+                    </template>
+                    <template v-else>
+                        <tr v-for="(history, index) in paginatedHistories" :key="history.id">
+                            <td>{{ (currentPage - 1) * itemsPerPage + index + 1 }}</td>
+                            <td>{{ history.employeeName }}</td>
+                            <td>{{ history.employeeNumber }}</td>
+                            <td>{{ history.changeTypeName }}</td>
+                            <td>{{ history.typeName }}</td>
+                            <td>{{ history.changeTime }}</td>
+                            <td>{{ history.changeReason }}</td>
+                        </tr>
+                    </template>
                 </tbody>
             </table>
         </div>
@@ -591,6 +598,11 @@ onBeforeMount(() => {
     grid-column-start: 2;
     margin-top: 5%;
   }
+
+  .no-data {
+    text-align: center;
+    vertical-align: middle;
+}   
 </style>
 
 
