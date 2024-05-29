@@ -137,7 +137,7 @@ const router = createRouter({
             component: () => import('@/views/Approval/VApprovalListView.vue')
         },
         {
-            path: '/approval/:employeeId',
+            path: '/approval',
             component: () => import('@/views/Approval/AllApprovalListView.vue')
         },
         {
@@ -167,6 +167,10 @@ const router = createRouter({
         {
             path: '/regist/main',
             component: () => import('@/views/Approval/RegistMainView.vue')
+        },
+        {
+            path: '/work',
+            component: () => import('@/views/Approval/AllWorkListView.vue')
         }
     ]
 })

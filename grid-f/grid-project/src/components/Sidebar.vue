@@ -14,7 +14,7 @@
           <span @click="toggleMenu('workManagement')">근태 관리</span>
           <ul v-show="activeMenus.workManagement">
             <li>근무 관리</li>
-            <li>근무 정보</li>
+            <li @click="navigateTo('/work')">근무 정보</li>
             <li>휴가 정책</li>
             <li>휴가 보유 정보 목록</li>
             <li>휴가 기록 목록</li>
@@ -23,8 +23,8 @@
         <li>
           <span @click="toggleMenu('paymentManagement')">결재 관리</span>
           <ul v-show="activeMenus.paymentManagement">
-            <li>결재 문서 작성</li>
-            <li>결재 문서 목록</li>
+            <li @click="navigateTo('/regist/main')">결재 문서 작성</li>
+            <li @click="navigateTo('/approval')">결재 문서 목록</li>
           </ul>
         </li>
         <li>
