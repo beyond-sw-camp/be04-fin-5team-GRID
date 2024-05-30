@@ -76,28 +76,28 @@
                     vacation_approval b
                 </if>
                 ON  a.id = b.requester_id
-          WHERE
+
                 <!-- 승인 -->
                 <if test="isApproval == 1">
-                    b.approval_status = 'A'
+                    WHERE b.approval_status = 'A'
                 </if>
                 <!-- 반려 -->
                 <if test="isApproval == 2">
-                    b.approval_status = 'D'
+                    WHERE b.approval_status = 'D'
                 </if>
                 <!-- 대기 -->
                 <if test="isApproval == 3">
-                    b.approval_status = 'N'
+                    WHERE b.approval_status = 'N'
                     OR  b.approval_status = 'V'
                 </if>
                 <!-- 취소 -->
                 <if test="isApproval == 4">
-                    b.cancel_yn = 'Y'
+                    WHERE b.cancel_yn = 'Y'
                     OR  b.cancel_document_id != 0
                 </if>
                 <!-- 승인(취소 제외) <목록> -->
                 <if test="isApproval == 5">
-                    b.approval_status = 'A'
+                    WHERE b.approval_status = 'A'
                     AND  b.cancel_yn = 'N'
                     AND  b.cancel_document_id = 0
                 </if>
