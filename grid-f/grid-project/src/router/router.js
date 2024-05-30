@@ -222,7 +222,12 @@ const router = createRouter({
         {
             path: '/work',
             component: () => import('@/views/Approval/AllWorkListView.vue')
+        },
+        {
+            path: '/work-calendar',
+            component: () => import('@/views/AdTime/WorkCalendarView.vue')
         }
+
 
     ]
 })
