@@ -36,11 +36,22 @@
                 </thead>
                 <tbody>
                     <tr v-for="(employee, index) in employees" :key="index">
-                        <td><input v-model="employee.employeeNumber" class="no-border" required></td>
-                        <td><input v-model="employee.name" class="no-border" required></td>
+                        <td>
+                            <input v-model="employee.employeeNumber"
+                                :class="{ 'invalid-input': employee.invalid && !employee.employeeNumber }" required
+                                placeholder="사원 번호"
+                                :style="{ color: employee.invalid && !employee.employeeNumber ? 'red' : '' }">
+                        </td>
+                        <td>
+                            <input v-model="employee.name"
+                                :class="{ 'invalid-input': employee.invalid && !employee.name }" required placeholder="이름"
+                                :style="{ color: employee.invalid && !employee.name ? 'red' : '' }">
+                        </td>
                         <td>
                             <select v-model="employee.departmentId">
-                                <option v-for="department in departments" :key="department.value" :value="department.value">
+                                <option disabled value="">선택</option>
+                                <option v-for="department in departments" :key="department.value"
+                                    :value="department.value">
                                     {{ department.text }}
                                 </option>
                             </select>
@@ -73,10 +84,22 @@
                             </select>
                         </td>
                         <td><input v-model="employee.contractEndDate" type="date" class="no-border" required></td>
-                        <td style="min-width: 300px;">
-                            <button class="searchBtn">검색</button>
-                            <input v-model="employee.address1" class="no-border" placeholder="주소 1" required>
-                            <input v-model="employee.address2" class="no-border" placeholder="주소 2" required>
+                        <td style="min-width: 350px;">
+                            <div class="address-container">
+                                <div>
+                                    <button class="searchBtn" @click="execDaumPostcode(employee)">검색</button>
+                                    <input v-model="employee.zipCode" placeholder="우편 번호" style="width: 23%;" required
+                                        readonly>
+                                    <input v-model="employee.address1" placeholder="주소" style="width: 57%;" required
+                                        readonly>
+                                </div>
+                                <div id="address-container2">
+                                    <input v-model="employee.address2" placeholder="상세 주소" style="width: 82%;" required>
+                                </div>
+                            </div>
+                        </td>
+                        <td style="width: 60px;">
+                            <button @click="removeEmployee(index)" class="deleteBtn">삭제</button>
                         </td>
                         <td style="width: 60px;"><button @click="removeEmployee(index)" class="deleteBtn">삭제</button></td>
                     </tr>
@@ -180,7 +203,8 @@ const addEmployee = () => {
         workType: '',
         contractEndDate: '',
         address1: '',
-        address2: ''
+        address2: '',
+        invalid: false // Add invalid field for validation
     });
 };
 
@@ -198,10 +222,39 @@ const formattedEmployees = computed(() =>
         dutiesId: emp.dutiesId,
         workType: emp.workType,
         contractEndDate: emp.contractEndDate,
-        address1: emp.address1,
-        address2: emp.address2,
+        zipCode: emp.zipCode,
+        address: emp.address1 ? `${emp.address1} ${emp.address2}`.trim() : null
     }))
 );
+
+const execDaumPostcode = (employee) => {
+    new daum.Postcode({
+        oncomplete: function (data) {
+            let addr = '';
+            let extraAddr = '';
+
+            if (data.userSelectedType === 'R') {
+                addr = data.roadAddress;
+            } else {
+                addr = data.jibunAddress;
+            }
+
+            if (data.userSelectedType === 'R') {
+                if (data.bname !== '' && /[동|로|가]$/g.test(data.bname)) {
+                    extraAddr += data.bname;
+                }
+                if (data.buildingName !== '' && data.apartment === 'Y') {
+                    extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+                }
+                if (extraAddr !== '') {
+                    extraAddr = ' (' + extraAddr + ')';
+                }
+            }
+            employee.zipCode = data.zonecode;
+            employee.address1 = addr;
+        }
+    }).open();
+};
 
 const downloadCSV = () => {
     const csvData = [
@@ -247,8 +300,11 @@ const handleFileUpload = (event) => {
                         dutiesId: (row['직책'] || '').trim(),
                         workType: (row['근무 유형'] || '').trim(),
                         contractEndDate: (row['계약 종료일'] || '').trim(),
-                        address1: (row['주소 1'] || '').trim(),
-                        address2: (row['주소 2'] || '').trim(),
+                        zipCode: (row['우편 번호'] || '').trim(),
+                        address1: (row['주소'].split(' ')[0] || '').trim(),
+                        address2: (row['상세 주소'] || ''),
+                        invalid: false // Add invalid field for validation
+
                     });
                 });
             }
@@ -270,14 +326,49 @@ watch(formattedEmployees, (newVal) => {
 }, { deep: true });
 
 const submitForm = async () => {
-    const filteredEmployees = formattedEmployees.value.filter(emp => {
-        return Object.values(emp).some(value => value !== null && value !== '');
-    });
+
+    let hasInvalid = false;
+    let hasData = false;
+
+    const cleanedEmployees = formattedEmployees.value
+        .filter(emp => Object.values(emp).some(value => value !== null && value !== ''))
+        .map(emp => {
+            const cleanedEmp = {};
+            Object.keys(emp).forEach(key => {
+                if (emp[key] !== null && emp[key] !== '') {
+                    cleanedEmp[key] = emp[key];
+                }
+            });
+            return cleanedEmp;
+        })
+        .filter(emp => Object.values(emp).some(value => value !== null && value !== ''));
+    
+    if(cleanedEmployees.length == 0) {
+        alert('수정할 데이터가 없습니다.');
+        return;
+    }
+
+    employees.forEach(emp => {
+
+        if (!emp.employeeNumber || !emp.name) {
+            emp.invalid = true;
+            hasInvalid = true;
+        } else {
+            emp.invalid = false;
+        }
+    }
+    );
+
+    if (hasInvalid) {
+        alert('사번과 이름을 입력해주세요.');
+        return;
+    }
 
     try {
-        const response = await axios.post('http://localhost:8080/users/list', filteredEmployees);
-        alert('일괄 수정이 성공하였습니다.');
-        router.push(0);
+        console.log('보낼 데이터: ', cleanedEmployees)
+        await axios.put('http://localhost:8080/users/list', cleanedEmployees);
+        alert('수정에 성공하였습니다.');
+        router.push('/hr');
     } catch (e) {
         const errorMessage = e.response && e.response.data && e.response.data.message ? e.response.data.message : e.message;
         alert('수정에 실패하였습니다. 입력 정보를 확인해주세요! : ' + errorMessage);
@@ -564,4 +655,17 @@ thead th {
     filter: invert(100%) sepia(65%) saturate(424%) hue-rotate(91deg) brightness(129%) contrast(107%);
     transition: transform 0.3s ease;
 }
+
+.address-container input::placeholder {
+    text-align: left;
+}
+
+.address-container input {
+    text-align: left;
+}
+
+.invalid-input::placeholder {
+    color: rgb(240, 125, 125);
+}
+
 </style>
