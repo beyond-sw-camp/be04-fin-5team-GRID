@@ -73,7 +73,10 @@
 
 <template>
   <b-button @click="navigateTo('/bt')">상세</b-button>
-  <ApprovalList :approvalList="state.btApprovalList"/>
+  <b-card title="출장">
+    <br>
+    <ApprovalList :approvalList="state.btApprovalList" :short="1"/>
+  </b-card>
   <b-button @click="navigateTo('/overtime')">상세</b-button>
   <ApprovalList :approvalList="state.oApprovalList"/>
   <b-button @click="navigateTo('/rw')">상세</b-button>

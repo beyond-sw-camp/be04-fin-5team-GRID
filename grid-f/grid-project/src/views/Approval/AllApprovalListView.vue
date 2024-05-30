@@ -4,7 +4,7 @@
 
   import ApprovalList from "@/components/Approval/ApprovalList.vue";
 
-  const admin = 0;
+  const admin = 1;
   const employeeId = 1;
 
   const state = reactive({
@@ -31,6 +31,8 @@
       state.approvalList = response.data.approvalEmpResultList;
       state.approvalList.type = typeId;
 
+      console.log(url);
+
     } catch (error) {
       console.error('Fetch error: ' + error.message);
     }
@@ -56,15 +58,45 @@
     // 버튼 클릭에 따라 다르게 실행
     // 0: 전체, 1: 승인, 2: 반려, 3: 대기
     await fetchApprovalList(1,0,  employeeId);
-    await fetchReqApprovalList(1, 0, employeeId);
+    await fetchReqApprovalList(1, 5, employeeId);
   })
 </script>
 
 <template>
-  <ApprovalList :approvalList="state.approvalList"/>
-  <ApprovalList v-if="admin !== 1" :approvalList="state.reqApprovalList"/>
+  <div>결재 목록</div>
+  <div v-if="admin === 1">
+  <!-- 관리자 -->
+    <div>
+      <b-card no-body>
+        <b-tabs card>
+          <b-tab title="출장" @click="fetchApprovalList(1, 0, employeeId)" active>
+            <b-card-text><ApprovalList :approvalList="state.approvalList"/></b-card-text>
+          </b-tab>
+          <b-tab title="시간 외 근무" @click="fetchApprovalList(2, 0, employeeId)">
+            <ApprovalList :approvalList="state.approvalList"/>
+          </b-tab>
+          <b-tab title="단축 근무" @click="fetchApprovalList(3, 0, employeeId)">
+          <ApprovalList :approvalList="state.approvalList"/>
+          </b-tab>
+          <b-tab title="휴가" @click="fetchApprovalList(4, 0, employeeId)">
+            <ApprovalList :approvalList="state.approvalList"/>
+          </b-tab>
+        </b-tabs>
+      </b-card>
+    </div>
+  </div>
+  <div v-else>
+    <b-card title="내가 작성한 문서">
+      <br>
+      <ApprovalList :approvalList="state.approvalList" :short="1"/>
+    </b-card>
+    <br>
+    <b-card title="결재 필요 문서">
+      <br>
+      <ApprovalList :approvalList="state.reqApprovalList" :short="1"/>
+    </b-card>
+  </div>
 </template>
 
 <style scoped>
-
 </style>
