@@ -1,4 +1,8 @@
 spring:
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
   jpa:
     generate-ddl: false
     show-sql: true
@@ -24,3 +28,15 @@ application:
   redis:
     host: localhost
     port: 6379
+
+cloud:
+  aws:
+    credentials:
+      secret-key:
+      access-key: 
+    region:
+      static:
+    s3:
+      bucketName:
+    stack:
+      auto: false

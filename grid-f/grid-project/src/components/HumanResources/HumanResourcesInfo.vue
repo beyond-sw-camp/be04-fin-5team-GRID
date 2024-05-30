@@ -33,7 +33,7 @@
                 result.team.teamName : 'N/A' }}
             </div>
             <div id="hr-info-content">
-                {{ result.assignedTask }}
+                {{ assignedTask }}
             </div>
             <div id="hr-info-content">
                 {{ result.position ? result.position.positionName : 'N/A' }}
@@ -86,7 +86,7 @@
                 {{ result.phoneNumber }}
             </div>
             <div id="basic-info-content">
-                {{ callNum }}
+                {{ callNumber }}
             </div>
             <div id="basic-info-content">
                 {{ result.joinTime }}
@@ -103,11 +103,19 @@
             </div>
             <div id="admin-info-name">
                 <img src="@/assets/HR/time.png" alt="시간 표시" class="info-img">
+                입사 유형
+            </div>
+            <div id="admin-info-name">
+                <img src="@/assets/HR/time.png" alt="시간 표시" class="info-img">
                 고용 유형
             </div>
             <div id="admin-info-name">
                 <img src="@/assets/HR/time.png" alt="시간 표시" class="info-img">
-                입사 유형
+                계약 시작일
+            </div>
+            <div id="admin-info-name">
+                <img src="@/assets/HR/time.png" alt="시간 표시" class="info-img">
+                계약 종료일
             </div>
             <div id="admin-info-name">
                 <img src="@/assets/HR/time.png" alt="시간 표시" class="info-img">
@@ -125,7 +133,13 @@
                 {{ workType }}
             </div>
             <div id="admin-info-content">
-                {{ isResigned ? '퇴사' : '재직중' }} {{ resignTime }}
+                {{ contractStartTime }}
+            </div>
+            <div id="admin-info-content">
+                {{ contractEndTime }}
+            </div>
+            <div id="admin-info-content">
+                {{ isResigned }} {{ resignTime }}
             </div>
         </div>
     </div>
@@ -152,19 +166,26 @@ const updateValues = () => {
     
     joinType.value = props.result.joinType === 'NEW' ? '신입' : '경력';
     workType.value = props.result.workType === 'R' ? '정규직' : '계약직';
-    isResigned.value = props.result.resignYn === 'N' ? '재직중' : '퇴사';
+    isResigned.value = props.result.resignYn === 'N' ? '재직' : '퇴사';
+    callNumber.value = props.result.callNumber != null ? props.result.callNumber : '-';
+    assignedTask.value = props.result.assignedTask != null ? props.result.assignedTask : '-';
     resignTime.value = props.result.resignTime != null ? props.result.resignTime : '';
+    contractStartTime.value = props.result.contractStartTime!= null ? props.result.contractStartTime : '';
+    contractEndTime.value = props.result.contractEndTime!= null ? props.result.contractEndTime : '-';
 };
 
 const today = new Date();
 const year = today.getFullYear();
 const month = String(today.getMonth() + 1).padStart(2, '0'); 
 const day = String(today.getDate()).padStart(2, '0');
-const callNum = ref('');
 const joinType = ref('');
 const workType = ref('');
-const isResigned = ref(false);
+const isResigned = ref('');
 const resignTime = ref('');
+const contractStartTime = ref('');
+const contractEndTime = ref('');
+const callNumber = ref('');
+const assignedTask = ref('');
 
 const currentTime = `${year}-${month}-${day}`;
 

@@ -6,21 +6,27 @@
         </div>
         <div class="vacations">
             <div class="annual" v-if="userRole === 'ROLE_ADMIN'">
-                <div class="vacationsTitle">
-                    <h3>연 단위 휴가 지급<br> (연차, 정기휴가)</h3>
-                    <img class="plusBtn" @click=giveAnnual() src="@/assets/buttons/plus.png">
+                <div class="card" >
+                    <div class="card-body">
+                        <h3 class="card-title">연 단위 휴가 지급<br> (연차, 정기휴가)</h3>
+                        <button href="#" @click="giveAnnual()" class="btn btn-custom">지급하기</button>
+                    </div>
                 </div>
             </div>
             <div class="month"  v-if="userRole === 'ROLE_ADMIN'">
-                <div class="vacationsTitle">
-                    <h3>월 단위 휴가 지급 <br> (월차, 보건휴가)</h3>
-                    <img class="plusBtn" @click=giveMonth() src="@/assets/buttons/plus.png">
+                <div class="card" >
+                    <div class="card-body">
+                        <h3 class="card-title">월 단위 휴가 지급 <br> (월차, 보건휴가)</h3>
+                        <button href="#" @click="giveMonth()" class="btn btn-custom">지급하기</button>
+                    </div>
                 </div>
             </div>
             <div class="diretly"  v-if="userRole === 'ROLE_ADMIN'">
-                <div class="vacationsTitle">
-                    <h3>휴가 직접 지급 <br> (관리자)</h3>
-                    <img class="plusBtn" @click="showRegistModal = true" src="@/assets/buttons/plus.png">
+                <div class="card" >
+                    <div class="card-body">
+                        <h3 class="card-title">휴가 직접 지급 <br> (관리자)</h3>
+                        <button href="#" @click="showModal('giveVacation')" class="btn btn-custom">지급하기</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -33,76 +39,85 @@
             <button @click="search" class="printBtn">검색</button>
         </div> 
         <div class="tableContainer">
-            <table>
-                <thead>
-                    <tr>
-                        <th>번호</th>
-                        <th>이름</th>
-                        <th>사번</th>
-                        <th>지급종류</th>
-                        <th>휴가종류</th>
-                        <th>변경일</th>
-                        <th>사유</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <template v-if="paginatedHistories.length === 0">
-                        <tr>
-                            <td colspan="7" class="no-data">휴가 변화 이력이 없습니다.</td>
-                        </tr>
-                    </template>
-                    <template v-else>
-                        <tr v-for="(history, index) in paginatedHistories" :key="history.id">
-                            <td>{{ (currentPage - 1) * itemsPerPage + index + 1 }}</td>
-                            <td>{{ history.employeeName }}</td>
-                            <td>{{ history.employeeNumber }}</td>
-                            <td>{{ history.changeTypeName }}</td>
-                            <td>{{ history.typeName }}</td>
-                            <td>{{ history.changeTime }}</td>
-                            <td>{{ history.changeReason }}</td>
-                        </tr>
-                    </template>
-                </tbody>
-            </table>
+            <b-table hover small :fields="fields" :items="paginatedHistories" >
+                <template #cell(index)="data">
+                    {{ (currentPage - 1) * itemsPerPage + data.index + 1 }}
+                </template>
+                <template #cell(employeeName)="data">
+                    <span>{{ data.item.employeeName }}</span>
+                </template>
+                <template #cell(employeeNumber)="data">
+                    <span>{{ data.item.employeeNumber }}</span>
+                </template>
+                <template #cell(changeTypeName)="data">
+                    <span>{{ data.item.changeTypeName }}</span>
+                </template>
+                <template #cell(typeName)="data">
+                    <span>{{ data.item.typeName }}</span>
+                </template>
+                <template #cell(changeTime)="data">
+                    <span>{{ data.item.changeTime }}</span>
+                </template>
+                <template #cell(changeReason)="data">
+                    <span>{{ data.item.changeReason }}</span>
+                </template>
+            </b-table>
         </div>
-        <div class="pagination">
-            <button @click="prevPage" :disabled="currentPage === 1">Previous</button>
-            <button 
-                v-for="page in totalPages" 
-                :key="page" 
-                @click="goToPage(page)" 
-                :class="{ active: page === currentPage }"
-            >{{ page }}</button>
-            <button @click="nextPage" :disabled="currentPage === totalPages">Next</button>
-        </div>
+        <nav class="pg" aria-label="Page navigation example" v-if="totalPages > 1">
+            <ul class="pagination">
+                <li class="page-item" :class="{ disabled: currentPage === 1 }">
+                    <a class="page-link" href="#" aria-label="Previous" @click.prevent="prevPage">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <li v-for="page in totalPages" :key="page" class="page-item" :class="{ active: page === currentPage }">
+                    <a class="page-link" @click.prevent="goToPage(page)">{{ page }}</a>
+                </li>
+                <li class="page-item" :class="{ disabled: currentPage === totalPages }">
+                    <a class="page-link" aria-label="Next" @click.prevent="nextPage">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
     </div>
 
-    <Modal v-if="showRegistModal" @close="showRegistModal = false">
-        <div class="registMain">
-          <div class="registTitle">
-            <h3 for="type">타입</h3>
-            <select id="type" v-model="selectedType" class="selectField">
-              <option value="">선택해주세요.</option>
-              <option v-for="type in types" :key="type.id" :value="type.id">{{ type.typeName }}</option>
-            </select>
-          </div>
-          <div class="vacationNum">
-            <h3 for="VacationNum">휴가일수</h3>
-            <input v-model="vacationNum" type="number" class="numInputField" placeholder="휴가일수를 입력해주세요.">
-          </div>
-          <div class="employeeNum">
-            <h3 for="employeeNum">직원사번</h3>
-            <input v-model="employeeNum" class="empInputField" placeholder="직원사번을 입력해주세요.">
-          </div>
-          <div class="registContent">
-                <h3>휴가 사용기한</h3>
-                <VueDatePicker locale="ko" :enable-time-picker="false" v-model="date" class="inputField" />
+      <!-- 휴가지급 모달 -->
+      <div class="modal fade" id="giveVacation" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">휴가 정책 등록</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form @submit.prevent="registVacationPolicy(modifyPolicy.id)">
+                        <div class="mb-3">
+                            <label for="vacationType" class="form-label">휴가 타입</label>
+                            <select class="form-select" v-model="selectedType" id="modifyTypeName" required>
+                            <option v-for="type in types" :key="type.id" :value="type.id">{{ type.typeName }}</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="vacationNum" class="form-label">휴가 일수</label>
+                            <input class="form-control explainForm" id="vacationNum" placeholder="내용을 입력해주세요." type="number" v-model="vacationNum" required></input>
+                        </div>
+                        <div class="mb-3">
+                            <label for="employeeNum" class="form-label">직원 사번</label>
+                            <input class="form-control explainForm" id="employeeNum" placeholder="내용을 입력해주세요." v-model="employeeNum" required></input>
+                        </div>
+                        <div class="mb-3">
+                            <label for="dayOfUsing" class="form-label">휴가 사용기한</label>
+                            <VueDatePicker locale="ko" :enable-time-picker="false" v-model="date" class="inputField" />
+                        </div>
+                        <div class="button-container">
+                            <button type="button" class="btn btn-primary" @click="giveVacationDirectly">지급</button>
+                        </div>
+                    </form>
+                </div>
             </div>
-          <div class="registBtnArea">
-            <button class="registBtn" @click="giveVacationDirectly">지급하기</button>
-          </div>
-        </div>
-      </Modal>
+          </div>        
+      </div>
 </template>
 
 <script setup>
@@ -112,6 +127,9 @@ import router from '@/router/router';
 import Modal from '@/components/Vacation/Info/VacationInfoModal.vue';
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap';
+import { BTable } from 'bootstrap-vue-3';
 
 const histories = ref([]);
 const searchType = ref('name'); // 검색 유형을 위한 기본값 설정
@@ -132,6 +150,21 @@ const totalPages = computed(() => {
     return Math.ceil(filteredHistories.value.length / itemsPerPage);
 });
 
+const fields = [
+    { key: 'index', label: '번호' },
+    { key: 'employeeName', label: '이름' },
+    { key: 'employeeNumber', label: '사번' },
+    { key: 'changeTypeName', label: '지급종류' },
+    { key: 'typeName', label: '휴가종류' },
+    { key: 'changeTime', label: '변경일' },
+    { key: 'changeReason', label: '사유' }
+];
+
+const showModal = (modalId) => {
+  const modal = new bootstrap.Modal(document.getElementById(modalId));
+  modal.show();
+};
+
 const paginatedHistories = computed(() => {
     const start = (currentPage.value - 1) * itemsPerPage;
     const end = start + itemsPerPage;
@@ -151,6 +184,8 @@ const getAllVacationHistory = async () => {
 const getUserVacationHistory = async () => {
     try {
         const response = await axios.get(`/api/vacation/details/${userId.value}`);
+        console.log(response.value)
+        histories.value = response.data.result;
         filteredHistories.value = histories.value; // 처음에 모든 기록을 보여줌
     } catch (error) {
         console.error("Error fetching vacation details:", error);
@@ -343,7 +378,7 @@ onBeforeMount(() => {
 <style scoped>
     .historyAll {
         display: grid;
-        grid-template-rows: 18% 10% 4% 43% 10% 11%;
+        grid-template-rows: 18% 13% 4% 43% 10% 8%;
         grid-template-columns: 10% 80% 10%;
         height: 100%;
     }
@@ -387,11 +422,6 @@ onBeforeMount(() => {
         align-items: center;
         font-size: 12px;
         height: 10vh;
-    }
-
-    .vacations h3 {
-        font-size: 15px;
-        font-weight: 600;
     }
 
     .plusBtn {
@@ -477,7 +507,7 @@ onBeforeMount(() => {
         background-color: #f2f2f2;
     }
 
-    .pagination {
+    .pg {
         grid-row-start: 5;
         grid-column-start: 2;
         grid-column-end: 3;
@@ -513,6 +543,12 @@ onBeforeMount(() => {
         display: flex;
         align-items: center;
     }
+
+    .button-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
 
     .registMain {
     height: 100%;
@@ -603,6 +639,35 @@ onBeforeMount(() => {
     text-align: center;
     vertical-align: middle;
 }   
+
+.btn-custom {
+    font-size:11px;
+    font-weight: 600;
+    color:black;
+    background-color: #CDE8E5;
+    border-color:#CDE8E5 ;
+    margin-top: 10px;
+  }
+
+  .vacations h3 {
+      font-size: 14px;
+      font-weight: 600;
+      color:black;
+      margin: 0;
+    }
+
+  .card-body {
+    width:100%;
+    padding: 0px 0px;
+    display:grid;
+    grid-template-rows: 1fr 1fr;
+    margin: 0;
+  }
+
+  .card {
+    padding: 10px 10px;
+    background-color: #088A85;
+  }
 </style>
 
 

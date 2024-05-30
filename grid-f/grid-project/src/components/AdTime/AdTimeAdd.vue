@@ -12,8 +12,13 @@
         <div v-else>00:00</div>
         <button @click="addDepartureTime()">퇴근</button>
       </b-card>
+
     </div>
     <div class="weekCalender" id="calendar"></div>
+  </div>
+  <div class="weekCalender" id="app">
+    <div id="calendar"></div>
+  </div>
   </div>
 </template>
 
@@ -24,8 +29,6 @@ import axios from 'axios';
 import {Calendar} from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
-import Department from "@/components/Department/Department.vue";
-
 
 const router = useRouter();
 
@@ -131,14 +134,17 @@ const initCalendar = async (events) => {
   }
 }
 
+
 // 직원용
 const fetchEmployeeEvent = async () => {
+
   try {
     // 출근 조회
     const responseAdTime = await axios.get(`http://localhost:8080/ad-time/${userId.value}`);
 
     const adTime = responseAdTime.data.adTimeDTOList;
     console.log(adTime);
+
     const adEvents = transformAdEvents(adTime);
     console.log(adTime.attendanceStatus);
     console.log(events.value);
@@ -212,6 +218,7 @@ function transformEvents(list, type, color) {
     start: item.startTime ? item.startTime.replace(" ", "T") : null,
     end: item.endTime ? item.endTime.replace(" ", "T") : null,
     color: color
+
   }));
 }
 
@@ -227,7 +234,8 @@ onMounted(async () => {
   }
 
   if (userRole.value === 'ROLE_ADMIN') {
-    // fetchAllAdTime();
+    fetchAllAdTime();
+
     await fetchAllEvent();
     initCalendar(events);
   } else if (userRole.value === 'ROLE_USER') {
@@ -236,6 +244,7 @@ onMounted(async () => {
     await fetchEmployeeEvent();
     initCalendar(events);
   }
+
 
   // Load Google Charts and draw the chart
   // google.charts.load('current', { packages: ['corechart'] });
@@ -254,6 +263,7 @@ onMounted(async () => {
   //     }
   //   });
   // });
+
 });
 
 
@@ -330,6 +340,48 @@ const addDepartureTime = async () => {
 </script>
 
 <style scoped>
+.adTimeAddController {
+  display: grid;
+  grid-template-rows: 18% 4% auto 5% 13%;
+  grid-template-columns: 10% 80% 10%;
+  height: 100%;
+}
+
+.adTimeListTitle {
+  grid-column-start: 2;
+  grid-column-end: 3;
+  font-size: 12px;
+  font-weight: 0;
+  margin-top: 2%;
+  color: #000000;
+  display: grid;
+  grid-template-columns: 3% 97%;
+  align-items: center;
+}
+
+.adTimeListTitle h1 {
+  margin-left: 0.5%;
+}
+
+.adTimeIcon {
+  width: 80%;
+}
+
+.adTimeBox {
+  grid-column-start: 2;
+  grid-column-end: 3;
+}
+
+.weekCalender {
+  grid-row-start: 3;
+  grid-column-start: 2;
+  grid-column-end: 3;
+}
+
+#calendar {
+  width: 100%;
+  max-height: 25%
+}
 
 .adTimeAddController {
   display: grid;

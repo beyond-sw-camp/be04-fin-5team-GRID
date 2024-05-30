@@ -38,6 +38,7 @@ const initCalendar = async (events) => {
   let calendarEl = document.getElementById('calendar');
   if (calendarEl) {
     calendar = new Calendar(calendarEl, {
+
       plugins: [dayGridPlugin, interactionPlugin],
       initialView: 'dayGridMonth',
       headerToolbar: {
@@ -75,6 +76,7 @@ const fetchEmployeeEvent = async ()  => {
 
     const adTime = responseAdTime.data.adTimeDTOList;
     console.log(adTime);
+
     const adEvents = transformAdEvents(adTime);
     console.log(adTime.attendanceStatus);
     console.log(events.value);
@@ -122,6 +124,7 @@ const fetchAllEvent = async ()  => {
 
     const adTime = responseAdTime.data.adTimeDTOList;
     console.log(adTime);
+
     const adEvents = transformAdEvents(adTime);
     console.log(adTime.attendanceStatus);
     console.log(events.value);
@@ -164,6 +167,7 @@ const fetchAllEvent = async ()  => {
   }
 };
 
+
 function transformAdEvents(list) {
   return list.map(item => ({
     title: `${item.attendanceStatus}`,
@@ -171,6 +175,7 @@ function transformAdEvents(list) {
     end: item.endTime? item.endTime.replace(" ", "T"): null
   }));
 }
+
 
 function transformEvents(list, type, color) {
   return list.map(item => ({
@@ -180,6 +185,7 @@ function transformEvents(list, type, color) {
     color: color
   }));
 }
+
 
 onMounted(async () => {
 

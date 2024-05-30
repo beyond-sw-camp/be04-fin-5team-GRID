@@ -62,11 +62,19 @@ const mainContentClass = computed(() => {
 </template>
 
 <style scoped>
+@font-face {
+  font-family: 'IBMPlexSansKR-Regular';
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_20-07@1.0/IBMPlexSansKR-Regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
 body {
-  margin: 0;
-  padding: 0;
-  width: 100vw;
-  height: 100vh;
+    font-family: 'IBMPlexSansKR-Regular', sans-serif;
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
 }
 
 .container {
@@ -106,10 +114,11 @@ body {
 }
 
 .main-content {
-  grid-area: body;
-  margin-top: 60px;
-  padding: 0;
-  height: calc(100vh - 60px);
+    font-family: 'IBMPlexSansKR-Regular', sans-serif;
+    grid-area: body;
+    margin-top: 60px;
+    padding: 0 ;
+    height: calc(100vh - 60px);
 }
 
 .footer {

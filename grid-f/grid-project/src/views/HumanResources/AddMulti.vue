@@ -30,41 +30,73 @@
                         <th>입사일</th>
                         <th>입사 유형</th>
                         <th>근로 유형</th>
+                        <th>계약 시작일</th>
+                        <th>계약 종료일</th>
                         <th>부서</th>
                         <th>팀</th>
                         <th>직위</th>
                         <th>직책</th>
+                        <th style="min-width: 300px;">주소</th>
                         <th style="min-width: 50px;">삭제</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-for="(employee, index) in employees" :key="index">
-                        <td><input v-model="employee.name" class="no-border" required></td>
-                        <td><input v-model="employee.employeeNumber" class="no-border" required></td>
-                        <td style="width: 120px;"><input v-model="employee.email" type="email" class="no-border"
-                                required></td>
                         <td>
-                            <select v-model="employee.gender">
+                            <input v-model="employee.name"
+                                :class="{ 'invalid-input': employee.invalid && !employee.name }" required
+                                placeholder="이름" :style="{ color: employee.invalid && !employee.name ? 'red' : '' }">
+                        </td>
+                        <td>
+                            <input v-model="employee.employeeNumber"
+                                :class="{ 'invalid-input': employee.invalid && !employee.employeeNumber }" required
+                                placeholder="사번"
+                                :style="{ color: employee.invalid && !employee.employeeNumber ? 'red' : '' }">
+                        </td>
+                        <td style="width: 120px;">
+                            <input v-model="employee.email" type="email" class="no-border" required placeholder="이메일"
+                                :style="{ color: employee.invalid && !employee.email ? 'red' : '' }">
+                        </td>
+                        <td>
+                            <select v-model="employee.gender"
+                                :class="{ 'invalid-input': employee.invalid && !employee.gender }">
+                                <option disabled value="">선택</option>
                                 <option value="M">남성</option>
                                 <option value="F">여성</option>
                             </select>
                         </td>
-                        <td style="width: 120px;"><input v-model="employee.phoneNumber" class="no-border" required></td>
-                        <td><input v-model="employee.hireDate" type="date" class="no-border" required></td>
+                        <td style="width: 120px;">
+                            <input v-model="employee.phoneNumber" class="no-border" required placeholder="휴대폰 번호"
+                                :style="{ color: employee.invalid && !employee.phoneNumber ? 'red' : '' }">
+                        </td>
                         <td>
-                            <select v-model="employee.hireType">
+                            <input v-model="employee.hireDate" type="date" class="no-border" required placeholder="입사일">
+                        </td>
+                        <td>
+                            <select v-model="employee.hireType"
+                                :class="{ 'invalid-input': employee.invalid && !employee.hireType }">
+                                <option disabled value="">선택</option>
                                 <option value="NEW">신입</option>
                                 <option value="EXPERIENCED">경력</option>
                             </select>
                         </td>
                         <td>
-                            <select v-model="employee.workType">
+                            <select v-model="employee.workType"
+                                :class="{ 'invalid-input': employee.invalid && !employee.workType }">
+                                <option disabled value="">선택</option>
                                 <option value="R">정규직</option>
                                 <option value="C">계약직</option>
                             </select>
                         </td>
                         <td>
+                            <input v-model="employee.contractStartTime" type="date" class="no-border" required>
+                        </td>
+                        <td>
+                            <input v-model="employee.contractEndTime" type="date" class="no-border" required>
+                        </td>
+                        <td>
                             <select v-model="employee.departmentId">
+                                <option disabled value="">선택</option>
                                 <option v-for="department in departments" :key="department.value"
                                     :value="department.value">
                                     {{ department.text }}
@@ -73,6 +105,7 @@
                         </td>
                         <td>
                             <select v-model="employee.teamId">
+                                <option disabled value="">선택</option>
                                 <option v-for="team in teams" :key="team.value" :value="team.value">
                                     {{ team.text }}
                                 </option>
@@ -80,6 +113,7 @@
                         </td>
                         <td>
                             <select v-model="employee.positionId">
+                                <option disabled value="">선택</option>
                                 <option v-for="position in positions" :key="position.value" :value="position.value">
                                     {{ position.text }}
                                 </option>
@@ -87,12 +121,28 @@
                         </td>
                         <td>
                             <select v-model="employee.dutiesId">
+                                <option disabled value="">선택</option>
                                 <option v-for="duty in dutiesList" :key="duty.value" :value="duty.value">
                                     {{ duty.text }}
                                 </option>
                             </select>
                         </td>
-                        <td style="width: 60px;"><button @click="removeEmployee(index)" class="deleteBtn">삭제</button>
+                        <td style="min-width: 350px;">
+                            <div class="address-container">
+                                <div>
+                                    <button class="searchBtn" @click="execDaumPostcode(employee)">검색</button>
+                                    <input v-model="employee.zipCode" placeholder="우편 번호" style="width: 23%;" required
+                                        readonly>
+                                    <input v-model="employee.address1" placeholder="주소" style="width: 57%;" required
+                                        readonly>
+                                </div>
+                                <div id="address-container2">
+                                    <input v-model="employee.address2" placeholder="상세 주소" style="width: 82%;" required>
+                                </div>
+                            </div>
+                        </td>
+                        <td style="width: 60px;">
+                            <button @click="removeEmployee(index)" class="deleteBtn">삭제</button>
                         </td>
                     </tr>
                 </tbody>
@@ -115,10 +165,11 @@
     <div class="modal fade" id="guideModal" tabindex="-1" aria-labelledby="guideModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-
+                php
+                코드 복사
                 <!-- Modal Header -->
                 <div class="modal-header">
-                    <h4 class="modal-title" id="guideModalLabel">CSS 작성 가이드</h4>
+                    <h4 class="modal-title" id="guideModalLabel">CSV 작성 가이드</h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
 
@@ -146,23 +197,6 @@
             </div>
         </div>
     </div>
-
-    <!-- <div class="modal fade" id="guideModal" tabindex="-1" aria-labelledby="guideModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="guideModalLabel">CSS 작성 가이드</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="exma">
-                        이름,사번,이메일,성별,휴대폰 번호,입사일,입사 유형,근로 유형,부서,팀,직위,직책
-                        정태우,2410099,test002@gmail.com,M,010-1111-2222,2024-05-15,NEW,R,1,1,1,1
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div> -->
 </template>
 
 <script setup>
@@ -206,16 +240,21 @@ const addEmployee = () => {
         name: '',
         employeeNumber: '',
         email: '',
-        password: '',
         gender: '',
         phoneNumber: '',
         hireDate: '',
         hireType: '',
         workType: '',
-        departmentId: null,
-        teamId: null,
-        positionId: null,
-        dutiesId: null,
+        contractStartTime: '',
+        contractEndTime: '',
+        departmentId: '',
+        teamId: '',
+        positionId: '',
+        dutiesId: '',
+        zipCode: '',
+        address1: '',
+        address2: '',
+        invalid: false 
     });
 };
 
@@ -234,16 +273,49 @@ const formattedEmployees = computed(() =>
         joinTime: emp.hireDate,
         joinType: emp.hireType,
         workType: emp.workType,
+        contractStartTime: emp.contractStartTime,
+        contractEndTime: emp.contractEndTime,
         departmentId: emp.departmentId,
         teamId: emp.teamId,
         positionId: emp.positionId,
         dutiesId: emp.dutiesId,
+        zipCode: emp.zipCode,
+        address: emp.address1 ? `${emp.address1} ${emp.address2}`.trim() : null
     }))
 );
 
+const execDaumPostcode = (employee) => {
+    new daum.Postcode({
+        oncomplete: function (data) {
+            let addr = '';
+            let extraAddr = '';
+
+            if (data.userSelectedType === 'R') {
+                addr = data.roadAddress;
+            } else {
+                addr = data.jibunAddress;
+            }
+
+            if (data.userSelectedType === 'R') {
+                if (data.bname !== '' && /[동|로|가]$/g.test(data.bname)) {
+                    extraAddr += data.bname;
+                }
+                if (data.buildingName !== '' && data.apartment === 'Y') {
+                    extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+                }
+                if (extraAddr !== '') {
+                    extraAddr = ' (' + extraAddr + ')';
+                }
+            }
+            employee.zipCode = data.zonecode;
+            employee.address1 = addr;
+        }
+    }).open();
+};
+
 const downloadCSV = () => {
     const csvData = [
-        ['이름', '사번', '이메일', '비밀번호', '성별', '휴대폰 번호', '입사일', '입사 유형', '근로 유형', '부서', '팀', '직위', '직책'],
+        ['이름', '사번', '이메일', '성별', '휴대폰 번호', '입사일', '입사 유형', '근로 유형', '계약 시작일', '계약 종료일', '부서', '팀', '직위', '직책', '우편 번호', '주소', '상세 주소'],
         ...employees.map(emp => [
             emp.name,
             emp.employeeNumber,
@@ -253,10 +325,15 @@ const downloadCSV = () => {
             emp.hireDate,
             emp.hireType,
             emp.workType,
+            emp.contractStartTime,
+            emp.contractEndTime,
             emp.departmentId,
             emp.teamId,
             emp.positionId,
             emp.dutiesId,
+            emp.zipCode,
+            emp.address1,
+            emp.address2
         ])
     ];
     const csv = Papa.unparse(csvData, {
@@ -275,9 +352,9 @@ const handleFileUpload = (event) => {
         Papa.parse(file, {
             header: true,
             complete: (results) => {
-                console.log('Parsed CSV data:', results.data); // 디버깅을 위한 콘솔 출력
+                console.log('Parsed CSV data:', results.data); 
                 results.data.forEach(row => {
-                    console.log('Processing row:', row); // 디버깅을 위한 콘솔 출력
+                    console.log('Processing row:', row); 
                     employees.push({
                         name: (row['이름'] || '').trim(),
                         employeeNumber: (row['사번'] || '').trim(),
@@ -287,10 +364,16 @@ const handleFileUpload = (event) => {
                         hireDate: (row['입사일'] || '').trim(),
                         hireType: (row['입사 유형'] || '').trim(),
                         workType: (row['근로 유형'] || '').trim(),
+                        contractStartTime: (row['계약 시작일'] || '').trim(),
+                        contractEndTime: (row['계약 종료일'] || '').trim(),
                         departmentId: (row['부서'] || '').trim(),
                         teamId: (row['팀'] || '').trim(),
                         positionId: (row['직위'] || '').trim(),
                         dutiesId: (row['직책'] || '').trim(),
+                        zipCode: (row['우편 번호'] || '').trim(),
+                        address1: (row['주소'].split(' ')[0] || '').trim(),
+                        address2: (row['상세 주소'] || '').trim(),
+                        invalid: false // Add invalid field for validation
                     });
                 });
             }
@@ -312,22 +395,35 @@ watch(formattedEmployees, (newVal) => {
 }, { deep: true });
 
 const submitForm = async () => {
-    const filteredEmployees = formattedEmployees.value.filter(emp => {
-        return Object.values(emp).some(value => value !== null && value !== '');
-    });
+
+    const cleanedEmployees = formattedEmployees.value
+        .map(emp => {
+            const cleanedEmp = {};
+            Object.keys(emp).forEach(key => {
+                if (emp[key] !== null && emp[key] !== '') {
+                    cleanedEmp[key] = emp[key];
+                }
+            });
+            return cleanedEmp;
+        })
+        .filter(emp => Object.values(emp).some(value => value !== null && value !== ''));
+
+    if (cleanedEmployees.length === 0) {
+        alert('수정할 데이터를 입력해주세요.');
+        return;
+    }
 
     try {
-        const response = await axios.post('http://localhost:8080/users/list', filteredEmployees);
+        console.log('보낼 데이터: ', cleanedEmployees)
+        await axios.post('http://localhost:8080/users/list', cleanedEmployees);
         alert('회원 등록이 성공하였습니다.');
-        router.push(0);
+        router.push('/hr');
     } catch (e) {
         const errorMessage = e.response && e.response.data && e.response.data.message ? e.response.data.message : e.message;
         alert('등록에 실패하였습니다. 입력 정보를 확인해주세요! : ' + errorMessage);
     }
 };
-
 </script>
-
 
 <style scoped>
 button {
@@ -537,6 +633,7 @@ thead th {
     font-style: bold;
     justify-self: flex-start;
     width: 100%;
+    min-width: 81.79px;
 }
 
 .submitBtn {
@@ -551,6 +648,7 @@ thead th {
     font-style: bold;
     justify-self: flex-start;
     width: 100%;
+    min-width: 81.79px;
 }
 
 .deleteBtn {
@@ -594,5 +692,27 @@ thead th {
     margin: 1% 3% 1% 0;
     filter: invert(100%) sepia(65%) saturate(424%) hue-rotate(91deg) brightness(129%) contrast(107%);
     transition: transform 0.3s ease;
+}
+
+.address-container {
+    display: flex;
+    flex-direction: column;
+}
+
+#address-container2 {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.address-container input::placeholder {
+    text-align: left;
+}
+
+.address-container input {
+    text-align: left;
+}
+
+.invalid-input::placeholder {
+    color: rgb(240, 125, 125);
 }
 </style>

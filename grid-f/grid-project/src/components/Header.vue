@@ -2,7 +2,7 @@
   <div>
     <header class="header">
       <div class="logo">
-        <img src="@/assets/logo.png" @click="main()" class="logoimage">
+        <img src="@/assets/logo.png" @click="main()" class="logoimage" style="cursor: pointer;">
       </div>
       <div class="icons">
         <button class="icon-button">
@@ -57,14 +57,14 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import { Dropdown } from 'bootstrap';
 import draggable from 'vuedraggable';
 import { useRouter } from 'vue-router';
-
+import { useStore} from 'vuex';
 const departments = ref([]);
 const router = useRouter();
 const store = useStore();
@@ -97,6 +97,8 @@ const fetchDepartments = async () => {
 const goToProfile = () => {
   if (user.value && user.value.employeeNumber) {
     router.push(`/hr/profile/${user.value.employeeNumber}`);
+  }
+}
 
 const fetchTeams = async (departmentId) => {
   try {
@@ -230,10 +232,6 @@ const handleTeamDragEnd = async (event) => {
   } else {
     console.error('새 부서를 찾을 수 없습니다.');
   }
-};
-
-const goToProfile = (employeeNumber) => {
-  router.push(`/hr/profile/${employeeNumber}`); // 개인 정보 페이지로 이동
 };
 
 onMounted(() => {
