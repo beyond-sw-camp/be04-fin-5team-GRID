@@ -12,11 +12,10 @@
           <img src="@/assets/icon2.png" alt="Button 2" class="icon-image" />
         </button>
         <div class="dropdown">
-          <img
-            src="https://talkimg.imbc.com/TVianUpload/tvian/TViews/image/2020/04/12/FydNALvKf23Z637223013461671479.jpg"
-            alt="profile" class="profile" @click="toggleDropdown">
-          <ul class="dropdown-menu" ref="dropdownMenu">
-            <li><a class="dropdown-item" href="#" @click="goToProfile">개인 정보</a></li>
+          <img src="https://talkimg.imbc.com/TVianUpload/tvian/TViews/image/2020/04/12/FydNALvKf23Z637223013461671479.jpg"
+            alt="profile" class="profile dropdown-toggle" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <li><a class="dropdown-item" href="#" @click="goToProfile(employeeNumber)">개인 정보</a></li>
             <li><a class="dropdown-item" href="#" @click="logout">로그 아웃</a></li>
           </ul>
         </div>
@@ -42,7 +41,7 @@
                       {{ team.teamName }}
                     </div>
                     <ul v-if="team.showEmployees">
-                      <li v-for="employee in team.employees" :key="employee.id" @click="goToProfile(employee.id)" style="cursor: pointer;">
+                      <li v-for="employee in team.employees" :key="employee.id" @click="goToProfile(employee.employeeNumber)" style="cursor: pointer;">
                         {{ employee.name }}
                       </li>
                     </ul>
@@ -58,14 +57,14 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import { Dropdown } from 'bootstrap';
 import draggable from 'vuedraggable';
 import { useRouter } from 'vue-router';
-
+import { useStore} from 'vuex';
 const departments = ref([]);
 const router = useRouter();
 const store = useStore();
@@ -89,7 +88,6 @@ const fetchDepartments = async () => {
       showTeams: false,  // 팀 리스트를 보여줄지 여부
       teams: []  // 팀 데이터
     }));
-    console.log(response.data);
   } catch (error) {
     console.error('부서 정보를 가져오는 데 실패했습니다:', error);
   }
@@ -99,6 +97,8 @@ const fetchDepartments = async () => {
 const goToProfile = () => {
   if (user.value && user.value.employeeNumber) {
     router.push(`/hr/profile/${user.value.employeeNumber}`);
+  }
+}
 
 const fetchTeams = async (departmentId) => {
   try {
@@ -215,8 +215,8 @@ const handleTeamDragEnd = async (event) => {
           startTime: team.startTime,
           endTime: team.endTime,
           leaderId: team.leaderId,
-          departmentId: team.departmentId
-          
+          departmentId: team.departmentId,
+          sequence: team.sequence
         }, {
           headers: {
             'Content-Type': 'application/json'
@@ -232,10 +232,6 @@ const handleTeamDragEnd = async (event) => {
   } else {
     console.error('새 부서를 찾을 수 없습니다.');
   }
-};
-
-const goToProfile = (employeeId) => {
-  router.push(`/hr/profile/${employeeId}`); // 개인 정보 페이지로 이동
 };
 
 onMounted(() => {

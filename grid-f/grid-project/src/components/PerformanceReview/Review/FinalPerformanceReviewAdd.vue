@@ -37,13 +37,13 @@
       </table>
     </div>
     <div class="GoalButtonContainer">
-      <div v-if="userRole === 'member'">
+      <div>
         <button @click="memberSave()">팀원 저장</button>
         <button @click="submit()">상신</button>
       </div>
     </div>
     <div class="performanceTableContainer">
-      <div v-if="userRole === 'member'">
+      <div>
         <table>
           <thead>
           <tr>
@@ -73,6 +73,7 @@
                   v-model="item.actionItem"
                   type="text"
               />
+              <span v-else>{{ item.actionItem }}</span>
             </td>
             <td>
               {{ item.metric }}
@@ -83,6 +84,7 @@
                   v-model="item.detailPlan"
                   type="text"
               />
+              <span v-else>{{ item.detailPlan }}</span>
             </td>
             <td>
               {{ item.weight }}
@@ -93,6 +95,7 @@
                   v-model="item.performance"
                   type="text"
               />
+              <span v-else>{{ item.performance }}</span>
             </td>
             <td>
               <select v-if="!isReadOnly" v-model="item.selfId" class="form-select" @change="updateSelfScore(item)">
@@ -102,9 +105,10 @@
                 <option value="4">B</option>
                 <option value="5">C</option>
               </select>
+              <span v-else>{{ item.selfId }}</span>
             </td>
             <td>
-              {{item.selfScore}}
+              {{ item.selfScore }}
             </td>
             <td>
               <input
@@ -112,12 +116,13 @@
                   v-model="item.selfComment"
                   type="text"
               />
+              <span v-else>{{ item.selfComment }}</span>
             </td>
             <td>
               {{ item.superiorId }}
             </td>
             <td>
-              {{item.superiorScore}}
+              {{ item.superiorScore }}
             </td>
           </tr>
           </tbody>
@@ -128,9 +133,13 @@
 </template>
 
 <script setup>
-import {ref, onMounted} from 'vue';
+import {ref, onMounted, computed} from 'vue';
 import {useRouter} from 'vue-router';
 import axios from 'axios';
+import {useStore} from 'vuex';
+
+const store = useStore();
+const user = computed(() => store.state.user);
 
 const router = useRouter();
 
@@ -147,9 +156,6 @@ const reviewDetail = ref({
   approvalTime: '',
   status: ''
 });
-
-// member, leader, manager
-const userRole = ref(null);
 
 const isReadOnly = ref(false);
 
@@ -168,27 +174,24 @@ function getCurrentDateTimeString() {
 
 const fetchReviewAdd = async () => {
   try {
-    // 연말 평가 기간이 아니라면 작성x
+    // 연말 평가 기간이 아니라면 작성x 추가 필요
     // 올해 생성된 연말 평가가 있으면 조회 아니라면 새로 생성
 
     const currentYear = new Date().getFullYear();   // 올해 년도
     const currentTime = getCurrentDateTimeString()  // 현재 시간
 
-    // 팀원인지 확인하는 기능 추가 필요
-    userRole.value = "member";
-
-    const responseReview = await axios.get(`http://localhost:8080/performance-review/final/${currentYear}/8`)
+    const responseReview = await axios.get(`http://localhost:8080/performance-review/final/${currentYear}/${user.value.id}`)
 
 
     console.log(responseReview);
 
-    if(!responseReview.data.findReview){
+    if (!responseReview.data.findReview) {
       // 생성된 중간 평가 없을 때
-      const sendData= {
+      const sendData = {
         type: "F",
         year: currentYear,
         reviewName: `${currentYear} 인사평가`,
-        writerId: 8
+        writerId: user.value.id
       }
 
       const responseAdd = await axios.post(
@@ -243,6 +246,7 @@ const fetchReviewAdd = async () => {
 const getApprovalStatus = (status) => {
   switch (status) {
     case 'IP':
+      isReadOnly.value = false;
       return '작성 중';
     case 'S':
       return '상신';
@@ -266,7 +270,13 @@ const getType = (type) => {
 };
 
 onMounted(() => {
-  fetchReviewAdd();
+  try {
+    if (user.value.duties.dutiesName === '팀원')
+      fetchReviewAdd();
+
+  } catch (error) {
+    console.log("에러 발생: ", error);
+  }
 });
 
 // 점수 계산
@@ -449,6 +459,7 @@ th {
 .performanceTableContainer td {
   height: 100px;
 }
+
 .performanceTableContainer td {
   height: 100px;
 }

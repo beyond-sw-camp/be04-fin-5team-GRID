@@ -35,122 +35,131 @@
       </table>
     </div>
     <div class="GoalButtonContainer">
-      <div v-if="userRole === 'member'">
+      <div v-if="isMember">
         <button @click="memberSave()">팀원 저장</button>
         <button @click="submit()">상신</button>
       </div>
-      <div v-if="userRole === 'leader'">
+      <div v-if="!isMember">
         <button @click="leaderSave()">팀장 저장</button>
         <button @click="approval()">승인</button>
         <button @click="denied()">반려</button>
       </div>
     </div>
     <div class="tableContainer">
-      <div v-if="userRole === 'member'">
-      <table>
-        <thead>
-        <tr>
-          <th>No</th>
-          <th>*업무명</th>
-          <th>*목표</th>
-          <th>측정지표</th>
-          <th>가중치</th>
-          <th>계획</th>
-          <th>반려의견</th>
-          <th>삭제</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr v-for="(item, index) in goalItemList" :key="item.id">
-          <td>{{ index + 1 }}</td>
-          <td>
-            <input
-                v-if="!isReadOnly"
-                v-model="item.jobName"
-                type="text"
-            />
-          </td>
-          <td>
-            <input
-                v-if="!isReadOnly"
-                v-model="item.goal"
-                type="text"
-            />
-          </td>
-          <td>
-            <input
-                v-if="!isReadOnly"
-                v-model="item.metric"
-                type="text"
-            />
-</td>
-          <td>
-            <input
-                v-if="!isReadOnly"
-                v-model="item.weight"
-                type="int"
-            />
-          </td>
-          <td>
-            <input
-                v-if="!isReadOnly"
-                v-model="item.plan"
-                type="text"
-            />
-          </td>
-          <td>{{ item.objection }}</td>
-          <td>
-            <button @click="deleteItem(index)">삭제</button>
-          </td>
-        </tr>
-        </tbody>
-      </table>
+      <div v-if="isMember">
+        <table>
+          <thead>
+          <tr>
+            <th>No</th>
+            <th>*업무명</th>
+            <th>*목표</th>
+            <th>측정지표</th>
+            <th>가중치</th>
+            <th>계획</th>
+            <th>반려의견</th>
+            <th v-if="!isReadOnly">삭제</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr v-for="(item, index) in goalItemList" :key="item.id">
+            <td>{{ index + 1 }}</td>
+            <td>
+              <input
+                  v-if="!isReadOnly"
+                  v-model="item.jobName"
+                  type="text"
+              />
+              <span v-else>{{ item.jobName }}</span>
+            </td>
+            <td>
+              <input
+                  v-if="!isReadOnly"
+                  v-model="item.goal"
+                  type="text"
+              />
+              <span v-else>{{ item.goal }}</span>
+            </td>
+            <td>
+              <input
+                  v-if="!isReadOnly"
+                  v-model="item.metric"
+                  type="text"
+              />
+              <span v-else>{{ item.metric }}</span>
+            </td>
+            <td>
+              <input
+                  v-if="!isReadOnly"
+                  v-model="item.weight"
+                  type="int"
+              />
+              <span v-else>{{ item.weight }}</span>
+            </td>
+            <td>
+              <input
+                  v-if="!isReadOnly"
+                  v-model="item.plan"
+                  type="text"
+              />
+              <span v-else>{{ item.plan }}</span>
+            </td>
+            <td>{{ item.objection }}</td>
+            <td v-if="!isReadOnly">
+              <button @click="deleteItem(index)">삭제</button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
       </div>
-        <div v-if="userRole === 'leader'">
-          <table>
-            <thead>
-            <tr>
-              <th>No</th>
-              <th>*업무명</th>
-              <th>*목표</th>
-              <th>측정지표</th>
-              <th>가중치</th>
-              <th>계획</th>
-              <th>반려의견</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr v-for="(item, index) in goalItemList" :key="item.id">
-              <td>{{ index + 1 }}</td>
-              <td>{{ item.jobName }}</td>
-              <td>{{ item.goal }}</td>
-              <td>{{ item.metric }}</td>
-              <td>{{ item.weight }}</td>
-              <td>{{ item.plan }}</td>
-              <td>
-                <input
-                    v-if="!isReadOnly"
-                    v-model="item.objection"
-                    type="text"
-                />
-<!--                {{ item.objection }}-->
-              </td>
-            </tr>
-            </tbody>
-          </table>
-        </div>
+      <div v-if="!isMember">
+        <table>
+          <thead>
+          <tr>
+            <th>No</th>
+            <th>*업무명</th>
+            <th>*목표</th>
+            <th>측정지표</th>
+            <th>가중치</th>
+            <th>계획</th>
+            <th>반려의견</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr v-for="(item, index) in goalItemList" :key="item.id">
+            <td>{{ index + 1 }}</td>
+            <td>{{ item.jobName }}</td>
+            <td>{{ item.goal }}</td>
+            <td>{{ item.metric }}</td>
+            <td>{{ item.weight }}</td>
+            <td>{{ item.plan }}</td>
+            <td>
+              <input
+                  v-if="!isReadOnly"
+                  v-model="item.objection"
+                  type="text"
+              />
+              <span v-else>{{ item.objection }}</span>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
 
     </div>
-    <div class="addButton">
+    <div class="addButton" v-if="!isReadOnly">
       <button class="btn btn-dark" @click="addRow()">목표 추가</button>
     </div>
   </div>
 </template>
 
 <script setup>
-import {ref, onMounted} from 'vue';
+import {ref, onMounted, computed} from 'vue';
 import {useRouter} from 'vue-router';
 import axios from 'axios';
+import {useStore} from 'vuex';
+
+const store = useStore();
+const user = computed(() => store.state.user);
 
 const router = useRouter();
 
@@ -168,8 +177,9 @@ const goalDetail = ref({
 });
 
 // member, leader, manager
-const userRole = ref(null);
+const isMember = ref(null);
 
+const isReadOnly = ref(true);
 
 const fetchGoalDetail = async () => {
   try {
@@ -191,8 +201,14 @@ const fetchGoalDetail = async () => {
       status: getApprovalStatus(goal.approvalStatus)
     };
 
-    // 유저 체크 기능
-    userRole.value = "member";
+    if (isMember) {
+      if (goalDetail.value.status === '작성 중' || goalDetail.value.status === '반려')
+        isReadOnly.value = false;
+      console.log(goalDetail.value.status);
+    } else {
+      if (goalDetail.value.status === '상신' || goalDetail.value.status === '확인 중')
+        isReadOnly.value = false;
+    }
   } catch (error) {
     console.error('에러 발생:', error);
   }
@@ -216,7 +232,21 @@ const getApprovalStatus = (status) => {
 };
 
 onMounted(() => {
-  fetchGoalDetail();
+  try {
+    console.log(user.value.duties);
+    if (user.value) {
+      if (user.value.duties.dutiesName === '팀원')
+        isMember.value = true;
+
+      if (user.value.duties.dutiesName === '팀장')
+        isMember.value = false;
+
+      fetchGoalDetail();
+
+    }
+  } catch (error) {
+    console.log("에러 발생: ", error);
+  }
 });
 
 // 목표 추가

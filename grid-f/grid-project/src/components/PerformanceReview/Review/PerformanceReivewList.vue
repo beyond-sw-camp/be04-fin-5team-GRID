@@ -45,6 +45,10 @@
 import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
+import {useStore} from 'vuex';
+
+const store = useStore();
+const user = computed(() => store.state.user);
 
 const router = useRouter();
 
@@ -52,13 +56,22 @@ const reviewList = ref([]);
 const currentPage = ref(1);
 const itemsPerPage = 10;
 
-const fetchGoal = async () => {
+const fetchMemberReview = async () => {
   try {
     // 팀원일때
-    // const response = await axios.get(`http://localhost:8080/performance-review/member/6`);
+    const response = await axios.get(`http://localhost:8080/performance-review/member/${user.value.id}`);
 
+    console.log(response.data.findReviewList);
+    reviewList.value = response.data.findReviewList;
+  } catch (error) {
+    console.error('에러 발생:', error);
+  }
+};
+
+const fetchLeaderReview = async () => {
+  try {
     // 팀장일 때
-    const response = await axios.get(`http://localhost:8080/performance-review/leader/5`);
+    const response = await axios.get(`http://localhost:8080/performance-review/leader/${user.value.id}`);
     console.log(response.data.findReviewList);
     reviewList.value = response.data.findReviewList;
   } catch (error) {
@@ -67,7 +80,12 @@ const fetchGoal = async () => {
 };
 
 onMounted(() => {
-  fetchGoal();
+  if(user.value.duties.dutiesName === '팀원') {
+    fetchMemberReview();
+  } else {
+    fetchLeaderReview();
+  }
+
 });
 
 const paginatedReviews = computed(() => {

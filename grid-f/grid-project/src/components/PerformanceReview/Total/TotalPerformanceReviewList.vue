@@ -41,20 +41,24 @@
 import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
+import {useStore} from 'vuex';
+
+const store = useStore();
+const user = computed(() => store.state.user);
 
 const router = useRouter();
+
+const userRole = ref('');
+const userId = ref('');
 
 const totalList = ref([]);
 const currentPage = ref(1);
 const itemsPerPage = 10;
 
-const fetchTotal = async () => {
+const fetchMemberTotal = async () => {
   try {
     // 팀원일때
-    // const response = await axios.get(`http://localhost:8080/total-performance-review/reviewee/8`);
-
-    // 팀장일 때
-    const response = await axios.get(`http://localhost:8080/total-performance-review/reviewer/5`);
+    const response = await axios.get(`http://localhost:8080/total-performance-review/reviewee/${user.value.id}`);
     console.log(response.data.findTotalList);
     totalList.value = response.data.findTotalList;
   } catch (error) {
@@ -62,8 +66,59 @@ const fetchTotal = async () => {
   }
 };
 
+const fetchLeaderTotal = async () => {
+  try {
+    // 팀장일 때
+    const response = await axios.get(`http://localhost:8080/total-performance-review/reviewer/${user.value.id}`);
+    console.log(response.data.findTotalList);
+    totalList.value = response.data.findTotalList;
+  } catch (error) {
+    console.error('에러 발생:', error);
+  }
+};
+
+const fetchAllTotal = async () => {
+  try {
+    // 관리자
+    const response = await axios.get(`http://localhost:8080/total-performance-review`);
+    console.log(response.data.findTotalList);
+    totalList.value = response.data.findTotalList;
+  } catch (error) {
+    console.error('에러 발생:', error);
+  }
+};
+
+function parseJwt(token) {
+  try {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+    return JSON.parse(jsonPayload);
+  } catch (error) {
+    console.error('Invalid token', error);
+    return null;
+  }
+}
+
 onMounted(() => {
-  fetchTotal();
+  const token = localStorage.getItem('access');
+  if (token) {
+    const decodedToken = parseJwt(token);
+    userRole.value = decodedToken?.auth || '';
+    userId.value = decodedToken?.id || '';
+  }
+
+  if (userRole.value === 'ROLE_ADMIN') {
+    fetchAllTotal();
+  } else if (userRole.value === 'ROLE_USER') {
+    if(user.value.duties.dutiesName === '팀원') {
+      fetchMemberTotal();
+    } else {
+      fetchLeaderTotal();
+    }
+  }
 });
 
 const paginatedReviews = computed(() => {

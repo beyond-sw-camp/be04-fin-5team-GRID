@@ -4,10 +4,6 @@
             <img class="GoalIcon" src="@/assets/icons/goal_icon.png">
             <h1>업적 평가 목표 조회</h1>
         </div>
-        <div class="search">
-            <input class="sortBox" type="text" placeholder="검색">
-            <button class="printBtn">검색</button>
-        </div>
         <div class="tableContainer">
             <table>
                 <thead>
@@ -47,6 +43,10 @@
 import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
+import { useStore } from 'vuex';
+
+const store = useStore();
+const user = computed(() => store.state.user);
 
 const router = useRouter();
 
@@ -54,22 +54,36 @@ const goalList = ref([]);
 const currentPage = ref(1);
 const itemsPerPage = 10;
 
-const fetchGoal = async () => {
+const fetchMemberGoal = async () => {
     try {
         // 팀원일때
-        // const response = await axios.get('http://localhost:8080/review-goal/member/6');
+        const response = await axios.get(`http://localhost:8080/review-goal/member/${user.value.id}`);
 
-        // 팀장일 때
-        const response = await axios.get('http://localhost:8080/review-goal/leader/5');
-        console.log(response.data.findGoalList);
         goalList.value = response.data.findGoalList;
     } catch (error) {
         console.error('에러 발생:', error);
     }
 };
 
+const fetchLeaderGoal = async () => {
+  try {
+
+    // 팀장일 때
+    const response = await axios.get(`http://localhost:8080/review-goal/leader/${user.value.id}`);
+    console.log(response.data.findGoalList);
+    goalList.value = response.data.findGoalList;
+  } catch (error) {
+    console.error('에러 발생:', error);
+  }
+};
+
 onMounted(() => {
-    fetchGoal();
+  if(user.value.duties.dutiesName === '팀원') {
+    fetchMemberGoal();
+  } else {
+    fetchLeaderGoal();
+  }
+
 });
 
 const paginatedGoals = computed(() => {
@@ -166,7 +180,6 @@ const goToDetailPage = (id) => {
     padding: 5px 5px;
     border-radius: 4px;
     font-size: 12px;
-    font-style: bold;
 }
 
 .printBtn {
@@ -180,7 +193,6 @@ const goToDetailPage = (id) => {
     border-radius: 4px;
     cursor: pointer;
     font-size: 12px;
-    font-style: bold;
 }
 
 .tableContainer {

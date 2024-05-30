@@ -41,6 +41,7 @@ public class TeamController {
         return ResponseEntity.status(HttpStatus.OK).body(responseTeamVO);
     }
 
+    /* 설명. 팀 전체 조회 기능 */
     @GetMapping("/find-all")
     public ResponseEntity<ResponseTeamListVO> findTeamList() {
 
@@ -56,6 +57,7 @@ public class TeamController {
         return ResponseEntity.status(HttpStatus.OK).body(responseTeamListVO);
     }
 
+    /* 설명. 하위 부서(팀) 소속 조회 */
     @GetMapping("/sub-department/{departmentId}")
     public ResponseEntity<ResponseTeamListVO> findSubDepartmentByDepartmentId(@PathVariable int departmentId) {
 
@@ -63,7 +65,7 @@ public class TeamController {
         List<TeamDTO> teamDTOList = teamService.findSubDepartmentByDepartmentId(departmentId);
 
         ResponseTeamListVO responseTeamListVO = ResponseTeamListVO.builder()
-                .href("team/subdepartment")
+                .href("team/sub-department/{departmentId}")
                 .message("success")
                 .statusCode(200)
                 .result(teamDTOList)
