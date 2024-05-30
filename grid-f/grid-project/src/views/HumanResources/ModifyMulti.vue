@@ -22,7 +22,7 @@
             <table>
                 <thead>
                     <tr>
-                        <th>사번</th>
+                        <th>변경할 사원 사번</th>
                         <th>이름</th>
                         <th>부서</th>
                         <th>팀</th>
@@ -58,7 +58,6 @@
                         </td>
                         <td>
                             <select v-model="employee.teamId">
-                                <option disabled value="">선택</option>
                                 <option v-for="team in teams" :key="team.value" :value="team.value">
                                     {{ team.text }}
                                 </option>
@@ -66,7 +65,6 @@
                         </td>
                         <td>
                             <select v-model="employee.positionId">
-                                <option disabled value="">선택</option>
                                 <option v-for="position in positions" :key="position.value" :value="position.value">
                                     {{ position.text }}
                                 </option>
@@ -74,7 +72,6 @@
                         </td>
                         <td>
                             <select v-model="employee.dutiesId">
-                                <option disabled value="">선택</option>
                                 <option v-for="duty in dutiesList" :key="duty.value" :value="duty.value">
                                     {{ duty.text }}
                                 </option>
@@ -82,7 +79,6 @@
                         </td>
                         <td>
                             <select v-model="employee.workType">
-                                <option disabled value="">선택</option>
                                 <option value="R">정규직</option>
                                 <option value="C">계약직</option>
                             </select>
@@ -105,6 +101,7 @@
                         <td style="width: 60px;">
                             <button @click="removeEmployee(index)" class="deleteBtn">삭제</button>
                         </td>
+                        <td style="width: 60px;"><button @click="removeEmployee(index)" class="deleteBtn">삭제</button></td>
                     </tr>
                 </tbody>
             </table>
@@ -126,11 +123,13 @@
     <div class="modal fade" id="guideModal" tabindex="-1" aria-labelledby="guideModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
+
                 <!-- Modal Header -->
                 <div class="modal-header">
                     <h4 class="modal-title" id="guideModalLabel">CSV 작성 가이드</h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
+
                 <!-- Modal body -->
                 <div class="modal-body">
                     <div class="example">
@@ -146,10 +145,12 @@
                         <p>6. 엑셀 이외의 프로그램(메모장, 노트패드 등...)으로 편집시 쉼표(,)를 구분자로 사용하세요.</p>
                     </div>
                 </div>
+
                 <!-- Modal footer -->
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
                 </div>
+
             </div>
         </div>
     </div>
@@ -194,14 +195,13 @@ const openModal = () => {
 const addEmployee = () => {
     employees.push({
         employeeNumber: '',
-        name: '',
-        departmentId: '',
-        teamId: '',
-        positionId: '',
-        dutiesId: '',
-        workType: null,
+        name:'',
+        departmentId: null,
+        teamId: null,
+        positionId: null,
+        dutiesId: null,
+        workType: '',
         contractEndDate: '',
-        zipCode: '',
         address1: '',
         address2: '',
         invalid: false // Add invalid field for validation
@@ -258,7 +258,7 @@ const execDaumPostcode = (employee) => {
 
 const downloadCSV = () => {
     const csvData = [
-        ['사번', '이름', '부서', '팀', '직위', '직책', '근무 유형', '계약 종료일', '우편 번호', '주소', '상세 주소'],
+        ['변경할 사원 사번', '이름', '부서', '팀', '직위', '직책', '근무 유형', '계약 종료일', '주소 1', '주소 2'],
         ...employees.map(emp => [
             emp.employeeNumber,
             emp.name,
@@ -268,9 +268,8 @@ const downloadCSV = () => {
             emp.dutiesId,
             emp.workType,
             emp.contractEndDate,
-            emp.zipCode,
-            emp.address,
-            emp.address2
+            emp.address1,
+            emp.address2,
         ])
     ];
     const csv = Papa.unparse(csvData, {
@@ -293,7 +292,7 @@ const handleFileUpload = (event) => {
                 results.data.forEach(row => {
                     console.log('Processing row:', row); // 디버깅을 위한 콘솔 출력
                     employees.push({
-                        employeeNumber: (row['사번'] || '').trim(),
+                        employeeNumber: (row['변경할 사원 사번'] || '').trim(),
                         name: (row['이름'] || '').trim(),
                         departmentId: (row['부서'] || '').trim(),
                         teamId: (row['팀'] || '').trim(),
@@ -305,6 +304,7 @@ const handleFileUpload = (event) => {
                         address1: (row['주소'].split(' ')[0] || '').trim(),
                         address2: (row['상세 주소'] || ''),
                         invalid: false // Add invalid field for validation
+
                     });
                 });
             }
@@ -326,6 +326,7 @@ watch(formattedEmployees, (newVal) => {
 }, { deep: true });
 
 const submitForm = async () => {
+
     let hasInvalid = false;
     let hasData = false;
 
@@ -477,16 +478,8 @@ button {
     width: 100%;
 }
 
-.address-container input {
-    border: none;
-    width: 100%;
-    box-sizing: border-box;
-    padding: 0.2rem;
-    color: #000000;
-}
-
-select,
-input {
+input,
+select {
     border: none;
     width: 100%;
     box-sizing: border-box;
@@ -629,20 +622,7 @@ thead th {
     font-style: bold;
     min-height: 20px;
     min-width: 40px;
-    max-height: 20px;
-    max-width: 40px;
     margin-bottom: 5px;
-    margin-right: 5%;
-}
-
-.address-container {
-    display: flex;
-    flex-direction: column;
-}
-
-#address-container2 {
-    display: flex;
-    justify-content: flex-end;
 }
 
 .downloadBtn img {
@@ -687,4 +667,5 @@ thead th {
 .invalid-input::placeholder {
     color: rgb(240, 125, 125);
 }
+
 </style>

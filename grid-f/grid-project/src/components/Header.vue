@@ -48,7 +48,6 @@ import { Dropdown } from 'bootstrap';
 import draggable from 'vuedraggable';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
-import defaultProfileImage from '@/assets/defaultProfile.jpg';
 
 const departments = ref([]);
 const router = useRouter();

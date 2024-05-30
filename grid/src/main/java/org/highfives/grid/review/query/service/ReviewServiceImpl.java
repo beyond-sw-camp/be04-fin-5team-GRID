@@ -2,8 +2,10 @@ package org.highfives.grid.review.query.service;
 
 import org.highfives.grid.review.query.aggregate.ReviewHistory;
 import org.highfives.grid.review.query.aggregate.ReviewHistoryAndScore;
+import org.highfives.grid.review.query.aggregate.ReviewList;
 import org.highfives.grid.review.query.dto.ReviewHistoryAndScoreDTO;
 import org.highfives.grid.review.query.dto.ReviewHistoryDTO;
+import org.highfives.grid.review.query.dto.ReviewListDTO;
 import org.highfives.grid.review.query.repository.ReviewMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,5 +67,28 @@ public class ReviewServiceImpl implements ReviewService {
         }
 
         return reviewHistoryDTOList;
+    }
+
+    @Override
+    public List<ReviewHistoryDTO> findMyReviewHistory(int revieweeId) {
+        List<ReviewHistory> reviewHistoryList = reviewMapper.findMyReviewHistory(revieweeId);
+
+        List<ReviewHistoryDTO> reviewHistoryDTOList = new ArrayList<>();
+
+        for (ReviewHistory reviewHistory : reviewHistoryList) {
+            reviewHistoryDTOList.add(mapper.map(reviewHistory, ReviewHistoryDTO.class));
+        }
+
+        return reviewHistoryDTOList;
+    }
+
+    @Override
+    public ReviewListDTO findReviewList(int id) {
+
+        ReviewList reviewList = reviewMapper.findReviewList(id);
+
+        return mapper.map(reviewList, ReviewListDTO.class);
+
+
     }
 }
