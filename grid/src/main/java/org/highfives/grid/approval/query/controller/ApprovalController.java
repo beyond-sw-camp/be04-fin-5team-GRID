@@ -98,7 +98,7 @@ public class ApprovalController {
     @GetMapping("/approver/{typeId}/{isApproval}/{employeeId}")
     public ResponseEntity<ResApprovalVO> findAllApprovalByApproverId(@PathVariable int typeId, @PathVariable int isApproval, @PathVariable int employeeId) {
 
-        List<ApprovalEmpDTO> result = approvalService.findAllApprovalByApproverId(typeId, employeeId, isApproval);
+        List<ApprovalEmpDTO> result = approvalService.findAllApprovalByApproverId(typeId, isApproval, employeeId);
 
         ResApprovalVO response = ResApprovalVO.builder()
                 .statusCode(200)
