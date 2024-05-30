@@ -39,4 +39,5 @@ public interface VacationMapper {
 
     List<VacationHistory> searchVacationHistoryByName(String employeeName);
 
+    List<VacationHistoryDTO> userVacationHistoryTable(int employeeId);
 }

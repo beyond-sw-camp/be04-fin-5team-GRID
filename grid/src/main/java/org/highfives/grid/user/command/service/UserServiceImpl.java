@@ -1,19 +1,24 @@
 package org.highfives.grid.user.command.service;
 
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.highfives.grid.user.command.aggregate.Employee;
-import org.highfives.grid.user.command.aggregate.Gender;
-import org.highfives.grid.user.command.aggregate.PrincipalDetails;
+import org.highfives.grid.user.command.aggregate.*;
 import org.highfives.grid.user.command.dto.UserDTO;
 import org.highfives.grid.user.command.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -38,11 +43,13 @@ public class UserServiceImpl implements UserService{
 
     @Override
     @Transactional
-    public UserDTO addNewUser(UserDTO givenInfo) {
+    public UserDTO addNewUser(UserDTO givenInfo,
+                              Map<String, String> uploadedImg) {
 
-        givenInfo.setPwd(encodePwd(givenInfo.getPwd()));
+        UserDTO submitInfo = inputSubData(givenInfo);
+        submitInfo.setPwd(encodePwd(submitInfo.getPwd()));
 
-        Employee addInfo = dTOtoEntity(givenInfo);
+        Employee addInfo = dTOtoEntity(submitInfo);
         userRepository.save(addInfo);
 
         Employee addResult = userRepository.findByEmployeeNumber(givenInfo.getEmployeeNumber());
@@ -56,8 +63,11 @@ public class UserServiceImpl implements UserService{
 
         List<UserDTO> addResultList = new ArrayList<>();
         for (UserDTO userInfo : givenInfo) {
-            userInfo.setPwd(encodePwd(userInfo.getPwd()));
-            Employee employee = dTOtoEntity(userInfo);
+
+            UserDTO submitInfo = inputSubData(userInfo);
+
+            submitInfo.setPwd(encodePwd(submitInfo.getPwd()));
+            Employee employee = dTOtoEntity(submitInfo);
 
             userRepository.save(employee);
 
@@ -74,32 +84,31 @@ public class UserServiceImpl implements UserService{
     public UserDTO modifyUser(int id, UserDTO modifyInfo) {
 
         Employee oldInfo = userRepository.findById(id).orElseThrow(NullPointerException::new);
-
         userRepository.save(inputNewInfo(oldInfo, modifyInfo));
-
         Employee resultInfo = userRepository.findById(modifyInfo.getId()).orElseThrow(NullPointerException::new);
-
         return modelMapper.map(resultInfo, UserDTO.class);
     }
 
     @Override
     @Transactional
     public List<UserDTO> modifyMultiUser(List<UserDTO> modifyList) {
-
         List<Employee> employeeList = new ArrayList<>();
 
+        // 유저 검증 단계
         for (UserDTO userDTO : modifyList) {
-            Employee oldInfo = userRepository.findById(userDTO.getId()).orElseThrow(NullPointerException::new);
-            employeeList.add(inputNewInfo(oldInfo, userDTO));
+            Employee oldInfo = userRepository.findByEmployeeNumber(userDTO.getEmployeeNumber());
+            if (oldInfo == null || !oldInfo.getEmployeeName().equals(userDTO.getName())) {
+                throw new UsernameNotFoundException("유저명과 사번이 일치하지 않습니다: " + userDTO.getEmail());
+            }
+            employeeList.add(inputNewMulitInfo(oldInfo, userDTO));
         }
-
+        System.out.println("employeeList = " + employeeList);
+        // 검증에 성공한 경우 수정 단계
         userRepository.saveAll(employeeList);
 
         List<UserDTO> resultList = new ArrayList<>();
-
-        for (int i = 0; i < employeeList.size(); i++) {
-            Employee result =
-                    userRepository.findById(modifyList.get(i).getId()).orElseThrow(NullPointerException::new);
+        for (Employee employee : employeeList) {
+            Employee result = userRepository.findById(employee.getId()).orElseThrow(NullPointerException::new);
             resultList.add(modelMapper.map(result, UserDTO.class));
         }
 
@@ -130,13 +139,28 @@ public class UserServiceImpl implements UserService{
     public String duplicateInfoCheck(UserDTO givenInfo) {
 
         try {
-            if (userRepository.findByEmail(givenInfo.getEmail()) != null) {
+
+            Employee employee = userRepository.findByEmail(givenInfo.getEmail());
+            if (employee != null) {
+                if(employee.getEmail().equals(givenInfo.getEmail())) {
+                    return "Pass";
+                }
                 return "Already used Email : " + givenInfo.getEmail();
             }
-            if (userRepository.findByEmployeeNumber(givenInfo.getEmployeeNumber()) != null) {
+
+            employee = userRepository.findByEmployeeNumber(givenInfo.getEmployeeNumber());
+            if (employee != null) {
+                if(employee.getEmployeeName().equals(givenInfo.getEmployeeNumber())) {
+                    return "Pass";
+                }
                 return "Already used Employee Number : " + givenInfo.getEmployeeNumber();
             }
-            if (userRepository.findByPhoneNumber(givenInfo.getPhoneNumber()) != null) {
+
+            employee = userRepository.findByPhoneNumber(givenInfo.getPhoneNumber());
+            if ( employee != null) {
+                if(employee.getPhoneNumber().equals(givenInfo.getPhoneNumber())) {
+                    return "Pass";
+                }
                 return "Already used Phone Number : " + givenInfo.getPhoneNumber();
             }
         } catch (Exception e) {
@@ -153,10 +177,10 @@ public class UserServiceImpl implements UserService{
         Set<String> eNumCheck = new HashSet<>();
         Set<String> phoneNumCheck = new HashSet<>();
 
-        for (int i = 0; i < modifyList.size(); i++) {
-            emailCheck.add(modifyList.get(i).getEmail());
-            eNumCheck.add(modifyList.get(i).getEmployeeNumber());
-            phoneNumCheck.add(modifyList.get(i).getPhoneNumber());
+        for (UserDTO userDTO : modifyList) {
+            emailCheck.add(userDTO.getEmail());
+            eNumCheck.add(userDTO.getEmployeeNumber());
+            phoneNumCheck.add(userDTO.getPhoneNumber());
         }
 
         if (emailCheck.size() != modifyList.size() ||
@@ -178,7 +202,7 @@ public class UserServiceImpl implements UserService{
             userRepository.save(employee);
             return true;
         } catch (Exception e) {
-            log.info("Exception occured: {}", e.getMessage());
+            log.info("Exception occurred: {}", e.getMessage());
             return false;
         }
     }
@@ -212,11 +236,14 @@ public class UserServiceImpl implements UserService{
                 .joinType(givenInfo.getJoinType())
                 .workType(givenInfo.getWorkType())
                 .contractStartTime(givenInfo.getContractStartTime())
-                .role(givenInfo.getRole())
+                .contractEndTime(givenInfo.getContractEndTime())
+                .role(Role.ROLE_USER)
                 .dutiesId(givenInfo.getDutiesId())
                 .positionId(givenInfo.getPositionId())
                 .departmentId(givenInfo.getDepartmentId())
                 .teamId(givenInfo.getTeamId())
+                .resignYn(givenInfo.getResignYn())
+                .absenceYn(givenInfo.getAbsenceYn())
                 .build();
     }
 
@@ -237,8 +264,8 @@ public class UserServiceImpl implements UserService{
                 .email(givenInfo.getEmail())
                 .pwd(oldInfo.getPwd())
                 .employeeName(givenInfo.getName())
-                .employeeNumber(oldInfo.getEmployeeNumber())
-                .gender(givenInfo.getGender())
+                .employeeNumber(givenInfo.getEmployeeNumber())
+                .gender(oldInfo.getGender())
                 .phoneNumber(givenInfo.getPhoneNumber())
                 .callNumber(givenInfo.getCallNumber())
                 .zipCode(givenInfo.getZipCode())
@@ -246,14 +273,65 @@ public class UserServiceImpl implements UserService{
                 .assignedTask(givenInfo.getAssignedTask())
                 .joinTime(givenInfo.getJoinTime())
                 .joinType(givenInfo.getJoinType())
-                .resignTime(givenInfo.getResignTime())
-                .resignYn(givenInfo.getResignYn())
+                .resignTime(oldInfo.getResignTime())
+                .resignYn(oldInfo.getResignYn())
                 .workType(givenInfo.getWorkType())
-                .contractStartTime(givenInfo.getContractStartTime())
+                .role(Role.ROLE_USER)
+                .contractStartTime(oldInfo.getContractStartTime())
+                .contractEndTime(oldInfo.getContractEndTime())
+                .salary(oldInfo.getSalary())
+                .absenceYn(oldInfo.getAbsenceYn())
+                .absenceContent(oldInfo.getAbsenceContent())
+                .dutiesId(givenInfo.getDutiesId())
+                .positionId(givenInfo.getPositionId())
+                .teamId(givenInfo.getTeamId())
+                .departmentId(givenInfo.getDepartmentId())
+                .build();
+    }
+
+    private Employee inputNewMulitInfo(Employee oldInfo, UserDTO givenInfo) {
+
+        // 수정 받는 정보들 중에 null 값이 있을 시 기존 값으로 입력받음.
+        if(givenInfo.getDepartmentId() == 0)
+            givenInfo.setDepartmentId(oldInfo.getDepartmentId());
+        if(givenInfo.getTeamId() == 0)
+            givenInfo.setTeamId(oldInfo.getTeamId());
+        if(givenInfo.getPositionId() == 0)
+            givenInfo.setPositionId(oldInfo.getPositionId());
+        if(givenInfo.getDutiesId() == 0)
+            givenInfo.setDutiesId(oldInfo.getDutiesId());
+        if(givenInfo.getWorkType() == null)
+            givenInfo.setWorkType(oldInfo.getWorkType());
+        if(givenInfo.getContractEndTime() == null)
+            givenInfo.setContractEndTime(oldInfo.getContractEndTime());
+        if(givenInfo.getZipCode() == null)
+            givenInfo.setZipCode(oldInfo.getZipCode());
+        if(givenInfo.getAddress() == null)
+            givenInfo.setAddress(oldInfo.getAddress());
+
+        return Employee.builder()
+                .id(oldInfo.getId())
+                .email(oldInfo.getEmail())
+                .pwd(oldInfo.getPwd())
+                .employeeName(oldInfo.getEmployeeName())
+                .employeeNumber(oldInfo.getEmployeeNumber())
+                .gender(oldInfo.getGender())
+                .phoneNumber(oldInfo.getPhoneNumber())
+                .callNumber(oldInfo.getCallNumber())
+                .zipCode(givenInfo.getZipCode())
+                .address(givenInfo.getAddress())
+                .assignedTask(oldInfo.getAssignedTask())
+                .joinTime(oldInfo.getJoinTime())
+                .joinType(oldInfo.getJoinType())
+                .resignTime(oldInfo.getResignTime())
+                .resignYn(oldInfo.getResignYn())
+                .workType(givenInfo.getWorkType())
+                .role(Role.ROLE_USER)
+                .contractStartTime(oldInfo.getContractStartTime())
                 .contractEndTime(givenInfo.getContractEndTime())
-                .salary(givenInfo.getSalary())
-                .absenceYn(givenInfo.getAbsenceYn())
-                .absenceContent(givenInfo.getAbsenceContent())
+                .salary(oldInfo.getSalary())
+                .absenceYn(oldInfo.getAbsenceYn())
+                .absenceContent(oldInfo.getAbsenceContent())
                 .dutiesId(givenInfo.getDutiesId())
                 .positionId(givenInfo.getPositionId())
                 .teamId(givenInfo.getTeamId())
@@ -271,5 +349,18 @@ public class UserServiceImpl implements UserService{
         }
 
         return new PrincipalDetails(tokenInfo, true, true);
+    }
+
+    private UserDTO inputSubData(UserDTO givenInfo) {
+
+        if(givenInfo.getContractStartTime() == null)
+            givenInfo.setContractStartTime(givenInfo.getJoinTime());
+        if(givenInfo.getContractEndTime() == null)
+            givenInfo.setContractEndTime("-");
+
+        givenInfo.setAbsenceYn(YN.N);
+        givenInfo.setResignYn(YN.N);
+
+        return givenInfo;
     }
 }

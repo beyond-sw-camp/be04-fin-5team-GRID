@@ -48,22 +48,63 @@ const adTimeList = ref([]);
 const currentPage = ref(1);
 const itemsPerPage = 10;
 
-const fetchAdTime = async () => {
-  try {
-    // 직원일 때
-    const response = await axios.get(`http://localhost:8080/ad-time/2`);
+const userRole = ref('');
+const userId = ref('');
 
-    // 관리자일 때
-    // const response = await axios.get('http://localhost:8080/ad-time/all');
-    console.log(response.data.adTimeDTOList);
+// 유저 확인
+function parseJwt(token) {
+  try {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+    return JSON.parse(jsonPayload);
+  } catch (error) {
+    console.error('Invalid token', error);
+    return null;
+  }
+}
+
+// 관리자용
+const fetchAllAdTime = async () => {
+  try {
+    const response = await axios.get('http://localhost:8080/ad-time/all')
     adTimeList.value = response.data.adTimeDTOList;
   } catch (error) {
     console.error('에러 발생:', error);
   }
 };
 
+//직원용
+const fetchEmployeeAdTime = async () => {
+  try{
+    const response = await axios.get(`http://localhost:8080/ad-time/${userId.value}`);
+    console.log(response.data.adTimeDTOList);
+    adTimeList.value = response.data.adTimeDTOList;
+
+  } catch (error) {
+    console.error('에러 발생:', error);
+  }
+};
+
+
+
+
 onMounted(() => {
-  fetchAdTime();
+  // 유저 확인
+  const token = localStorage.getItem('access');
+  if (token) {
+    const decodedToken = parseJwt(token);
+    userRole.value = decodedToken?.auth || '';
+    userId.value = decodedToken?.id || '';
+  }
+
+  if (userRole.value === 'ROLE_ADMIN') {
+    fetchAllAdTime();
+  } else if (userRole.value === 'ROLE_USER') {
+    fetchEmployeeAdTime();
+  }
 });
 
 const paginatedAdTimes = computed(() => {
@@ -99,10 +140,6 @@ const nextPage = () => {
 const goToPage = (page) => {
   currentPage.value = page;
 };
-
-// const getEmployeeName = (employee) => {
-//   return employee ? employee.employeeName : '';
-// };
 
 </script>
 
@@ -147,7 +184,6 @@ const goToPage = (page) => {
   padding: 5px 5px;
   border-radius: 4px;
   font-size: 12px;
-  font-style: bold;
 }
 
 .printBtn {
@@ -161,7 +197,6 @@ const goToPage = (page) => {
   border-radius: 4px;
   cursor: pointer;
   font-size: 12px;
-  font-style: bold;
 }
 
 .adTableContainer {

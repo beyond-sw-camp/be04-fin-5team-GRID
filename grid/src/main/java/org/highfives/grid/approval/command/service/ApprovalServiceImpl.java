@@ -46,6 +46,7 @@ public class ApprovalServiceImpl implements ApprovalService {
     private final RWApprovalRepository rwApprovalRepository;
     private final VApprovalRepository vApprovalRepository;
     private final ApprovalChainService approvalChainService;
+
     private final org.highfives.grid.approval.query.service.ApprovalService approvalService;
 
     @Autowired
@@ -88,6 +89,8 @@ public class ApprovalServiceImpl implements ApprovalService {
         // start < end
         String startTime = overtimeApprovalVO.getStartTime();
         String endTime = overtimeApprovalVO.getEndTime();
+
+        String now = LocalDateTime.now().format(dateFormat);
 
         LocalDateTime startDate = LocalDateTime.parse(startTime, dateFormat);
         LocalDateTime endDate = LocalDateTime.parse(endTime, dateFormat);
@@ -153,26 +156,20 @@ public class ApprovalServiceImpl implements ApprovalService {
 //            나머지
 //        }
 
-        todayCount = ChronoUnit.HOURS.between(startDate, endDate);
+        OvertimeApproval overtimeApproval = OvertimeApproval.builder()
+                .startTime(overtimeApprovalVO.getStartTime())
+                .endTime(overtimeApprovalVO.getEndTime())
+                .content(overtimeApprovalVO.getContent())
+                .writeTime(LocalDateTime.now().format(dateFormat))
+                .requesterId(overtimeApprovalVO.getRequesterId())
+                .build();
 
-        if (count + todayCount < 12) {
-            OvertimeApproval overtimeApproval = OvertimeApproval.builder()
-                    .startTime(overtimeApprovalVO.getStartTime())
-                    .endTime(overtimeApprovalVO.getEndTime())
-                    .content(overtimeApprovalVO.getContent())
-                    .writeTime(LocalDateTime.now().format(dateFormat))
-                    .requesterId(overtimeApprovalVO.getRequesterId())
-                    .build();
+        oApprovalRepository.save(overtimeApproval);
 
-            oApprovalRepository.save(overtimeApproval);
+        ReqAddApprovalChainVO request = new ReqAddApprovalChainVO(2, overtimeApproval.getId(), overtimeApproval.getRequesterId());
+        approvalChainService.addOApprovalChain(request);
 
-            ReqAddApprovalChainVO request = new ReqAddApprovalChainVO(2, overtimeApproval.getId(), overtimeApproval.getRequesterId());
-            approvalChainService.addOApprovalChain(request);
-
-            return mapper.map(overtimeApproval, OvertimeApprovalDTO.class);
-        }
-
-        return null;
+        return mapper.map(overtimeApproval, OvertimeApprovalDTO.class);
     }
 
     @Override
@@ -384,7 +381,7 @@ public class ApprovalServiceImpl implements ApprovalService {
         }
 
         RWApproval cancelApproval = RWApproval.builder()
-                .startTime(rwApproval.getStartTime())
+                    .startTime(rwApproval.getStartTime())
                 .endTime(rwApproval.getEndTime())
                 .content(rwApproval.getContent() + " \n취소")
                 .writeTime(LocalDateTime.now().format(dateFormat))

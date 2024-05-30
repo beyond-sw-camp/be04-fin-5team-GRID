@@ -6,8 +6,7 @@
         </div>
         <div class="first">
             <div class="image">
-                <img src="https://talkimg.imbc.com/TVianUpload/tvian/TViews/image/2020/04/12/FydNALvKf23Z637223013461671479.jpg"
-                    alt="">
+                <img :src="profileUrl" alt="프로필 이미지">
             </div>
             <div class="name">
                 <div id="name">
@@ -15,11 +14,11 @@
                 </div>
                 <div id="other-info">
                     <div id="teamInfo">
-                        {{ result.team ? result.team.teamName : N / A }}
+                        {{ result.team ? result.team.teamName : 'N/A' }}
                     </div>
                     <div id="dot">•</div>
                     <div id="dutiesInfo">
-                        {{ result.duties ? result.duties.dutiesName : N / A }}
+                        {{ result.duties ? result.duties.dutiesName : 'N/A' }}
                     </div>
                     <div id="dot">•</div>
                     <div id="absenceInfo">
@@ -28,11 +27,8 @@
                 </div>
             </div>
             <div class="button" v-if="userRole === 'ROLE_ADMIN'">
-                <div style="margin-right: 2%;">
-                    <button class="pwdBtn" data-bs-toggle="modal" data-bs-target="#myModal">비밀번호 변경</button>
-                </div>
                 <div>
-                    <button class="modifyBtn" @click="toModify(result.employeeNumber)">회원 정보 수정</button>
+                    <button class="modifyBtn" @click="toModify(result.employeeNumber, result)">회원 정보 수정</button>
                 </div>
             </div>
         </div>
@@ -50,37 +46,28 @@
             <component :is="currentTabComponent" :result="result" :userRole="userRole"></component>
         </div>
     </div>
-    <div class="modal fade" id="myModal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">유저 비밀번호 변경</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <ResetPwd :givenEmail="givenEmail" @passwordResetSuccess="handlePasswordResetSuccess"/>
-                </div>
-            </div>
-        </div>
-    </div>
-
 </template>
 
 <script setup>
 import HumanResourcesInfo from '@/components/HumanResources/HumanResourcesInfo.vue';
 import WB from '@/components/HumanResources/WorkVacation.vue';
-import ResetPwd from '@/components/Login/ResetPassword.vue';
+import defaultProfileImage from '@/assets/defaultProfile.jpg';
+
 import { ref, computed, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import axios from 'axios';
 
 const currentTab = ref('human-resources');
 const route = useRoute();
-const result = ref('');
+const result = ref({});
 const isAbsence = ref(false);
 const userRole = ref('');
 const givenEmail = ref('');
 const router = useRouter();
+
+const profileUrl = computed(() => {
+    return result.value.profilePath ? result.value.profilePath : defaultProfileImage;
+});
 
 const tabComponents = {
     'human-resources': HumanResourcesInfo,
@@ -103,8 +90,11 @@ function parseJwt(token) {
     }
 }
 
-function toModify (employeeNumber) {
-    router.push(`/hr/modify/${employeeNumber}`);
+function toModify(employeeNumber, user) {
+    sessionStorage.setItem('user', JSON.stringify(user));
+    router.push({
+        path: `/hr/modify/${employeeNumber}`
+    });
 }
 
 onMounted(async () => {
@@ -119,10 +109,9 @@ onMounted(async () => {
     if (result.value.absenceYn === 'Y') {
         isAbsence.value = true;
     }
-
+    console.log(result.value.profilePath);
+    console.log('온마운트결과:', result.value);
     givenEmail.value = result.value.email;
-    console.log("result: ", result);
-    console.log("result2: ", givenEmail.value);
 }
 
 )
@@ -175,7 +164,7 @@ body {
     grid-row-start: 2;
     grid-column-start: 2;
     display: grid;
-    grid-template-columns: 17% 53% 30%;
+    grid-template-columns: 23% 47% 30%;
     max-height: 100%;
     max-width: 100%;
 }

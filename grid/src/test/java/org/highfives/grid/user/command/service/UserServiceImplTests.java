@@ -70,7 +70,7 @@ class UserServiceImplTests {
     void addNewUserTest(UserDTO givenInfo) {
 
         Assertions.assertDoesNotThrow(
-                () -> userService.addNewUser(givenInfo)
+                () -> userService.addNewUser(givenInfo, null)
         );
     }
 
@@ -148,15 +148,6 @@ class UserServiceImplTests {
         Assertions.assertDoesNotThrow(
                 () -> userService.resetPwd(test)
         );
-    }
-
-    @DisplayName("성별 변경")
-    @Test
-    @Transactional
-    void changeGenderTest() {
-
-        Assertions.assertEquals(userService.changeGender(1),false);
-        Assertions.assertEquals(userService.changeGender(4),true);
     }
 
 }

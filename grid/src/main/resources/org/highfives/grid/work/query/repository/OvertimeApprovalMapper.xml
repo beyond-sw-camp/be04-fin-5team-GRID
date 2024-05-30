@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.highfives.grid.work.query.repository.OvertimeApprovalMapper">
+
+    <resultMap id="overtimeResultMap" type="org.highfives.grid.approval.common.dto.OvertimeApprovalDTO">
+        <id property="id" column="ID"/>
+        <result property="startTime" column="START_TIME"/>
+        <result property="endTime" column="END_TIME"/>
+        <result property="content" column="CONTENT"/>
+        <result property="approvalStatus" column="APPROVAL_STATUS"/>
+        <result property="typeId" column="TYPE_ID"/>
+        <result property="writeTime" column="WRITE_TIME"/>
+        <result property="cancelYn" column="CANCEL_YN"/>
+        <result property="requesterId" column="REQUESTER_ID"/>
+        <result property="cancelDocumentId" column="CANCEL_DOCUMENT_ID"/>
+    </resultMap>
+
+    <select id="selectOvertimeAll" resultMap="overtimeResultMap">
+        SELECT
+                ID
+              , START_TIME
+              , END_TIME
+              , CONTENT
+              , APPROVAL_STATUS
+              , TYPE_ID
+              , WRITE_TIME
+              , CANCEL_YN
+              , REQUESTER_ID
+              , CANCEL_DOCUMENT_ID
+        FROM OVERTIME_APPROVAL
+        WHERE APPROVAL_STATUS = '승인'
+        AND CANCEL_YN = 'N'
+        AND CANCEL_DOCUMENT_ID IS NULL;
+    </select>
+
+    <select id="selectOvertimeByEmployeeId" resultMap="overtimeResultMap" parameterType="int">
+        SELECT
+        ID
+        , START_TIME
+        , END_TIME
+        , CONTENT
+        , APPROVAL_STATUS
+        , TYPE_ID
+        , WRITE_TIME
+        , CANCEL_YN
+        , REQUESTER_ID
+        , CANCEL_DOCUMENT_ID
+        FROM OVERTIME_APPROVAL
+        WHERE APPROVAL_STATUS = '승인'
+        AND CANCEL_YN = 'N'
+        AND CANCEL_DOCUMENT_ID IS NULL
+        AND REQUESTER_ID = #{employeeId};
+    </select>
+
+</mapper>

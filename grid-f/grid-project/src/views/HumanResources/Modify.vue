@@ -2,62 +2,44 @@
     <div class="profile-main">
         <div class="profile-title">
             <img class="profile-icon" src="@/assets/profile.png" alt="인사 정보 메인 이미지">
-            <h1>인사 정보 수정</h1>
+            <h1>인사 정보 수정 </h1>
         </div>
-        <div class="first">
+        <div class="first" v-if="user">
             <div class="image">
-                <img src="https://talkimg.imbc.com/TVianUpload/tvian/TViews/image/2020/04/12/FydNALvKf23Z637223013461671479.jpg" alt="">
+                <img :src="profileUrl" alt="프로필 이미지" id="image">
             </div>
-            <div class="name">
-                <div id="name">
-                    <input v-model="user.name" type="text" />
-                </div>
-                <div id="other-info">
-                    <div id="teamInfo">
-                        <select v-model="user.teamId">
-                            <option v-for="team in teams" :key="team.id" :value="team.id">
-                                {{ team.teamName }}
-                            </option>
-                        </select>
-                    </div>
-                    <div id="dot">•</div>
-                    <div id="dutiesInfo">
-                        <select v-model="user.dutiesId">
-                            <option v-for="duty in duties" :key="duty.id" :value="duty.id">
-                                {{ duty.dutiesName }}
-                            </option>
-                        </select>
-                    </div>
-                    <div id="dot">•</div>
-                    <div id="absenceInfo">
-                        <select v-model="user.absenceYn">
-                            <option value="Y">부재중</option>
-                            <option value="N">재실</option>
-                        </select>
-                    </div>
-                </div>
+            <div class="sealImg">
+                <img :src="sealUrl" alt="인감 이미지" id="sealImg">
             </div>
-            <div class="button" v-if="userRole === 'ROLE_ADMIN'">
-                <div style="margin-right: 2%;">
+            <div class="button">
+                <div style="margin-right: 2%">
                     <button class="pwdBtn" data-bs-toggle="modal" data-bs-target="#myModal">비밀번호 변경</button>
                 </div>
                 <div>
-                    <button class="modifyBtn" @click="submitForm">수정 내용 저장</button>
+                    <button class="modifyBtn" @click="submitModifications">수정</button>
                 </div>
             </div>
         </div>
+        <div class="half">
+            <div style="margin: auto" id="profileInput">
+                <button class="pwdBtn" @click="triggerFileUpload('fileInput')">프로필 업로드</button>
+                <input type="file" ref="fileInput" @change="uploadProfileImage" style="display: none;">
+            </div>
+            <div style="margin: auto" id="sealInput">
+                <button class="pwdBtn" @click="triggerFileUpload('sealFileInput')">인감 업로드</button>
+                <input type="file" ref="sealFileInput" @change="uploadSealImage" style="display: none;">
+            </div>
+        </div>
         <div class="second">
-            <ul class="nav nav-tabs">
-                <li class="nav-item" @click="currentTab = 'human-resources'">
-                    <a class="nav-link" :class="{ active: currentTab === 'human-resources' }" href="#">정보</a>
-                </li>
-                <li class="nav-item" @click="currentTab = 'wb'">
-                    <a class="nav-link" :class="{ active: currentTab === 'wb' }" href="#">근무/휴가</a>
-                </li>
-            </ul>
+            <div class="oldInfo">
+                기존 정보
+            </div>
+            <div class="newInfo">
+                변경 정보
+            </div>
         </div>
         <div class="content">
-            <component :is="currentTabComponent" :result="result" :userRole="userRole"></component>
+            <ModifyInfo :user="user" @update-user="updateUser" />
         </div>
     </div>
     <div class="modal fade" id="myModal">
@@ -68,7 +50,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <ResetPwd :givenEmail="givenEmail" @passwordResetSuccess="handlePasswordResetSuccess" />
+                    <ResetPwd :givenEmail="givenEmail" />
                 </div>
             </div>
         </div>
@@ -76,92 +58,162 @@
 </template>
 
 <script setup>
-import HumanResourcesInfo from '@/components/HumanResources/HumanResourcesInfo.vue';
-import WB from '@/components/HumanResources/WorkVacation.vue';
+import ModifyInfo from '@/components/HumanResources/ModifyInfo.vue';
 import ResetPwd from '@/components/Login/ResetPassword.vue';
-import { ref, computed, onMounted } from 'vue';
-import { useRoute } from 'vue-router';
+import { ref, onMounted, computed } from 'vue';
+import { useRouter } from 'vue-router';
 import axios from 'axios';
+import defaultProfileImage from '@/assets/defaultProfile.jpg';
+import defaultSealImage from '@/assets/defaultSeal.png';
 
-const currentTab = ref('human-resources');
-const route = useRoute();
-const result = ref('');
-const isAbsence = ref(false);
-const userRole = ref('');
+const router = useRouter();
+const user = ref();
+const updatedUser = ref(null);
 const givenEmail = ref('');
-const user = ref({}); // to hold the user data for form editing
-const departments = ref([]);
-const teams = ref([]);
-const positions = ref([]);
-const duties = ref([]);
+const profilePath = ref('');
+const sealPath = ref('');
 
-const tabComponents = {
-    'human-resources': HumanResourcesInfo,
-    'wb': WB,
+const profileUrl = computed(() => {
+    return profilePath.value ? `${profilePath.value}?t=${new Date().getTime()}` : defaultProfileImage;
+});
+
+const sealUrl = computed(() => {
+    return sealPath.value ? `${sealPath.value}?t=${new Date().getTime()}` : defaultSealImage;
+})
+
+const fileInput = ref(null);
+const sealFileInput = ref(null);
+
+const cleanUserData = (userData) => {
+    return {
+        id: user.value.id,
+        email: userData.email,
+        pwd: userData.pwd,
+        name: userData.name,
+        employeeNumber: userData.employeeNumber,
+        phoneNumber: userData.phoneNumber,
+        callNumber: userData.callNumber,
+        zipCode: userData.zipCode,
+        address: userData.address,
+        assignedTask: userData.assignedTask,
+        joinTime: userData.joinTime,
+        joinType: userData.joinType,
+        workType: userData.workType,
+        resignYn: userData.resignYn,
+        resignedTime: userData.resignedTime,
+        departmentId: userData.departmentId,
+        teamId: userData.teamId,
+        positionId: userData.positionId,
+        dutiesId: userData.dutiesId,
+    };
 };
 
-const currentTabComponent = computed(() => tabComponents[currentTab.value]);
+const triggerFileUpload = (inputType) => {
+    const input = inputType === 'fileInput' ? fileInput.value : sealFileInput.value;
+    if (input) {
+        input.click();
+    }
+};
 
-function parseJwt(token) {
+const uploadProfileImage = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('id', user.value.id);
+    formData.append('typeId', 2);
+
     try {
-        const base64Url = token.split('.')[1];
-        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
-            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-        }).join(''));
-        return JSON.parse(jsonPayload);
+        const response = await axios.put('http://localhost:8080/users/img', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
+        alert("프로필 이미지가 업로드 되었습니다.");
+        console.log(response.data);
+        console.log(response.data.result);
+        profilePath.value = response.data.result;
+        console.log("Updated profilePath: ", profilePath.value);
     } catch (error) {
-        console.error('Invalid token', error);
-        return null;
+        console.error("이미지 업로드 중 오류 발생: ", error);
+        alert("이미지 업로드 중 오류가 발생했습니다.");
     }
-}
+};
 
-function handlePasswordResetSuccess() {
-    const myModal = new bootstrap.Modal(document.getElementById('myModal'));
-    myModal.hide();
-}
+const uploadSealImage = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
 
-async function fetchDropdownData() {
-    const departmentResponse = await axios.get('/api/departments');
-    const teamResponse = await axios.get('/api/teams');
-    const positionResponse = await axios.get('/api/positions');
-    const dutiesResponse = await axios.get('/api/duties');
-    departments.value = departmentResponse.data;
-    teams.value = teamResponse.data;
-    positions.value = positionResponse.data;
-    duties.value = dutiesResponse.data;
-}
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('id', user.value.id);
+    formData.append('typeId', 1);
 
-async function submitForm() {
     try {
-        await axios.put(`http://localhost:8080/users/${route.params.employeeNumber}`, user.value);
-        alert('수정 내용이 저장되었습니다.');
+        const response = await axios.put('http://localhost:8080/users/img', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
+        alert("인감 이미지가 업로드 되었습니다.");
+        console.log(response.data);
+        console.log(response.data.result);
+        sealPath.value = response.data.result;
+        console.log("Updated sealPath: ", sealPath.value);
     } catch (error) {
-        alert('수정 내용 저장에 실패했습니다.');
-        console.error(error);
+        console.error("이미지 업로드 중 오류 발생: ", error);
+        alert("이미지 업로드 중 오류가 발생했습니다.");
     }
-}
+};
 
-onMounted(async () => {
-    const token = localStorage.getItem('access');
-    if (token) {
-        const decodedToken = parseJwt(token);
-        userRole.value = decodedToken?.auth || '';
+const submitModifications = async () => {
+    try {
+        if (updatedUser.value.callNumber == '-') {
+            updatedUser.value.callNumber = null;
+        }
+        console.log('변경될 정보 확인: ', updatedUser.value);
+        const cleanedData = cleanUserData(updatedUser.value);
+        console.log('변경될 정보 확인22: ', cleanedData);
+        const response = await axios.put(`http://localhost:8080/users/${user.value.id}`, cleanedData);
+        alert("수정이 완료되었습니다.");
+        router.push(`/hr/profile/${user.value.employeeNumber}`);
+    } catch (error) {
+        console.error("수정 중 오류 발생: ", error);
+        alert("수정 중 오류가 발생했습니다.");
     }
+};
 
-    const response = await axios.get(`http://localhost:8080/users/${route.params.employeeNumber}`);
-    result.value = response.data.result;
-    user.value = response.data.result; // initialize user data for form
-    if (result.value.absenceYn === 'Y') {
-        isAbsence.value = true;
+const updateUser = (newData) => {
+    updatedUser.value = {
+        ...user.value,
+        ...newData,
+        departmentId: newData.departmentId !== undefined ? newData.departmentId : user.value.department?.id,
+        teamId: newData.teamId !== undefined ? newData.teamId : user.value.team?.id,
+        positionId: newData.positionId !== undefined ? newData.positionId : user.value.position?.id,
+        dutiesId: newData.dutiesId !== undefined ? newData.dutiesId : user.value.duties?.id,
+    };
+};
+
+onMounted(() => {
+    const userData = sessionStorage.getItem('user');
+    if (userData) {
+        const parsedUser = JSON.parse(userData);
+        if (parsedUser && parsedUser.id) {
+            user.value = parsedUser;
+            givenEmail.value = user.value.email;
+            updatedUser.value = { ...user.value };
+            console.log("유저 정보 확인: ", user.value);
+            profilePath.value = user.value.profilePath;
+            console.log("프로필 패스: ", profilePath.value);
+        } else {
+            console.error("유저 정보가 올바르지 않습니다. ID가 없습니다.");
+        }
+    } else {
+        console.error("SessionStorage에 유저 정보가 없습니다.");
     }
-
-    givenEmail.value = result.value.email;
-    console.log("result: ", result);
-    console.log("result2: ", givenEmail.value);
-
-    await fetchDropdownData(); // fetch dropdown data after loading user data
 });
+
 </script>
 
 <style scoped>
@@ -181,7 +233,7 @@ body {
 .profile-main {
     display: grid;
     grid-template-columns: 10% 80% 10%;
-    grid-template-rows: 18% 33% 15% auto;
+    grid-template-rows: 18% 33% 8% 10% auto;
     height: 100%;
 }
 
@@ -211,7 +263,7 @@ body {
     grid-row-start: 2;
     grid-column-start: 2;
     display: grid;
-    grid-template-columns: 17% 53% 30%;
+    grid-template-columns: 23% 2% 20% 25% 30%;
     max-height: 100%;
     max-width: 100%;
 }
@@ -226,6 +278,19 @@ body {
 .image img {
     width: 100%;
     height: 100%;
+}
+
+.sealImg {
+    grid-column-start: 3;
+    display: flex; 
+    align-items: flex-end;
+    justify-content: center;
+}
+
+#sealImg {
+    width: 50%;
+    height: 50%;
+    margin-bottom: 15%;
 }
 
 .name {
@@ -245,6 +310,7 @@ body {
 #other-info {
     display: flex;
     flex-direction: row;
+
 }
 
 #teamInfo {
@@ -264,7 +330,9 @@ body {
     font-size: 13px;
 }
 
+
 .button {
+    grid-column-start: 5;
     display: flex;
     justify-content: flex-end;
 }
@@ -300,17 +368,49 @@ body {
     font-style: bold;
 }
 
-.second {
+.modifyFirst {
+    grid-column-start: 3;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 0.5em;
+    height: 100%;
+    width: 100%;
+}
+
+.half {
     grid-row-start: 3;
+    grid-column-start: 2;
+    display: grid;
+    grid-template-columns: 23% 2% 20% auto;
+}
+
+#profileInput {
+    grid-column-start: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+#sealInput {
+    grid-column-start: 3;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.second {
+    grid-row-start: 4;
     grid-column-start: 2;
     height: 100%;
     width: 100%;
-    display: flex;
+    display: grid;
     align-items: flex-end;
+    grid-template-columns: 25% auto 45%;
 }
 
 .content {
-    grid-row-start: 4;
+    grid-row-start: 5;
     grid-column-start: 2;
     margin-top: 15px;
 }
@@ -318,5 +418,19 @@ body {
 .modal-body {
     padding: 0 0 50px 0;
     height: 50%;
+}
+
+.oldInfo {
+    grid-column-start: 2;
+    text-align: center;
+    color: rgb(180, 177, 177);
+    font-weight: bold;
+}
+
+.newInfo {
+    grid-column-start: 3;
+    text-align: center;
+    color: rgb(180, 177, 177);
+    font-weight: bold;
 }
 </style>

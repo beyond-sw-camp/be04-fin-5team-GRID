@@ -33,7 +33,7 @@
                 result.team.teamName : 'N/A' }}
             </div>
             <div id="hr-info-content">
-                {{ result.assignedTask }}
+                {{ assignedTask }}
             </div>
             <div id="hr-info-content">
                 {{ result.position ? result.position.positionName : 'N/A' }}
@@ -86,7 +86,7 @@
                 {{ result.phoneNumber }}
             </div>
             <div id="basic-info-content">
-                {{ callNum }}
+                {{ callNumber }}
             </div>
             <div id="basic-info-content">
                 {{ result.joinTime }}
@@ -103,11 +103,19 @@
             </div>
             <div id="admin-info-name">
                 <img src="@/assets/HR/time.png" alt="시간 표시" class="info-img">
+                입사 유형
+            </div>
+            <div id="admin-info-name">
+                <img src="@/assets/HR/time.png" alt="시간 표시" class="info-img">
                 고용 유형
             </div>
             <div id="admin-info-name">
                 <img src="@/assets/HR/time.png" alt="시간 표시" class="info-img">
-                입사 유형
+                계약 시작일
+            </div>
+            <div id="admin-info-name">
+                <img src="@/assets/HR/time.png" alt="시간 표시" class="info-img">
+                계약 종료일
             </div>
             <div id="admin-info-name">
                 <img src="@/assets/HR/time.png" alt="시간 표시" class="info-img">
@@ -125,61 +133,67 @@
                 {{ workType }}
             </div>
             <div id="admin-info-content">
-                {{ isResigned ? '퇴사' : '재직중' }} {{ resignTime }}
+                {{ contractStartTime }}
+            </div>
+            <div id="admin-info-content">
+                {{ contractEndTime }}
+            </div>
+            <div id="admin-info-content">
+                {{ isResigned }} {{ resignTime }}
             </div>
         </div>
     </div>
 </template>
 
 <script setup>
-import { defineProps, onMounted, ref } from 'vue';
+import { defineProps, onMounted, ref, watch } from 'vue';
 
 const props = defineProps({
     result: {
         type: Object,
         required: true
-    },
-    userRole: {
+    }, 
+    userRole:{
         type: String,
         required: true
     }
 });
 
+const updateValues = () => {
+    console.log("Updated result:", props.result);
+    console.log("Updated userRole:", props.userRole);
+    console.log('퇴사 여부:', props.result.resignYn);
+    
+    joinType.value = props.result.joinType === 'NEW' ? '신입' : '경력';
+    workType.value = props.result.workType === 'R' ? '정규직' : '계약직';
+    isResigned.value = props.result.resignYn === 'N' ? '재직' : '퇴사';
+    callNumber.value = props.result.callNumber != null ? props.result.callNumber : '-';
+    assignedTask.value = props.result.assignedTask != null ? props.result.assignedTask : '-';
+    resignTime.value = props.result.resignTime != null ? props.result.resignTime : '';
+    contractStartTime.value = props.result.contractStartTime!= null ? props.result.contractStartTime : '';
+    contractEndTime.value = props.result.contractEndTime!= null ? props.result.contractEndTime : '-';
+};
+
 const today = new Date();
 const year = today.getFullYear();
-const month = String(today.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1
+const month = String(today.getMonth() + 1).padStart(2, '0'); 
 const day = String(today.getDate()).padStart(2, '0');
-const callNum = ref('');
 const joinType = ref('');
 const workType = ref('');
-const isResigned = ref(false);
+const isResigned = ref('');
 const resignTime = ref('');
+const contractStartTime = ref('');
+const contractEndTime = ref('');
+const callNumber = ref('');
+const assignedTask = ref('');
 
 const currentTime = `${year}-${month}-${day}`;
 
-onMounted(() => {
-    console.log("확인: ", props.result);
-    console.log("확인2: ", props.userRole);
-    if (props.result.callNumber == null) {
-        callNum.value = '-';
-    }
-    if (props.result.joinType == 'NEW') {
-        joinType.value = '신입';
-    } else {
-        joinType.value = '경력';
-    }
-    if (props.result.workType == 'R') {
-        workType.value = '정규직';
-    } else {
-        workType.value = '계약직';
-    }
-    if (props.result.resignYn == 'Y') {
-        isResigned.value = true;
-    }
-    if (props.result.resignTime != null) {
-        resignTime.value = props.result.resignTime.value;
-    }
-});
+onMounted(updateValues);
+
+
+watch(() => props.result, updateValues, { immediate: true });
+watch(() => props.userRole, updateValues, { immediate: true });
 </script>
 
 <style scoped>
