@@ -80,19 +80,7 @@ const router = createRouter({
             component: () => import('../views/HumanResources/Add.vue')
         },
         {
-            path: '/bt/:employeeId',
-            component: () => import('@/views/Approval/BTApprovalListView.vue')
-        },
-        {
-            path: '/overtime/:employeeId',
-            component: () => import('@/views/Approval/OApprovalListView.vue')
-        },
-        {
-            path: '/vacation/:employeeId',
-            component: () => import('@/views/Approval/VApprovalListView.vue')
-        },
-        {
-            path: '/approval/:employeeId',
+            path: '/approval',
             component: () => import('@/views/Approval/AllApprovalListView.vue')
         },
         {
@@ -161,19 +149,23 @@ const router = createRouter({
             component: () => import('../views/PerformanceReview/Total/TotalPerformanceReviewDetailView.vue')
         },
         {
-            path: '/bt/:employeeId',
+            path: '/bt',
             component: () => import('@/views/Approval/BTApprovalListView.vue')
         },
         {
-            path: '/overtime/:employeeId',
+            path: '/overtime',
             component: () => import('@/views/Approval/OApprovalListView.vue')
         },
         {
-            path: '/vacation/:employeeId',
+            path: '/rw',
+            component: () => import('@/views/Approval/RWApprovalListView.vue')
+        },
+        {
+            path: '/vacation',
             component: () => import('@/views/Approval/VApprovalListView.vue')
         },
         {
-            path: '/approval/:employeeId',
+            path: '/approval',
             component: () => import('@/views/Approval/AllApprovalListView.vue')
         },
         {
@@ -220,6 +212,10 @@ const router = createRouter({
         {
             path: '/work-calendar/:id',
             component: () => import('@/views/AdTime/WorkCalendarView.vue')
+        },
+        {
+            path: '/work',
+            component: () => import('@/views/Approval/AllWorkListView.vue')
         }
 
     ]

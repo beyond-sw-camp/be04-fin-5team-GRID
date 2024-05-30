@@ -4,10 +4,7 @@
 
   import ApprovalList from "@/components/Approval/ApprovalList.vue";
 
-  const typeId = 1;
-
-  // admin 체크 필요
-  const admin = 1;
+  const typeId = 3;
 
   const state = reactive({
     approvalList:[]
@@ -15,11 +12,8 @@
 
   const fetchApprovalList = async(id) => {
     try {
-      let url = `http://localhost:8080/approval/all/${typeId}/5`;
 
-      if (admin !== 1) {
-        url = `http://localhost:8080/approval/list/${typeId}/5/${id}`;
-      }
+      const url = `http://localhost:8080/approval/all/${typeId}/5`;
 
       const response = await axios.get(url);
 
@@ -28,7 +22,7 @@
       }
 
       state.approvalList = response.data.approvalEmpResultList;
-      state.approvalList.type = "bt";
+      state.approvalList.type = "rw";
 
     } catch (error) {
       console.error('Fetch error: ' + error.message);
@@ -44,6 +38,6 @@
   <ApprovalList :approvalList="state.approvalList"/>
 </template>
 
-<style>
+<style scoped>
 
 </style>
