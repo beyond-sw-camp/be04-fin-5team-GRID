@@ -82,4 +82,34 @@
         MEMBER_REVIEW_HISTORY A
     </select>
 
+    <select id="findMyReviewHistory" resultMap="ReviewHistoryResultMap" parameterType="int">
+        SELECT
+        A.ID AS HISTORY_ID,
+        A.CONTENT,
+        A.WRITE_TIME ,
+        A.YEAR,
+        A.QUARTER,
+        A.REVIEWER_ID,
+        A.REVIEWEE_ID
+        FROM
+        MEMBER_REVIEW_HISTORY A
+        WHERE A.REVIEWEE_ID = #{revieweeId}
+    </select>
+
+    <resultMap id="ReviewListResultMap" type="org.highfives.grid.review.query.aggregate.ReviewList">
+        <id property="id" column="ID"/>
+        <result property="listName" column="LIST_NAME"/>
+    </resultMap>
+
+    <select id="findReviewList" resultMap="ReviewListResultMap" parameterType="int">
+         SELECT
+         A.ID
+        ,A.LIST_NAME
+         FROM
+         MEMBER_REVIEW_LIST A
+         WHERE A.ID = #{reviewId}
+    </select>
+
+
+
 </mapper>

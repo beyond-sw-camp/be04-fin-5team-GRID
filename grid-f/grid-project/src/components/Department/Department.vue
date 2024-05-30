@@ -9,7 +9,7 @@
       <button class="modifybtn" @click="">수정하기</button>
     </div>
     <div class="search">
-      <input type="text" class="searchBox" placeholder="부서명 검색">
+      <input type="text" class="searchBox" placeholder="부서명 검색" v-model="searchQuery">
       <button @click="search" class="searchBtn">검색</button>
     </div>
     <table class="deptTable">
@@ -28,7 +28,7 @@
         <tr v-for="(department, index) in paginatedDepartments" :key="department.departmentCode">
           <td><input type="checkbox"></td>
           <td>{{ department.departmentCode }}</td>
-          <td>{{ department.departmentName }}</td>
+          <td><a @click.prevent="goToDepartmentTeams(department.id)" href="#">{{ department.departmentName }}</a></td>
           <td>{{ formatDate(department.startTime) }}</td>
           <td>{{ formatDate(department.endTime) }}</td>
           <td>{{ department.leaderName }}</td>
@@ -151,6 +151,7 @@ const departments = ref([]);
 const leaders = ref([]);
 const currentPage = ref(1);
 const itemsPerPage = 10;
+const searchQuery = ref('');
 const newDepartment = ref({
   departmentName: '',
   departmentCode: '',
@@ -175,6 +176,7 @@ const fetchDepartments = async () => {
   try {
     const response = await axios.get('http://localhost:8080/department/find-all');
     const departmentsData = response.data.result;
+    console.log(departmentsData)
     for (const department of departmentsData) {
       department.leaderName = await fetchLeaderName(department.leaderId);
     }
@@ -256,8 +258,15 @@ const selectDepartment = (department) => {
   const modal = bootstrap.Modal.getInstance(document.getElementById('selectDepartmentModal'));
   modal.hide();
 };
-</script>
 
+const search = () => {
+  currentPage.value = 1;
+};
+
+const goToDepartmentTeams = (id) => {
+  window.location.href = `/team/${id}`;
+};
+</script>
 
 <style scoped>
 @font-face {
@@ -267,9 +276,6 @@ const selectDepartment = (department) => {
   font-style: normal;
 }
 
-body {
-  font-family: 'IBMPlexSansKR-Regular';
-}
 
 .container {
   display: grid;
