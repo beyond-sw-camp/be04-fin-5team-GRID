@@ -1,8 +1,8 @@
 <template>
   <aside class="sidebar">
     <div class="profile">
-      <!-- 추후 이미지 파일 업로드로 받아오기. -->
-      <img src="@/assets/profile.png" alt="Profile Picture" class="profile-pic" />
+      <!-- 프로필 이미지 -->
+      <img :src="profileUrl" alt="Profile Picture" class="profile-pic" />
       <div class="profile-info">
         <h3>{{ user?.name }}</h3>
         <p>{{ user?.email }}</p>
@@ -68,46 +68,16 @@ import axios from 'axios';
 import { ref, onMounted, reactive, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
+import defaultProfileImage from '@/assets/defaultProfile.jpg';
 
-const employee = ref([]);
-const error = ref([]);
 const router = useRouter();
-const userRole = ref('');
 const store = useStore();
+const userRole = ref('');
 
 const user = computed(() => store.state.user);
-
-// const fetchEmployee = async () => {
-//   try {
-//     const response = await axios.get(`http://localhost:8080/users/mail/${user.value.employeeNumber}`); // ${employeeNumber}로 수정예정
-//     employee.value = response.data.result;
-//   } catch (err) {
-//     console.error('Error fetching employee:', err);
-//     error.value = 'Failed to fetch employee data.';
-//   }
-// };
-
-function parseJwt(token) {
-  try {
-    const base64Url = token.split('.')[1];
-    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
-      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-    }).join(''));
-    return JSON.parse(jsonPayload);
-  } catch (error) {
-    console.error('Invalid token', error);
-    return null;
-  }
-}
-
-onMounted(async () => {
-  const dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'));
-  dropdownElementList.map(function (dropdownToggleEl) {
-    return new Dropdown(dropdownToggleEl);
-  });
+const profileUrl = computed(() => {
+  return user.value?.profilePath ? user.value.profilePath : defaultProfileImage;
 });
-
 
 const activeMenus = reactive({
   workManagement: false,
@@ -115,6 +85,7 @@ const activeMenus = reactive({
   hrManagement: false,
   departmentManagement: false,
   departmentEvaluation: false,
+  performanceReview: false,
 });
 
 const toggleMenu = (menu) => {
@@ -152,7 +123,6 @@ function toVacationInfo() {
 function toVacationChangeInfo() {
   router.push('/vacation/changeInfo');
 }
-
 </script>
 
 <style scoped>

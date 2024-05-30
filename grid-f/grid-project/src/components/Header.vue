@@ -13,7 +13,7 @@
         </button>
         <div class="dropdown">
           <img
-            src="https://talkimg.imbc.com/TVianUpload/tvian/TViews/image/2020/04/12/FydNALvKf23Z637223013461671479.jpg"
+            :src="profileUrl"
             alt="profile" class="profile" @click="toggleDropdown">
           <ul class="dropdown-menu" ref="dropdownMenu">
             <li><a class="dropdown-item" href="#" @click="goToProfile">개인 정보</a></li>
@@ -48,6 +48,7 @@ import { Dropdown } from 'bootstrap';
 import draggable from 'vuedraggable';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
+import defaultProfileImage from '@/assets/defaultProfile.jpg';
 
 const departments = ref([]);
 const router = useRouter();
@@ -55,6 +56,9 @@ const store = useStore();
 const dropdownMenu = ref(null);
 
 const user = computed(() => store.state.user);
+const profileUrl = computed(() => {
+  return user.value?.profilePath ? user.value.profilePath : defaultProfileImage;
+});
 
 const fetchDepartments = async () => {
   try {
