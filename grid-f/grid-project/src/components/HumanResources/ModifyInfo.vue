@@ -295,8 +295,8 @@ onMounted(async () => {
     departmentInfo.value = depRes.data.result;
     console.log('부서정보:', depRes.data.result);
 
-    // const teamRes = await axios.get('http://localhost:8080/team/find-all');
-    // teamInfo.value = teamRes.data.result;
+    const teamRes = await axios.get('http://localhost:8080/team/find-all');
+    teamInfo.value = teamRes.data.result;
 
     const dutiesRes = await axios.get('http://localhost:8080/users/duties');
     dutiesInfo.value = dutiesRes.data.result;

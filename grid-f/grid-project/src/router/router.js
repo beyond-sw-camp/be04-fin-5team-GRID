@@ -38,15 +38,15 @@ const router = createRouter({
         },
         {
             path: '/performance-review-goal/add',
-            component: () => import('../views/PerformanceReview/GoalAddView.vue')
+            component: () => import('../views/PerformanceReview/Goal/GoalAddView.vue')
         },
         {
             path: '/performance-review-goal',
-            component: () => import('../views/PerformanceReview/GoalListView.vue')
+            component: () => import('../views/PerformanceReview/Goal/GoalListView.vue')
         },
         {
             path: '/review-goal/detail/:id',
-            component: () => import('../views/PerformanceReview/GoalDetailView.vue')
+            component: () => import('../views/PerformanceReview/Goal/GoalDetailView.vue')
         },
         {
             path: '/ad-time',
@@ -82,19 +82,7 @@ const router = createRouter({
             component: () => import('../views/HumanResources/Add.vue')
         },
         {
-            path: '/bt/:employeeId',
-            component: () => import('@/views/Approval/BTApprovalListView.vue')
-        },
-        {
-            path: '/overtime/:employeeId',
-            component: () => import('@/views/Approval/OApprovalListView.vue')
-        },
-        {
-            path: '/vacation/:employeeId',
-            component: () => import('@/views/Approval/VApprovalListView.vue')
-        },
-        {
-            path: '/approval/:employeeId',
+            path: '/approval',
             component: () => import('@/views/Approval/AllApprovalListView.vue')
         },
         {
@@ -138,19 +126,48 @@ const router = createRouter({
             component:() => import('../views/Vacation/VacationInfoMainView.vue')
         },
         {
-            path: '/bt/:employeeId',
+
+            path: '/performance-review',
+            component: () => import('../views/PerformanceReview/Review/PerformanceReviewListView.vue')
+        },
+        {
+            path: '/performance-review/detail/:id',
+            component: () => import('../views/PerformanceReview/Review/PerformanceReviewDetailView.vue')
+        },
+        {
+            path: '/performance-review/mid',
+            component: () => import('../views/PerformanceReview/Review/MidPerformanceReviewAddView.vue')
+        },
+        {
+            path: '/performance-review/final',
+            component: () => import('../views/PerformanceReview/Review/FinalPerformanceReviewAddView.vue')
+        },
+        {
+            path: '/performance-review/total',
+            component: () => import('../views/PerformanceReview/Total/TotalPerformanceReviewListView.vue')
+        },
+        {
+            path: '/performance-review/total/detail/:id',
+            component: () => import('../views/PerformanceReview/Total/TotalPerformanceReviewDetailView.vue')
+        },
+        {
+            path: '/bt',
             component: () => import('@/views/Approval/BTApprovalListView.vue')
         },
         {
-            path: '/overtime/:employeeId',
+            path: '/overtime',
             component: () => import('@/views/Approval/OApprovalListView.vue')
         },
         {
-            path: '/vacation/:employeeId',
+            path: '/rw',
+            component: () => import('@/views/Approval/RWApprovalListView.vue')
+        },
+        {
+            path: '/vacation',
             component: () => import('@/views/Approval/VApprovalListView.vue')
         },
         {
-            path: '/approval/:employeeId',
+            path: '/approval',
             component: () => import('@/views/Approval/AllApprovalListView.vue')
         },
         {
@@ -194,13 +211,19 @@ const router = createRouter({
             component: () => import('@/views/Approval/RegistMainView.vue')
         },
         {
+
             path: '/team/member-list/:teamId',
             component: () => import('@/components/Department/TeamMemberList.vue')
         },
         {
             path: '/team-review/myreview/:id',
             component: () => import('@/components/TeamReview/MyReview.vue')
+        },
+        {
+            path: '/work',
+            component: () => import('@/views/Approval/AllWorkListView.vue')
         }
+
     ]
 })
 
