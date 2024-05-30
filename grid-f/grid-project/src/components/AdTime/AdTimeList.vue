@@ -4,6 +4,11 @@
       <img class="adTimeIcon" src="@/assets/icons/goal_icon.png">
       <h1>출퇴근 조회</h1>
     </div>
+    <div class="workerContainer">
+      <div>
+        오늘 지각 인원: {{cntLate}}
+      </div>
+    </div>
     <div class="adTableContainer">
       <table>
         <thead>
@@ -38,18 +43,22 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue';
-import { useRouter } from 'vue-router';
+import {computed, onMounted, ref} from 'vue';
+import {useRouter} from 'vue-router';
 import axios from 'axios';
 
 const router = useRouter();
 
 const adTimeList = ref([]);
+const todayList = ref([]);
 const currentPage = ref(1);
 const itemsPerPage = 10;
 
 const userRole = ref('');
 const userId = ref('');
+
+
+const cntLate = ref();
 
 // 유저 확인
 function parseJwt(token) {
@@ -66,11 +75,44 @@ function parseJwt(token) {
   }
 }
 
+// 현재 시간
+function getCurrentDateTimeString() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  const hours = String(now.getHours()).padStart(2, '0');
+  const minutes = String(now.getMinutes()).padStart(2, '0');
+  const seconds = String(now.getSeconds()).padStart(2, '0');
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
+
 // 관리자용
 const fetchAllAdTime = async () => {
   try {
     const response = await axios.get('http://localhost:8080/ad-time/all')
     adTimeList.value = response.data.adTimeDTOList;
+
+    // 오늘 지각 인원 조회
+    const currentTime = getCurrentDateTimeString();
+    const today = currentTime.slice(0, 10)
+
+    const responseToday = await axios.get(`http://localhost:8080/ad-time/date/${today}`)
+    todayList.value = responseToday.data.adTimeDTOList;
+
+    const lateAttendanceList = todayList.value.filter(item => item.attendanceStatus === "지각");
+    cntLate.value = lateAttendanceList.length;
+
+    console.log(cntLate.value);
+
+    //오늘 출장 인원 조회
+
+    //오늘 단축 근무 인원 조회
+
+    //오늘 시간외 근무 인원 조회
+
+    //오늘 휴가 인원 조회
+
   } catch (error) {
     console.error('에러 발생:', error);
   }
@@ -87,8 +129,6 @@ const fetchEmployeeAdTime = async () => {
     console.error('에러 발생:', error);
   }
 };
-
-
 
 
 onMounted(() => {
@@ -149,6 +189,11 @@ const goToPage = (page) => {
   grid-template-rows: 18% 4% 2% auto 5% 13%;
   grid-template-columns: 10% 80% 10%;
   height: 100%;
+}
+
+.workerContainer {
+  grid-row-start: 2;
+  grid-column-start: 2;
 }
 
 .adTimeListTitle {

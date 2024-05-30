@@ -13,4 +13,6 @@ public interface AdTimeMapper {
    List<AdTimeDTO> selectAdTimeByEmployee(int employeeId);
 
    List<AdTimeDTO> selectAdTimeAll();
+
+   List<AdTimeDTO> selectAdTimeByStartTime(String startTime);
 }

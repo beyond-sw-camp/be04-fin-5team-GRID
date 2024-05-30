@@ -9,8 +9,10 @@ import {ref, onMounted} from "vue";
 import axios from 'axios';
 import {Calendar} from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
-import timeGridPlugin from '@fullcalendar/timegrid';
-import listPlugin from '@fullcalendar/list';
+import interactionPlugin from '@fullcalendar/interaction';
+import {useRouter} from 'vue-router';
+
+const router = useRouter();
 
 const userRole = ref('');
 const userId = ref('');
@@ -36,13 +38,21 @@ const initCalendar = async (events) => {
   let calendarEl = document.getElementById('calendar');
   if (calendarEl) {
     calendar = new Calendar(calendarEl, {
-      plugins: [dayGridPlugin],
+
+      plugins: [dayGridPlugin, interactionPlugin],
       initialView: 'dayGridMonth',
-      // initialView: 'dayGridWeek', //일주일 단위로
       headerToolbar: {
-        left:'',
+        left:'prev,next today',
         center: 'title',
-        right: 'prev,next today'
+        right: 'mainCalendar'
+      },
+      customButtons: {
+        mainCalendar: {
+          text: 'Main',
+          click: function () {
+            router.push('/ad-time/add'); // main으로 수정
+          }
+        }
       },
       events: events.value
     });
@@ -66,16 +76,41 @@ const fetchEmployeeEvent = async ()  => {
 
     const adTime = responseAdTime.data.adTimeDTOList;
     console.log(adTime);
-    events.value = transformEvents(adTime);
+
+    const adEvents = transformAdEvents(adTime);
     console.log(adTime.attendanceStatus);
     console.log(events.value);
-    // updateCalendarEvents(events.value);
-    // 휴가 조회
+    // 출장 조회
+    const responseBt= await axios.get(`http://localhost:8080/approval/list/1/1/${userId.value}`);
+    console.log(responseBt.data);
+
+    const bt = responseBt.data.approvalEmpResultList
+    const btEvents = transformEvents(bt, '출장', 'red');
 
 
     // 시간외 근무 조회
+    const responseO= await axios.get(`http://localhost:8080/approval/list/2/1/${userId.value}`);
+    console.log(responseO.data);
+
+    const O = responseBt.data.approvalEmpResultList
+    const OEvents = transformEvents(O, '시간외 근무', 'blue');
+
     // 단축 근무 조회
-    // 출장 조회
+    const responseRw= await axios.get(`http://localhost:8080/approval/list/3/1/${userId.value}`);
+    console.log(responseRw.data);
+
+    const Rw = responseBt.data.approvalEmpResultList
+    const RwEvents = transformEvents(Rw, '단축 근무', 'green');
+
+    // 휴가 조회
+    const responseV = await axios.get(`http://localhost:8080/approval/list/4/1/${userId.value}`);
+    console.log(responseV.data);
+
+    const V = responseBt.data.approvalEmpResultList
+    const VEvents = transformEvents(V, '휴가', 'purple');
+
+
+    events.value = [...adEvents, ...btEvents, ...OEvents, ...RwEvents, ...VEvents];
 
   } catch (error) {
     console.error('에러 발생:', error);
@@ -89,29 +124,68 @@ const fetchAllEvent = async ()  => {
 
     const adTime = responseAdTime.data.adTimeDTOList;
     console.log(adTime);
-    events.value = transformEvents(adTime);
+
+    const adEvents = transformAdEvents(adTime);
     console.log(adTime.attendanceStatus);
     console.log(events.value);
     // updateCalendarEvents(events.value);
-    // 휴가 조회
+    // 출장 조회
+    const responseBt= await axios.get(`http://localhost:8080/approval/list/1/${userId.value}/1`);
+    console.log(responseBt.data);
+
+    const bt = responseBt.data.approvalEmpResultList
+    const btEvents = transformEvents(bt, '출장', 'red');
 
 
     // 시간외 근무 조회
+    const responseO= await axios.get(`http://localhost:8080/approval/list/2/${userId.value}/1`);
+    console.log(responseO.data);
+
+    const O = responseBt.data.approvalEmpResultList
+    const OEvents = transformEvents(O, '시간외 근무', 'blue');
+
     // 단축 근무 조회
-    // 출장 조회
+    const responseRw= await axios.get(`http://localhost:8080/approval/list/3/${userId.value}/1`);
+    console.log(responseRw.data);
+
+    const Rw = responseBt.data.approvalEmpResultList
+    const RwEvents = transformEvents(Rw, '단축 근무', 'green');
+
+    // 휴가 조회
+    const responseV = await axios.get(`http://localhost:8080/approval/list/4/${userId.value}/1`);
+    console.log(responseV.data);
+
+    const V = responseBt.data.approvalEmpResultList
+    const VEvents = transformEvents(V, '휴가', 'purple');
+
+
+    events.value = [...adEvents, ...btEvents, ...OEvents, ...RwEvents, ...VEvents];
+    console.log(events.value);
 
   } catch (error) {
     console.error('에러 발생:', error);
   }
 };
 
-function transformEvents(list) {
+
+function transformAdEvents(list) {
   return list.map(item => ({
     title: `${item.attendanceStatus}`,
     start: item.startTime? item.startTime.replace(" ", "T"): null,
     end: item.endTime? item.endTime.replace(" ", "T"): null
   }));
 }
+
+
+function transformEvents(list, type, color) {
+  return list.map(item => ({
+    title: type,
+    start: item.startTime? item.startTime.replace(" ", "T"): null,
+    end: item.endTime? item.endTime.replace(" ", "T"): null,
+    color: color
+  }));
+}
+
 
 onMounted(async () => {
 

@@ -33,4 +33,13 @@ public class AdTimeServiceImpl implements AdTimeService {
         System.out.println(adTimeMapper.selectAdTimeAll());
         return adTimeMapper.selectAdTimeAll();
     }
+
+    // 날짜로 조회
+    @Override
+    public List<AdTimeDTO> findAdTimeByStartTime(String startTime) {
+
+        System.out.println(startTime);
+        System.out.println(adTimeMapper.selectAdTimeByStartTime(startTime));
+        return adTimeMapper.selectAdTimeByStartTime(startTime);
+    }
 }

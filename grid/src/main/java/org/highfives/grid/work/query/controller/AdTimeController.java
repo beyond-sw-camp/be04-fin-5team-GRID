@@ -51,4 +51,19 @@ public class AdTimeController {
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
+    @GetMapping("/date/{startTime}")
+    public ResponseEntity<ResponseAdTimeListVO> findAdTimeByStartTime(
+            @PathVariable String startTime) {
+        List<AdTimeDTO> adTimeList = adTimeService.findAdTimeByStartTime(startTime);
+
+        ResponseAdTimeListVO response = ResponseAdTimeListVO.builder()
+                .statusCode(200)
+                .message("출퇴근 목록 조회 성공")
+                .href("")
+                .adTimeDTOList(adTimeList)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
 }
