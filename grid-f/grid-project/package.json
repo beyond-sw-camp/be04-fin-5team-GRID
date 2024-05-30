@@ -9,6 +9,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fullcalendar/core": "^6.1.13",
+    "@fullcalendar/daygrid": "^6.1.13",
+    "@fullcalendar/interaction": "^6.1.13",
+    "@fullcalendar/list": "^6.1.13",
+    "@fullcalendar/timegrid": "^6.1.13",
     "@json2csv/plainjs": "^7.0.6",
     "@vuepic/vue-datepicker": "^8.7.0",
     "axios": "^1.6.8",
