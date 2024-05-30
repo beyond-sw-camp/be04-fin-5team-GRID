@@ -186,7 +186,7 @@ const router = createRouter({
             component: () => import('@/components/TeamReview/AddTeamReview.vue')
         },
         {
-            path: '/team-review/list',
+            path: '/team-review/list/:id',
             component: () => import('@/components/TeamReview/ReviewList.vue')
         },
         {
@@ -196,6 +196,10 @@ const router = createRouter({
         {
             path: '/team/member-list/:teamId',
             component: () => import('@/components/Department/TeamMemberList.vue')
+        },
+        {
+            path: '/team-review/myreview/:id',
+            component: () => import('@/components/TeamReview/MyReview.vue')
         }
     ]
 })

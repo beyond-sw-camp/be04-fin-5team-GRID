@@ -55,7 +55,7 @@ import { useRoute } from 'vue-router';
 import axios from 'axios';
 
 const route = useRoute();
-const departmentId = ref(route.params.id); // 라우트에서 departmentId를 가져옴
+const departmentId = ref(route.params.id);
 
 const searchQuery = ref('');
 const currentPage = ref(1);

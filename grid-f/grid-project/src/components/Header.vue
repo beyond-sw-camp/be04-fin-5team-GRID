@@ -185,7 +185,7 @@ const handleTeamDragEnd = async (event) => {
     if (team) {
       team.departmentId = newDepartmentId;
       try {
-        await axios.put(`http://localhost:8080/team/modify`, {
+        await axios.put(`http://localhost:8080/team`, {
           id: team.id,
           teamName: team.teamName,
           teamStatus: team.teamStatus,

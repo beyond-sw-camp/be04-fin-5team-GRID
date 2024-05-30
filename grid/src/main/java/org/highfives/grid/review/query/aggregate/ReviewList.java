@@ -11,6 +11,6 @@ public class ReviewList {
 
     private int id;
 
-    private String name;
+    private String listName;
 
 }

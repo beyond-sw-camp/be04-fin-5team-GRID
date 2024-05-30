@@ -105,7 +105,7 @@ const optionToScoreMap = {
 
 const fetchReviews = async () => {
   try {
-    const response = await axios.get('http://localhost:8080/review/assigned-review/1');
+    const response = await axios.get(`http://localhost:8080/review/assigned-review/${id}`);
     const reviewList = response.data.result;
 
     await Promise.all(reviewList.map(async review => {

@@ -134,7 +134,7 @@ const goToTeamReviewHistory = () => {
 }
 
 const goToTeamReviewList = () => {
-  router.push('/team-review/list');
+  router.push(`/team-review/list/${id}`);
 }
 
 const navigateTo = (path) => {
