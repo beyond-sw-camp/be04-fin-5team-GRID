@@ -6,8 +6,7 @@
         </div>
         <div class="first">
             <div class="image">
-                <img src="https://talkimg.imbc.com/TVianUpload/tvian/TViews/image/2020/04/12/FydNALvKf23Z637223013461671479.jpg"
-                    alt="">
+                <img :src="profileUrl" alt="프로필 이미지">
             </div>
             <div class="name">
                 <div id="name">
@@ -52,6 +51,8 @@
 <script setup>
 import HumanResourcesInfo from '@/components/HumanResources/HumanResourcesInfo.vue';
 import WB from '@/components/HumanResources/WorkVacation.vue';
+import defaultProfileImage from '@/assets/defaultProfile.jpg';
+
 import { ref, computed, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import axios from 'axios';
@@ -63,6 +64,10 @@ const isAbsence = ref(false);
 const userRole = ref('');
 const givenEmail = ref('');
 const router = useRouter();
+
+const profileUrl = computed(() => {
+    return result.value.profilePath ? result.value.profilePath : defaultProfileImage;
+});
 
 const tabComponents = {
     'human-resources': HumanResourcesInfo,
@@ -104,7 +109,7 @@ onMounted(async () => {
     if (result.value.absenceYn === 'Y') {
         isAbsence.value = true;
     }
-
+    console.log(result.value.profilePath);
     console.log('온마운트결과:', result.value);
     givenEmail.value = result.value.email;
 }
@@ -159,7 +164,7 @@ body {
     grid-row-start: 2;
     grid-column-start: 2;
     display: grid;
-    grid-template-columns: 17% 53% 30%;
+    grid-template-columns: 23% 47% 30%;
     max-height: 100%;
     max-width: 100%;
 }

@@ -182,7 +182,7 @@
                 {{ user.zipCode }} <br>
                 {{ user.address }}
             </div>
-            <div id="admin-info-content" style="margin-top: 20%;">
+            <div id="admin-info-content" style="margin-top: 11%;">
                 {{ joinType }}
             </div>
             <div id="admin-info-content">
@@ -192,7 +192,7 @@
                 {{ user.contractStartTime }}
             </div>
             <div id="admin-info-content">
-                {{ user.contractEndTime }}
+                {{ contractEndTime }}
             </div>
             <div id="admin-info-content">
                 {{ isResigned ? '퇴사' : '재직' }} &nbsp ({{ resignTime }})
@@ -263,6 +263,7 @@ const duplicateWarning = ref({
     email: false,
     phoneNumber: false
 });
+const contractEndTime = ref('');
 
 const departmentInfo = ref([]);
 const teamInfo = ref([]);
@@ -298,10 +299,11 @@ const changeValues = (user) => {
     console.log('props 확인: ', user.name);
 
     callNum.value = user.callNumber != null ? user.callNumber : '-';
-    assignedTask.value = user.assignedTask != null ? user.assignedTask.value : '-';
+    assignedTask.value = user.assignedTask != null ? user.assignedTask : '-';
     joinType.value = user.joinType === 'NEW' ? '신입' : '경력';
     workType.value = user.workType === 'R' ? '정규직' : '계약직';
     isResigned.value = user.resignYn === 'Y';
+    contractEndTime.value = user.contractEndTime != null ? user.contractEndTime : '-';
 
     if (user.resignTime != null) {
         resignTime.value = user.resignTime;
@@ -578,7 +580,7 @@ hr {
 
 #admin-info-content {
     margin-top: 1%;
-    margin-bottom: 6.7%;
+    margin-bottom: 7.5%;
 }
 
 #modify-hr-info,

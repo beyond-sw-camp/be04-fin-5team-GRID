@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ImgRepository extends JpaRepository<EmployeeImg, Integer> {
 
-
+    EmployeeImg findByEmployeeIdAndTypeId(int id, int typeId);
 }

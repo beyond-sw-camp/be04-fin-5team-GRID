@@ -19,9 +19,10 @@
                     Add new
                 </button>
                 <ul class="dropdown-menu" ref="dropdownMenu" :class="{ show: isAddDropdownOpen }">
-                    <li style="margin-bottom: 5%;"><a class="dropdown-item" href="#" @click="toAdd"><img src="@/assets/buttons/add-one.png"
-                                alt="유저 추가 버튼">신규 직원 등록</a></li>
-                    <li><a class="dropdown-item" href="#" @click="toAddMulti"><img src="@/assets/buttons/add-multi.png" alt="다중 유저 추가 버튼">일괄
+                    <li style="margin-bottom: 5%;"><a class="dropdown-item" href="#" @click="toAdd"><img
+                                src="@/assets/buttons/add-one.png" alt="유저 추가 버튼">신규 직원 등록</a></li>
+                    <li><a class="dropdown-item" href="#" @click="toAddMulti"><img src="@/assets/buttons/add-multi.png"
+                                alt="다중 유저 추가 버튼">일괄
                             등록</a></li>
                 </ul>
             </div>
@@ -45,8 +46,7 @@
                 </thead>
                 <tbody>
                     <tr v-for="employee in employeeList" :key="employee.id" @click="toInfo(employee.employeeNumber)">
-                        <td><img src="https://talkimg.imbc.com/TVianUpload/tvian/TViews/image/2020/04/12/FydNALvKf23Z637223013461671479.jpg"
-                                alt="profile" class="profile-image"></td>
+                        <td><img :src="getProfileUrl(employee.profilePath)" alt="profile" class="profile-image"></td>
                         <td>{{ employee.name }}</td>
                         <td>{{ employee.employeeNumber }}</td>
                         <td>{{ employee.department }}</td>
@@ -64,6 +64,7 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
+import defaultProfileImage from '@/assets/defaultProfile.jpg';
 import axios from 'axios';
 import router from '@/router/router';
 import { saveAs } from 'file-saver';
@@ -77,6 +78,10 @@ const toggleAddDropdown = () => {
     isAddDropdownOpen.value = !isAddDropdownOpen.value;
 };
 
+const getProfileUrl = (profilePath) => {
+    return profilePath ? profilePath : defaultProfileImage;
+};
+
 const findUser = async () => {
     let response = null;
     const url = searchCondition.value.trim() === ''
@@ -85,6 +90,7 @@ const findUser = async () => {
 
     response = await axios.get(url);
     employeeList.value = response.data.result;
+    console.log("사원리스트 조회 결과: ", employeeList.value);
 };
 
 const downloadCSV = () => {
@@ -288,8 +294,10 @@ button {
     padding: 10px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     margin-top: 5px;
-    left: 0; /* 버튼 바로 아래에 위치시키기 */
-    top: 100%; /* 버튼 바로 아래에 위치시키기 */
+    left: 0;
+    /* 버튼 바로 아래에 위치시키기 */
+    top: 100%;
+    /* 버튼 바로 아래에 위치시키기 */
 }
 
 .dropdown-menu.show {

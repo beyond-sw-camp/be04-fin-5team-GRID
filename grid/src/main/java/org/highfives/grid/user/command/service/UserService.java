@@ -30,5 +30,4 @@ public interface UserService extends UserDetailsService {
 
     boolean changeGender(int userId);
 
-    Map<String, String> imgUpload(MultipartFile multipartFile) throws IOException;
 }

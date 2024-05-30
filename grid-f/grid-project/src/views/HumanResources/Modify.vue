@@ -6,18 +6,10 @@
         </div>
         <div class="first" v-if="user">
             <div class="image">
-                <img src="https://talkimg.imbc.com/TVianUpload/tvian/TViews/image/2020/04/12/FydNALvKf23Z637223013461671479.jpg"
-                    alt="">
+                <img :src="profileUrl" alt="프로필 이미지" id="image">
             </div>
-            <div class="infoBtn">
-                <div style="margin: 1% 2% 0 0">
-                    <button class="pwdBtn" @click="triggerFileUpload('fileInput')">프로필 업로드</button>
-                    <input type="file" ref="fileInput" @change="uploadProfileImage" style="display: none;">
-                </div>
-                <div style="margin: 1% 2% 4% 0">
-                    <button class="pwdBtn" @click="triggerFileUpload('sealFileInput')">인감 업로드</button>
-                    <input type="file" ref="sealFileInput" @change="uploadSealImage" style="display: none;">
-                </div>
+            <div class="sealImg">
+                <img :src="sealUrl" alt="인감 이미지" id="sealImg">
             </div>
             <div class="button">
                 <div style="margin-right: 2%">
@@ -26,6 +18,16 @@
                 <div>
                     <button class="modifyBtn" @click="submitModifications">수정</button>
                 </div>
+            </div>
+        </div>
+        <div class="half">
+            <div style="margin: auto" id="profileInput">
+                <button class="pwdBtn" @click="triggerFileUpload('fileInput')">프로필 업로드</button>
+                <input type="file" ref="fileInput" @change="uploadProfileImage" style="display: none;">
+            </div>
+            <div style="margin: auto" id="sealInput">
+                <button class="pwdBtn" @click="triggerFileUpload('sealFileInput')">인감 업로드</button>
+                <input type="file" ref="sealFileInput" @change="uploadSealImage" style="display: none;">
             </div>
         </div>
         <div class="second">
@@ -37,7 +39,7 @@
             </div>
         </div>
         <div class="content">
-            <ModifyInfo :user="user" @update-user="updateUser"/>
+            <ModifyInfo :user="user" @update-user="updateUser" />
         </div>
     </div>
     <div class="modal fade" id="myModal">
@@ -48,7 +50,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <ResetPwd :givenEmail="givenEmail"/>
+                    <ResetPwd :givenEmail="givenEmail" />
                 </div>
             </div>
         </div>
@@ -58,14 +60,26 @@
 <script setup>
 import ModifyInfo from '@/components/HumanResources/ModifyInfo.vue';
 import ResetPwd from '@/components/Login/ResetPassword.vue';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
+import defaultProfileImage from '@/assets/defaultProfile.jpg';
+import defaultSealImage from '@/assets/defaultSeal.png';
 
 const router = useRouter();
 const user = ref();
 const updatedUser = ref(null);
 const givenEmail = ref('');
+const profilePath = ref('');
+const sealPath = ref('');
+
+const profileUrl = computed(() => {
+    return profilePath.value ? `${profilePath.value}?t=${new Date().getTime()}` : defaultProfileImage;
+});
+
+const sealUrl = computed(() => {
+    return sealPath.value ? `${sealPath.value}?t=${new Date().getTime()}` : defaultSealImage;
+})
 
 const fileInput = ref(null);
 const sealFileInput = ref(null);
@@ -109,7 +123,7 @@ const uploadProfileImage = async (event) => {
     formData.append('file', file);
     formData.append('id', user.value.id);
     formData.append('typeId', 2);
-    
+
     try {
         const response = await axios.put('http://localhost:8080/users/img', formData, {
             headers: {
@@ -117,6 +131,10 @@ const uploadProfileImage = async (event) => {
             }
         });
         alert("프로필 이미지가 업로드 되었습니다.");
+        console.log(response.data);
+        console.log(response.data.result);
+        profilePath.value = response.data.result;
+        console.log("Updated profilePath: ", profilePath.value);
     } catch (error) {
         console.error("이미지 업로드 중 오류 발생: ", error);
         alert("이미지 업로드 중 오류가 발생했습니다.");
@@ -129,14 +147,20 @@ const uploadSealImage = async (event) => {
 
     const formData = new FormData();
     formData.append('file', file);
+    formData.append('id', user.value.id);
+    formData.append('typeId', 1);
 
     try {
-        const response = await axios.put('http://localhost:8080/users/seal', formData, {
+        const response = await axios.put('http://localhost:8080/users/img', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
         });
         alert("인감 이미지가 업로드 되었습니다.");
+        console.log(response.data);
+        console.log(response.data.result);
+        sealPath.value = response.data.result;
+        console.log("Updated sealPath: ", sealPath.value);
     } catch (error) {
         console.error("이미지 업로드 중 오류 발생: ", error);
         alert("이미지 업로드 중 오류가 발생했습니다.");
@@ -145,7 +169,7 @@ const uploadSealImage = async (event) => {
 
 const submitModifications = async () => {
     try {
-        if(updatedUser.value.callNumber == '-') {
+        if (updatedUser.value.callNumber == '-') {
             updatedUser.value.callNumber = null;
         }
         console.log('변경될 정보 확인: ', updatedUser.value);
@@ -180,6 +204,8 @@ onMounted(() => {
             givenEmail.value = user.value.email;
             updatedUser.value = { ...user.value };
             console.log("유저 정보 확인: ", user.value);
+            profilePath.value = user.value.profilePath;
+            console.log("프로필 패스: ", profilePath.value);
         } else {
             console.error("유저 정보가 올바르지 않습니다. ID가 없습니다.");
         }
@@ -207,7 +233,7 @@ body {
 .profile-main {
     display: grid;
     grid-template-columns: 10% 80% 10%;
-    grid-template-rows: 18% 33% 10% auto;
+    grid-template-rows: 18% 33% 8% 10% auto;
     height: 100%;
 }
 
@@ -237,7 +263,7 @@ body {
     grid-row-start: 2;
     grid-column-start: 2;
     display: grid;
-    grid-template-columns: 17% 23% 30% 30%;
+    grid-template-columns: 23% 2% 20% 25% 30%;
     max-height: 100%;
     max-width: 100%;
 }
@@ -252,6 +278,19 @@ body {
 .image img {
     width: 100%;
     height: 100%;
+}
+
+.sealImg {
+    grid-column-start: 3;
+    display: flex; 
+    align-items: flex-end;
+    justify-content: center;
+}
+
+#sealImg {
+    width: 50%;
+    height: 50%;
+    margin-bottom: 15%;
 }
 
 .name {
@@ -291,15 +330,9 @@ body {
     font-size: 13px;
 }
 
-.infoBtn {
-    grid-column-start: 2;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-}
 
 .button {
-    grid-column-start: 4;
+    grid-column-start: 5;
     display: flex;
     justify-content: flex-end;
 }
@@ -345,8 +378,29 @@ body {
     width: 100%;
 }
 
-.second {
+.half {
     grid-row-start: 3;
+    grid-column-start: 2;
+    display: grid;
+    grid-template-columns: 23% 2% 20% auto;
+}
+
+#profileInput {
+    grid-column-start: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+#sealInput {
+    grid-column-start: 3;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.second {
+    grid-row-start: 4;
     grid-column-start: 2;
     height: 100%;
     width: 100%;
@@ -356,7 +410,7 @@ body {
 }
 
 .content {
-    grid-row-start: 4;
+    grid-row-start: 5;
     grid-column-start: 2;
     margin-top: 15px;
 }

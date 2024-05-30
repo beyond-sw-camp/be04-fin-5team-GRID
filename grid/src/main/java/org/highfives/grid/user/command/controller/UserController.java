@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -40,7 +41,7 @@ public class UserController {
         Map<String, String> uploadResult = new HashMap<>();
 
         if(multipartFile != null) {
-            uploadResult = userService.imgUpload(multipartFile);
+            uploadResult = imgService.imgS3Upload(multipartFile);
         }
 
         if(duplicateInfoCheck(givenInfo) != null)
@@ -103,19 +104,31 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    // 이미지 업로드
-    @PutMapping("/profile/img")
+    //이미지 업데이트(업로드)
+    @PutMapping("/img")
     public ResponseEntity<ResImgUploadVO> uploadImage(@RequestPart("file") MultipartFile file,
                                                       @RequestParam("id") int id,
-                                                      @RequestParam("typeId") int typeId) {
-        try {
-            Map<String, String> result = userService.imgUpload(file);
-            imgService.uploadImage(result, id, typeId);
+                                                      @RequestParam("typeId") int typeId) throws IOException {
+        ResImgUploadVO response = new ResImgUploadVO();
+        Map<String, String> result = new HashMap<>();
 
-            return null;
-        } catch (Exception e) {
-            return null;
+        try {
+            result = imgService.imgS3Upload(file);
+
+            } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                    new ResImgUploadVO(400, "Failed to upload image",
+                            "/users/profile/{id}", null));
         }
+
+        String tableUpdateResult = imgService.imgTableUpdate(result, id, typeId);
+
+        if (!tableUpdateResult.equals("Fail") && !tableUpdateResult.equals("No old img"))
+            imgService.imgS3Delete(tableUpdateResult);
+
+        response = new ResImgUploadVO(200,
+                "Success to upload image", "/users/profile/{id}", result.get("path"));
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     // 회원 정보 일괄 수정

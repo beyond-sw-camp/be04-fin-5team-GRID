@@ -3,8 +3,16 @@ package org.highfives.grid.user.command.aggregate;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.*;
 
 @Entity
+@Table(name="employee_img")
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@ToString
 public class EmployeeImg {
 
     @Id
@@ -16,7 +24,7 @@ public class EmployeeImg {
     @Column
     private String path;
     @Column
-    private int employee_id;
+    private int employeeId;
     @Column
     private int typeId;
 }

@@ -31,20 +31,14 @@ public class UserServiceImpl implements UserService{
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-    private final AmazonS3Client amazonS3Client;
-
-    @Value("${cloud.aws.s3.bucketName}")
-    private String bucketName;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository,
                            ModelMapper modelMapper,
-                           BCryptPasswordEncoder bCryptPasswordEncoder,
-                           AmazonS3Client amazonS3Client) {
+                           BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-        this.amazonS3Client = amazonS3Client;
     }
 
     @Override
@@ -211,46 +205,6 @@ public class UserServiceImpl implements UserService{
             log.info("Exception occurred: {}", e.getMessage());
             return false;
         }
-    }
-
-    @Override
-    public Map<String, String> imgUpload(MultipartFile multipartFile) throws IOException {
-
-        System.out.println(" 여기까지1 ");
-        System.out.println("multipartFile = " + multipartFile);
-        Map<String, String> result = new HashMap<>();
-
-        String originFileName = multipartFile.getOriginalFilename();
-        String extension = originFileName.substring(originFileName.lastIndexOf("."), originFileName.length());
-
-        System.out.println("extension = " + extension);
-
-        UUID uuid = UUID.randomUUID();
-        String newFileName = uuid.toString() + extension;
-
-        System.out.println("newFileName = " + newFileName);
-        long size = multipartFile.getSize(); // 파일 크기
-
-        ObjectMetadata objectMetaData = new ObjectMetadata();
-        objectMetaData.setContentType(multipartFile.getContentType());
-        objectMetaData.setContentLength(size);
-
-        System.out.println("objectMetaData = " + objectMetaData);
-
-        amazonS3Client.putObject(
-                new PutObjectRequest(bucketName, newFileName, multipartFile.getInputStream(), objectMetaData)
-                .withCannedAcl(CannedAccessControlList.PublicRead));
-
-        System.out.println(" 성공하나? ");
-        String imagePath = amazonS3Client.getUrl(bucketName, newFileName).toString(); // 접근가능한 URL 가져오기
-
-        System.out.println("imagePath = " + imagePath);
-        result.put("origin",originFileName);
-        result.put("new",newFileName);
-        result.put("path",imagePath);
-
-        System.out.println("imagePath = " + imagePath);
-        return result;
     }
 
     public boolean changeGender(int userId) {
