@@ -166,15 +166,20 @@ const fetchGoalAdd = async () => {
     // 올해 생성된 목표 평가가 있는지 확인
     const responseGoal = await axios.get(`http://localhost:8080/review-goal/${currentYear}/${user.value.id}`);
 
+    console.log('목표 조회', responseGoal.data);
     // 생성된 목표 없으면
     if (!responseGoal.data.findGoal) {
+
+      // 팀장 조회
+      const leader = await axios.get(`http://localhost:8080/users/${user.value.id}/leaders`);
+
       const sandData = {
         "year": currentYear,
         "reviewName": `${currentYear} 인사평가`,
         "approvalStatus": "IP",
-        "writerId": 6,
+        "writerId": user.value.id,
         "writeTime": currentTime,
-        "approverId": 5
+        "approverId": leader.data.result.teamLeaderId
       }
 
       const responseAdd = await axios.post(
@@ -188,6 +193,7 @@ const fetchGoalAdd = async () => {
       const goal = response.data.findDetailGoal;
       goalItemList.value = goal.goalItemList;
 
+      console.log(goalItemList.value);
       goalDetail.value = {
         id: goal.id,
         year: goal.year,
