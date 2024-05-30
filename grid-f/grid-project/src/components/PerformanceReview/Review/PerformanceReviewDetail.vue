@@ -2,7 +2,7 @@
   <div class="reviewDetailContainer">
     <div class="reviewTitle">
       <img class="reviewIcon" src="@/assets/icons/goal_icon.png">
-      <h1>업적 평가 목표 조회</h1>
+      <h1>업적 평가 조회</h1>
     </div>
     <div class="titleTableContainer">
       <table>
@@ -37,18 +37,18 @@
       </table>
     </div>
     <div class="GoalButtonContainer">
-      <div v-if="userRole === 'member'">
+      <div v-if="isMember">
         <button @click="memberSave()">팀원 저장</button>
         <button @click="submit()">상신</button>
       </div>
-      <div v-if="userRole === 'leader'">
+      <div v-if="!isMember">
         <button @click="leaderSave()">팀장 저장</button>
         <button @click="complete()">확인</button>
         <button @click="valid()">확정</button>
       </div>
     </div>
     <div class="performanceTableContainer">
-      <div v-if="userRole === 'member'">
+      <div v-if="isMember">
         <table>
           <thead>
           <tr>
@@ -128,7 +128,7 @@
           </tbody>
         </table>
       </div>
-      <div v-if="userRole === 'leader'">
+      <div v-if="!isMember">
         <table>
           <thead>
           <tr>
@@ -200,6 +200,10 @@
 import {ref, onMounted, computed} from 'vue';
 import {useRouter} from 'vue-router';
 import axios from 'axios';
+import {useStore} from 'vuex';
+
+const store = useStore();
+const user = computed(() => store.state.user);
 
 const router = useRouter();
 
@@ -218,9 +222,9 @@ const reviewDetail = ref({
 });
 
 // member, leader, manager
-const userRole = ref(null);
+const isMember = ref(null);
 
-const isReadOnly = ref(false);
+const isReadOnly = ref(true);
 
 const fetchReviewDetail = async () => {
   try {
@@ -243,11 +247,15 @@ const fetchReviewDetail = async () => {
       approvalTime: review.approvalTime || '없음',
       status: getApprovalStatus(review.approvalStatus)
     };
-    // 유저 체크 기능
-    userRole.value = "leader";
 
-    // 팀원일 때 작성중 상태만 수정 가능
-    // 팀장일 때 상신, 확인중, 확인 완료 상태에 수정 가능
+    if (isMember) {
+      if (reviewDetail.value.status === '작성 중')
+        isReadOnly.value = false;
+      console.log(reviewDetail.value.status);
+    } else {
+      if (reviewDetail.value.status === '상신' || reviewDetail.value.status === '확인 중' || goalDetail.value.status === '확인 완료')
+        isReadOnly.value = false;
+    }
   } catch (error) {
     console.error('에러 발생:', error);
   }
@@ -279,7 +287,21 @@ const getType = (type) => {
 };
 
 onMounted(() => {
-  fetchReviewDetail();
+  try {
+    console.log(user.value.duties);
+    if (user.value) {
+      if (user.value.duties.dutiesName === '팀원')
+        isMember.value = true;
+
+      if (user.value.duties.dutiesName === '팀장')
+        isMember.value = false;
+
+      fetchReviewDetail();
+
+    }
+  } catch (error) {
+    console.log("에러 발생: ", error);
+  }
 });
 
 // 점수 계산
