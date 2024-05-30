@@ -3,71 +3,88 @@
         <div class="manageTitle">
             <img class = "manageIcon" src="@/assets/buttons/vacation.png">
             <h1>휴가 종류</h1>
-            <button class="manageRegist" type="button" @click="showRegistModal = true" v-if="userRole === 'ROLE_ADMIN'">등록하기</button>
+            <button class="manageRegist" type="button" @click="showModal('registVacation')" v-if="userRole === 'ROLE_ADMIN'">등록하기</button>
         </div>
         <div class="vacations">
-            <div class="typeBox" v-for="type in types" :key="type.id">
-                <div class="vacationsTitle">
-                    <h3>{{ type.typeName }}</h3>
-                    <img class="plusBtn" v-if="userRole === 'ROLE_ADMIN'" @click="openModifyModal(type.id)" src="@/assets/buttons/plus.png">
-                </div>
-                <div class="vacationsNum">
-                    <h3>{{ type.vacationExplain }}</h3>
-                </div>
+            <div class="card mb-3" v-for="type in types" :key="type.id">
+              <div class="card-body">
+                <h3 class="card-title">{{ type.typeName }}</h3>
+                <p class="card-text">{{ type.vacationExplain }}</p>
+                <button href="#" v-if="userRole === 'ROLE_ADMIN'" @click="openModifyModal(type.id)" class="btn btn-custom">살펴보기</button>
+              </div>
             </div>
         </div>
 
-        <!-- 등록 모달 -->
-        <Modal v-if="showRegistModal" @close="showRegistModal = false">
-            <div class="registMain">
-                <div class="registTitle">
-                    <h3>휴가 이름</h3>
-                    <textarea v-model="registVacationType.typeName"></textarea>
-                </div>
-                <div class="registNum">
-                    <h3>휴가 제공일수</h3>
-                    <textarea v-model="registVacationType.vacationNum"></textarea>
-                </div>
-                <div class="registPeriod">
-                    <h3>휴가 사용기한</h3>
-                    <textarea v-model="registVacationType.dateOfUse"></textarea>
-                </div>
-                <div class="registDesc">
-                    <h3>설명</h3>
-                    <textarea v-model="registVacationType.vacationExplain"></textarea>
-                </div>
-                <div class="registBtnArea">
-                    <button class="registBtn" @click="registType">등록하기</button>
+         <!-- 등록 모달 -->
+        <div class="modal fade" id="registVacation" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">휴가 정보 추가</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form @submit.prevent="registType">
+                        <div class="mb-3">
+                            <label for="typeName" class="form-label">휴가 이름</label>
+                            <input type="text" class="form-control" id="typeName" v-model="registVacationType.typeName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="departmentCode" class="form-label">휴가 제공일수</label>
+                            <input type="text" class="form-control" id="vacationNum" v-model="registVacationType.vacationNum" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="dateOfUse" class="form-label">휴가 사용기한</label>
+                            <input type="text" class="form-control" id="dateOfUse" v-model="registVacationType.dateOfUse" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="vacationExplain" class="form-label">설명</label>
+                            <input type="text" class="form-control" id="vacationExplain" v-model="registVacationType.vacationExplain" required>
+                        </div>
+                        <div class="button-container">
+                            <button type="submit" class="btn btn-primary">등록</button>
+                        </div>
+                        </form>
+                    </div>
                 </div>
             </div>
-        </Modal>
+        </div>  
 
         <!-- 수정 모달 -->
-        <Modal v-if="showModifyModal" @close="showModifyModal = false">
-                <div class="modifyMain">
-                    <div class="vacationType">
-                        <h3>휴가 종류</h3>
-                        <p class="titleContent">{{ modifyType.typeName }}</p>
+        <div class="modal fade" id="modifyVacation" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">휴가 정보 수정</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div class="modifyNum">
-                        <h3>휴가 제공일수</h3>
-                        <textarea v-model="modifyType.vacationNum"></textarea>
-                    </div>
-                    <div class="modifyPeriod">
-                        <h3>휴가 사용기한</h3>
-                        <textarea v-model="modifyType.dateOfUse"></textarea>
-                    </div>
-                    <div class="modifyDesc">
-                        <h3>설명</h3>
-                        <textarea v-model="modifyType.vacationExplain"></textarea>
-                    </div>
-                    <div class="modifyBtnArea">
-                        <button class="modify" @click="modifyVacationType(modifyType.id)">수정하기</button>
-                        <button class="delete" @click="deleteVacationType(modifyType.id)">삭제하기</button>
+                    <div class="modal-body">
+                        <form @submit.prevent="modifyVacationType(modifyType.id)">
+                            <div class="mb-3">
+                                <label for="modifyTypeName" class="form-label">휴가 이름</label>
+                                <input type="text" class="form-control" id="modifyTypeName" v-model="modifyType.typeName" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="modifyVacationNum" class="form-label">휴가 제공일수</label>
+                                <input type="text" class="form-control" id="modifyVacationNum" v-model="modifyType.vacationNum" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="modifyDateOfUse" class="form-label">휴가 사용기한</label>
+                                <input type="text" class="form-control" id="modifyDateOfUse" v-model="modifyType.dateOfUse" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="modifyVacationExplain" class="form-label">설명</label>
+                                <input type="text" class="form-control" id="modifyVacationExplain" v-model="modifyType.vacationExplain" required>
+                            </div>
+                            <div class="button-container">
+                                <button type="button" class="btn btn-primary" @click="modifyVacationType(modifyType.id)">수정</button>
+                                <button type="button" class="btn btn-danger" @click="deleteVacationType(modifyType.id)">삭제</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
-                
-         </Modal>
+            </div>
+        </div>  
     </div>
 </template>
 
@@ -76,6 +93,8 @@ import router from '@/router/router';
 import { onBeforeMount, ref } from 'vue';
 import axios from "axios";
 import Modal from '@/components/Vacation/Manage/VacationManageModal.vue';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap';
 
 const types = ref([]);
 const showRegistModal = ref(false);
@@ -97,6 +116,17 @@ const registVacationType = ref({
     vacationExplain: ''
 });
 
+const showModal = (modalId) => {
+  const modal = new bootstrap.Modal(document.getElementById(modalId));
+  modal.show();
+};
+
+const openModifyModal = async (id) => {
+    await getVacationType(id);
+    const modal = new bootstrap.Modal(document.getElementById('modifyVacation'));
+    modal.show();
+};
+
 const getVacationType = async (id) => {
     try {
         const response = await axios.get(`/api/vacation/type/${id}`);
@@ -107,10 +137,31 @@ const getVacationType = async (id) => {
     }
 };
 
+// const registType = async () => {
+//     try {
+//         const confirmed = window.confirm('등록하시겠습니까?');
+//         if (confirmed) {
+//             const response = await axios.post("/api/vacation/type",
+//             {
+//                 typeName: registVacationType.value.typeName,
+//                 vacationNum: registVacationType.value.vacationNum,
+//                 dateOfUse: registVacationType.value.dateOfUse,
+//                 vacationExplain: registVacationType.value.vacationExplain
+//             });
+//             alert('등록이 완료되었습니다.');
+//             window.location.reload();
+//         }
+//     } catch (error) {
+//         console.error("Error:", error);
+//     }
+// };
+
 const registType = async () => {
     try {
-        const confirmed = window.confirm('수정하시겠습니까?');
+        const confirmed = window.confirm('등록하시겠습니까?');
         if (confirmed) {
+            const modal = bootstrap.Modal.getInstance(document.getElementById('registVacation'));
+            modal.hide();
             const response = await axios.post("/api/vacation/type",
             {
                 typeName: registVacationType.value.typeName,
@@ -126,24 +177,68 @@ const registType = async () => {
     }
 };
 
-const openModifyModal = async (id) => {
-    try {
-      getVacationType(id);
-      showModifyModal.value = true;
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
+// const modifyVacationType = async (id) => {
+//     try {
+//         const confirmed = window.confirm('수정하시겠습니까?');
+//         if (confirmed) {
+//             const modal = bootstrap.Modal.getInstance(document.getElementById('modifyVacation'));
+//             modal.hide();
+//             const response = await axios.put(`/api/vacation/type/${id}`,
+//             { 
+//                 vacationNum: modifyType.value.vacationNum, 
+//                 dateOfUse: modifyType.value.dateOfUse, 
+//                 vacationExplain: modifyType.value.vacationExplain 
+//             });
+//             alert('수정이 완료되었습니다.');
+//             window.location.reload();
+//         }
+//     } catch (error) {
+//         console.error("Error:", error);
+//     }
+// };
 
-  const modifyVacationType = async (id) => {
+
+
+// const openModifyModal = async (id) => {
+//     try {
+//       getVacationType(id);
+//       showModifyModal.value = true;
+//     } catch (error) {
+//       console.error("Error:", error);
+//     }
+//   };
+
+//   const modifyVacationType = async (id) => {
+//     try {
+//         const confirmed = window.confirm('수정하시겠습니까?');
+//         if (confirmed) {
+//             const response = await axios.put(`/api/vacation/type/${id}`, 
+//             { 
+//                 vacationNum: modifyType.value.vacationNum, 
+//                 dateOfUse: modifyType.value.dateOfUse, 
+//                 vacationExplain: modifyType.value.vacationExplain 
+//             });
+//             alert('수정이 완료되었습니다.');
+//             window.location.reload();
+//         }
+//     } catch (error) {
+//         console.error("Error:", error);
+//     }
+// }
+
+const modifyVacationType = async (id) => {
     try {
         const confirmed = window.confirm('수정하시겠습니까?');
         if (confirmed) {
-            const response = await axios.put(`/api/vacation/type/${id}`, 
-            { 
-                vacationNum: modifyType.value.vacationNum, 
-                dateOfUse: modifyType.value.dateOfUse, 
-                vacationExplain: modifyType.value.vacationExplain 
+            const modal = bootstrap.Modal.getInstance(document.getElementById('modifyVacation'));
+            modal.hide();
+            const response = await axios.put(`/api/vacation/type/${id}`,
+            {
+                id: modifyType.value.id,
+                typeName: modifyType.value.typeName,
+                vacationNum: modifyType.value.vacationNum,
+                dateOfUse: modifyType.value.dateOfUse,
+                vacationExplain: modifyType.value.vacationExplain
             });
             alert('수정이 완료되었습니다.');
             window.location.reload();
@@ -151,15 +246,17 @@ const openModifyModal = async (id) => {
     } catch (error) {
         console.error("Error:", error);
     }
-}
+};
 
 const deleteVacationType = async (id) => {
     try {
-        const confirmed = window.confirm('정말로 삭제하시겠습니까?');
-        if(confirmed) {
+        const confirmed = window.confirm('삭제하시겠습니까?');
+        if (confirmed) {
             const response = await axios.delete(`/api/vacation/type/${id}`);
-            alert('삭제가 완료되었습니다.');
+            alert('삭제이 완료되었습니다.');
+            window.location.reload();
         }
+        
     } catch (error) {
         console.error("Error:", error);
     }
@@ -263,12 +360,6 @@ onBeforeMount(() => {
         grid-template-columns: 90% 10%;
         align-items: start;
         margin-top: 5%;
-    }
-
-    .vacations h3 {
-        font-size: 15px;
-        font-weight: 600;
-        margin: 0;
     }
 
     .plusBtn {
@@ -441,7 +532,7 @@ onBeforeMount(() => {
     }
 
     .modify {
-        width: 100%;
+        width: 20%;
         background-color: #088A85;
         color: white;
         padding: 5px 5px;
@@ -450,11 +541,10 @@ onBeforeMount(() => {
         cursor: pointer;
         font-size: 12px;
         font-style: bold;
-        grid-column-start: 2;
     }
 
     .delete {
-        width: 100%;
+        width: 20%;
         background-color: #088A85;
         color: white;
         padding: 5px 5px;
@@ -463,7 +553,60 @@ onBeforeMount(() => {
         cursor: pointer;
         font-size: 12px;
         font-style: bold;
-        grid-column-start: 4;
+        margin-left: 2%;
     }
+
+    .btn-primary {
+        background-color: #088A85; /* 새로운 배경색 */
+        border-color: #088A85;
+        justify-content: center;
+    }
+
+    .btn-danger {
+        margin-left: 2%;
+    }
+
+    .button-container {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+    .btn-custom {
+    font-size:11px;
+    font-weight: 600;
+    color:black;
+    background-color: #CDE8E5;
+    border-color:#CDE8E5 ;
+  }
+
+  .vacations h3 {
+      font-size: 15px;
+      font-weight: 600;
+      color:black;
+      margin: 0;
+    }
+  
+    .card-text {
+        font-size: 13px;
+      font-weight: 600;
+      color:black;
+      margin: 0;
+    }
+
+  .card-body {
+    width:100%;
+    padding: 0px 0px;
+    display:grid;
+    grid-template-rows: 1fr 1fr 1fr;
+    margin: 0;
+  }
+
+  .card {
+    padding: 10px 10px;
+    background-color: #088A85;
+  }
+
+    
 </style>
         
