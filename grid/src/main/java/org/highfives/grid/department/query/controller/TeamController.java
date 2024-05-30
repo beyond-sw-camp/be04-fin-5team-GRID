@@ -56,5 +56,20 @@ public class TeamController {
         return ResponseEntity.status(HttpStatus.OK).body(responseTeamListVO);
     }
 
+    @GetMapping("/sub-department/{departmentId}")
+    public ResponseEntity<ResponseTeamListVO> findSubDepartmentByDepartmentId(@PathVariable int departmentId) {
+
+
+        List<TeamDTO> teamDTOList = teamService.findSubDepartmentByDepartmentId(departmentId);
+
+        ResponseTeamListVO responseTeamListVO = ResponseTeamListVO.builder()
+                .href("team/subdepartment")
+                .message("success")
+                .statusCode(200)
+                .result(teamDTOList)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(responseTeamListVO);
+    }
 
 }

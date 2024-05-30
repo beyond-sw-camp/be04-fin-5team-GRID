@@ -64,9 +64,10 @@ onBeforeMount(() => {
 <style scoped>
 .policyAll {
     display: grid;
-    grid-template-rows: 18% 70% 12%;
+    grid-template-rows: 18% 70% 7% 5%;
     grid-template-columns: 10% 80% 10%;
     height: 100%;
+    width: 100%;
 }
 
 .policyTitle {
@@ -79,6 +80,13 @@ onBeforeMount(() => {
     display: grid;
     grid-template-columns: 3% 97%;
     align-items: center;
+}
+
+.policyTitle h1 {
+    margin-left:0.5%;
+    margin-bottom: 0;
+    font-size: 25px;
+    font-weight: 600;
 }
 
 .policyIcon {
@@ -95,6 +103,12 @@ onBeforeMount(() => {
     width: calc(100% - 20px); 
     padding: 10px; 
     background-color: #F2F2F2;
+}
+
+.modifyMain h3 {
+    font-size: 15px;
+    margin: 0;
+    font-weight: 600;
 }
 
 .modifyTitle {
@@ -153,7 +167,7 @@ onBeforeMount(() => {
 }   
 
 .selectField {
-    height: 50%;
+    height: 100%;
     border: none;
     padding-left: 10px; 
 }

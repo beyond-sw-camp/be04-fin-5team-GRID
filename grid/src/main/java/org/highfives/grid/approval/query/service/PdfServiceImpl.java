@@ -22,6 +22,8 @@ import org.highfives.grid.approval.common.dto.RWApprovalDTO;
 import org.highfives.grid.approval.common.dto.VacationApprovalDTO;
 import org.highfives.grid.user.query.dto.UserDTO;
 import org.highfives.grid.user.query.service.UserService;
+import org.highfives.grid.vacation.command.repository.VacationTypeRepository;
+import org.highfives.grid.vacation.query.dto.VacationTypeDTO;
 import org.highfives.grid.vacation.query.service.VacationService;
 import org.highfives.grid.vacation.query.vo.ResOneVacationTypeVO;
 import org.modelmapper.ModelMapper;
