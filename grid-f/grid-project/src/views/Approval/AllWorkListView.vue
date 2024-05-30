@@ -5,12 +5,13 @@
 
   import ApprovalList from "@/components/Approval/ApprovalList.vue";
 
-  const admin = 1;
+  const admin = 0;
   const employeeId = 2;
 
   const router = useRouter();
 
   const state = reactive({
+    approvalList: [],
     btApprovalList: [],
     oApprovalList: [],
     rwApprovalList: []
@@ -38,16 +39,19 @@
       switch(typeId) {
         case 1:
           state.btApprovalList = response.data.approvalEmpResultList.slice(0, 3);
+          state.approvalList = response.data.approvalEmpResultList;
           state.btApprovalList.type = "bt";
           break;
 
         case 2:
           state.oApprovalList = response.data.approvalEmpResultList.slice(0, 3);
+          state.approvalList = response.data.approvalEmpResultList;
           state.oApprovalList.type = "o";
           break;
 
         case 3:
           state.rwApprovalList = response.data.approvalEmpResultList.slice(0, 3);
+          state.approvalList = response.data.approvalEmpResultList;
           state.rwApprovalList.type = "rw";
           break;
       }

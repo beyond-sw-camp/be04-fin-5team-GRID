@@ -6,6 +6,7 @@
 
   const typeId = 1;
 
+  // admin 체크 필요
   const admin = 1;
 
   const state = reactive({

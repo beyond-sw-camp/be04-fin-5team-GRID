@@ -398,11 +398,10 @@ public class PdfServiceImpl implements PdfService {
 
     @Override
     public void VexportToPDF(VacationApprovalDTO vacationApproval) {
-
         Document document = new Document();
 
-        UserDTO user = userService.findUserById(vacationApproval.getRequesterId());
         ResOneVacationTypeVO vacation = vacationService.getVacationTypeById(vacationApproval.getInfoId());
+        UserDTO user = userService.findUserById(vacationApproval.getRequesterId());
 
 //        String filePath = "출장 신청서" + user.getName() + date + ".pdf";
         String filePath = "휴가 신청서.pdf";
