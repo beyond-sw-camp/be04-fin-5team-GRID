@@ -35,13 +35,13 @@
       </table>
     </div>
     <div class="GoalButtonContainer">
-      <div v-if="userRole === 'member'">
+      <div>
         <button @click="memberSave()">팀원 저장</button>
         <button @click="submit()">상신</button>
       </div>
     </div>
     <div class="tableContainer">
-      <div v-if="userRole === 'member'">
+      <div>
         <table>
           <thead>
           <tr>
@@ -52,7 +52,7 @@
             <th>가중치</th>
             <th>계획</th>
             <th>반려의견</th>
-            <th>삭제</th>
+            <th v-if="!isReadOnly">삭제</th>
           </tr>
           </thead>
           <tbody>
@@ -64,6 +64,7 @@
                   v-model="item.jobName"
                   type="text"
               />
+              <span v-else>{{ item.jobName }}</span>
             </td>
             <td>
               <input
@@ -71,6 +72,7 @@
                   v-model="item.goal"
                   type="text"
               />
+              <span v-else>{{ item.goal }}</span>
             </td>
             <td>
               <input
@@ -78,6 +80,7 @@
                   v-model="item.metric"
                   type="text"
               />
+              <span v-else>{{ item.metric }}</span>
             </td>
             <td>
               <input
@@ -85,6 +88,7 @@
                   v-model="item.weight"
                   type="int"
               />
+              <span v-else>{{ item.weight }}</span>
             </td>
             <td>
               <input
@@ -92,9 +96,10 @@
                   v-model="item.plan"
                   type="text"
               />
+              <span v-else>{{ item.plan }}</span>
             </td>
             <td>{{ item.objection }}</td>
-            <td>
+            <td v-if="!isReadOnly">
               <button @click="deleteItem(index)">삭제</button>
             </td>
           </tr>
@@ -103,17 +108,21 @@
       </div>
     </div>
     <div class="addButton">
-      <div v-if="userRole === 'member'">
-      <button class="btn btn-dark" @click="addRow()">목표 추가</button>
+      <div>
+        <button class="btn btn-dark" @click="addRow()" v-if="!isReadOnly">목표 추가</button>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import {ref, onMounted} from 'vue';
+import {ref, onMounted, computed} from 'vue';
 import {useRouter} from 'vue-router';
 import axios from 'axios';
+import {useStore} from 'vuex';
+
+const store = useStore();
+const user = computed(() => store.state.user);
 
 const router = useRouter();
 
@@ -130,8 +139,7 @@ const goalDetail = ref({
   status: ''
 });
 
-// member, leader, manager
-const userRole = ref(null);
+const isReadOnly = ref(true);
 
 // 현재 시간
 function getCurrentDateTimeString() {
@@ -155,14 +163,11 @@ const fetchGoalAdd = async () => {
 
     console.log(currentTime);
 
-    // 팀원인지 확인하는 기능 추가 필요
-    userRole.value = "member";
-
     // 올해 생성된 목표 평가가 있는지 확인
-    const responseGoal = await axios.get(`http://localhost:8080/review-goal/${currentYear}/6`);
+    const responseGoal = await axios.get(`http://localhost:8080/review-goal/${currentYear}/${user.value.id}`);
 
     // 생성된 목표 없으면
-    if(!responseGoal.data.findGoal){
+    if (!responseGoal.data.findGoal) {
       const sandData = {
         "year": currentYear,
         "reviewName": `${currentYear} 인사평가`,
@@ -212,18 +217,20 @@ const fetchGoalAdd = async () => {
         approvalTime: goal.approvalTime || '없음',
         status: getApprovalStatus(goal.approvalStatus)
       };
-
-      // 문서 상태별 수정 가능 여부
-      // IP, D 수정 가능 S, R, V 수정x
     }
+
+
   } catch (error) {
     console.error('에러 발생:', error);
   }
 };
 
 const getApprovalStatus = (status) => {
+  // 문서 상태별 수정 가능 여부 추가
+  // IP, D 수정 가능 S, R, V 수정x
   switch (status) {
     case 'IP':
+      isReadOnly.value = false;
       return '작성 중';
     case 'S':
       return '상신';
@@ -232,6 +239,7 @@ const getApprovalStatus = (status) => {
     case 'A':
       return '승인';
     case 'D':
+      isReadOnly.value = false;
       return '반려';
     default:
       return '기타';
@@ -239,7 +247,12 @@ const getApprovalStatus = (status) => {
 };
 
 onMounted(() => {
-  fetchGoalAdd();
+  try {
+    if (user.value.duties.dutiesName === '팀원')
+      fetchGoalAdd();
+  } catch (error) {
+    console.log("에러 발생: ", error);
+  }
 });
 
 // 목표 추가

@@ -20,7 +20,7 @@
             <div class="diretly"  v-if="userRole === 'ROLE_ADMIN'">
                 <div class="vacationsTitle">
                     <h3>휴가 직접 지급 <br> (관리자)</h3>
-                    <img class="plusBtn" src="@/assets/buttons/plus.png">
+                    <img class="plusBtn" @click="showRegistModal = true" src="@/assets/buttons/plus.png">
                 </div>
             </div>
         </div>
@@ -46,15 +46,22 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(history, index) in paginatedHistories" :key="history.id">
-                        <td>{{ (currentPage - 1) * itemsPerPage + index + 1 }}</td>
-                        <td>{{ history.employeeName }}</td>
-                        <td>{{ history.employeeNumber }}</td>
-                        <td>{{ history.changeTypeName }}</td>
-                        <td>{{ history.typeName }}</td>
-                        <td>{{ history.changeTime }}</td>
-                        <td>{{ history.changeReason }}</td>
-                    </tr>
+                    <template v-if="paginatedHistories.length === 0">
+                        <tr>
+                            <td colspan="7" class="no-data">휴가 변화 이력이 없습니다.</td>
+                        </tr>
+                    </template>
+                    <template v-else>
+                        <tr v-for="(history, index) in paginatedHistories" :key="history.id">
+                            <td>{{ (currentPage - 1) * itemsPerPage + index + 1 }}</td>
+                            <td>{{ history.employeeName }}</td>
+                            <td>{{ history.employeeNumber }}</td>
+                            <td>{{ history.changeTypeName }}</td>
+                            <td>{{ history.typeName }}</td>
+                            <td>{{ history.changeTime }}</td>
+                            <td>{{ history.changeReason }}</td>
+                        </tr>
+                    </template>
                 </tbody>
             </table>
         </div>
@@ -69,12 +76,42 @@
             <button @click="nextPage" :disabled="currentPage === totalPages">Next</button>
         </div>
     </div>
+
+    <Modal v-if="showRegistModal" @close="showRegistModal = false">
+        <div class="registMain">
+          <div class="registTitle">
+            <h3 for="type">타입</h3>
+            <select id="type" v-model="selectedType" class="selectField">
+              <option value="">선택해주세요.</option>
+              <option v-for="type in types" :key="type.id" :value="type.id">{{ type.typeName }}</option>
+            </select>
+          </div>
+          <div class="vacationNum">
+            <h3 for="VacationNum">휴가일수</h3>
+            <input v-model="vacationNum" type="number" class="numInputField" placeholder="휴가일수를 입력해주세요.">
+          </div>
+          <div class="employeeNum">
+            <h3 for="employeeNum">직원사번</h3>
+            <input v-model="employeeNum" class="empInputField" placeholder="직원사번을 입력해주세요.">
+          </div>
+          <div class="registContent">
+                <h3>휴가 사용기한</h3>
+                <VueDatePicker locale="ko" :enable-time-picker="false" v-model="date" class="inputField" />
+            </div>
+          <div class="registBtnArea">
+            <button class="registBtn" @click="giveVacationDirectly">지급하기</button>
+          </div>
+        </div>
+      </Modal>
 </template>
 
 <script setup>
 import { onBeforeMount, ref, computed } from 'vue';
 import axios from "axios";
 import router from '@/router/router';
+import Modal from '@/components/Vacation/Info/VacationInfoModal.vue';
+import VueDatePicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css'
 
 const histories = ref([]);
 const searchType = ref('name'); // 검색 유형을 위한 기본값 설정
@@ -84,6 +121,12 @@ const currentPage = ref(1);
 const itemsPerPage = 10;
 const userRole = ref('');
 const userId = ref('');
+const showRegistModal = ref(false);
+const types = ref([]);
+const vacationNum = ref('');
+const employeeNum = ref('');
+const date = ref(null);
+const selectedType = ref('');
 
 const totalPages = computed(() => {
     return Math.ceil(filteredHistories.value.length / itemsPerPage);
@@ -100,7 +143,6 @@ const getAllVacationHistory = async () => {
         const response = await axios.get("/api/vacation/details");
         histories.value = response.data.result;
         filteredHistories.value = histories.value; // 처음에 모든 기록을 보여줌
-        console.log(response.data.result);
     } catch (error) {
         console.error("Error fetching vacation details:", error);
     }
@@ -109,7 +151,6 @@ const getAllVacationHistory = async () => {
 const getUserVacationHistory = async () => {
     try {
         const response = await axios.get(`/api/vacation/details/${userId.value}`);
-        histories.value = response.data.result;
         filteredHistories.value = histories.value; // 처음에 모든 기록을 보여줌
     } catch (error) {
         console.error("Error fetching vacation details:", error);
@@ -163,11 +204,74 @@ const giveMonthVacation = async () => {
     }
 }
 
+const getVacationType = async () => {
+    try {
+      const response = await axios.get('/api/vacation/type');
+      types.value = response.data.result;
+      console.log(response.data.result);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
+  const giveVacationDirectly = async () => {
+    // 입력 값 검증 추가
+    if (!selectedType.value) {
+        alert('휴가타입을 선택해주세요.');
+        return;
+    }
+    if (!vacationNum.value) {
+        alert('지급일수를 입력해주세요.');
+        return;
+    }
+    if (!employeeNum.value) {
+        alert('사번을 입력해주세요.');
+        return;
+    }
+    if (!date.value) {
+        alert('사용기한을 선택해주세요.');
+        return;
+    }
+
+    try {
+        const confirmed = window.confirm('지급하시겠습니까?');
+        if (confirmed) {
+            const formattedDate = date.value.toISOString().split('T')[0];
+            const response = await axios.post('/api/vacation/payments', {
+                vacationNum: vacationNum.value,
+                endTime: formattedDate,
+                employeeNum: employeeNum.value,
+                typeId: selectedType.value
+            });
+
+            if (response.status === 200) {
+                alert('지급 완료되었습니다!');
+                showRegistModal.value = false; // 모달 닫기
+                window.location.reload();
+            } else {
+                alert('지급에 실패했습니다.');
+            }
+        }
+    } catch (error) {
+        if (error.response && error.response.status === 404) {
+            alert('지급 엔드포인트를 찾을 수 없습니다.');
+        } else {
+            console.error("Error:", error);
+            alert('지급 중 오류가 발생했습니다.');
+        }
+    }
+}
+
+
 function giveAnnual() {
     try {
-        giveAnnualVacation();
-        giveRegularVacation();
-        alert('지급 완료되었습니다!')
+        const confirmed = window.confirm('지급하시겠습니까?');
+        if(confirmed) {
+            giveAnnualVacation();
+            giveRegularVacation();
+            alert('지급 완료되었습니다!')
+            window.location.reload();
+        }
     } catch (error) {
         alert(error.message)
     }
@@ -175,13 +279,18 @@ function giveAnnual() {
 
 function giveMonth() {
     try {
-        giveHealthVacation();
-        giveMonthVacation();
-        alert('지급 완료되었습니다!')
+        const confirmed = window.confirm('지급하시겠습니까?');
+        if(confirmed) {
+            giveHealthVacation();
+            giveMonthVacation();
+            alert('지급 완료되었습니다!')
+            window.location.reload();
+        }
     } catch (error) {
         alert(error.message)
     }
 }
+
 
 function parseJwt(token) {
     try {
@@ -221,6 +330,8 @@ onBeforeMount(() => {
         userId.value = decodedToken?.id || '';
     }
 
+    getVacationType();
+
     if (userRole.value === 'ROLE_ADMIN') {
         getAllVacationHistory();
     } else if (userRole.value === 'ROLE_USER') {
@@ -232,7 +343,7 @@ onBeforeMount(() => {
 <style scoped>
     .historyAll {
         display: grid;
-        grid-template-rows: 18% 15% 4% 43% 8% 10%;
+        grid-template-rows: 18% 10% 4% 43% 10% 11%;
         grid-template-columns: 10% 80% 10%;
         height: 100%;
     }
@@ -402,6 +513,96 @@ onBeforeMount(() => {
         display: flex;
         align-items: center;
     }
+
+    .registMain {
+    height: 100%;
+    width: 100%;
+    padding: 10px;
+    background-color: #F2F2F2;
+  }
+
+  .registMain h3 {
+    font-size: 15px;
+    margin: 0;
+    font-weight: 600;
+  }
+
+  .registTitle {
+    margin-top: 2%;
+    display: grid;
+    grid-template-columns: 10% 20% 30% 10%;
+    font-size: 14px;
+    align-items: center;
+  }
+
+  .registTitle h3 {
+    grid-column-start: 2;
+  }
+
+  .registContent {
+    margin-top: 2%;
+    display: grid;
+    grid-template-columns: 10% 20% 50% 10%;
+    font-size: 14px;
+    align-items: center;
+  }
+
+  .employeeNum {
+    margin-top: 2%;
+    display: grid;
+    grid-template-columns: 10% 20% 50% 10%;
+    font-size: 14px;
+    align-items: center;
+  }
+
+  .employeeNum h3 {
+    grid-column-start: 2;
+  }
+
+
+  .vacationNum {
+    margin-top: 2%;
+    display: grid;
+    grid-template-columns: 10% 20% 50% 10%;
+    font-size: 14px;
+    align-items: center;
+  }
+
+  .vacationNum h3 {
+    grid-column-start: 2;
+  }
+
+  .registContent h3 {
+    grid-column-start: 2;
+  }
+
+
+  .registBtn{
+    width: 100%;
+    background-color: #088A85;
+    color: white;
+    padding: 5px 5px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    font-style: bold;
+    grid-column-start: 2;
+  }
+
+  .registBtnArea {
+    display: grid;
+    grid-template-columns: 40% 20% 40%;
+    place-items: center;
+    grid-row-start: 3;
+    grid-column-start: 2;
+    margin-top: 5%;
+  }
+
+  .no-data {
+    text-align: center;
+    vertical-align: middle;
+}   
 </style>
 
 

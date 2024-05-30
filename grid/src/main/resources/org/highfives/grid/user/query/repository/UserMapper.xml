@@ -275,4 +275,22 @@
         WHERE E.id = #{id}
     </select>
 
+    <select id="findTeamList" parameterType="_int" resultMap="userInfo">
+        SELECT
+        E.id,
+        E.employee_name,
+        E.email,
+        E.employee_number,
+        P.id p_id,
+        P.position_name,
+        D.id d_id,
+        D.duties_name,
+        T.id t_id
+        FROM Employee E
+        JOIN Team T ON E.team_id = T.id
+        JOIN e_Position P ON E.position_id = P.id
+        JOIN Duties D ON E.duties_id = D.id
+        WHERE E.team_id = #{teamId}
+    </select>
+
 </mapper>

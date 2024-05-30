@@ -11,6 +11,7 @@
         <result column="team_status" property="teamStatus" />
         <result column="start_time" property="startTime"/>
         <result column="end_time" property="endTime"/>
+        <result column="sequence" property="sequence"/>
         <result column="department_id" property="departmentId"/>
         <result column="leader_id" property="leaderId"/>
     </resultMap>
@@ -25,6 +26,7 @@
         , end_time
         , department_id
         , leader_id
+        , sequence
         FROM TEAM
         WHERE id = #{id}
     </select>
@@ -39,7 +41,25 @@
         , end_time
         , department_id
         , leader_id
+        , sequence
         FROM TEAM
     </select>
+
+    <select id="findSubDepartmentByDepartmentId" resultMap="TeamResultMap">
+        SELECT
+        id
+        , team_name
+        , member_cnt
+        , team_status
+        , start_time
+        , end_time
+        , department_id
+        , leader_id
+        , sequence
+        FROM TEAM
+        WHERE department_id = #{departmentId}
+    </select>
+
+
 
 </mapper>

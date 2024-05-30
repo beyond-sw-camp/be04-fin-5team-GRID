@@ -7,6 +7,8 @@ import org.highfives.grid.approval.common.dto.BTApprovalDTO;
 import org.highfives.grid.approval.common.dto.OvertimeApprovalDTO;
 import org.highfives.grid.approval.common.dto.RWApprovalDTO;
 import org.highfives.grid.approval.common.dto.VacationApprovalDTO;
+import org.highfives.grid.approval.common.vo.ResApprovalVO;
+import org.highfives.grid.approval.query.service.PdfService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,10 +19,12 @@ import org.springframework.web.bind.annotation.*;
 public class ApprovalController {
 
     private final ApprovalService approvalService;
+    private final PdfService pdfService;
 
     @Autowired
-    public ApprovalController(ApprovalService approvalService) {
+    public ApprovalController(ApprovalService approvalService, PdfService pdfService) {
         this.approvalService = approvalService;
+        this.pdfService = pdfService;
     }
 
     @PostMapping("/bt")
@@ -303,5 +307,11 @@ public class ApprovalController {
                 .build();
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @PostMapping("/pdf/{typeId}/{approvalId}")
+    public void exportToPDF(@PathVariable int typeId, @PathVariable int approvalId) {
+
+        pdfService.exportToPDF(typeId, approvalId);
     }
 }

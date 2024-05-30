@@ -11,7 +11,7 @@
     endTime: "",
     destination: "",
     content: "",
-    requesterId: 2      // 작성자 id
+    requesterId: 6      // 작성자 id
   })
 
   const registApproval = async() => {
