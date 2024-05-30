@@ -9,4 +9,6 @@ public interface AdTimeService {
     List<AdTimeDTO> findAdTimeByEmployeeId(int employeeId);
 
     List<AdTimeDTO> findAdTimeAll();
+
+    List<AdTimeDTO> findAdTimeByStartTime(String startTime);
 }

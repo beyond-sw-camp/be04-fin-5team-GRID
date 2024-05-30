@@ -29,4 +29,12 @@ class AdTimeServiceImplTest {
                 () -> adTimeService.findAdTimeAll()
         );
     }
+
+    @DisplayName("날짜 조회")
+    @Test
+    void findAdTimeByStartTime() {
+        Assertions.assertDoesNotThrow(
+                () -> adTimeService.findAdTimeByStartTime("2024-05-29")
+        );
+    }
 }
