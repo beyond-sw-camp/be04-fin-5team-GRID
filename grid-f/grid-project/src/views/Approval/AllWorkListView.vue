@@ -123,7 +123,7 @@
       <ApprovalList :approvalList="state.oApprovalList" :short="1"/>
     </b-card>
     <!-- 관리자 -->
-    <div v-if="userRole.value === 'ROLE_ADMIN'">
+    <div v-if="userRole === 'ROLE_ADMIN'">
       <b-button @click="navigateTo('/rw')">상세</b-button>
       <b-card title="단축 근무">
         <br>

@@ -1,109 +1,128 @@
 <script setup>
-  import {onMounted, reactive, ref, watch} from "vue";
-  import {useRoute} from "vue-router";
-  import axios from "axios";
+import {onMounted, reactive, ref, watch} from "vue";
+import {useRoute} from "vue-router";
+import axios from "axios";
 
-  const route = useRoute();
+const route = useRoute();
 
-  const userId = ref();
+const userId = ref();
+const allInfo = ref([]);
+const vacationNum = ref(0);
 
-  const state = reactive({
-    vacationType: [],
-  });
+const state = reactive({
+  vacationType: [],
+});
 
-  const postData = reactive({
-    s_date: "",
-    s_time: "00:00",
-    e_date: "",
-    e_time: "00:00",
-    infoId: 0,
-    content: "",
-    requesterId: 0
-  });
+const postData = reactive({
+  s_date: "",
+  s_time: "00:00",
+  e_date: "",
+  e_time: "00:00",
+  infoId: 0,
+  content: "",
+  requesterId: 0
+});
 
-  function parseJwt(token) {
-    try {
-      const base64Url = token.split('.')[1];
-      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-      const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
-        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-      }).join(''));
-      return JSON.parse(jsonPayload);
-    } catch (error) {
-      console.error('Invalid token', error);
-      return null;
-    }
+function parseJwt(token) {
+  try {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+    return JSON.parse(jsonPayload);
+  } catch (error) {
+    console.error('Invalid token', error);
+    return null;
   }
+}
 
-  const updateDateTime = () => {
-    postData.startTime = `${postData.s_date} ${postData.s_time}:00`;
-    postData.endTime = `${postData.e_date} ${postData.e_time}:00`;
+const getUserVacationInfo = async (id) => {
+  try {
+    const response = await axios.get(`/api/vacation/info/${userId.value}`);
+    const vacationInfo = allInfo.value.find(info => info.typeId === id);
+
+    allInfo.value = response.data.result;
+    vacationNum.value = vacationInfo ? vacationInfo.vacationNum : 0;
+  } catch (error) {
+    console.error("Error:", error);
   }
+};
 
-  const fetchVacationType = async() => {
-    try {
-      const response = await axios.get(`http://localhost:8080/vacation/type`);
+const updateDateTime = () => {
+  postData.startTime = `${postData.s_date} ${postData.s_time}:00`;
+  postData.endTime = `${postData.e_date} ${postData.e_time}:00`;
+}
 
-      if (response.status !== 200) {
-        throw new Error("response is not ok");
-      }
+const fetchVacationType = async() => {
+  try {
+    const response = await axios.get(`http://localhost:8080/vacation/type`);
 
-      let typeList = response.data.result;
-
-      for (const type of typeList) {
-        state.vacationType.push({value: parseInt(type.id), text: type.typeName});
-      }
-
-    } catch (error) {
-      console.error('Fetch error: ' + error.message);
+    if (response.status !== 200) {
+      throw new Error("response is not ok");
     }
-  };
 
-  const registApproval = async () => {
+    let typeList = response.data.result;
 
-    alert('결재를 제출하시겠습니까?');
-    postData.requesterId = userId.value;
+    for (const type of typeList) {
+      state.vacationType.push({value: parseInt(type.id), text: type.typeName});
+    }
 
-    console.log(postData);
+  } catch (error) {
+    console.error('Fetch error: ' + error.message);
+  }
+};
 
-    try {
+const registApproval = async () => {
 
-      const response = await axios.post(`http://localhost:8080/approval/vacation`, postData, {
-        headers: {
-          'Content-Type': "application/json"
+  postData.requesterId = userId.value;
+
+  await getUserVacationInfo(postData.infoId);
+
+  try {
+    const confirmed = window.confirm('휴가를 사용하시겠습니까?');
+    if(confirmed) {
+      if(vacationNum.value > 0) {
+        const response = await axios.post(`http://localhost:8080/approval/vacation`, postData, {
+          headers: {
+            'Content-Type': "application/json"
+          }
+        })
+        if (response.status !== 201) {
+          throw new Error("response is not ok");
+
         }
-      })
-      if (response.status !== 201) {
-        throw new Error("response is not ok");
-
+      } else {
+        alert('휴가가 부족합니다.');
+        return;
       }
-
-    } catch (error) {
-      console.error('Fail to post: ', error.message);
     }
+  } catch (error) {
+    console.error('Fail to post: ', error.message);
+  }
+}
+
+watch(
+    () => [postData.s_date, postData.s_time],
+    updateDateTime
+);
+
+watch(
+    () => [postData.e_date, postData.e_time],
+    updateDateTime
+);
+
+onMounted(async() => {
+  const token = localStorage.getItem('access');
+
+  if (token) {
+    const decodedToken = parseJwt(token);
+
+    userId.value = decodedToken.id || '';
   }
 
-  watch(
-      () => [postData.s_date, postData.s_time],
-      updateDateTime
-  );
-
-  watch(
-      () => [postData.e_date, postData.e_time],
-      updateDateTime
-  );
-
-  onMounted(async() => {
-    const token = localStorage.getItem('access');
-
-    if (token) {
-      const decodedToken = parseJwt(token);
-
-      userId.value = decodedToken.id || '';
-    }
-
-    fetchVacationType();
-  })
+  fetchVacationType();
+})
 </script>
 
 <template>

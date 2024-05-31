@@ -24,6 +24,7 @@
       }
 
       state.approval = response.data.approvalEmpResult;
+      console.log(response)
       state.user = state.approval.user;
 
     } catch (error) {
