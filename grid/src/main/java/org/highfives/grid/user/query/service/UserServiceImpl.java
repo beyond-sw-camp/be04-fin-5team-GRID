@@ -171,7 +171,6 @@ public class UserServiceImpl implements UserService{
 
         List<UserDTO> userDTOList = userMapper.findTeamList(teamId);
 
-
         return userDTOList;
     }
 }

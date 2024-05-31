@@ -9,7 +9,7 @@
                 <img :src="profileUrl" alt="프로필 이미지">
             </div>
             <div class="name">
-                <div id="name">
+                <div id="name" >
                     {{ result.name }}
                 </div>
                 <div id="other-info">
@@ -26,9 +26,9 @@
                     </div>
                 </div>
             </div>
-            <div class="button" v-if="userRole === 'ROLE_ADMIN'">
+            <div class="button" v-if="userRole === 'ROLE_ADMIN' || userId == result.id">
                 <div>
-                    <button class="modifyBtn" @click="toModify(result.employeeNumber, result)">회원 정보 수정</button>
+                    <button class="modifyBtn" @click="toModify(result.employeeNumber, result)" :userRole="userRole">회원 정보 수정</button>
                 </div>
             </div>
         </div>
@@ -48,14 +48,14 @@
             </div>
         </div>
         <div class="content">
-            <component :is="currentTabComponent" :result="result" :userRole="userRole"></component>
+            <component :is="currentTabComponent" :result="result" :userRole="userRole" :userId="userId"></component>
         </div>
     </div>
 </template>
 
 <script setup>
 import HumanResourcesInfo from '@/components/HumanResources/HumanResourcesInfo.vue';
-import WB from '@/components/HumanResources/WorkVacation.vue';
+import WB from '@/components/AdTime/WorkCalendar.vue';
 import defaultProfileImage from '@/assets/defaultProfile.jpg';
 
 import { ref, computed, onMounted } from 'vue';
@@ -67,6 +67,7 @@ const route = useRoute();
 const result = ref({});
 const isAbsence = ref(false);
 const userRole = ref('');
+const userId = ref('');
 const givenEmail = ref('');
 const router = useRouter();
 
@@ -102,8 +103,10 @@ function parseJwt(token) {
 
 function toModify(employeeNumber, user) {
     sessionStorage.setItem('user', JSON.stringify(user));
+    console.log('전해줄 토큰: ', userRole.value);
     router.push({
-        path: `/hr/modify/${employeeNumber}`
+        path: `/hr/modify/${employeeNumber}`,
+        query: { userRole: userRole.value }
     });
 }
 
@@ -112,7 +115,7 @@ onMounted(async () => {
     if (token) {
         const decodedToken = parseJwt(token);
         userRole.value = decodedToken?.auth || '';
-        console.log('토큰:', decodedToken.auth);
+        userId.value = decodedToken?.id || '';
     }
 
     const response = await axios.get(`http://localhost:8080/users/${route.params.employeeNumber}`);
@@ -120,8 +123,7 @@ onMounted(async () => {
     if (result.value.absenceYn === 'Y') {
         isAbsence.value = true;
     }
-    console.log(result.value.profilePath);
-    console.log('온마운트결과:', result.value);
+
     givenEmail.value = result.value.email;
 
     // URL의 쿼리 파라미터를 기반으로 currentTab을 설정합니다.
@@ -213,17 +215,21 @@ body {
     grid-template-columns: 23% 47% 30%;
     max-height: 100%;
     max-width: 100%;
+    height: 300px; /* 고정 높이 설정 */
 }
 
 .image {
+    border-radius: 18%; /* 이미지 컨테이너 둥근 모서리 */
     grid-column-start: 1;
-    padding: 0.5em;
+    padding: 0;
     height: 100%;
     width: 100%;
+    overflow: hidden; /* 이미지가 컨테이너를 넘지 않도록 설정 */
 }
 
 .image img {
-    width: 100%;
+    border-radius: 18%; /* 이미지 둥근 모서리 */
+    width: 90%;
     height: 100%;
 }
 
@@ -244,7 +250,6 @@ body {
 #other-info {
     display: flex;
     flex-direction: row;
-
 }
 
 #teamInfo {
@@ -314,6 +319,8 @@ body {
     grid-row-start: 4;
     grid-column-start: 2;
     margin-top: 15px;
+    overflow-y: auto; /* 스크롤 가능하게 설정 */
+    min-height: 750px; /* 고정 높이 설정 */
 }
 
 .modal-body {

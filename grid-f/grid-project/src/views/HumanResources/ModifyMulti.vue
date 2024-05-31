@@ -1,7 +1,7 @@
 <template>
     <div class="hr-main">
         <div class="hr-title">
-            <img class="hr-icon" src="@/assets/icon2.png" alt="인사 정보 메인 이미지">
+            <img class="hr-icon" src="@/assets/HR/hr.png" alt="인사 정보 메인 이미지">
             <h1>인사 정보 일괄 수정</h1>
         </div>
         <div class="search">

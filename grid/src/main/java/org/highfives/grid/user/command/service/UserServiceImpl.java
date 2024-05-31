@@ -137,36 +137,61 @@ public class UserServiceImpl implements UserService{
     // 중복 값 입력 예외 처리 메소드
     @Override
     public String duplicateInfoCheck(UserDTO givenInfo) {
-
         try {
-
-            Employee employee = userRepository.findByEmail(givenInfo.getEmail());
-            if (employee != null) {
-                if(employee.getEmail().equals(givenInfo.getEmail())) {
-                    return "Pass";
-                }
-                return "Already used Email : " + givenInfo.getEmail();
+            String emailCheckResult = checkDuplicateEmail(givenInfo.getEmail());
+            if (!emailCheckResult.equals("Pass")) {
+                return emailCheckResult;
             }
 
-            employee = userRepository.findByEmployeeNumber(givenInfo.getEmployeeNumber());
-            if (employee != null) {
-                if(employee.getEmployeeName().equals(givenInfo.getEmployeeNumber())) {
-                    return "Pass";
-                }
-                return "Already used Employee Number : " + givenInfo.getEmployeeNumber();
+            String employeeNumberCheckResult = checkDuplicateEmployeeNumber(givenInfo.getEmployeeNumber());
+            if (!employeeNumberCheckResult.equals("Pass")) {
+                return employeeNumberCheckResult;
             }
 
-            employee = userRepository.findByPhoneNumber(givenInfo.getPhoneNumber());
-            if ( employee != null) {
-                if(employee.getPhoneNumber().equals(givenInfo.getPhoneNumber())) {
-                    return "Pass";
-                }
-                return "Already used Phone Number : " + givenInfo.getPhoneNumber();
+            String phoneNumberCheckResult = checkDuplicatePhoneNumber(givenInfo.getPhoneNumber());
+            if (!phoneNumberCheckResult.equals("Pass")) {
+                return phoneNumberCheckResult;
             }
         } catch (Exception e) {
-            return "NP";
+            return "Unexpected error occurred: " + e.getMessage();
         }
 
+        return "Pass";
+    }
+
+    private String checkDuplicateEmail(String email) {
+        try {
+            Employee employee = userRepository.findByEmail(email);
+            if (employee != null && !employee.getEmail().equals(email)) {
+                return "Already used Email: " + email;
+            }
+        } catch (Exception e) {
+            return "Error while checking Email: " + e.getMessage();
+        }
+        return "Pass";
+    }
+
+    private String checkDuplicateEmployeeNumber(String employeeNumber) {
+        try {
+            Employee employee = userRepository.findByEmployeeNumber(employeeNumber);
+            if (employee != null && !employee.getEmployeeNumber().equals(employeeNumber)) {
+                return "Already used Employee Number: " + employeeNumber;
+            }
+        } catch (Exception e) {
+            return "Error while checking Employee Number: " + e.getMessage();
+        }
+        return "Pass";
+    }
+
+    private String checkDuplicatePhoneNumber(String phoneNumber) {
+        try {
+            Employee employee = userRepository.findByPhoneNumber(phoneNumber);
+            if (employee != null && !employee.getPhoneNumber().equals(phoneNumber)) {
+                return "Already used Phone Number: " + phoneNumber;
+            }
+        } catch (Exception e) {
+            return "Error while checking Phone Number: " + e.getMessage();
+        }
         return "Pass";
     }
 

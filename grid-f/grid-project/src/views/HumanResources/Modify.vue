@@ -39,7 +39,7 @@
             </div>
         </div>
         <div class="content">
-            <ModifyInfo :user="user" @update-user="updateUser" />
+            <ModifyInfo :user="user" :userRole="userRole" @update-user="updateUser" />
         </div>
     </div>
     <div class="modal fade" id="myModal">
@@ -60,18 +60,20 @@
 <script setup>
 import ModifyInfo from '@/components/HumanResources/ModifyInfo.vue';
 import ResetPwd from '@/components/Login/ResetPassword.vue';
-import { ref, onMounted, computed } from 'vue';
-import { useRouter } from 'vue-router';
+import { ref, onMounted, computed} from 'vue';
+import { useRouter, useRoute } from 'vue-router';
 import axios from 'axios';
 import defaultProfileImage from '@/assets/defaultProfile.jpg';
 import defaultSealImage from '@/assets/defaultSeal.png';
 
 const router = useRouter();
+const route = useRoute();
 const user = ref();
 const updatedUser = ref(null);
 const givenEmail = ref('');
 const profilePath = ref('');
 const sealPath = ref('');
+const userRole = ref('');
 
 const profileUrl = computed(() => {
     return profilePath.value ? `${profilePath.value}?t=${new Date().getTime()}` : defaultProfileImage;
@@ -172,27 +174,37 @@ const submitModifications = async () => {
         if (updatedUser.value.callNumber == '-') {
             updatedUser.value.callNumber = null;
         }
-        console.log('변경될 정보 확인: ', updatedUser.value);
-        const cleanedData = cleanUserData(updatedUser.value);
-        console.log('변경될 정보 확인22: ', cleanedData);
+        const cleanedData = cleanUserData(updatedUser.value);  // 변경된 데이터가 제대로 반영되었는지 확인
+        console.log('변경될 정보 확인 cleanedData: ', cleanedData);
         const response = await axios.put(`http://localhost:8080/users/${user.value.id}`, cleanedData);
         alert("수정이 완료되었습니다.");
-        router.push(`/hr/profile/${user.value.employeeNumber}`);
+        router.push(`/hr/profile/${cleanedData.employeeNumber}`);
     } catch (error) {
-        console.error("수정 중 오류 발생: ", error);
-        alert("수정 중 오류가 발생했습니다.");
+        if (error.response && error.response.data && error.response.data.message) {
+            console.error("수정 중 오류 발생: ", error.response.data.message);
+            let errorMessage = error.response.data.message;
+            if (errorMessage.length > 100) {  // 원하는 길이로 제한
+                errorMessage = errorMessage.substring(0, 100) + "...";
+            }
+            alert("수정 중 오류가 발생했습니다: " + errorMessage);
+        } else {
+            console.error("수정 중 오류 발생: ", error.message);
+            alert("수정 중 오류가 발생했습니다: " + error.message);
+        }
     }
 };
 
+
 const updateUser = (newData) => {
     updatedUser.value = {
-        ...user.value,
+        ...updatedUser.value,
         ...newData,
         departmentId: newData.departmentId !== undefined ? newData.departmentId : user.value.department?.id,
         teamId: newData.teamId !== undefined ? newData.teamId : user.value.team?.id,
         positionId: newData.positionId !== undefined ? newData.positionId : user.value.position?.id,
         dutiesId: newData.dutiesId !== undefined ? newData.dutiesId : user.value.duties?.id,
     };
+    console.log("Updated user: ", updatedUser.value);
 };
 
 onMounted(() => {
@@ -212,6 +224,9 @@ onMounted(() => {
     } else {
         console.error("SessionStorage에 유저 정보가 없습니다.");
     }
+
+    userRole.value = route.query.userRole;
+    console.log('권한확인: ', userRole.value);
 });
 
 </script>
@@ -268,18 +283,19 @@ body {
     max-width: 100%;
 }
 
+
 .image {
+    border-radius: 18%; 
     grid-column-start: 1;
-    padding: 0.5em;
+    padding: 0;
     height: 100%;
     width: 100%;
-    min-width: 162.192px;
-    min-height: 209.19px;
     overflow: hidden;
 }
 
 .image img {
-    width: 100%;
+    border-radius: 18%; 
+    width: 90%;
     height: 100%;
 }
 
