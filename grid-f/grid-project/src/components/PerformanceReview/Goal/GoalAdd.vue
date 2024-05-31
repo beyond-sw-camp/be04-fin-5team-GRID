@@ -35,84 +35,80 @@
       </table>
     </div>
     <div class="GoalButtonContainer">
-      <div>
-        <button @click="memberSave()">팀원 저장</button>
-        <button @click="submit()">상신</button>
+      <div class="buttonWrapper">
+        <button class="goalBtn" @click="memberSave()">저장</button>
+        <button class="goalBtn" @click="submit()">상신</button>
       </div>
     </div>
-    <div class="tableContainer">
-      <div>
-        <table>
-          <thead>
-          <tr>
-            <th>No</th>
-            <th>*업무명</th>
-            <th>*목표</th>
-            <th>측정지표</th>
-            <th>가중치</th>
-            <th>계획</th>
-            <th>반려의견</th>
-            <th v-if="!isReadOnly">삭제</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr v-for="(item, index) in goalItemList" :key="item.id">
-            <td>{{ index + 1 }}</td>
-            <td>
-              <input
-                  v-if="!isReadOnly"
-                  v-model="item.jobName"
-                  type="text"
-              />
-              <span v-else>{{ item.jobName }}</span>
-            </td>
-            <td>
-              <input
-                  v-if="!isReadOnly"
-                  v-model="item.goal"
-                  type="text"
-              />
-              <span v-else>{{ item.goal }}</span>
-            </td>
-            <td>
-              <input
-                  v-if="!isReadOnly"
-                  v-model="item.metric"
-                  type="text"
-              />
-              <span v-else>{{ item.metric }}</span>
-            </td>
-            <td>
-              <input
-                  v-if="!isReadOnly"
-                  v-model="item.weight"
-                  type="number"
-                  min="0"
-                  max="100"
-                  @input="validateWeightInput(item)"
-              />
-              <span v-else>{{ item.weight }}</span>
-            </td>
-            <td>
-              <input
-                  v-if="!isReadOnly"
-                  v-model="item.plan"
-                  type="text"
-              />
-              <span v-else>{{ item.plan }}</span>
-            </td>
-            <td>{{ item.objection }}</td>
-            <td v-if="!isReadOnly">
-              <button @click="deleteItem(index)">삭제</button>
-            </td>
-          </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-    <div class="addButton">
-      <div>
-        <button class="btn btn-dark" @click="addRow()" v-if="!isReadOnly">목표 추가</button>
+    <div class="GoalAddTableContainer">
+      <table class="table table-bordered goalItemTable">
+        <thead>
+        <tr>
+          <th>No</th>
+          <th>*업무명</th>
+          <th>*목표</th>
+          <th>측정지표</th>
+          <th>가중치</th>
+          <th>계획</th>
+          <th>반려의견</th>
+          <th v-if="!isReadOnly">삭제</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="(item, index) in goalItemList" :key="item.id">
+          <td>{{ index + 1 }}</td>
+          <td>
+            <textarea
+                v-if="!isReadOnly"
+                v-model="item.jobName"
+            ></textarea>
+            <span v-else>{{ item.jobName }}</span>
+          </td>
+          <td>
+            <textarea
+                v-if="!isReadOnly"
+                v-model="item.goal"
+            ></textarea>
+            <span v-else>{{ item.goal }}</span>
+          </td>
+          <td>
+            <textarea
+                v-if="!isReadOnly"
+                v-model="item.metric"
+            ></textarea>
+            <span v-else>{{ item.metric }}</span>
+          </td>
+          <td>
+            <input
+                v-if="!isReadOnly"
+                v-model="item.weight"
+                type="number"
+                min="0"
+                max="100"
+                @input="validateWeightInput(item)"
+            />
+            <span v-else>{{ item.weight }}</span>
+          </td>
+          <td>
+            <textarea
+                v-if="!isReadOnly"
+                v-model="item.plan"
+            ></textarea>
+            <span v-else>{{ item.plan }}</span>
+          </td>
+          <td>
+            {{ item.objection }}
+          </td>
+          <td v-if="!isReadOnly">
+            <button @click="deleteItem(index)">삭제</button>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+      <div class="addButton">
+        <div>
+          <button class="goalBtn" @click="addRow()" v-if="!isReadOnly">+</button>
+        </div>
       </div>
     </div>
   </div>
@@ -143,6 +139,18 @@ const goalDetail = ref({
 });
 
 const isReadOnly = ref(true);
+
+
+const fields = [
+  {key: 'index', label: 'No', tdClass: 'goalNo'},
+  {key: 'jobName', label: '*업무명', tdClass: 'goalJobName'},
+  {key: 'goal', label: '*목표', tdClass: 'goalGoal'},
+  {key: 'metric', label: '측정지표', tdClass: 'goalMetric'},
+  {key: 'weight', label: '가중치', tdClass: 'goalWeight'},
+  {key: 'plan', label: '계획', tdClass: 'goalPlan'},
+  {key: 'objection', label: '반려의견', tdClass: 'goalObjection'},
+  {key: 'delete', label: '삭제', tdClass: 'goalDelete'} // 삭제 버튼 열
+];
 
 // 현재 시간
 function getCurrentDateTimeString() {
@@ -317,7 +325,7 @@ async function deleteItem(index) {
 
 // 가중치 숫자 입력
 async function validateWeightInput(item) {
-  if(item.weight < 0 || item.weight > 100) {
+  if (item.weight < 0 || item.weight > 100) {
     alert("0부터 100사이의 숫자를 입력해주세요")
     item.weight = 0;
   }
@@ -397,7 +405,7 @@ async function submit() {
 <style scoped>
 .goalDetailContainer {
   display: grid;
-  grid-template-rows: 18% 21% 8% minmax(10%, auto) 8% 13%;
+  grid-template-rows: 18% 21% 8% minmax(50%, auto) 5% 13%;
   grid-template-columns: 10% 80% 10%;
   height: 100%;
 }
@@ -416,6 +424,8 @@ async function submit() {
 
 .goalTitle h1 {
   margin-left: 0.5%;
+  font-weight: 600;
+  font-size: 25px;
 }
 
 .goalIcon {
@@ -426,7 +436,6 @@ async function submit() {
   grid-row-start: 2;
   grid-column-start: 2;
   grid-column-end: 3;
-  margin-top: 20px;
   font-size: 12px;
 }
 
@@ -452,8 +461,14 @@ async function submit() {
   margin-top: 20px;
 }
 
+.buttonWrapper {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px; /* 버튼 사이의 간격 설정 */
+  width: 30%; /* wrapper의 너비를 절반으로 설정 */
+}
 
-.tableContainer {
+.GoalAddTableContainer {
   grid-row-start: 4;
   grid-column-start: 2;
   grid-column-end: 3;
@@ -461,36 +476,34 @@ async function submit() {
   font-size: 12px;
 
   overflow-x: auto;
-  /* 가로 스크롤을 필요로 하는 경우 */
-  overflow-y: auto;
-  /* 세로 스크롤을 필요로 하는 경우 */
-  max-height: 200px;
-  /* 원하는 높이로 설정 */
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
+  display: table; /* 추가: 테이블이 화면에 맞게 동적으로 늘어남 */
+  //table-layout: fixed; /* 추가: 테이블 너비를 고정함 */
 }
+
+/*.goalItemTable {
+  overflow-x: auto;
+  !* 가로 스크롤을 필요로 하는 경우 *!
+  overflow-y: auto;
+}*/
+
 
 th,
 td {
   border: 1px solid #dddddd;
-  text-align: left;
+  text-align: center;
   padding: 6px;
   vertical-align: middle;
 }
 
 th {
-  background-color: #f2f2f2;
+  position: sticky;
+  top: 0;
 }
-
-/* .table th:nth-child(1),
-.table td:nth-child(1) {
-    min-width: 15px;
-    width: 5%;
-} */
-
 
 .addButton {
   grid-row-start: 5;
@@ -500,4 +513,71 @@ th {
   justify-content: center;
   align-items: center;
 }
+
+.goalBtn {
+  grid-column-start: 6;
+  margin-left: 2%;
+  width: 100%;
+  background-color: #088A85;
+  color: white;
+  padding: 5px 5px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  font-style: bold;
+}
+
+
+.GoalAddTableContainer input[type="text"],
+.GoalAddTableContainer input[type="number"],
+.GoalAddTableContainer select,
+.GoalAddTableContainer textarea,
+.GoalAddTableContainer span {
+  width: 100%;
+  height: 100%;
+}
+
+.goalItemTable th:nth-child(1),
+.goalItemTable td:nth-child(1) {
+  min-width: 30px; /* No */
+}
+
+.goalItemTable th:nth-child(2),
+.goalItemTable td:nth-child(2) {
+  min-width: 300px; /*업무명 */
+}
+
+.goalItemTable th:nth-child(3),
+.goalItemTable td:nth-child(3) {
+  min-width: 500px; /* 목표 */
+}
+
+.goalItemTable th:nth-child(4),
+.goalItemTable td:nth-child(4) {
+  min-width: 500px; /* 측정지표 */
+}
+
+
+.goalItemTable th:nth-child(5),
+.goalItemTable td:nth-child(5) {
+  min-width: 70px; /* 가중치 */
+}
+
+.goalItemTable th:nth-child(6),
+.goalItemTable td:nth-child(6) {
+  min-width: 500px; /* 계획 */
+}
+
+.goalItemTable th:nth-child(7),
+.goalItemTable td:nth-child(7) {
+  min-width: 300px; /* 반려의견 */
+}
+
+.goalItemTable th:nth-child(8),
+.goalItemTable td:nth-child(8) {
+  min-width: 100px; /* 삭제 */
+}
+
+
 </style>
