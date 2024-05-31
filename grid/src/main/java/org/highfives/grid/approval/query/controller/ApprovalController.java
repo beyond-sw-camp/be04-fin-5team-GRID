@@ -107,4 +107,34 @@ public class ApprovalController {
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
+    @GetMapping("/today/bt")
+    public ResponseEntity<ResApprovalVO> findTodayBT() {
+
+        List<ApprovalEmpDTO> result = approvalService.findTodayBT();
+
+        ResApprovalVO response = ResApprovalVO.builder()
+                .statusCode(200)
+                .message("금일 출장 조회 성공")
+                .href("")
+                .approvalEmpResultList(result)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping("/today/v")
+    public ResponseEntity<ResApprovalVO> findTodayV() {
+
+        List<ApprovalEmpDTO> result = approvalService.findTodayBT();
+
+        ResApprovalVO response = ResApprovalVO.builder()
+                .statusCode(200)
+                .message("금일 휴가 조회 성공")
+                .href("")
+                .approvalEmpResultList(result)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
 }
