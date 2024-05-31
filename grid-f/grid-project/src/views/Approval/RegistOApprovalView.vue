@@ -1,60 +1,80 @@
 <script setup>
-import {reactive, watch} from "vue";
-import {useRoute} from "vue-router";
-import axios from "axios";
+import {onMounted, reactive, ref, watch} from "vue";
+  import {useRoute} from "vue-router";
+  import axios from "axios";
 
-const route = useRoute();
-const typeId = 2;
+  const route = useRoute();
 
-const postData = reactive({
-  s_date: "",
-  s_time: "",
-  e_date: "",
-  e_time: "",
-  content: "",
-  requesterId: 2 // 작성자 id
-});
+  const userId = ref();
 
-const updateDateTime = () => {
-  postData.startTime = `${postData.s_date} ${postData.s_time}:00`;
-  postData.endTime = `${postData.e_date} ${postData.e_time}:00`;
+  const postData = reactive({
+    s_date: "",
+    s_time: "",
+    e_date: "",
+    e_time: "",
+    content: "",
+    requesterId: 0
+  });
 
-  console.log(postData);
-
-};
-
-const registApproval = async() => {
-
-  alert('결재를 제출하시겠습니까?');
-
-  try {
-    const response = await axios.post(`http://localhost:8080/approval/overtime`, postData, {
-      headers: {
-        'Content-Type': "application/json"
-      }
-    })
-
-    console.log(postData);
-    console.log(response);
-
-    if (response.status !== 201) {
-      throw new Error("response is not ok");
+  function parseJwt(token) {
+    try {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      }).join(''));
+      return JSON.parse(jsonPayload);
+    } catch (error) {
+      console.error('Invalid token', error);
+      return null;
     }
-
-  } catch (error) {
-    console.error('Fail to post: ', error.message);
   }
-}
 
-watch(
-    () => [postData.s_date, postData.s_time],
-    updateDateTime
-);
+  const updateDateTime = () => {
+    postData.startTime = `${postData.s_date} ${postData.s_time}:00`;
+    postData.endTime = `${postData.e_date} ${postData.e_time}:00`;
+  }
 
-watch(
-    () => [postData.e_date, postData.e_time],
-    updateDateTime
-);
+  const registApproval = async() => {
+
+    alert('결재를 제출하시겠습니까?');
+    postData.requesterId = userId.value;
+
+    try {
+      const response = await axios.post(`http://localhost:8080/approval/overtime`, postData, {
+        headers: {
+          'Content-Type': "application/json"
+        }
+      })
+
+      if (response.status !== 201) {
+        throw new Error("response is not ok");
+      }
+
+    } catch (error) {
+      console.error('Fail to post: ', error.message);
+    }
+  }
+
+  watch(
+      () => [postData.s_date, postData.s_time],
+      updateDateTime
+  );
+
+  watch(
+      () => [postData.e_date, postData.e_time],
+      updateDateTime
+  );
+
+  onMounted(async () => {
+    const token = localStorage.getItem('access');
+
+    if (token) {
+      const decodedToken = parseJwt(token);
+
+      userId.value = decodedToken.id || '';
+    }
+  })
 </script>
 
 <template>

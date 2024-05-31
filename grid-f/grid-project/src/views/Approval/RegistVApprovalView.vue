@@ -1,10 +1,11 @@
 <script setup>
-  import {onMounted, reactive, watch} from "vue";
+  import {onMounted, reactive, ref, watch} from "vue";
   import {useRoute} from "vue-router";
   import axios from "axios";
 
   const route = useRoute();
-  const typeId = 2;
+
+  const userId = ref();
 
   const state = reactive({
     vacationType: [],
@@ -17,13 +18,27 @@
     e_time: "00:00",
     infoId: 0,
     content: "",
-    requesterId: 2    // 작성자 id
+    requesterId: 0
   });
+
+  function parseJwt(token) {
+    try {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      }).join(''));
+      return JSON.parse(jsonPayload);
+    } catch (error) {
+      console.error('Invalid token', error);
+      return null;
+    }
+  }
 
   const updateDateTime = () => {
     postData.startTime = `${postData.s_date} ${postData.s_time}:00`;
     postData.endTime = `${postData.e_date} ${postData.e_time}:00`;
-  };
+  }
 
   const fetchVacationType = async() => {
     try {
@@ -47,8 +62,10 @@
   const registApproval = async () => {
 
     alert('결재를 제출하시겠습니까?');
+    postData.requesterId = userId.value;
 
     console.log(postData);
+
     try {
 
       const response = await axios.post(`http://localhost:8080/approval/vacation`, postData, {
@@ -77,6 +94,14 @@
   );
 
   onMounted(async() => {
+    const token = localStorage.getItem('access');
+
+    if (token) {
+      const decodedToken = parseJwt(token);
+
+      userId.value = decodedToken.id || '';
+    }
+
     fetchVacationType();
   })
 </script>

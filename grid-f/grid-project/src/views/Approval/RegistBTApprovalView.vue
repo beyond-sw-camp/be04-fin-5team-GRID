@@ -1,22 +1,38 @@
 <script setup>
-  import {reactive} from "vue";
+  import {onMounted, reactive, ref} from "vue";
   import {useRoute} from "vue-router";
   import axios from "axios";
 
   const route = useRoute();
-  const typeId = 1;
+
+  const userId = ref();
 
   const postData = reactive({
     startTime: "",
     endTime: "",
     destination: "",
     content: "",
-    requesterId: 6      // 작성자 id
+    requesterId: 0
   })
+
+  function parseJwt(token) {
+    try {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      }).join(''));
+      return JSON.parse(jsonPayload);
+    } catch (error) {
+      console.error('Invalid token', error);
+      return null;
+    }
+  }
 
   const registApproval = async() => {
 
     alert('결재를 제출하시겠습니까?');
+    postData.requesterId = userId.value;
 
     try {
       const response = await axios.post(`http://localhost:8080/approval/bt`, postData, {
@@ -33,6 +49,15 @@
       console.error('Fail to post: ', error.message);
     }
   }
+
+onMounted(async () => {
+  const token = localStorage.getItem('access');
+  if (token) {
+    const decodedToken = parseJwt(token);
+
+    userId.value = decodedToken.id || '';
+  }
+})
 </script>
 
 <template>
