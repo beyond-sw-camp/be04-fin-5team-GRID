@@ -33,14 +33,19 @@
             </div>
         </div>
         <div class="second">
-            <ul class="nav nav-tabs">
-                <li class="nav-item" @click="currentTab = 'human-resources'">
-                    <a class="nav-link" :class="{ active: currentTab === 'human-resources' }" href="#">정보</a>
-                </li>
-                <li class="nav-item" @click="currentTab = 'wb'">
-                    <a class="nav-link" :class="{ active: currentTab === 'wb' }" href="#">근무/휴가</a>
-                </li>
-            </ul>
+            <div style="width: 50%;">
+                <b-nav pills>
+                    <b-nav-item
+                        :class="[currentTab === 'human-resources' ? 'active-tab' : 'inactive-tab', 'tab-button']"
+                        @click="navigateToTab('human-resources')">
+                        <div style="color: white;">정보</div>
+                    </b-nav-item>
+                    <b-nav-item :class="[currentTab === 'wb' ? 'active-tab' : 'inactive-tab', 'tab-button']"
+                        @click="navigateToTab('wb')" style="margin-left: 2%;">
+                        <div style="color: white;"> 근무/휴가 </div>
+                    </b-nav-item>
+                </b-nav>
+            </div>
         </div>
         <div class="content">
             <component :is="currentTabComponent" :result="result" :userRole="userRole"></component>
@@ -57,7 +62,7 @@ import { ref, computed, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import axios from 'axios';
 
-const currentTab = ref('human-resources');
+const currentTab = ref('');
 const route = useRoute();
 const result = ref({});
 const isAbsence = ref(false);
@@ -75,6 +80,11 @@ const tabComponents = {
 };
 
 const currentTabComponent = computed(() => tabComponents[currentTab.value]);
+
+function navigateToTab(tab) {
+    currentTab.value = tab;
+    router.push({ query: { tab: tab } });
+}
 
 function parseJwt(token) {
     try {
@@ -112,9 +122,10 @@ onMounted(async () => {
     console.log(result.value.profilePath);
     console.log('온마운트결과:', result.value);
     givenEmail.value = result.value.email;
-}
 
-)
+    // URL의 쿼리 파라미터를 기반으로 currentTab을 설정합니다.
+    currentTab.value = route.query.tab || 'human-resources';
+});
 </script>
 
 <style scoped>
@@ -136,6 +147,40 @@ body {
     grid-template-columns: 10% 80% 10%;
     grid-template-rows: 18% 33% 15% auto;
     height: 100%;
+}
+
+.tab-button {
+    width: 110px; /* 고정된 너비 */
+    height: 30px;
+    text-align: center;
+    font-weight: bold;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.active-tab {
+    background-color: #088A85;
+    color: white !important;
+}
+
+.inactive-tab {
+    background-color: #c1dcdb; /* 비활성화된 탭의 배경색 */
+    color: black !important;
+}
+
+.b-nav-item:hover {
+    cursor: pointer;
+}
+
+.b-nav-item .nav-link {
+    font-weight: bold; /* 볼드체 적용 */
+    text-decoration: none; /* 기본 밑줄 제거 */
+    padding: 0;
 }
 
 .profile-title {
@@ -257,6 +302,7 @@ body {
 .second {
     grid-row-start: 3;
     grid-column-start: 2;
+    grid-column-end: 3;
     height: 100%;
     width: 100%;
     display: flex;

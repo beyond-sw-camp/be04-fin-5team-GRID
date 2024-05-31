@@ -15,15 +15,15 @@
                 부서 / 팀
             </div>
             <div id="hr-info-name">
-                <img src="@/assets/HR/time.png" alt="시간 표시" class="info-img">
+                <img src="@/assets/HR/assignedTask.png" alt="담당 업무" class="info-img">
                 담당 업무
             </div>
             <div id="hr-info-name">
-                <img src="@/assets/HR/time.png" alt="시간 표시" class="info-img">
+                <img src="@/assets/HR/position.png" alt="직위" class="info-img">
                 직위
             </div>
             <div id="hr-info-name">
-                <img src="@/assets/HR/time.png" alt="시간 표시" class="info-img">
+                <img src="@/assets/HR/duties.png" alt="직책" class="info-img">
                 직책
             </div>
         </div>
@@ -48,27 +48,27 @@
         <hr id="hr-2">
         <div class="basic-info-name">
             <div id="basic-info-name">
-                <img src="@/assets/HR/info-team.png" alt="부서 아이콘" class="info-img">
+                <img src="@/assets/HR/name.png" alt="이름" class="info-img">
                 이름
             </div>
             <div id="basic-info-name">
-                <img src="@/assets/HR/info-team.png" alt="부서 아이콘" class="info-img">
+                <img src="@/assets/HR/employeeNumber.png" alt="사번" class="info-img">
                 사번
             </div>
             <div id="basic-info-name">
-                <img src="@/assets/HR/info-team.png" alt="부서 아이콘" class="info-img">
+                <img src="@/assets/HR/email.png" alt="이메일" class="info-img">
                 이메일
             </div>
             <div id="basic-info-name">
-                <img src="@/assets/HR/info-team.png" alt="부서 아이콘" class="info-img">
+                <img src="@/assets/HR/smartPhone.png" alt="휴대폰" class="info-img">
                 휴대전화번호
             </div>
             <div id="basic-info-name">
-                <img src="@/assets/HR/info-team.png" alt="부서 아이콘" class="info-img">
+                <img src="@/assets/HR/oldPhone.png" alt="전화" class="info-img">
                 전화번호
             </div>
             <div id="basic-info-name">
-                <img src="@/assets/HR/info-team.png" alt="부서 아이콘" class="info-img">
+                <img src="@/assets/HR/date.png" alt="입사일" class="info-img">
                 입사일
             </div>
         </div>
@@ -97,36 +97,37 @@
         </div>
         <hr id="hr-3" v-if="userRole === 'ROLE_ADMIN'">
         <div class="admin-info-name" v-if="userRole === 'ROLE_ADMIN'">
-            <div id="admin-info-name">
-                <img src="@/assets/HR/info-team.png" alt="부서 아이콘" class="info-img">
+            <div id="admin-info-name" style="min-height: 48px;">
+                <img src="@/assets/HR/address.png" alt="주소" class="info-img">
                 주소
             </div>
-            <div id="admin-info-name">
-                <img src="@/assets/HR/time.png" alt="시간 표시" class="info-img">
+            <div id="admin-info-name" style="margin-top: 15%;">
+                <img src="@/assets/HR/type.png" alt="입사" class="info-img">
                 입사 유형
             </div>
             <div id="admin-info-name">
-                <img src="@/assets/HR/time.png" alt="시간 표시" class="info-img">
+                <img src="@/assets/HR/type.png" alt="고용" class="info-img">
                 고용 유형
             </div>
             <div id="admin-info-name">
-                <img src="@/assets/HR/time.png" alt="시간 표시" class="info-img">
+                <img src="@/assets/HR/date.png" alt="계약 시작일" class="info-img">
                 계약 시작일
             </div>
             <div id="admin-info-name">
-                <img src="@/assets/HR/time.png" alt="시간 표시" class="info-img">
+                <img src="@/assets/HR/date.png" alt="계약 종료일" class="info-img">
                 계약 종료일
             </div>
             <div id="admin-info-name">
-                <img src="@/assets/HR/time.png" alt="시간 표시" class="info-img">
+                <img src="@/assets/HR/resign.png" alt="퇴사" class="info-img">
                 퇴사 여부
             </div>
         </div>
         <div class="admin-info-content" v-if="userRole === 'ROLE_ADMIN'">
-            <div id="admin-info-content">
-                {{ result.zipCode }} / {{ result.address }}
+            <div id="admin-info-content" style="min-height: 48px;">
+                {{ result.zipCode }} <br>
+                {{ result.address }}
             </div>
-            <div id="admin-info-content">
+            <div id="admin-info-content" style="margin-top: 7%;">
                 {{ joinType }}
             </div>
             <div id="admin-info-content">
@@ -203,7 +204,7 @@ hr {
 
 .hr-main {
     display: grid;
-    grid-template-columns: 25% 30% 45%;
+    grid-template-columns: 25% 51% auto;
     grid-template-rows: 4% 2% auto 4% 2% auto 4% 2% auto;
     width: 100%;
     height: 100%;
@@ -278,7 +279,7 @@ hr {
 #basic-info-content,
 #admin-info-content {
     margin-top: 1%;
-    margin-bottom: 8.5%;
+    margin-bottom: 4.7%;
 }
 
 .basic-info-title {

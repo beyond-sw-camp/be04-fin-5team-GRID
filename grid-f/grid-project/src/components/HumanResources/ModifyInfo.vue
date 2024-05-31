@@ -14,15 +14,15 @@
                 팀
             </div>
             <div id="hr-info-name">
-                <img src="@/assets/HR/time.png" alt="시간 표시" class="info-img">
+                <img src="@/assets/HR/assignedTask.png" alt="담당 업무" class="info-img">
                 담당 업무
             </div>
             <div id="hr-info-name">
-                <img src="@/assets/HR/time.png" alt="시간 표시" class="info-img">
+                <img src="@/assets/HR/position.png" alt="직위" class="info-img">
                 직위
             </div>
             <div id="hr-info-name">
-                <img src="@/assets/HR/time.png" alt="시간 표시" class="info-img">
+                <img src="@/assets/HR/duties.png" alt="직책" class="info-img">
                 직책
             </div>
         </div>
@@ -46,8 +46,7 @@
         <div class="modify-hr-info">
             <div id="modify-hr-info">
                 <select v-model="newDepartmentId" :class="{ modified: newDepartmentId !== user.department.id }">
-                    <option v-for="dept in departmentInfo" :key="dept.id" :value="dept.id">{{ dept.departmentName }}
-                    </option>
+                    <option v-for="dept in departmentInfo" :key="dept.id" :value="dept.id">{{ dept.departmentName }}</option>
                 </select>
             </div>
             <div id="modify-hr-info">
@@ -56,13 +55,11 @@
                 </select>
             </div>
             <div id="modify-hr-info">
-                <input type="text" v-model="newAssignedTask"
-                    :class="{ modified: newAssignedTask !== user.assignedTask }">
+                <input type="text" v-model="newAssignedTask" :class="{ modified: newAssignedTask !== user.assignedTask }">
             </div>
             <div id="modify-hr-info">
                 <select v-model="newPositionId" :class="{ modified: newPositionId !== user.position.id }">
-                    <option v-for="position in positionInfo" :key="position.id" :value="position.id">{{
-                        position.positionName }}</option>
+                    <option v-for="position in positionInfo" :key="position.id" :value="position.id">{{ position.positionName }}</option>
                 </select>
             </div>
             <div id="modify-hr-info">
@@ -77,27 +74,27 @@
         <hr id="hr-2">
         <div class="basic-info-name">
             <div id="basic-info-name">
-                <img src="@/assets/HR/info-team.png" alt="부서 아이콘" class="info-img">
+                <img src="@/assets/HR/name.png" alt="이름" class="info-img">
                 이름
             </div>
             <div id="basic-info-name">
-                <img src="@/assets/HR/info-team.png" alt="부서 아이콘" class="info-img">
+                <img src="@/assets/HR/employeeNumber.png" alt="사번" class="info-img">
                 사번
             </div>
             <div id="basic-info-name">
-                <img src="@/assets/HR/info-team.png" alt="부서 아이콘" class="info-img">
+                <img src="@/assets/HR/email.png" alt="이메일" class="info-img">
                 이메일
             </div>
             <div id="basic-info-name">
-                <img src="@/assets/HR/info-team.png" alt="부서 아이콘" class="info-img">
+                <img src="@/assets/HR/smartPhone.png" alt="휴대전화번호" class="info-img">
                 휴대전화번호
             </div>
             <div id="basic-info-name">
-                <img src="@/assets/HR/info-team.png" alt="부서 아이콘" class="info-img">
+                <img src="@/assets/HR/oldPhone.png" alt="전화번호" class="info-img">
                 전화번호
             </div>
             <div id="basic-info-name">
-                <img src="@/assets/HR/info-team.png" alt="부서 아이콘" class="info-img">
+                <img src="@/assets/HR/date.png" alt="입사일" class="info-img">
                 입사일
             </div>
         </div>
@@ -126,18 +123,15 @@
                 <input type="text" v-model="newName" :class="{ modified: newName !== user.name }">
             </div>
             <div id="modify-basic-info">
-                <input type="text" v-model="newEmployeeNumber" @blur="checkDuplicate('employeeNumber')"
-                    :class="{ modified: newEmployeeNumber !== user.employeeNumber }">
+                <input type="text" v-model="newEmployeeNumber" @blur="checkDuplicate('employeeNumber')" :class="{ modified: newEmployeeNumber !== user.employeeNumber }">
                 <span v-if="duplicateWarning.employeeNumber" class="warning">중복된 사번입니다.</span>
             </div>
             <div id="modify-basic-info">
-                <input type="text" v-model="newEmail" @blur="checkDuplicate('email')"
-                    :class="{ modified: newEmail !== user.email }">
+                <input type="text" v-model="newEmail" @blur="checkDuplicate('email')" :class="{ modified: newEmail !== user.email }">
                 <span v-if="duplicateWarning.email" class="warning">중복된 이메일입니다.</span>
             </div>
             <div id="modify-basic-info">
-                <input type="text" v-model="newPhoneNumber" @blur="checkDuplicate('phoneNumber')"
-                    :class="{ modified: newPhoneNumber !== user.phoneNumber }">
+                <input type="text" v-model="newPhoneNumber" @blur="checkDuplicate('phoneNumber')" :class="{ modified: newPhoneNumber !== user.phoneNumber }">
                 <span v-if="duplicateWarning.phoneNumber" class="warning">중복된 휴대전화번호입니다.</span>
             </div>
             <div id="modify-basic-info">
@@ -153,36 +147,36 @@
         <hr id="hr-3">
         <div class="admin-info-name">
             <div id="admin-info-name">
-                <img src="@/assets/HR/info-team.png" alt="부서 아이콘" class="info-img">
+                <img src="@/assets/HR/address.png" alt="주소" class="info-img">
                 주소
             </div>
-            <div id="admin-info-name" style="margin-top: 20%;">
-                <img src="@/assets/HR/time.png" alt="시간 표시" class="info-img">
+            <div id="admin-info-name" style="margin-top: 25%;">
+                <img src="@/assets/HR/type.png" alt="입사 유형" class="info-img">
                 입사 유형
             </div>
             <div id="admin-info-name">
-                <img src="@/assets/HR/time.png" alt="시간 표시" class="info-img">
+                <img src="@/assets/HR/type.png" alt="고용" class="info-img">
                 고용 유형
             </div>
             <div id="admin-info-name">
-                <img src="@/assets/HR/time.png" alt="시간 표시" class="info-img">
+                <img src="@/assets/HR/date.png" alt="계약 시작일" class="info-img">
                 계약 시작일
             </div>
             <div id="admin-info-name">
-                <img src="@/assets/HR/time.png" alt="시간 표시" class="info-img">
+                <img src="@/assets/HR/date.png" alt="계약 종료일" class="info-img">
                 계약 종료일
             </div>
             <div id="admin-info-name">
-                <img src="@/assets/HR/time.png" alt="시간 표시" class="info-img">
+                <img src="@/assets/HR/resign.png" alt="퇴사 여부" class="info-img">
                 퇴사 여부
             </div>
         </div>
         <div class="admin-info-content">
-            <div id="admin-info-content">
+            <div id="admin-info-content" style="max-width: 80%;">
                 {{ user.zipCode }} <br>
-                {{ user.address }}
+                {{ address }}
             </div>
-            <div id="admin-info-content" style="margin-top: 11%;">
+            <div id="admin-info-content" style="margin-top: 7%;">
                 {{ joinType }}
             </div>
             <div id="admin-info-content">
@@ -202,17 +196,14 @@
             <div id="modify-admin-info">
                 <div id="modify-admin-info-sub1">
                     <button @click="execDaumPostcode">검색</button><br>
-                    <input type="text" v-model="newZipCode" readonly :class="{ modified: newZipCode !== user.zipCode }"
-                    placeholder="우편 번호" id="sub-1-1">
-                    <input type="text" v-model="newAddress" readonly :class="{ modified: newAddress !== user.address }"
-                    placeholder="기본 주소" id="sub-1-2">
+                    <input type="text" v-model="newZipCode" readonly :class="{ modified: newZipCode !== user.zipCode }" placeholder="우편 번호" id="sub-1-1">
+                    <input type="text" v-model="newAddress" readonly :class="{ modified: newAddress !== user.address }" placeholder="기본 주소" id="sub-1-2">
                 </div>
                 <div id="modify-admin-info-sub2">
-                    <input type="text" v-model="newAddressDetail" placeholder="상세 주소"
-                        :class="{ modified: newAddressDetail !== '' }">
+                    <input type="text" v-model="newAddressDetail" placeholder="상세 주소" :class="{ modified: newAddressDetail !== '' }">
                 </div>
             </div>
-            <div id="modify-admin-info">
+            <div id="modify-admin-info" style="margin-top: 6%;">
                 <select v-model="newJoinType" :class="{ modified: newJoinType !== user.joinType }">
                     <option value="NEW">신입</option>
                     <option value="EXPERIENCED">경력</option>
@@ -237,6 +228,7 @@
     </div>
 </template>
 
+
 <script setup>
 import { defineProps, defineEmits, onMounted, ref, watch, computed } from 'vue';
 import axios from 'axios';
@@ -258,6 +250,8 @@ const joinType = ref('');
 const workType = ref('');
 const isResigned = ref(false);
 const resignTime = ref('');
+const address = ref('');
+
 const duplicateWarning = ref({
     employeeNumber: false,
     email: false,
@@ -304,7 +298,7 @@ const changeValues = (user) => {
     workType.value = user.workType === 'R' ? '정규직' : '계약직';
     isResigned.value = user.resignYn === 'Y';
     contractEndTime.value = user.contractEndTime != null ? user.contractEndTime : '-';
-
+    address.value = user.address != null ? user.address : '-';
     if (user.resignTime != null) {
         resignTime.value = user.resignTime;
     }
@@ -464,7 +458,7 @@ hr {
 
 .hr-main {
     display: grid;
-    grid-template-columns: 25% auto 45%;
+    grid-template-columns: 25% auto 35%;
     grid-template-rows: 4% 2% auto 4% 2% auto 4% 2% auto;
     width: 100%;
     height: 100%;
@@ -575,23 +569,23 @@ hr {
 #hr-info-content,
 #basic-info-content {
     margin-top: 1%;
-    margin-bottom: 8.5%;
+    margin-bottom: 6%;
 }
 
 #admin-info-content {
     margin-top: 1%;
-    margin-bottom: 7.5%;
+    margin-bottom: 6.2%;
 }
 
 #modify-hr-info,
 #modify-basic-info {
     margin-top: 1%;
-    margin-bottom: 4.5%;
+    margin-bottom: 6%;
 }
 
 #modify-admin-info {
     margin-top: 1%;
-    margin-bottom: 4%;
+    margin-bottom: 5%;
 }
 
 #modify-admin-info-sub1 {
@@ -616,11 +610,11 @@ hr {
     margin-left: 2%;
     margin-right: 2%;
     width: 23%;
-    min-width: 95px;
+    min-width: 80px;
 }
 
 #sub-1-2 {
-    min-width: 220px;
+    min-width: 150px;
     width: 100%;
 }
 
@@ -706,5 +700,10 @@ hr {
 
 .modified {
     border: 2px solid #088A85;
+}
+
+input, select {
+    border: solid 0.5px;
+    border-radius: 4px;
 }
 </style>

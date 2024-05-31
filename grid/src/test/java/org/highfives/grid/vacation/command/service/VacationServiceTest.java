@@ -121,8 +121,8 @@ class VacationServiceTest {
                 .departmentId(1)
                 .build();
         userRepository.save(employee);
-        int size = userService.findAllUsers().size();
-        int id = userService.findAllUsers().get(size - 1).getId();
+        int size = userService.findList().size();
+        int id = userService.findList().get(size - 1).getId();
 
         //when
         vacationService.giveAnnualVacationBeforeYear();
@@ -164,8 +164,8 @@ class VacationServiceTest {
                 .departmentId(1)
                 .build();
         userRepository.save(employee);
-        int size = userService.findAllUsers().size();
-        int id = userService.findAllUsers().get(size - 1).getId();
+        int size = userService.findList().size();
+        int id = userService.findList().get(size - 1).getId();
 
         //when
         vacationService.giveAnnualVacationAfterYear();
@@ -205,8 +205,8 @@ class VacationServiceTest {
                 .departmentId(1)
                 .build();
         userRepository.save(employee);
-        int size = userService.findAllUsers().size();
-        int id = userService.findAllUsers().get(size - 1).getId();
+        int size = userService.findList().size();
+        int id = userService.findList().get(size - 1).getId();
 
         //when
         vacationService.giveRegularVacation();
@@ -246,8 +246,8 @@ class VacationServiceTest {
                 .departmentId(1)
                 .build();
         userRepository.save(employee);
-        int size = userService.findAllUsers().size();
-        int id = userService.findAllUsers().get(size - 1).getId();
+        int size = userService.findList().size();
+        int id = userService.findList().get(size - 1).getId();
 
         //when
         vacationService.giveHealthVacation();

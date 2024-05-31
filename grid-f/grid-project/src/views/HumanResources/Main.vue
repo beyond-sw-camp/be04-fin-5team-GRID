@@ -13,19 +13,10 @@
                 <img src="@/assets/buttons/modify-btn.png" alt="modify button">
                 Modify
             </button>
-            <div class="dropdown-container">
-                <button type="button" class="addBtn" @click="toggleAddDropdown">
-                    <img src="@/assets/buttons/plus.png" :class="{ rotated: isAddDropdownOpen }" alt="add button">
-                    Add new
-                </button>
-                <ul class="dropdown-menu" ref="dropdownMenu" :class="{ show: isAddDropdownOpen }">
-                    <li style="margin-bottom: 5%;"><a class="dropdown-item" href="#" @click="toAdd"><img
-                                src="@/assets/buttons/add-one.png" alt="유저 추가 버튼">신규 직원 등록</a></li>
-                    <li><a class="dropdown-item" href="#" @click="toAddMulti"><img src="@/assets/buttons/add-multi.png"
-                                alt="다중 유저 추가 버튼">일괄
-                            등록</a></li>
-                </ul>
-            </div>
+            <button type="button" class="addBtn" @click="toAddMulti">
+                <img src="@/assets/buttons/plus.png" alt="add button">
+                Add new
+            </button>
             <input class="sortBox" v-model="searchCondition" type="text" placeholder="이름" @keyup.enter="findUser">
             <button class="searchBtn" @click="findUser">검색</button>
         </div>
@@ -59,24 +50,50 @@
                 </tbody>
             </table>
         </div>
+        <nav class="pg" aria-label="Page navigation example" v-if="totalPages > 1">
+            <ul class="pagination">
+                <li class="page-item" :class="{ disabled: currentPage === 0 }">
+                    <a class="page-link" href="#" aria-label="First" @click.prevent="goToPage(0)">
+                        <span aria-hidden="true">&laquo;&laquo;</span>
+                    </a>
+                </li>
+                <li class="page-item" :class="{ disabled: currentPage === 0 }">
+                    <a class="page-link" href="#" aria-label="Previous" @click.prevent="prevPage">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <li v-for="page in visiblePages" :key="page" class="page-item" :class="{ active: page === currentPage + 1 }">
+                    <a class="page-link" href="#" @click.prevent="goToPage(page - 1)">{{ page }}</a>
+                </li>
+                <li class="page-item" :class="{ disabled: currentPage + 1 === totalPages }">
+                    <a class="page-link" href="#" aria-label="Next" @click.prevent="nextPage">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+                <li class="page-item" :class="{ disabled: currentPage + 1 === totalPages }">
+                    <a class="page-link" href="#" aria-label="Last" @click.prevent="goToPage(totalPages - 1)">
+                        <span aria-hidden="true">&raquo;&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
     </div>
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted } from 'vue';
 import defaultProfileImage from '@/assets/defaultProfile.jpg';
 import axios from 'axios';
 import router from '@/router/router';
 import { saveAs } from 'file-saver';
 import { Parser } from '@json2csv/plainjs';
 
-const isAddDropdownOpen = ref(false);
 const employeeList = ref([]);
 const searchCondition = ref('');
-
-const toggleAddDropdown = () => {
-    isAddDropdownOpen.value = !isAddDropdownOpen.value;
-};
+const currentPage = ref(0);
+const totalPages = ref(0);
+const pageSize = ref(8); // 페이지당 항목 수
+const visiblePages = ref([]);
 
 const getProfileUrl = (profilePath) => {
     return profilePath ? profilePath : defaultProfileImage;
@@ -85,12 +102,31 @@ const getProfileUrl = (profilePath) => {
 const findUser = async () => {
     let response = null;
     const url = searchCondition.value.trim() === ''
-        ? 'http://localhost:8080/users/list'
-        : `http://localhost:8080/users/list/${encodeURIComponent(searchCondition.value)}`;
+        ? `http://localhost:8080/users/list?page=${currentPage.value}&size=${pageSize.value}`
+        : `http://localhost:8080/users/list/${encodeURIComponent(searchCondition.value)}?page=${currentPage.value}&size=${pageSize.value}`;
 
     response = await axios.get(url);
     employeeList.value = response.data.result;
+    totalPages.value = response.data.totalPages;
+    updateVisiblePages();
     console.log("사원리스트 조회 결과: ", employeeList.value);
+};
+
+const updateVisiblePages = () => {
+    const maxVisiblePages = 5;
+    const halfVisiblePages = Math.floor(maxVisiblePages / 2);
+
+    let startPage = Math.max(currentPage.value - halfVisiblePages, 0);
+    let endPage = Math.min(startPage + maxVisiblePages - 1, totalPages.value - 1);
+
+    if (endPage - startPage < maxVisiblePages - 1) {
+        startPage = Math.max(endPage - maxVisiblePages + 1, 0);
+    }
+
+    visiblePages.value = [];
+    for (let i = startPage; i <= endPage; i++) {
+        visiblePages.value.push(i + 1);
+    }
 };
 
 const downloadCSV = () => {
@@ -132,26 +168,34 @@ const toInfo = (employeeNumber) => {
     router.push(`/hr/profile/${employeeNumber}`)
 };
 
+const prevPage = () => {
+    if (currentPage.value > 0) {
+        currentPage.value--;
+        findUser();
+    }
+};
+
+const nextPage = () => {
+    if (currentPage.value + 1 < totalPages.value) {
+        currentPage.value++;
+        findUser();
+    }
+};
+
+const goToPage = (page) => {
+    if (page >= 0 && page < totalPages.value) {
+        currentPage.value = page;
+        findUser();
+    }
+};
+
 onMounted(async () => {
-    document.addEventListener('click', handleDocumentClick);
     try {
         await findUser();
     } catch {
         console.error('axios error: 데이터를 받아오지 못했습니다.');
     }
 });
-
-onUnmounted(() => {
-    document.removeEventListener('click', handleDocumentClick);
-});
-
-const handleDocumentClick = (event) => {
-    const target = event.target;
-    const dropdownButton = document.querySelector('.addBtn');
-    if (!dropdownButton.contains(target) && !dropdownMenu.value.contains(target)) {
-        isAddDropdownOpen.value = false;
-    }
-};
 </script>
 
 <style scoped>
@@ -162,7 +206,7 @@ button {
 .hr-main {
     display: grid;
     grid-template-columns: 10% 80% 10%;
-    grid-template-rows: 18% 4% 43% 5% 13%;
+    grid-template-rows: 18% 4% auto 5%;
     height: 100%;
 }
 
@@ -231,13 +275,6 @@ button {
     width: 100%;
 }
 
-.dropdown-container {
-    grid-column-start: 4;
-    margin-left: 5px;
-    position: relative;
-    display: inline-block;
-}
-
 .addBtn {
     grid-column-start: 5;
     margin: 3px;
@@ -283,47 +320,6 @@ button {
     transform: rotate(45deg);
 }
 
-.dropdown-menu {
-    display: none;
-    font-size: 12px;
-    position: absolute;
-    z-index: 999;
-    background-color: white;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    padding: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    margin-top: 5px;
-    left: 0;
-    /* 버튼 바로 아래에 위치시키기 */
-    top: 100%;
-    /* 버튼 바로 아래에 위치시키기 */
-}
-
-.dropdown-menu.show {
-    display: block;
-}
-
-.dropdown-menu img {
-    width: 16px;
-    height: 16px;
-    margin: 0 13% 2% 0;
-    align-self: center;
-}
-
-.dropdown-item {
-    padding: 0;
-    transition: background-color 0.3s ease;
-}
-
-.dropdown-item:hover {
-    background-color: #deefef;
-}
-
-.dropdown-menu li {
-    display: flex;
-}
-
 .sortBox {
     grid-column-start: 7;
     margin-left: 2%;
@@ -350,10 +346,22 @@ button {
 }
 
 .tableContainer {
+    grid-row-start: 3;
     grid-column-start: 2;
     grid-column-end: 3;
     margin-top: 20px;
     font-size: 10px;
+    overflow: auto; 
+}
+
+.tableContainer::-webkit-scrollbar {
+    width: 0px;  
+    height: 0px; 
+}
+
+.tableContainer {
+    scrollbar-width: none; 
+    -ms-overflow-style: none; 
 }
 
 table {
@@ -382,11 +390,47 @@ thead th {
 tbody tr:hover {
     background-color: #f9f9f9;
 }
+.pg {
+    grid-row-start: 4;
+    grid-column-start: 2;
+}
 
 .profile-image {
     width: 25px;
     height: 25px;
     border-radius: 50%;
     object-fit: cover;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.pagination a {
+    color: rgb(124, 122, 122); /* 기본 글자색을 검은색으로 설정 */
+}
+
+.pagination button {
+    background-color: white;
+    color: black;
+    padding: 0;
+    border: 1px solid #dddddd;
+    border-radius: 4px;
+    cursor: pointer;
+    margin: 0 5px;
+}
+
+.pagination button:disabled {
+    background-color: #dddddd;
+    cursor: not-allowed;
+}
+
+.page-item.active .page-link {
+    background-color: #088A85;
+    border-color: #088A85;
+    color: white; /* 선택된 버튼의 글자색을 흰색으로 설정 */
 }
 </style>

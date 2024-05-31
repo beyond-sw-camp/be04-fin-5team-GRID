@@ -77,7 +77,7 @@ public class VacationServiceImpl implements VacationService {
         String firstDayString = firstDayOfMonth.toString();
         LocalDate lastDayOfMonth = LocalDate.now().withDayOfMonth(LocalDate.now().lengthOfMonth());
         String lastDayString = lastDayOfMonth.toString();
-        List<UserDTO> employees = userService.findAllUsers();
+        List<UserDTO> employees = userService.findList();
 
         // 1년은 안되고, 1달은 지난 직원이 사용안한 월차가 있으면 삭제하고 그 기록을 vacation_history에 저장
         for (int i = 1; i < employees.size(); i++) {
@@ -106,7 +106,7 @@ public class VacationServiceImpl implements VacationService {
             }
         }
 
-        // 1년은 안되고, 1달은 지난 직원에게 월차를 제공하고 그 기록을 vacation_history에 저장
+//         1년은 안되고, 1달은 지난 직원에게 월차를 제공하고 그 기록을 vacation_history에 저장
         for (int i = 1; i < employees.size(); i++) {
             int userId = employees.get(i).getId();
             int day = countDays(userId);
@@ -144,7 +144,7 @@ public class VacationServiceImpl implements VacationService {
         String firstDayString = firstDayOfYear.toString();
         LocalDate lastDayOfYear = LocalDate.now().withDayOfYear(LocalDate.now().lengthOfYear());
         String lastDayString = lastDayOfYear.toString();
-        List<UserDTO> employees = userService.findAllUsers();
+        List<UserDTO> employees = userService.findList();
 
         // 입사 후 1년이 지난 직원들이 사용안한 연차가 있다면 삭제하고 그 기록을 vacation_history에 저장
         for (int i = 1; i < employees.size(); i++) {
@@ -234,7 +234,7 @@ public class VacationServiceImpl implements VacationService {
         String firstDayString = firstDayOfYear.toString();
         LocalDate lastDayOfYear = LocalDate.now().withDayOfYear(LocalDate.now().lengthOfYear());
         String lastDayString = lastDayOfYear.toString();
-        List<UserDTO> employees = userService.findAllUsers();
+        List<UserDTO> employees = userService.findList();
 
         // 휴가를 새로 insert 하기 전, 기존의 휴가가 남아있다면 삭제하고, 그 기록을 vacation_history에 저장
         for (int i = 1; i < employees.size(); i++) {
@@ -299,7 +299,7 @@ public class VacationServiceImpl implements VacationService {
         String firstDayString = firstDayOfMonth.toString();
         LocalDate lastDayOfMonth = LocalDate.now().withDayOfMonth(LocalDate.now().lengthOfMonth());
         String lastDayString = lastDayOfMonth.toString();
-        List<UserDTO> employees = userService.findAllUsers();
+        List<UserDTO> employees = userService.findList();
 
         // 기존의 보건휴가가 남아있으면 지우고, 그 이력을 vacation_history에 저장
         for (int i = 1; i < employees.size(); i++) {

@@ -2,7 +2,7 @@
     <div class="hr-main">
         <div class="hr-title">
             <img class="hr-icon" src="@/assets/icon2.png" alt="인사 정보 메인 이미지">
-            <h1>인사 정보</h1>
+            <h1>사원 추가</h1>
         </div>
         <div class="search">
             <div class="guide">
@@ -480,7 +480,6 @@ button {
     height: 60%;
     margin-top: 15%;
     margin-right: 15%;
-    filter: invert(41%) sepia(28%) saturate(1738%) hue-rotate(134deg) brightness(92%) contrast(94%);
     cursor: pointer;
 }
 
@@ -692,6 +691,19 @@ thead th {
     margin: 1% 3% 1% 0;
     filter: invert(100%) sepia(65%) saturate(424%) hue-rotate(91deg) brightness(129%) contrast(107%);
     transition: transform 0.3s ease;
+}
+
+.searchBtn {
+    background-color: #088A85;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 90%;
+    font-style: bold;
+    min-height: 20px;
+    min-width: 30px;
+    margin-right: 7%;
 }
 
 .address-container {
