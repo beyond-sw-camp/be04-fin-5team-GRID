@@ -1,49 +1,80 @@
 <script setup>
-import {reactive, ref} from "vue";
-import {useRoute} from "vue-router";
-import axios from "axios";
+  import {onMounted, reactive, ref} from "vue";
+  import {useRoute} from "vue-router";
+  import axios from "axios";
 
-const route = useRoute();
-const typeId = 3;
+  const route = useRoute();
 
-const fileInput = ref(null);
+  const userId = ref();
 
-const postData = reactive({
-  startTime: "",
-  endTime: "",
-  file: null,
-  content: "",
-  requesterId: 2      // 작성자 id
-})
+  const fileInput = ref(null);
 
-const handleFileChange = () => {
-  const file = fileInput.value;
-  if (file) {
-    console.log('Selected file:', file);
-    // 선택된 파일에 대한 처리
-  } else {
-    console.error('No file selected');
-  }
-};
-const registApproval = async () => {
+  const postData = reactive({
+    startTime: "",
+    endTime: "",
+    file: null,
+    content: "",
+    requesterId: 0,
+    originName: '',
+    renameName: '',
+    path: ''
+  })
 
-  alert('결재를 제출하시겠습니까?');
+  const handleFileChange = () => {
+    const file = fileInput.value;
 
-  try {
-    const response = await axios.post(`http://localhost:8080/approval/bt`, postData, {
-      headers: {
-        'Content-Type': "application/json"
-      }
-    })
-
-    if (response.status !== 201) {
-      throw new Error("response is not ok");
+    if (file) {
+      console.log('Selected file:', file);
+    } else {
+      console.error('No file selected');
     }
-
-  } catch (error) {
-    console.error('Fail to post: ', error.message);
   }
-}
+
+  function parseJwt(token) {
+    try {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      }).join(''));
+      return JSON.parse(jsonPayload);
+    } catch (error) {
+      console.error('Invalid token', error);
+      return null;
+    }
+  }
+
+  const registApproval = async () => {
+
+    alert('결재를 제출하시겠습니까?');
+    postData.requesterId = userId.value;
+
+    console.log(postData)
+
+    try {
+      const response = await axios.post(`http://localhost:8080/approval/rw`, postData, {
+        headers: {
+          'Content-Type': "application/json"
+        }
+      })
+
+      if (response.status !== 201) {
+        throw new Error("response is not ok");
+      }
+
+    } catch (error) {
+      console.error('Fail to post: ', error.message);
+    }
+  }
+
+  onMounted(async () => {
+    const token = localStorage.getItem('access');
+    if (token) {
+      const decodedToken = parseJwt(token);
+
+      userId.value = decodedToken.id || '';
+    }
+  })
 </script>
 
 <template>
