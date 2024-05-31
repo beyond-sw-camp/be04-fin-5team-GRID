@@ -66,11 +66,16 @@
         <nav class="pg" aria-label="Page navigation example" v-if="totalPages > 1">
             <ul class="pagination">
                 <li class="page-item" :class="{ disabled: currentPage === 1 }">
+                    <a class="page-link" href="#" aria-label="First" @click.prevent="goToFirstPage">
+                        <span aria-hidden="true">&laquo;&laquo;</span>
+                    </a>
+                </li>
+                <li class="page-item" :class="{ disabled: currentPage === 1 }">
                     <a class="page-link" href="#" aria-label="Previous" @click.prevent="prevPage">
                         <span aria-hidden="true">&laquo;</span>
                     </a>
                 </li>
-                <li v-for="page in totalPages" :key="page" class="page-item" :class="{ active: page === currentPage }">
+                <li v-for="page in filteredPages" :key="page" class="page-item" :class="{ active: page === currentPage }">
                     <a class="page-link" @click.prevent="goToPage(page)">{{ page }}</a>
                 </li>
                 <li class="page-item" :class="{ disabled: currentPage === totalPages }">
@@ -78,8 +83,14 @@
                         <span aria-hidden="true">&raquo;</span>
                     </a>
                 </li>
+                <li class="page-item" :class="{ disabled: currentPage === totalPages }">
+                    <a class="page-link" href="#" aria-label="Last" @click.prevent="goToLastPage">
+                        <span aria-hidden="true">&raquo;&raquo;</span>
+                    </a>
+                </li>
             </ul>
         </nav>
+
     </div>
 
       <!-- 휴가지급 모달 -->
@@ -155,9 +166,7 @@ const employeeNum = ref('');
 const date = ref('');
 const selectedType = ref('');
 
-const totalPages = computed(() => {
-    return Math.ceil(filteredHistories.value.length / itemsPerPage);
-});
+
 
 const fields = [
     { key: 'index', label: '번호' },
@@ -174,11 +183,53 @@ const showModal = (modalId) => {
   modal.show();
 };
 
+const totalPages = computed(() => {
+    return Math.ceil(filteredHistories.value.length / itemsPerPage);
+});
+
 const paginatedHistories = computed(() => {
     const start = (currentPage.value - 1) * itemsPerPage;
     const end = start + itemsPerPage;
     return filteredHistories.value.slice(start, end);
 });
+
+const filteredPages = computed(() => {
+    const maxPages = 5; // 페이지당 최대 표시할 페이지 수
+    const startPage = Math.max(1, currentPage.value - Math.floor(maxPages / 2));
+    const endPage = Math.min(totalPages.value, startPage + maxPages - 1);
+
+    const pages = [];
+    for (let i = startPage; i <= endPage; i++) {
+        pages.push(i);
+    }
+    return pages;
+});
+
+const prevPage = () => {
+    if (currentPage.value > 1) {
+        currentPage.value--;
+    }
+};
+
+const nextPage = () => {
+    if (currentPage.value < totalPages.value) {
+        currentPage.value++;
+    }
+};
+
+const goToPage = (page) => {
+    currentPage.value = page;
+};
+
+// 처음 페이지로 이동
+const goToFirstPage = () => {
+    currentPage.value = 1;
+};
+
+// 마지막 페이지로 이동
+const goToLastPage = () => {
+    currentPage.value = totalPages.value;
+};
 
 const getAllVacationHistory = async () => {
     try {
@@ -362,21 +413,7 @@ function parseJwt(token) {
     }
 }
 
-const prevPage = () => {
-    if (currentPage.value > 1) {
-        currentPage.value--;
-    }
-};
 
-const nextPage = () => {
-    if (currentPage.value < totalPages.value) {
-        currentPage.value++;
-    }
-};
-
-const goToPage = (page) => {
-    currentPage.value = page;
-};
 
 onBeforeMount(() => {
     const token = localStorage.getItem('access');
@@ -512,21 +549,6 @@ onBeforeMount(() => {
         font-size: 12px;
     }
 
-    table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-
-    th, td {
-        border: 1px solid #dddddd;
-        text-align: left;
-        padding: 6px;
-        vertical-align: middle;
-    }
-
-    th {
-        background-color: #f2f2f2;
-    }
 
     .pg {
         grid-row-start: 5;
@@ -538,38 +560,19 @@ onBeforeMount(() => {
         margin-top: 10px;
     }
 
-    .pagination button {
-        background-color: white;
-        color: black;
-        padding: 5px 10px;
-        border: 1px solid #dddddd;
-        border-radius: 4px;
-        cursor: pointer;
-        margin: 0 5px;
+    .pagination .page-item.active .page-link {
+    background-color: #088A85; /* 원하는 배경색 */
+    border-color: #088A85; /* 원하는 테두리 색 */
+    color: white; /* 원하는 텍스트 색 */
     }
 
-    .pagination button.active {
-        background-color: #088A85;
-        font-weight: bold;
-        color: white;
+    .pagination .page-item .page-link {
+        color: #088A85; /* 기본 텍스트 색 */
     }
 
-    .pagination button:disabled {
-        background-color: #dddddd;
-        cursor: not-allowed;
+    .pagination .page-item.disabled .page-link {
+        color: #088A85; /* 비활성화된 페이지 색 */
     }
-
-
-    .pagination span {
-        display: flex;
-        align-items: center;
-    }
-
-    .button-container {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-  }
 
     .registMain {
     height: 100%;
@@ -656,24 +659,19 @@ onBeforeMount(() => {
     margin-top: 5%;
   }
 
-  .no-data {
-    text-align: center;
-    vertical-align: middle;
-}   
-
 .btn-custom {
     font-size:11px;
     font-weight: 600;
-    color:black;
-    background-color: #CDE8E5;
-    border-color:#CDE8E5 ;
+    color:white;
+    background-color: #77B0AA;
+    border-color:#77B0AA ;
     margin-top: 10px;
   }
 
   .vacations h3 {
       font-size: 14px;
       font-weight: 600;
-      color:black;
+      color:white;
       margin: 0;
     }
 
@@ -688,6 +686,12 @@ onBeforeMount(() => {
   .card {
     padding: 10px 10px;
     background-color: #088A85;
+  }
+
+  .button-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
   }
 </style>
 
