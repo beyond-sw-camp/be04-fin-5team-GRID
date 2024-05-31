@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -219,7 +220,7 @@ public class ApprovalChainServiceImpl implements ApprovalChainService{
 
         if (btChain.getStage() == 2) {  // 두번째 결재자
             ChainDTO btChain2 = approvalChainService.findBTChainByApprovalAndChainId(chainStatusVO.getChainId() + 1, chainStatusVO.getApprovalId());
-
+            System.out.println(btChain2);
             if (btChain2.getChainStatus() == ChainStatus.A) {   // 첫번째 결재자가 승인한 경우에만 결재(승인/반려) 가능
                 BTApprovalChain approvalChain = btApprovalChainRepository.findById(btChain.getId()).orElseThrow();
 
@@ -345,6 +346,17 @@ public class ApprovalChainServiceImpl implements ApprovalChainService{
         VApprovalChain approvalChain = vApprovalChainRepository.findByApprovalId(chainStatusVO.getApprovalId());
         VacationApproval vacationApproval = vApprovalRepository.findById(chainStatusVO.getApprovalId()).orElseThrow();
 
+        LocalDateTime startTime = LocalDateTime.parse(vacationApproval.getStartTime(), dateFormat);
+        LocalDateTime endTime = LocalDateTime.parse(vacationApproval.getEndTime(), dateFormat);
+
+        long gap = ChronoUnit.DAYS.between(startTime, endTime);
+
+        if (gap <= 1) {
+            gap = 1;
+        }
+
+        System.out.println(gap);
+
         approvalChain.setApprovalStatus(chainStatusVO.getChainStatus());
         approvalChain.setApprovalTime(LocalDateTime.now().format(dateFormat));
 
@@ -354,11 +366,11 @@ public class ApprovalChainServiceImpl implements ApprovalChainService{
             if(vacationApproval.getCancelDocId() > 0) {
                 VacationApproval canceledVApproval = vApprovalRepository.findById(vacationApproval.getCancelDocId()).orElseThrow();
                 canceledVApproval.setCancelYN(YN.Y);
-                vacationService.plusVacationNum(vacationApproval.getRequesterId(), vacationApproval.getInfoId());
+
+                vacationService.plusVacationNum(vacationApproval.getRequesterId(), vacationApproval.getInfoId(), gap);
 
             } else {
-                vacationService.minusVacationNum(vacationApproval.getRequesterId(), vacationApproval.getInfoId());
-
+                vacationService.minusVacationNum(vacationApproval.getRequesterId(), vacationApproval.getInfoId(), gap);
             }
 
         } else {

@@ -344,12 +344,10 @@
                 a.cancel_yn,
                 a.cancel_document_id,
                 a.requester_id,
-                c.type_name
+                b.type_name
           FROM  vacation_approval a
-          JOIN  vacation_info b
+          JOIN  vacation_type b
             ON  a.info_id = b.id
-          JOIN  vacation_type c
-            ON  b.type_id = c.id
          WHERE  a.id = #{approvalId};
     </select>
 
@@ -406,5 +404,23 @@
              OR  b.approval_status = 'V')
             AND  a.approval_status = 'W'
         </if>
+    </select>
+
+    <select id="findTodayBTandV" resultMap="approvalMap" parameterType="map">
+        SELECT
+                id,
+                start_time,
+                end_time,
+                content,
+                destination,
+                approval_status,
+                write_time,
+                cancel_yn,
+                cancel_document_id,
+                requester_id
+         FROM
+            <if test="typeId == 1">bt_approval</if>
+            <if test="typeId == 2">v_approval</if>
+         WHERE  #{today} BETWEEN (STR_TO_DATE(start_time, '%Y-%m-%d %H:%i:%s')) AND (STR_TO_DATE(end_time, '%Y-%m-%d %H:%i:%s'));
     </select>
 </mapper>
