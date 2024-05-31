@@ -84,47 +84,56 @@
 
       <!-- 휴가지급 모달 -->
       <div class="modal fade" id="giveVacation" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">휴가 정책 등록</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form @submit.prevent="registVacationPolicy(modifyPolicy.id)">
-                        <div class="mb-3">
-                            <label for="vacationType" class="form-label">휴가 타입</label>
-                            <select class="form-select" v-model="selectedType" id="modifyTypeName" required>
-                            <option v-for="type in types" :key="type.id" :value="type.id">{{ type.typeName }}</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="vacationNum" class="form-label">휴가 일수</label>
-                            <input class="form-control explainForm" id="vacationNum" placeholder="내용을 입력해주세요." type="number" v-model="vacationNum" required></input>
-                        </div>
-                        <div class="mb-3">
-                            <label for="employeeNum" class="form-label">직원 사번</label>
-                            <input class="form-control explainForm" id="employeeNum" placeholder="내용을 입력해주세요." v-model="employeeNum" required></input>
-                        </div>
-                        <div class="mb-3">
-                            <label for="dayOfUsing" class="form-label">휴가 사용기한</label>
-                            <VueDatePicker locale="ko" :enable-time-picker="false" v-model="date" class="inputField" />
-                        </div>
-                        <div class="button-container">
-                            <button type="button" class="btn btn-primary" @click="giveVacationDirectly">지급</button>
-                        </div>
-                    </form>
-                </div>
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">휴가 정책 등록</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="closeModal('giveVacation')"></button>
             </div>
-          </div>        
-      </div>
+            <div class="modal-body">
+                <form class="needs-validation" @submit.prevent="validateAndRegistContent" novalidate>
+                    <div class="mb-3">
+                        <label for="vacationType" class="form-label">휴가 타입</label>
+                        <select class="form-select" v-model="selectedType" id="vacationType" required>
+                            <option value="" disabled selected>휴가 타입을 선택해주세요</option>
+                            <option v-for="type in types" :key="type.id" :value="type.id">{{ type.typeName }}</option>
+                        </select>
+                        <div class="invalid-feedback">
+                            휴가 타입을 선택해주세요.
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="vacationNum" class="form-label">휴가 일수</label>
+                        <input class="form-control" id="vacationNum" placeholder="내용을 입력해주세요." type="number" v-model="vacationNum" required>
+                        <div class="invalid-feedback">
+                            휴가 일수를 입력해주세요.
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="employeeNum" class="form-label">직원 사번</label>
+                        <input class="form-control" id="employeeNum" placeholder="내용을 입력해주세요." v-model="employeeNum" required>
+                        <div class="invalid-feedback">
+                            직원 사번을 입력해주세요.
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="dayOfUsing" class="form-label">휴가 사용기한</label>
+                        <VueDatePicker locale="ko" :enable-time-picker="false" :min-date="new Date()" v-model="date" class="inputField" />
+                    </div>
+                    <div class="button-container">
+                        <button type="submit" class="btn btn-primary">지급</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 </template>
 
 <script setup>
-import { onBeforeMount, ref, computed } from 'vue';
+import { onBeforeMount, ref, computed, onMounted } from 'vue';
 import axios from "axios";
-import router from '@/router/router';
-import Modal from '@/components/Vacation/Info/VacationInfoModal.vue';
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -143,7 +152,7 @@ const showRegistModal = ref(false);
 const types = ref([]);
 const vacationNum = ref('');
 const employeeNum = ref('');
-const date = ref(null);
+const date = ref('');
 const selectedType = ref('');
 
 const totalPages = computed(() => {
@@ -249,25 +258,37 @@ const getVacationType = async () => {
     }
   };
 
-  const giveVacationDirectly = async () => {
-    // 입력 값 검증 추가
-    if (!selectedType.value) {
-        alert('휴가타입을 선택해주세요.');
-        return;
+const validateAndRegistContent = () => {
+    const form = document.querySelector('#giveVacation form');
+    if (!form.checkValidity()) {
+        form.classList.add('was-validated');
+        
+    } else {
+        giveVacationDirectly();
     }
-    if (!vacationNum.value) {
-        alert('지급일수를 입력해주세요.');
-        return;
-    }
-    if (!employeeNum.value) {
-        alert('사번을 입력해주세요.');
-        return;
-    }
-    if (!date.value) {
-        alert('사용기한을 선택해주세요.');
-        return;
-    }
+    
+};
 
+const closeModal = (modalId) => {
+  const modal = new bootstrap.Modal(document.getElementById(modalId));
+  modal.hide();
+  if (modalId === 'giveVacation') {
+    vacationNum.value = '';
+    date.value = '';
+    employeeNum.value = '';
+    selectedType.value = '';
+    const form = document.querySelector(`#${modalId} form`);
+    if (form) {
+      form.classList.remove('was-validated');
+    }
+  }
+};
+
+  const giveVacationDirectly = async () => {
+    if(!date.value) {
+        alert('휴가 사용기한을 선택해주세요.')
+        return;
+    }
     try {
         const confirmed = window.confirm('지급하시겠습니까?');
         if (confirmed) {
