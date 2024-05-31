@@ -38,25 +38,33 @@ onMounted(async () => {
         store.commit('setEmail', email);
         await store.dispatch('fetchUserByEmail', email);
     }
+  return showLayout.value ? 'container' : 'container-full';
 });
 
+onMounted(async () => {
+  const email = localStorage.getItem('email');
+  if (email) {
+    store.commit('setEmail', email);
+    await store.dispatch('fetchUserByEmail', email);
+  }
+});
 </script>
 
 <template>
-    <div class="container" :class="containerClass">
-        <div class="header" v-if="showLayout">
-            <Header />
-        </div>
-        <div class="sidebar" v-if="showLayout">
-            <Sidebar />
-        </div>
-        <div class="main-content" :class="mainContentClass">
-            <RouterView />
-        </div>
-        <div class="footer" v-if="showLayout">
-            <!-- <Footer /> -->
-        </div>
+  <div class="container" :class="containerClass">
+    <div class="header" v-if="showLayout">
+      <Header/>
     </div>
+    <div class="sidebar" v-if="showLayout">
+      <Sidebar/>
+    </div>
+    <div class="main-content" :class="mainContentClass">
+      <RouterView/>
+    </div>
+    <div class="footer" v-if="showLayout">
+      <Footer/>
+    </div>
+  </div>
 
 </template>
 
@@ -102,6 +110,7 @@ body {
     height: calc(100vh - 60px);
     z-index: 800;
     font-size: 14px;
+
 }
 
 .main-content {

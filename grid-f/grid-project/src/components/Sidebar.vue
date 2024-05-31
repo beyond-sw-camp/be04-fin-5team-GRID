@@ -13,7 +13,7 @@
         <li>
           <span @click="toggleMenu('workManagement')">근태 관리</span>
           <ul v-show="activeMenus.workManagement">
-            <li>근무 관리</li>
+            <li @click="toWorkCalender()">근무 관리</li>
             <li @click="navigateTo('/work')">근무 정보</li>
             <li @click="toVacationManage()">휴가 종류</li>
             <li @click="toVacationPolicy()">휴가 정책</li>
@@ -54,12 +54,12 @@
         <li>
           <span @click="toggleMenu('performanceReview')">업적 평가 관리</span>
           <ul v-show="activeMenus.performanceReview">
-            <li @click="navigateTo('/performance-review-goal/add')">목표 작성</li>
-            <li @click="navigateTo('/performance-review-goal')">목표 조회</li>
-            <li @click="navigateTo('/performance-review/mid')">중간 평가 작성</li>
-            <li @click="navigateTo('/performance-review/final')">연말 평가 작성</li>
-            <li @click="navigateTo('/performance-review')">평가 조회</li>
-            <li @click="navigateTo('/performance-review/total')">종합 평가 조회</li>
+            <li @click="toAddPerformanceReviewGoal()" v-if="userRole === 'ROLE_USER'">목표 작성</li>
+            <li @click="toPerformanceReviewGoal()" v-if="userRole === 'ROLE_USER'">목표 조회</li>
+            <li @click="toAddMidPerformanceReview()" v-if="userRole === 'ROLE_USER'">중간 평가 작성</li>
+            <li @click="toAddFinalPerformanceReview()" v-if="userRole === 'ROLE_USER'">연말 평가 작성</li>
+            <li @click="toPerformanceReview()" v-if="userRole === 'ROLE_USER'">평가 조회</li>
+            <li @click="toTotalPerformanceReview()">종합 평가 조회</li>
           </ul>
         </li>
       </ul>
@@ -141,6 +141,83 @@ const goToTeamMyReview = () => {
   router.push(`/team-review/myreview/${user.value.id}`);
 }
 
+function toAddPerformanceReviewGoal() {
+  if(user.value.duties.dutiesName === '팀원'){
+    router.push('/performance-review/goal/add');
+  } else {
+    alert('팀원만 작성 가능합니다.');
+  }
+
+
+  // 3월에만 평가 작성할 수 있게 함
+  // if(user.value.duties.dutiesName === '팀원'){
+  //   const currentMonth = new Date().getMonth() + 1; // JavaScript에서 월은 0부터 시작하므로 +1을 해줍니다.
+  //   if (currentMonth === 3) {
+  //     router.push('/performance-review/goal/add');
+  //   } else {
+  //     alert('현재 목표 작성 기간이 아닙니다.');
+  //   }
+  // } else {
+  //   alert('팀원만 작성 가능합니다.');
+  // }
+}
+
+function toPerformanceReviewGoal() {
+  router.push('/performance-review/goal');
+}
+
+function toAddMidPerformanceReview() {
+  if(user.value.duties.dutiesName === '팀원'){
+    router.push('/performance-review/mid');
+  } else {
+    alert('팀원만 작성 가능합니다.');
+  }
+
+  // 6월에만 평가 작성할 수 있게 함
+  // if(user.value.duties.dutiesName === '팀원'){
+  //   const currentMonth = new Date().getMonth() + 1; // JavaScript에서 월은 0부터 시작하므로 +1을 해줍니다.
+  //   if (currentMonth === 6) {
+  //     router.push('/performance-review/mid');
+  //   } else {
+  //     alert('현재 중간 평가 작성 기간이 아닙니다.');
+  //   }
+  // } else {
+  //   alert('팀원만 작성 가능합니다.');
+  // }
+}
+
+function toAddFinalPerformanceReview() {
+  if(user.value.duties.dutiesName === '팀원'){
+    router.push('/performance-review/final');
+  } else {
+    alert('팀원만 작성 가능합니다.');
+  }
+
+  // 12월에만 평가 작성할 수 있게 함
+  // if(user.value.duties.dutiesName === '팀원'){
+  //   const currentMonth = new Date().getMonth() + 1; // JavaScript에서 월은 0부터 시작하므로 +1을 해줍니다.
+  //   if (currentMonth === 12) {
+  //     router.push('/performance-review/final');
+  //   } else {
+  //     alert('현재 연말 평가 작성 기간이 아닙니다.');
+  //   }
+  // } else {
+  //   alert('팀원만 작성 가능합니다.');
+  // }
+
+}
+
+function toPerformanceReview() {
+  router.push('/performance-review');
+}
+
+function toTotalPerformanceReview() {
+  router.push('/performance-review/total');
+}
+
+function toWorkCalender() {
+  router.push('/work-calendar');
+}
 
 function parseJwt(token) {
   try {
@@ -250,3 +327,4 @@ onMounted(() => {
   padding: 5px 0;
 }
 </style>
+

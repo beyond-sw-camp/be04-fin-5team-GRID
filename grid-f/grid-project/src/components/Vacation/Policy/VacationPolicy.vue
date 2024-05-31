@@ -2,83 +2,104 @@
     <div class="policyAll">
         <div class="policyTitle">
             <img class="policyIcon" src="@/assets/buttons/vacation.png">
-            <h1>휴가정책</h1>
-            <button class="policyRegist" @click="showRegistModal = true" v-if="userRole === 'ROLE_ADMIN'">등록하기</button>
+            <h1>휴가 정책</h1>
+            <button class="policyRegist" @click="showModal('registPolicy')" v-if="userRole === 'ROLE_ADMIN'">등록하기</button>
         </div>
         <div class="vacations">
-            <div class="typeBox" v-for="policy in policies" :key="policy.id">
+            <div class="card mb-3" v-for="policy in policies" :key="policy.id">
+              <div class="card-body">
+                <h3 class="card-title">{{ policy.typeName + " " + "정책"}}</h3>
+                <p class="card-text"></p>
+                <button href="#" @click="openNewModifyModal(policy.id)" class="btn btn-custom">살펴보기</button>
+              </div>
+            </div>
+            <!-- <div class="typeBox" v-for="policy in policies" :key="policy.id">
                 <div class="vacationsTitle">
                     <h3>{{ policy.typeName + " " + "정책"}}</h3>
-                    <img class="plusBtn" @click="openDetailModal(policy.id)" src="@/assets/buttons/plus.png">
+                    <img class="plusBtn" @click="openNewModifyModal(policy.id)" src="@/assets/buttons/plus.png">
                 </div>
+            </div> -->
+          </div>
+
+<!-- 수정 모달 -->
+<div class="modal fade" id="modifyPolicy" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">휴가 정책 수정</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="closeModal('modifyPolicy')"></button>
+            </div>
+            <div class="modal-body">
+                <form class="needs-validation" novalidate>
+                    <div class="mb-3">
+                        <label for="modifyTypeName" class="form-label">휴가 이름</label>
+                        <input type="text" class="form-control" id="modifyTypeName" v-model="modifyPolicy.typeName" disabled>
+                    </div>
+                    <div class="mb-3">
+                        <label for="modifyVacationExplain" class="form-label">휴가 설명</label>
+                        <textarea class="form-control explainForm" id="modifyVacationExplain" v-model="modifyPolicyContent" :disabled="userRole === 'ROLE_USER'" required></textarea>
+                        <div class="invalid-feedback">
+                            휴가 설명을 입력해주세요.
+                        </div>
+                    </div>
+                    <div class="button-container">
+                        <button type="button" class="btn btn-primary" v-if="userRole==='ROLE_ADMIN'" @click="validateAndModifyContent(modifyPolicy.id)">수정</button>
+                        <button type="button" class="btn btn-danger" v-if="userRole==='ROLE_ADMIN'" @click="deleteVacationPolicy(modifyPolicy.id)">삭제</button>
+                    </div>
+                </form>
             </div>
         </div>
+    </div>
+</div>
 
-  
-      
-      <!-- 등록 모달 -->
-      <Modal v-if="showRegistModal" @close="showRegistModal = false">
-        <div class="registMain">
-          <div class="registTitle">
-            <h3 for="type">타입</h3>
-            <select id="type" v-model="selectedType" class="selectField">
-              <option value="">선택해주세요.</option>
-              <option v-for="type in types" :key="type.id" :value="type.id">{{ type.typeName }}</option>
-            </select>
-          </div>
-          <div class="registContent">
-            <h3>내용</h3>
-            <textarea v-model="content" placeholder="내용을 입력해주세요." class="inputField"></textarea>
-          </div>
-          <div class="registBtnArea">
-            <button class="registBtn" @click="registPolicy">등록하기</button>
-          </div>
-        </div>
-      </Modal>
-  
-      <!-- 수정 모달 -->
-      <Modal v-if="showModifyModal" @close="showModifyModal = false">
-        <div class="modifyMain">
-          <div class="modifyTitle">
-            <h3>타입</h3>
-            <p class="titleContent">{{ modifyPolicy.typeName }}</p>
-          </div>
-          <div class="modifyContent">
-            <h3>내용</h3>
-            <textarea v-model="modifyPolicyContent"></textarea>
-          </div>
-          <div class="modifyButtons">
-            <button class="modify" @click="modifyContent(modifyPolicy.id)">수정</button>
-            <button class="delete" @click="deleteVacationPolicy(modifyPolicy.id)">삭제</button>
+
+<!-- 등록 모달 -->
+<div class="modal fade" id="registPolicy" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">휴가 정책 등록</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="closeModal('registPolicy')"></button>
+            </div>
+            <div class="modal-body">
+                <form class="needs-validation" @submit.prevent="registPolicy(modifyPolicy.id)" novalidate>
+                    <div class="mb-3">
+                        <label for="modifyTypeName" class="form-label">휴가 이름</label>
+                        <select class="form-select" v-model="selectedType" id="modifyTypeName" required>
+                          <option value="" disabled selected>선택해주세요</option>
+                          <option v-for="type in types" :key="type.id" :value="type.id">{{ type.typeName }}</option>
+                        </select>
+                        <div class="invalid-feedback">
+                            휴가 이름을 선택해주세요.
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="modifyVacationExplain" class="form-label">휴가 설명</label>
+                        <textarea class="form-control explainForm" id="modifyVacationExplain" placeholder="내용을 입력해주세요." v-model="content" required></textarea>
+                        <div class="invalid-feedback">
+                            휴가 설명을 입력해주세요.
+                        </div>
+                    </div>
+                    <div class="button-container">
+                        <button type="submit" class="btn btn-primary">등록</button>
+                    </div>
+                </form>
             </div>
         </div>
-      </Modal>
+    </div>
+</div>
 
-      <!-- 내용확인 모달 -->
-      <Modal v-if="showDetailModal" @close="showDetailModal = false">
-        <div class="detailMain">
-          <div class="detailTitle">
-            <h3>타입</h3>
-            <p class="titleContent">{{ detailPolicy.typeName }}</p>
-          </div>
-          <div class="detailContent">
-            <h3>내용</h3>
-            <pre class="detail" >{{ detailPolicyContent }}</pre>
-          </div>
-          <div class="registBtnArea" v-if="userRole === 'ROLE_ADMIN'">
-            <button class="registBtn" @click="openModifyModal(detailPolicy.id)">수정하기</button>
-          </div>
-        </div>
-      </Modal>
     </div>
   </template>
   
   <script setup>
-  import { ref, onBeforeMount, watch,computed } from 'vue';
+  import { ref, onBeforeMount, watch,computed, onMounted } from 'vue';
   import axios from 'axios';
   import { useRoute } from 'vue-router';
   import router from '@/router/router';
   import Modal from '@/components/Vacation/Policy/VacationPolicyModal.vue'; // 모달 컴포넌트 임포트
+  import 'bootstrap/dist/css/bootstrap.min.css';
+  import 'bootstrap';
   
   const policies = ref([]);
   const userRole = ref('');
@@ -105,6 +126,17 @@
   const formattedDetailPolicyContent = computed(() => {
     return detailPolicyContent.value.replace(/\n/g, '<br>');
 });
+
+const showModal = (modalId) => {
+  const modal = new bootstrap.Modal(document.getElementById(modalId));
+  modal.show();
+};
+
+const openNewModifyModal = async (id) => {
+    openModifyModal(id);
+    const modal = new bootstrap.Modal(document.getElementById('modifyPolicy'));
+    modal.show();
+};
   
   const getAllVacationPolicy = async () => {
     try {
@@ -123,20 +155,39 @@
       console.error('Error:', error);
     }
   };
+
+  const closeModal = (modalId) => {
+  const modal = new bootstrap.Modal(document.getElementById(modalId));
+  modal.hide();
+  if (modalId === 'registPolicy') {
+    selectedType.value = '';
+    content.value = '';
+    const form = document.querySelector(`#${modalId} form`);
+    if (form) {
+      form.classList.remove('was-validated');
+    }
+  } else if (modalId === 'modifyPolicy') {
+    const form = document.querySelector(`#${modalId} form`);
+    if (form) {
+      form.classList.remove('was-validated');
+    }
+  }
+};
   
   const registPolicy = async () => {
-  if (!selectedType.value) {
-    alert('타입을 선택해주세요.');
-    return; // 선택된 타입이 없을 경우 함수 종료
-  }
-
+    if(!selectedType.value || !content.value) {
+      return; 
+    }
   try {
-    const response = await axios.post('/api/vacation/policy', {
+    const confirmed = window.confirm('등록하시겠습니까?');
+    if(confirmed) {
+      const response = await axios.post('/api/vacation/policy', {
       typeId: selectedType.value,
       content: content.value,
-    });
-    alert('등록이 완료되었습니다.');
-    window.location.reload();
+      });
+      alert('등록이 완료되었습니다.');
+      window.location.reload();
+    }
   } catch (error) {
     console.error('Error:', error);
   }
@@ -148,22 +199,12 @@
       const response = await axios.get(`/api/vacation/policy/${id}`);
       modifyPolicy.value = response.data.result;
       modifyPolicyContent.value = modifyPolicy.value.content.replace(/<br\s*\/?>/gi, '\n');
-      showModifyModal.value = true;
+      // showModifyModal.value = true;
     } catch (error) {
       console.error("Error:", error);
     }
   };
 
-  const openDetailModal = async (id) => {
-    try {
-        const response = await axios.get(`/api/vacation/policy/${id}`);
-        detailPolicy.value = response.data.result;
-        detailPolicyContent.value = detailPolicy.value.content.replace(/<br\s*\/?>/gi, '\n');
-        showDetailModal.value = true;
-    } catch (error) {
-        console.error("Error:", error);
-    }
-};
   
   const modifyContent = async (id) => {
     try {
@@ -178,6 +219,16 @@
       console.error("Error:", error);
     }
   };
+
+  const validateAndModifyContent = (id) => {
+  'use strict';
+  const form = document.querySelector('#modifyPolicy .needs-validation');
+  if (!form.checkValidity()) {
+    form.classList.add('was-validated');
+  } else {
+    modifyContent(id);
+  }
+};
   
   const deleteVacationPolicy = async (id) => {
     try {
@@ -254,6 +305,20 @@ const nextPage = () => {
     currentPage.value++;
   }
 };
+
+onMounted(() => {
+  'use strict';
+  const forms = document.querySelectorAll('.needs-validation');
+  Array.from(forms).forEach(form => {
+    form.addEventListener('submit', event => {
+      if (!form.checkValidity()) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      form.classList.add('was-validated');
+    }, false);
+  });
+});
 </script>
   
 <style scoped>
@@ -289,7 +354,7 @@ const nextPage = () => {
   
   .policyRegist {
     background-color: #088A85;
-    color: white;
+    color: black;
     padding: 5px 5px;
     border: none;
     border-radius: 4px;
@@ -353,28 +418,6 @@ const nextPage = () => {
     resize: none;
     height: 300px;
     border: none;
-  }
-
-  .registBtn{
-    width: 100%;
-    background-color: #088A85;
-    color: white;
-    padding: 5px 5px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 12px;
-    font-style: bold;
-    grid-column-start: 3;
-  }
-
-  .registBtnArea {
-    display: grid;
-    grid-template-columns: 40% 6% 8% 6% 40%;
-    place-items: center;
-    grid-row-start: 3;
-    grid-column-start: 2;
-    margin-top: 2%;
   }
 
   .modifyMain {
@@ -460,60 +503,6 @@ const nextPage = () => {
     grid-column-start: 4;
   }
 
-  .pagingButtons {
-    grid-row-start: 3;
-    grid-column-start: 2;
-    display: flex;
-    justify-content: center;
-        align-items: center;
-  }
-
-  .pageNumberButtons {
-  display: flex;
-}
-
-.pageNumberButtons button {
-  margin: 0 5px;
-  background-color: white;
-    color: black;
-    padding: 5px 10px;
-    border: 1px solid #dddddd;
-    border-radius: 4px;
-    cursor: pointer;
-    margin: 0 5px;
-}
-
-.pageNumberButtons button.active {
-  background-color: #088A85;
-  color: white;
-}
-
-.pre {
-    background-color: white;
-    color: black;
-    padding: 5px 10px;
-    border: 1px solid #dddddd;
-    border-radius: 4px;
-    cursor: pointer;
-    margin: 0 5px;
-}
-
-.next {
-    background-color: white;
-    color: black;
-    padding: 5px 10px;
-    border: 1px solid #dddddd;
-    border-radius: 4px;
-    cursor: pointer;
-    margin: 0 5px;
-}
-
-.pagingButtons button:disabled {
-        background-color: #dddddd;
-        cursor: not-allowed;
-    }
-
-
     .vacations {
         margin-top: 2%;
         grid-column-start: 2;
@@ -534,11 +523,7 @@ const nextPage = () => {
         margin-top: 5%;
     }
 
-    .vacations h3 {
-        font-size: 15px;
-        font-weight: 600;
-        margin: 0;
-    }
+    
 
     .plusBtn {
         width: 100%;
@@ -591,6 +576,54 @@ const nextPage = () => {
     padding: 10px;
     margin-bottom: 0;
     height: auto;
+  }
+
+  .explainForm {
+    height: 400px;
+    resize: none;
+  }
+
+  .modal-lg {
+    max-width: 70%; /* 기본 80%에서 90%로 조정 */
+  }
+
+  .button-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
+
+  .btn-danger {
+    margin-left: 2%
+  }
+
+  .btn-custom {
+    font-size:11px;
+    font-weight: 600;
+    color:black;
+    background-color: #CDE8E5;
+    border-color:#CDE8E5 ;
+  }
+
+  .vacations h3 {
+      font-size: 15px;
+      font-weight: 600;
+      color:black;
+      margin: 0;
+    }
+  
+
+  .card-body {
+    width:100%;
+    padding: 0px 0px;
+    display:grid;
+    grid-template-rows: 1fr 1fr 1fr;
+    margin: 0;
+  }
+
+  .card {
+    padding: 10px 10px;
+    background-color: #088A85;
   }
 </style>
   

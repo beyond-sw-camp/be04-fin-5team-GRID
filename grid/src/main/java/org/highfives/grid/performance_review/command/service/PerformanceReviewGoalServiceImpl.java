@@ -114,8 +114,9 @@ public class PerformanceReviewGoalServiceImpl implements PerformanceReviewGoalSe
         PerformanceReviewGoal performanceReviewGoal = performanceReviewGoalRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("해당 ID의 목표를 찾을 수 없습니다."));
 
-        // 상신 상태일 때 변경
-        if(performanceReviewGoal.getApprovalStatus().equals(String.valueOf(GoalApprovalStatus.S))){
+        // 상신, 확인 중 상태일 때 변경
+        if(performanceReviewGoal.getApprovalStatus().equals(String.valueOf(GoalApprovalStatus.S))
+                || performanceReviewGoal.getApprovalStatus().equals(String.valueOf(GoalApprovalStatus.R))){
 
             LocalDateTime currentTime = LocalDateTime.now();
             DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -129,7 +130,7 @@ public class PerformanceReviewGoalServiceImpl implements PerformanceReviewGoalSe
 
             return modifyGoalDTO;
         }  else {
-            throw new RuntimeException("목표의 현재 상태가 상신이 아닙니다.");
+            throw new RuntimeException("목표의 현재 상태가 상신 또는 확인 중이 아닙니다.");
         }
     }
 

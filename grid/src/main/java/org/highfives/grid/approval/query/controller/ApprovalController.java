@@ -9,8 +9,6 @@ import org.highfives.grid.approval.query.service.ApprovalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.highfives.grid.approval.query.vo.ApprovalVO;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -98,11 +96,41 @@ public class ApprovalController {
     @GetMapping("/approver/{typeId}/{isApproval}/{employeeId}")
     public ResponseEntity<ResApprovalVO> findAllApprovalByApproverId(@PathVariable int typeId, @PathVariable int isApproval, @PathVariable int employeeId) {
 
-        List<ApprovalEmpDTO> result = approvalService.findAllApprovalByApproverId(typeId, employeeId, isApproval);
+        List<ApprovalEmpDTO> result = approvalService.findAllApprovalByApproverId(typeId, isApproval, employeeId);
 
         ResApprovalVO response = ResApprovalVO.builder()
                 .statusCode(200)
                 .message("결재자별 결재 목록 조회 성공")
+                .href("")
+                .approvalEmpResultList(result)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping("/today/bt")
+    public ResponseEntity<ResApprovalVO> findTodayBT() {
+
+        List<ApprovalEmpDTO> result = approvalService.findTodayBT();
+
+        ResApprovalVO response = ResApprovalVO.builder()
+                .statusCode(200)
+                .message("금일 출장 조회 성공")
+                .href("")
+                .approvalEmpResultList(result)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping("/today/v")
+    public ResponseEntity<ResApprovalVO> findTodayV() {
+
+        List<ApprovalEmpDTO> result = approvalService.findTodayBT();
+
+        ResApprovalVO response = ResApprovalVO.builder()
+                .statusCode(200)
+                .message("금일 휴가 조회 성공")
                 .href("")
                 .approvalEmpResultList(result)
                 .build();

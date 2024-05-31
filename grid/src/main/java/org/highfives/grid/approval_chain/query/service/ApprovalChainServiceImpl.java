@@ -37,9 +37,9 @@ public class ApprovalChainServiceImpl implements ApprovalChainService {
         int leaderId;
 
         if (chainId == 1) {
-            leaderId = approvalChainMapper.findTeamLeaderByEmployeeId(employeeId);
-        } else {
             leaderId = approvalChainMapper.findDeptLeaderByEmployeeId(employeeId);
+        } else {
+            leaderId = approvalChainMapper.findTeamLeaderByEmployeeId(employeeId);
         }
 
         return leaderId;

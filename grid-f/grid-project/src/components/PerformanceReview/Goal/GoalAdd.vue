@@ -86,7 +86,10 @@
               <input
                   v-if="!isReadOnly"
                   v-model="item.weight"
-                  type="int"
+                  type="number"
+                  min="0"
+                  max="100"
+                  @input="validateWeightInput(item)"
               />
               <span v-else>{{ item.weight }}</span>
             </td>
@@ -166,15 +169,20 @@ const fetchGoalAdd = async () => {
     // 올해 생성된 목표 평가가 있는지 확인
     const responseGoal = await axios.get(`http://localhost:8080/review-goal/${currentYear}/${user.value.id}`);
 
+    console.log('목표 조회', responseGoal.data);
     // 생성된 목표 없으면
     if (!responseGoal.data.findGoal) {
+
+      // 팀장 조회
+      const leader = await axios.get(`http://localhost:8080/users/${user.value.id}/leaders`);
+
       const sandData = {
         "year": currentYear,
         "reviewName": `${currentYear} 인사평가`,
         "approvalStatus": "IP",
-        "writerId": 6,
+        "writerId": user.value.id,
         "writeTime": currentTime,
-        "approverId": 5
+        "approverId": leader.data.result.teamLeaderId
       }
 
       const responseAdd = await axios.post(
@@ -188,6 +196,7 @@ const fetchGoalAdd = async () => {
       const goal = response.data.findDetailGoal;
       goalItemList.value = goal.goalItemList;
 
+      console.log(goalItemList.value);
       goalDetail.value = {
         id: goal.id,
         year: goal.year,
@@ -260,19 +269,18 @@ const addRow = () => {
   const lastItem = goalItemList.value[goalItemList.value.length - 1];
 
   // 빈 행이 이미 있는지 확인
-  // jobName, goal이 null이 아니라면 추가 가능하게 변경
-  const attributesToCheck = ['jobName', 'goal', 'metric', 'weight', 'plan', 'objection'];
+  // jobName, goal이 null이 아니라면 추가 가능
   let emptyCheck = false;
 
-  for (const attribute of attributesToCheck) {
-    if (lastItem && lastItem[attribute] !== '') {
+  if (lastItem) {
+    const jobNameAndGoalFilled = lastItem.jobName !== '' && lastItem.goal !== '';
+
+    if (jobNameAndGoalFilled) {
       emptyCheck = true;
-      break;
     }
   }
 
   if (emptyCheck || !lastItem) {
-    const index = goalItemList.value.length;
     goalItemList.value.push({
       id: '',
       jobName: '',
@@ -287,85 +295,102 @@ const addRow = () => {
 
 // 목표 항목 삭제
 async function deleteItem(index) {
-  try {
-    const id = goalItemList.value[index].id;
-    console.log(id);
+  if (confirm("목표를 삭제하시겠습니까?")) {
+    try {
+      const id = goalItemList.value[index].id;
+      console.log(id);
 
-    if (id != null) {
-      await axios.delete(`http://localhost:8080/goal-item/${id}`);
-    }
-    goalItemList.value.splice(index, 1);
-    // 삭제 후 인덱스 값 업데이트
-    for (let i = index; i < goalItemList.value.length; i++) {
-      goalItemList.value[i].no = i + 1;
-    }
+      if (id != null) {
+        await axios.delete(`http://localhost:8080/goal-item/${id}`);
+      }
+      goalItemList.value.splice(index, 1);
+      // 삭제 후 인덱스 값 업데이트
+      for (let i = index; i < goalItemList.value.length; i++) {
+        goalItemList.value[i].no = i + 1;
+      }
 
-  } catch (error) {
-    console.error('Error sending data:', error);
+    } catch (error) {
+      console.error('Error sending data:', error);
+    }
+  }
+}
+
+// 가중치 숫자 입력
+async function validateWeightInput(item) {
+  if(item.weight < 0 || item.weight > 100) {
+    alert("0부터 100사이의 숫자를 입력해주세요")
+    item.weight = 0;
   }
 }
 
 // 팀원 저장(in-progress)
 async function memberSave() {
-  console.log(goalItemList.value);
-  const sendData = {
-    id: goalDetail.value.id,
-    goalItemList: goalItemList.value.map(item => ({
-      id: item.id || null,
-      jobName: item.jobName,
-      goal: item.goal,
-      metric: item.metric || null,
-      weight: item.weight || 0,
-      plan: item.plan || null,
-      objection: item.objection || null
-    }))
-  };
+  if (goalDetail.value.status === '작성 중') {
+    if (confirm("목표를 저장하시겠습니까?")) {
+      console.log(goalItemList.value);
+      const sendData = {
+        id: goalDetail.value.id,
+        goalItemList: goalItemList.value.map(item => ({
+          id: item.id || null,
+          jobName: item.jobName,
+          goal: item.goal,
+          metric: item.metric || null,
+          weight: item.weight || 0,
+          plan: item.plan || null,
+          objection: item.objection || null
+        }))
+      };
 
-  try {
-    await axios.put(
-        `http://localhost:8080/review-goal/in-progress`,
-        sendData
-    );
+      try {
+        await axios.put(
+            `http://localhost:8080/review-goal/in-progress`,
+            sendData
+        );
 
-    window.location.reload();
-  } catch (error) {
-    console.error('Error sending data:', error);
+        window.location.reload();
+      } catch (error) {
+        console.error('Error sending data:', error);
+      }
+    }
+  } else {
+    alert('목표를 저장할 수 없습니다.')
   }
 }
 
 // 팀원 상신(submit)
 async function submit() {
-  const sendData = {
-    id: goalDetail.value.id,
-    goalItemList: goalItemList.value.map(item => ({
-      id: item.id || null,
-      jobName: item.jobName,
-      goal: item.goal,
-      metric: item.metric || null,
-      weight: item.weight || 0,
-      plan: item.plan || null,
-      objection: item.objection || null
-    }))
-  };
+  if (goalDetail.value.status === '작성 중') {
+    if (confirm("목표를 상신하시겠습니까?")) {
+      const sendData = {
+        id: goalDetail.value.id,
+        goalItemList: goalItemList.value.map(item => ({
+          id: item.id || null,
+          jobName: item.jobName,
+          goal: item.goal,
+          metric: item.metric || null,
+          weight: item.weight || 0,
+          plan: item.plan || null,
+          objection: item.objection || null
+        }))
+      };
 
-  console.log(sendData);
+      console.log(sendData);
 
-  try {
-    const response = await axios.put(
-        `http://localhost:8080/review-goal/submit`,
-        sendData
-    );
+      try {
+        const response = await axios.put(
+            `http://localhost:8080/review-goal/submit`,
+            sendData
+        );
 
-    window.location.reload();
-  } catch (error) {
-    console.error('Error sending data:', error);
+        window.location.reload();
+      } catch (error) {
+        console.error('Error sending data:', error);
+      }
+    }
+  } else {
+    alert('목표를 상신할 수 없습니다.')
   }
 }
-
-const sendData = ref({
-  id: null,
-  goalItemList: []
-});
 
 </script>
 

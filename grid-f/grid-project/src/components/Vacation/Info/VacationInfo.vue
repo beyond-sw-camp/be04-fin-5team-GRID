@@ -6,27 +6,27 @@
         </div>
         <div class="vacations">
             <div class="annual" v-if="userRole === 'ROLE_USER'">
-                <div class="vacationsTitle">
-                    <h3>휴가</h3>
-                </div>
-                <div class="vacationsNum">
-                    <h3>{{ annualVacationNum }}</h3>
+                <div class="card " >
+                    <div class="card-body">
+                        <h3 class="card-title">휴가</h3>
+                        <p class="card-text">{{ annualVacationNum }}</p>
+                    </div>
                 </div>
             </div>
             <div class="month" v-if="userRole === 'ROLE_USER'">
-                <div class="vacationsTitle">
-                    <h3>정기 휴가</h3>
-                </div>
-                <div class="vacationsNum">
-                    <h3>{{ monthVacationNum }}</h3>
+                <div class="card " >
+                    <div class="card-body">
+                        <h3 class="card-title">정기 휴가</h3>
+                        <p class="card-text">{{ monthVacationNum }}</p>
+                    </div>
                 </div>
             </div>
             <div class="diretly" v-if="userRole === 'ROLE_USER'">
-                <div class="vacationsTitle">
-                    <h3>기타 휴가</h3>
-                </div>
-                <div class="vacationsNum">
-                    <h3>{{ directlyVacationNum }}</h3>
+                <div class="card " >
+                    <div class="card-body">
+                        <h3 class="card-title">기타 휴가</h3>
+                        <p class="card-text">{{ directlyVacationNum }}</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -39,7 +39,7 @@
             <button @click="search" class="printBtn">검색</button>
         </div> 
         <div class="tableContainer">
-            <table>
+            <!-- <table>
                 <thead>
                     <tr>
                         <th>번호</th>
@@ -67,18 +67,48 @@
                         <td>{{ info.vacationNum }}</td>
                     </tr>
                 </tbody>
-            </table>
+            </table> -->
+            <b-table hover small :fields="fields" :items="paginatedInfo" >
+                <template #cell(index)="data">
+                    {{ (currentPage - 1) * itemsPerPage + data.index + 1 }}
+                </template>
+                <template #cell(employeeName)="data">
+                    <span>{{ data.item.employeeName }}</span>
+                </template>
+                <template #cell(employeeNumber)="data">
+                    <span>{{ data.item.employeeNumber }}</span>
+                </template>
+                <template #cell(typeName)="data">
+                    <span>{{ data.item.typeName }}</span>
+                </template>
+                <template #cell(addTime)="data">
+                    <span>{{ data.item.addTime }}</span>
+                </template>
+                <template #cell(changeTime)="data">
+                    <span>{{ data.item.addTime + "~" + data.item.endTime }}</span>
+                </template>
+                <template #cell(vacationNum)="data">
+                    <span>{{ data.item.vacationNum }}</span>
+                </template>
+            </b-table>
         </div>
-        <div class="pagination">
-            <button @click="prevPage" :disabled="currentPage === 1">Previous</button>
-            <button 
-                v-for="page in totalPages" 
-                :key="page" 
-                @click="goToPage(page)" 
-                :class="{ active: page === currentPage }"
-            >{{ page }}</button>
-            <button @click="nextPage" :disabled="currentPage === totalPages">Next</button>
-        </div>
+        <nav class="pg" aria-label="Page navigation example" v-if="totalPages > 1">
+            <ul class="pagination">
+                <li class="page-item" :class="{ disabled: currentPage === 1 }">
+                    <a class="page-link" href="#" aria-label="Previous" @click.prevent="prevPage">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <li v-for="page in totalPages" :key="page" class="page-item" :class="{ active: page === currentPage }">
+                    <a class="page-link" @click.prevent="goToPage(page)">{{ page }}</a>
+                </li>
+                <li class="page-item" :class="{ disabled: currentPage === totalPages }">
+                    <a class="page-link" aria-label="Next" @click.prevent="nextPage">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
     </div>
 </template>
 
@@ -98,6 +128,16 @@ const userId = ref('');
 const annualVacationNum = ref(0);
 const monthVacationNum = ref(0);
 const directlyVacationNum = ref(0);
+
+const fields = [
+    { key: 'index', label: '번호' },
+    { key: 'employeeName', label: '이름' },
+    { key: 'employeeNumber', label: '사번' },
+    { key: 'typeName', label: '휴가종류' },
+    { key: 'addTime', label: '지급날짜' },
+    { key: 'changeTime', label: '휴가 사용기간' },
+    { key: 'vacationNum', label: '지급개수' }
+];
 
 const getAllVacationInfo = async () => {
     try {
@@ -206,7 +246,7 @@ onBeforeMount(() => {
 <style scoped>
 .historyAll {
     display: grid;
-    grid-template-rows: 18% 10% 4% 43% 10% 11%;
+    grid-template-rows: 18% 13% 4% 43% 10% 8%;
     grid-template-columns: 10% 80% 10%;
     height: 100%;
 }
@@ -269,8 +309,6 @@ onBeforeMount(() => {
 
 .annual h3 {
     font-size: 15px;
-    margin-left: 10px;
-    margin-top: 10px;
 }
 
 .month {
@@ -281,21 +319,16 @@ onBeforeMount(() => {
 
 .month h3 {
     font-size: 15px;
-    margin-left: 10px;
-    margin-top: 10px;
 }
 
 .diretly {
     width: calc(100% - 20px);
-    background-color: #F2F2F2;
     grid-column-start: 5;
     
 }
 
 .diretly h3 {
     font-size: 15px;
-    margin-left: 10px;
-    margin-top: 10px;
 }
 
 .sortBox {
@@ -345,7 +378,7 @@ th {
     background-color: #f2f2f2;
 }
 
-.pagination {
+.pg {
     grid-row-start: 5;
     grid-column-start: 2;
     grid-column-end: 3;
@@ -392,5 +425,32 @@ th {
     text-align: center;
     vertical-align: middle;
 }  
+
+.card-text {
+        font-size: 13px;
+      font-weight: 600;
+      color:black;
+      margin: 0;
+      grid-row-start: 3;
+    }
+
+  .card-body {
+    width:100%;
+    padding: 0px 0px;
+    margin: 0;
+    display:grid;
+    grid-template-rows: 1fr 1fr 1fr;
+  }
+
+  .card-title {
+    margin:0;
+  }
+
+  .card {
+    padding: 10px 10px;
+    background-color: #088A85;
+    margin-bottom:0;
+    height: 100%;
+  }
 </style>
 

@@ -14,10 +14,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 @Service(value = "QueryApprovalService")
@@ -134,5 +131,38 @@ public class ApprovalServiceImpl implements ApprovalService{
         }
 
         return sum;
+    }
+
+    @Override
+    public List<ApprovalEmpDTO> findTodayBT() {
+
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String today = LocalDateTime.now().format(dateFormat);
+
+        Map<String, Object> params = new HashMap<>();
+
+        params.put("typeId", 1);
+        params.put("today", today);
+
+        List<ApprovalEmpDTO> approvalEmpList = approvalMapper.findTodayBTandV(params);
+        System.out.println(approvalEmpList);
+
+        return approvalEmpList;
+    }
+
+    @Override
+    public List<ApprovalEmpDTO> findTodayV() {
+
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String today = LocalDateTime.now().format(dateFormat);
+
+        Map<String, Object> params = new HashMap<>();
+
+        params.put("typeId", 2);
+        params.put("today", today);
+
+        List<ApprovalEmpDTO> approvalEmpList = approvalMapper.findTodayBTandV(params);
+
+        return approvalEmpList;
     }
 }
