@@ -1,7 +1,6 @@
 <template>
   <div>
     <div>
-      <img src="@/assets/logo.png" alt="Evaluation Icon" />
       <h1>전체 평가 목록</h1>
     </div>
 

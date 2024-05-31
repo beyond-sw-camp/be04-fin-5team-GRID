@@ -1,7 +1,6 @@
 <template>
     <div>
       <div>
-        <img src="@/assets/logo.png" alt="Evaluation Icon" />
         <h1>본인 평가 목록</h1>
       </div>
   
@@ -15,7 +14,7 @@
             <th>내용</th>
             <th>연도</th>
             <th>분기</th>
-            <th>평가 하기</th>
+            <th>평가 보기</th>
           </tr>
         </thead>
         <tbody>
