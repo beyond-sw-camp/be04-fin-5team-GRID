@@ -21,67 +21,79 @@
             </div> -->
           </div>
 
-      <!-- 수정 모달 -->
-      <div class="modal fade" id="modifyPolicy" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">휴가 정책 수정</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form @submit.prevent="modifyContent(modifyPolicy.id)">
-                        <div class="mb-3">
-                            <label for="modifyTypeName" class="form-label">휴가 이름</label>
-                            <input type="text" class="form-control" id="modifyTypeName" v-model="modifyPolicy.typeName" disabled>
-                        </div>
-                        <div class="mb-3">
-                            <label for="modifyVacationExplain" class="form-label">휴가 설명</label>
-                            <textarea class="form-control explainForm" id="modifyVacationExplain" v-model="modifyPolicyContent" :disabled="userRole === 'ROLE_USER'"></textarea>
-                        </div>
-                        <div class="button-container">
-                            <button type="button" class="btn btn-primary" v-if="userRole==='ROLE_ADMIN'" @click="modifyContent(modifyPolicy.id)">수정</button>
-                            <button type="button" class="btn btn-danger" v-if="userRole==='ROLE_ADMIN'" @click="deleteVacationPolicy(modifyPolicy.id)">삭제</button>
-                        </div>
-                    </form>
-                </div>
+<!-- 수정 모달 -->
+<div class="modal fade" id="modifyPolicy" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">휴가 정책 수정</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="closeModal('modifyPolicy')"></button>
             </div>
-          </div>        
-      </div>
+            <div class="modal-body">
+                <form class="needs-validation" novalidate>
+                    <div class="mb-3">
+                        <label for="modifyTypeName" class="form-label">휴가 이름</label>
+                        <input type="text" class="form-control" id="modifyTypeName" v-model="modifyPolicy.typeName" disabled>
+                    </div>
+                    <div class="mb-3">
+                        <label for="modifyVacationExplain" class="form-label">휴가 설명</label>
+                        <textarea class="form-control explainForm" id="modifyVacationExplain" v-model="modifyPolicyContent" :disabled="userRole === 'ROLE_USER'" required></textarea>
+                        <div class="invalid-feedback">
+                            휴가 설명을 입력해주세요.
+                        </div>
+                    </div>
+                    <div class="button-container">
+                        <button type="button" class="btn btn-primary" v-if="userRole==='ROLE_ADMIN'" @click="validateAndModifyContent(modifyPolicy.id)">수정</button>
+                        <button type="button" class="btn btn-danger" v-if="userRole==='ROLE_ADMIN'" @click="deleteVacationPolicy(modifyPolicy.id)">삭제</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
-      <!-- 등록 모달 -->
-      <div class="modal fade" id="registPolicy" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">휴가 정책 등록</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form @submit.prevent="registVacationPolicy(modifyPolicy.id)">
-                        <div class="mb-3">
-                          <label for="modifyTypeName" class="form-label">휴가 이름</label>
-                          <select class="form-select" v-model="selectedType" id="modifyTypeName" required>
-                            <option v-for="type in types" :key="type.id" :value="type.id">{{ type.typeName }}</option>
-                          </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="modifyVacationExplain" class="form-label">휴가 설명</label>
-                            <textarea class="form-control explainForm" id="modifyVacationExplain" placeholder="내용을 입력해주세요." v-model="content" required></textarea>
-                        </div>
-                        <div class="button-container">
-                            <button type="button" class="btn btn-primary" @click="registPolicy">등록</button>
-                        </div>
-                    </form>
-                </div>
+
+<!-- 등록 모달 -->
+<div class="modal fade" id="registPolicy" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">휴가 정책 등록</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="closeModal('registPolicy')"></button>
             </div>
-          </div>        
-      </div>
+            <div class="modal-body">
+                <form class="needs-validation" @submit.prevent="registPolicy(modifyPolicy.id)" novalidate>
+                    <div class="mb-3">
+                        <label for="modifyTypeName" class="form-label">휴가 이름</label>
+                        <select class="form-select" v-model="selectedType" id="modifyTypeName" required>
+                          <option value="" disabled selected>선택해주세요</option>
+                          <option v-for="type in types" :key="type.id" :value="type.id">{{ type.typeName }}</option>
+                        </select>
+                        <div class="invalid-feedback">
+                            휴가 이름을 선택해주세요.
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="modifyVacationExplain" class="form-label">휴가 설명</label>
+                        <textarea class="form-control explainForm" id="modifyVacationExplain" placeholder="내용을 입력해주세요." v-model="content" required></textarea>
+                        <div class="invalid-feedback">
+                            휴가 설명을 입력해주세요.
+                        </div>
+                    </div>
+                    <div class="button-container">
+                        <button type="submit" class="btn btn-primary">등록</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
     </div>
   </template>
   
   <script setup>
-  import { ref, onBeforeMount, watch,computed } from 'vue';
+  import { ref, onBeforeMount, watch,computed, onMounted } from 'vue';
   import axios from 'axios';
   import { useRoute } from 'vue-router';
   import router from '@/router/router';
@@ -143,12 +155,29 @@ const openNewModifyModal = async (id) => {
       console.error('Error:', error);
     }
   };
+
+  const closeModal = (modalId) => {
+  const modal = new bootstrap.Modal(document.getElementById(modalId));
+  modal.hide();
+  if (modalId === 'registPolicy') {
+    selectedType.value = '';
+    content.value = '';
+    const form = document.querySelector(`#${modalId} form`);
+    if (form) {
+      form.classList.remove('was-validated');
+    }
+  } else if (modalId === 'modifyPolicy') {
+    const form = document.querySelector(`#${modalId} form`);
+    if (form) {
+      form.classList.remove('was-validated');
+    }
+  }
+};
   
   const registPolicy = async () => {
-  if (!selectedType.value) {
-    alert('타입을 선택해주세요.');
-    return; // 선택된 타입이 없을 경우 함수 종료
-  }
+    if(!selectedType.value || !content.value) {
+      return; 
+    }
   try {
     const confirmed = window.confirm('등록하시겠습니까?');
     if(confirmed) {
@@ -190,6 +219,16 @@ const openNewModifyModal = async (id) => {
       console.error("Error:", error);
     }
   };
+
+  const validateAndModifyContent = (id) => {
+  'use strict';
+  const form = document.querySelector('#modifyPolicy .needs-validation');
+  if (!form.checkValidity()) {
+    form.classList.add('was-validated');
+  } else {
+    modifyContent(id);
+  }
+};
   
   const deleteVacationPolicy = async (id) => {
     try {
@@ -266,6 +305,20 @@ const nextPage = () => {
     currentPage.value++;
   }
 };
+
+onMounted(() => {
+  'use strict';
+  const forms = document.querySelectorAll('.needs-validation');
+  Array.from(forms).forEach(form => {
+    form.addEventListener('submit', event => {
+      if (!form.checkValidity()) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      form.classList.add('was-validated');
+    }, false);
+  });
+});
 </script>
   
 <style scoped>
