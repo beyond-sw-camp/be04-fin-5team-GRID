@@ -69,6 +69,7 @@ public class PerformanceReviewGoalItemServiceImpl implements PerformanceReviewGo
             goalItem.setMetric(performanceReviewGoalItemDTO.getMetric());
             goalItem.setWeight(performanceReviewGoalItemDTO.getWeight());
             goalItem.setPlan(performanceReviewGoalItemDTO.getPlan());
+            goalItem.setObjection(performanceReviewGoalItemDTO.getObjection());
         }
 
         PerformanceReviewGoalItem modifyGoalItem = performanceReviewGoalItemRepository.findById(

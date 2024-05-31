@@ -246,7 +246,7 @@ onBeforeMount(() => {
 <style scoped>
 .historyAll {
     display: grid;
-    grid-template-rows: 18% 10% 4% 43% 10% 11%;
+    grid-template-rows: 18% 13% 4% 43% 10% 8%;
     grid-template-columns: 10% 80% 10%;
     height: 100%;
 }
