@@ -19,7 +19,7 @@
   <div class="weekCalender" id="app">
     <div id="calendar"></div>
   </div>
-  </div>
+
 </template>
 
 <script setup>

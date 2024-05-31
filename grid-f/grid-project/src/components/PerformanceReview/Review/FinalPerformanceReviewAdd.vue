@@ -105,7 +105,7 @@
                 <option value="4">B</option>
                 <option value="5">C</option>
               </select>
-              <span v-else>{{ item.selfId }}</span>
+              <span v-else>{{ gradeMapping[item.selfId] || 0 }}</span>
             </td>
             <td>
               {{ item.selfScore }}
@@ -119,7 +119,7 @@
               <span v-else>{{ item.selfComment }}</span>
             </td>
             <td>
-              {{ item.superiorId }}
+              {{ gradeMapping[item.superiorId] || 0 }}
             </td>
             <td>
               {{ item.superiorScore }}
@@ -288,6 +288,14 @@ const scoreMapping = {
   5: 55   // C
 };
 
+const gradeMapping = {
+  1: 'S', // S
+  2: 'A',  // A
+  3: 'B+',  // B+
+  4: 'B',  // B
+  5: 'C'   // C
+};
+
 // 자기평가 변경
 const updateSelfScore = (item) => {
   const baseScore = scoreMapping[item.selfId] || 0;
@@ -297,68 +305,79 @@ const updateSelfScore = (item) => {
 
 // 팀원 저장(in-progress)
 async function memberSave() {
-  const sendData = {
-    reviewId: reviewDetail.value.id,
-    performanceReviewItemList: reviewItemList.value.map(item => ({
-      id: item.id,
-      goal: item.goal,
-      actionItem: item.actionItem,
-      metric: item.metric,
-      detailPlan: item.detail,
-      weight: item.weight,
-      performance: item.performance,
-      selfId: item.selfId,
-      selfScore: item.selfScore,
-      selfComment: item.selfComment,
-      superiorId: item.superiorId,
-      superiorScore: item.superiorScore,
-      reviewId: reviewDetail.value.id
-    }))
-  };
-  console.log(sendData);
-  try {
-    await axios.put(
-        `http://localhost:8080/performance-review/in-progress`,
-        sendData
-    );
-    window.location.reload();
-  } catch (error) {
-    console.error('Error sending data:', error);
+  if (reviewDetail.value.status === '작성 중') {
+    if (confirm("평가를 저장하시겠습니까?")) {
+      const sendData = {
+        reviewId: reviewDetail.value.id,
+        performanceReviewItemList: reviewItemList.value.map(item => ({
+          id: item.id,
+          goal: item.goal,
+          actionItem: item.actionItem,
+          metric: item.metric,
+          detailPlan: item.detailPlan,
+          weight: item.weight,
+          performance: item.performance,
+          selfId: item.selfId,
+          selfScore: item.selfScore,
+          selfComment: item.selfComment,
+          superiorId: item.superiorId,
+          superiorScore: item.superiorScore,
+          reviewId: reviewDetail.value.id
+        }))
+      };
+      console.log(sendData);
+      try {
+        await axios.put(
+            `http://localhost:8080/performance-review/in-progress`,
+            sendData
+        );
+        // window.location.reload();
+      } catch (error) {
+        console.error('Error sending data:', error);
+      }
+    }
+  } else {
+    alert('평가를 저장할 수 없습니다.')
   }
 }
 
 // 팀원 상신(submit)
 async function submit() {
-  const sendData = {
-    reviewId: reviewDetail.value.id,
-    performanceReviewItemList: reviewItemList.value.map(item => ({
-      id: item.id,
-      goal: item.goal,
-      actionItem: item.actionItem,
-      metric: item.metric,
-      detailPlan: item.detail,
-      weight: item.weight,
-      performance: item.performance,
-      selfId: item.selfId,
-      selfScore: item.selfScore,
-      selfComment: item.selfComment,
-      superiorId: item.superiorId,
-      superiorScore: item.superiorScore,
-      reviewId: reviewDetail.value.id
-    }))
-  };
-  console.log(sendData);
-  try {
-    await axios.put(
-        `http://localhost:8080/performance-review/submit`,
-        sendData
-    );
-    window.location.reload();
-  } catch (error) {
-    console.error('Error sending data:', error);
+  if (reviewDetail.value.status === '작성 중') {
+    if (confirm("평가를 상신하시겠습니까?")) {
+      const sendData = {
+        reviewId: reviewDetail.value.id,
+        performanceReviewItemList: reviewItemList.value.map(item => ({
+          id: item.id,
+          goal: item.goal,
+          actionItem: item.actionItem,
+          metric: item.metric,
+          detailPlan: item.detail,
+          weight: item.weight,
+          performance: item.performance,
+          selfId: item.selfId,
+          selfScore: item.selfScore,
+          selfComment: item.selfComment,
+          superiorId: item.superiorId,
+          superiorScore: item.superiorScore,
+          reviewId: reviewDetail.value.id
+        }))
+      };
+      console.log(sendData);
+      try {
+        await axios.put(
+            `http://localhost:8080/performance-review/submit`,
+            sendData
+        );
+        window.location.reload();
+      } catch (error) {
+        console.error('Error sending data:', error);
+      }
+    }
+  } else {
+    alert('평가를 상신할 수 없습니다.')
   }
 }
-
 
 </script>
 

@@ -1,6 +1,8 @@
 <template>
   <div id="app">
-    <div id="calendar"></div>
+    <div id="calendar-container">
+      <div id="calendar"></div>
+    </div>
   </div>
 </template>
 
@@ -209,8 +211,22 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+#app {
+  display: grid;
+  place-items: center;
+  width: 100vw;
+  height: 100vh;
+}
+
+#calendar-container {
+  width: 70%;
+  height: 65%;
+  display: grid;
+}
+
 #calendar {
   width: 100%;
-  height: 600px;
+  height: 100%;
+  overflow: hidden; /* 스크롤을 없애기 위해 추가 */
 }
 </style>

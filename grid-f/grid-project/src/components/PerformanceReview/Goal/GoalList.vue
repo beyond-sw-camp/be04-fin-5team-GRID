@@ -135,7 +135,7 @@ const getEmployeeName = (employee) => {
 
 const goToDetailPage = (id) => {
     console.log(id);
-    router.push(`/review-goal/detail/${id}`);
+    router.push(`/performance-review/goal/detail/${id}`);
 };
 </script>
 

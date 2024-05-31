@@ -93,7 +93,7 @@
 <template>
   <div v-if="isLoading">로딩 중</div>
   <div v-else>
-    <div v-if="userRole !== 'ROLE_ADMIN'">출력: {{ state.overtimeInWeek }}</div>
+    <div v-if="userRole !== 'ROLE_ADMIN'">{{ state.overtimeInWeek }}</div>
     <ApprovalList :approvalList="state.approvalList"/>
   </div>
 </template>

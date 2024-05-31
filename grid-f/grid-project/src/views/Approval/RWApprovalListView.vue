@@ -1,8 +1,8 @@
 <script setup>
   import {onMounted, reactive, ref} from "vue";
-    import axios from "axios";
+  import axios from "axios";
 
-    import ApprovalList from "@/components/Approval/ApprovalList.vue";
+  import ApprovalList from "@/components/Approval/ApprovalList.vue";
 
   const userRole = ref('');
   const userId = ref();
@@ -13,9 +13,9 @@
     approvalList:[]
   });
 
-  const fetchApprovalList = async(id) => {
+  const fetchApprovalList = async() => {
     try {
-      const url = `http://localhost:8080/approval/all/${typeId}/5`;
+      const url = `http://localhost:8080/approval/all/3/5`;
 
       const response = await axios.get(url);
 
@@ -32,12 +32,17 @@
   }
 
   onMounted(async() => {
-    await fetchApprovalList(userId.value);
+    await fetchApprovalList();
+
+    isLoading.value = false;
   })
 </script>
 
 <template>
-  <ApprovalList :approvalList="state.approvalList"/>
+  <div v-if="isLoading">로딩 중</div>
+  <div v-else>
+    <ApprovalList :approvalList="state.approvalList"/>
+  </div>
 </template>
 
 <style scoped>
