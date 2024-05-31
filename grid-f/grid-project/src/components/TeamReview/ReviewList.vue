@@ -48,7 +48,7 @@
         <div v-if="selectedReview">
           <img :src="selectedReview.revieweeImage" alt="Reviewee Image" class="reviewee-image" />
           <h2>{{ selectedReview.revieweeName }}</h2>
-          <h3>{{ selectedReview.revieweePosition }}</h3>
+          <h3>{{ selectedReview.revieweePosition.positionName }}</h3>
           <table class="table table-striped table-hover">
             <thead>
               <tr>
@@ -268,7 +268,7 @@ tr:hover {
   margin: auto;
   padding: 20px;
   border: 1px solid #888;
-  width: 80%;
+  width: 60%;
 }
 
 .close {
@@ -293,7 +293,7 @@ tr:hover {
 
 .option-button {
   margin: 5px;
-  padding: 10px 20px;
+  padding: 5px 10px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
