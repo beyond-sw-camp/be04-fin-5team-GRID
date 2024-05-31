@@ -103,7 +103,7 @@ const cleanUserData = (userData) => {
         resignedTime: userData.resignedTime,
         departmentId: userData.departmentId,
         teamId: userData.teamId,
-        positionId: userData.positionId,
+        positionId: userData.positionId,    
         dutiesId: userData.dutiesId,
     };
 };
@@ -263,7 +263,7 @@ body {
     grid-row-start: 2;
     grid-column-start: 2;
     display: grid;
-    grid-template-columns: 23% 2% 20% 25% 30%;
+    grid-template-columns: 20% 2% 20% 28% 30%;
     max-height: 100%;
     max-width: 100%;
 }
@@ -273,6 +273,9 @@ body {
     padding: 0.5em;
     height: 100%;
     width: 100%;
+    min-width: 162.192px;
+    min-height: 209.19px;
+    overflow: hidden;
 }
 
 .image img {
@@ -285,12 +288,13 @@ body {
     display: flex; 
     align-items: flex-end;
     justify-content: center;
+    overflow: hidden;
 }
 
 #sealImg {
     width: 50%;
     height: 50%;
-    margin-bottom: 15%;
+    margin-bottom: 15%;   
 }
 
 .name {
@@ -382,7 +386,7 @@ body {
     grid-row-start: 3;
     grid-column-start: 2;
     display: grid;
-    grid-template-columns: 23% 2% 20% auto;
+    grid-template-columns: 20% 2% 20% auto;
 }
 
 #profileInput {

@@ -33,7 +33,7 @@ cloud:
   aws:
     credentials:
       secret-key:
-      access-key: 
+      access-key:
     region:
       static:
     s3:
