@@ -1,0 +1,410 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.highfives.grid.approval.query.repository.ApprovalMapper">
+    <resultMap id="approvalMap" type="org.highfives.grid.approval.query.dto.ApprovalEmpDTO">
+        <id property="id" column="id"/>
+        <result property="startTime" column="start_time"/>
+        <result property="endTime" column="end_time"/>
+        <result property="content" column="content"/>
+        <result property="destination" column="destination"/>
+        <result property="originName" column="origin_name"/>
+        <result property="renameName" column="rename_name"/>
+        <result property="path" column="path"/>
+        <result property="infoId" column="info_id"/>
+        <result property="vacationType" column="type_name"/>
+        <result property="approvalStatus" column="approval_status"/>
+        <result property="writeTime" column="write_time"/>
+        <result property="cancelYn" column="cancel_yn"/>
+        <result property="cancelDocId" column="cancel_document_id"/>
+        <result property="employeeId" column="requester_id"/>
+        <result property="employeeName" column="employee_name"/>
+        <result property="employeeNumber" column="employee_number"/>
+    </resultMap>
+
+    <resultMap id="oApprovalMap" type="org.highfives.grid.approval.common.dto.OvertimeApprovalDTO">
+        <id property="id" column="id"/>
+        <result property="startTime" column="start_time"/>
+        <result property="endTime" column="end_time"/>
+        <result property="content" column="content"/>
+        <result property="approvalStatus" column="approval_status"/>
+        <result property="writeTime" column="write_time"/>
+        <result property="cancelYn" column="cancel_yn"/>
+        <result property="cancelDocId" column="cancel_document_id"/>
+        <result property="requesterId" column="requester_id"/>
+    </resultMap>
+
+    <select id="findOInWeekByEmployeeId" resultMap="oApprovalMap" parameterType="org.highfives.grid.approval.common.dto.OvertimeInWeekDTO">
+         SELECT
+                start_time,
+                end_time
+           FROM overtime_approval
+          WHERE requester_id = #{requesterId}
+            AND approval_status = "A"
+            AND cancel_yn = "N"
+            AND cancel_document_id = 0
+            AND (STR_TO_DATE(start_time, '%Y-%m-%d %H:%i:%s') BETWEEN #{sunday} AND #{saturday});
+    </select>
+
+    <select id="findAllBTApproval" resultMap="approvalMap" parameterType="map">
+         SELECT
+                a.employee_name,
+                a.employee_number,
+                b.id,
+                b.start_time,
+                b.end_time,
+                b.content,
+                b.approval_status,
+                b.write_time,
+                b.cancel_yn,
+                b.cancel_document_id,
+                b.requester_id
+          FROM  employee a
+          JOIN
+                <if test="typeId == 1">
+                    bt_approval b
+                </if>
+                <if test="typeId == 2">
+                    overtime_approval b
+                </if>
+                <if test="typeId == 3">
+                    rw_approval b
+                </if>
+                <if test="typeId == 4">
+                    vacation_approval b
+                </if>
+                ON  a.id = b.requester_id
+
+                <!-- 승인 -->
+                <if test="isApproval == 1">
+                    WHERE b.approval_status = 'A'
+                </if>
+                <!-- 반려 -->
+                <if test="isApproval == 2">
+                    WHERE b.approval_status = 'D'
+                </if>
+                <!-- 대기 -->
+                <if test="isApproval == 3">
+                    WHERE b.approval_status = 'N'
+                    OR  b.approval_status = 'V'
+                </if>
+                <!-- 취소 -->
+                <if test="isApproval == 4">
+                    WHERE b.cancel_yn = 'Y'
+                    OR  b.cancel_document_id != 0
+                </if>
+                <!-- 승인(취소 제외) <목록> -->
+                <if test="isApproval == 5">
+                    WHERE b.approval_status = 'A'
+                    AND  b.cancel_yn = 'N'
+                    AND  b.cancel_document_id = 0
+                </if>
+    </select>
+
+    <select id="findAllBTApprovalByEmployeeId" resultMap="approvalMap" parameterType="map">
+        SELECT
+                a.employee_name,
+                a.employee_number,
+                b.id,
+                b.start_time,
+                b.end_time,
+                b.content,
+                b.destination,
+                b.approval_status,
+                b.write_time,
+                b.cancel_yn,
+                b.cancel_document_id,
+                b.requester_id
+          FROM  employee a
+          JOIN  bt_approval b
+            ON  a.id = b.requester_id
+         WHERE  a.id = #{employeeId}
+            <!-- 승인 -->
+            <if test="isApproval == 1">
+                AND  b.approval_status = 'A'
+            </if>
+            <!-- 반려 -->
+            <if test="isApproval == 2">
+                AND  b.approval_status = 'D'
+            </if>
+            <!-- 대기 -->
+            <if test="isApproval == 3">
+                AND  (b.approval_status = 'N'
+                 OR  b.approval_status = 'V')
+            </if>
+            <!-- 취소 -->
+            <if test="isApproval == 4">
+                AND  (b.cancel_yn = 'Y'
+                 OR  b.cancel_document_id != 0)
+            </if>
+            <!-- 승인(취소 제외) <목록> -->
+            <if test="isApproval == 5">
+                AND  b.approval_status = 'A'
+                AND  b.cancel_yn = 'N'
+                AND  b.cancel_document_id = 0
+            </if>
+    </select>
+
+    <select id="findAllOApprovalByEmployeeId" resultMap="approvalMap" parameterType="map">
+        SELECT
+                a.employee_name,
+                a.employee_number,
+                b.id,
+                b.start_time,
+                b.end_time,
+                b.content,
+                b.approval_status,
+                b.write_time,
+                b.cancel_yn,
+                b.cancel_document_id,
+                b.requester_id
+          FROM  employee a
+          JOIN  overtime_approval b
+            ON  a.id = b.requester_id
+         WHERE  a.id = #{employeeId}
+        <!-- 승인 -->
+        <if test="isApproval == 1">
+            AND  b.approval_status = 'A'
+        </if>
+        <!-- 반려 -->
+        <if test="isApproval == 2">
+            AND  b.approval_status = 'D'
+        </if>
+        <!-- 대기 -->
+        <if test="isApproval == 3">
+            AND  (b.approval_status = 'N'
+             OR  b.approval_status = 'V')
+        </if>
+        <!-- 취소 -->
+        <if test="isApproval == 4">
+            AND  (b.cancel_yn = 'Y'
+             OR  b.cancel_document_id != 0)
+        </if>
+        <!-- 승인(취소 제외) <목록> -->
+        <if test="isApproval == 5">
+            AND  b.approval_status = 'A'
+            AND  b.cancel_yn = 'N'
+            AND  b.cancel_document_id = 0
+        </if>
+    </select>
+
+    <select id="findAllRWApprovalByEmployeeId" resultMap="approvalMap" parameterType="map">
+        SELECT
+                a.employee_name,
+                a.employee_number,
+                b.id,
+                b.start_time,
+                b.end_time,
+                b.content,
+                b.origin_name,
+                b.rename_name,
+                b.path,
+                b.approval_status,
+                b.write_time,
+                b.cancel_yn,
+                b.cancel_document_id,
+                b.requester_id
+          FROM  employee a
+          JOIN  rw_approval b
+            ON  a.id = b.requester_id
+         WHERE  a.id = #{employeeId}
+        <!-- 승인 -->
+         <if test="isApproval == 1">
+           AND  b.approval_status = 'A'
+        </if>
+        <!-- 반려 -->
+        <if test="isApproval == 2">
+            AND  b.approval_status = 'D'
+        </if>
+        <!-- 대기 -->
+        <if test="isApproval == 3">
+            AND  (b.approval_status = 'N'
+             OR  b.approval_status = 'V')
+        </if>
+        <!-- 취소 -->
+        <if test="isApproval == 4">
+            AND  (b.cancel_yn = 'Y'
+             OR  b.cancel_document_id != 0)
+        </if>
+        <!-- 승인(취소 제외) <목록> -->
+        <if test="isApproval == 5">
+            AND  b.approval_status = 'A'
+            AND  b.cancel_yn = 'N'
+            AND  b.cancel_document_id = 0
+        </if>
+    </select>
+
+    <select id="findAllVApprovalByEmployeeId" resultMap="approvalMap" parameterType="map">
+        SELECT
+                a.employee_name,
+                a.employee_number,
+                b.id,
+                b.start_time,
+                b.end_time,
+                b.info_id,
+                b.content,
+                b.approval_status,
+                b.write_time,
+                b.cancel_yn,
+                b.cancel_document_id,
+                b.requester_id,
+                c.type_name
+          FROM  employee a
+          JOIN  vacation_approval b
+            ON  a.id = b.requester_id
+          JOIN  vacation_type c
+            ON  c.id = b.info_id
+         WHERE  a.id = #{employeeId}
+        <!-- 승인 -->
+        <if test="isApproval == 1">
+           AND  b.approval_status = 'A'
+        </if>
+        <!-- 반려 -->
+        <if test="isApproval == 2">
+            AND  b.approval_status = 'D'
+        </if>
+        <!-- 대기 -->
+        <if test="isApproval == 3">
+            AND  (b.approval_status = 'N'
+             OR  b.approval_status = 'V')
+        </if>
+        <!-- 취소 -->
+        <if test="isApproval == 4">
+            AND  (b.cancel_yn = 'Y'
+             OR  b.cancel_document_id != 0)
+        </if>
+        <!-- 승인(취소 제외) <목록> -->
+        <if test="isApproval == 5">
+            AND  b.approval_status = 'A'
+            AND  b.cancel_yn = 'N'
+            AND  b.cancel_document_id = 0
+        </if>
+    </select>
+
+    <select id="findBTDetailByApprovalId" resultMap="approvalMap" parameterType="int">
+        SELECT
+                id,
+                start_time,
+                end_time,
+                content,
+                destination,
+                approval_status,
+                write_time,
+                cancel_yn,
+                cancel_document_id,
+                requester_id
+          FROM  bt_approval
+         WHERE  id = #{approvalId};
+    </select>
+
+    <select id="findODetailByApprovalId" resultMap="approvalMap" parameterType="int">
+        SELECT
+                id,
+                start_time,
+                end_time,
+                content,
+                approval_status,
+                write_time,
+                cancel_yn,
+                cancel_document_id,
+                requester_id
+          FROM  overtime_approval
+         WHERE  id = #{approvalId};
+    </select>
+
+    <select id="findRWDetailByApprovalId" resultMap="approvalMap" parameterType="int">
+        SELECT
+                id,
+                start_time,
+                end_time,
+                content,
+                origin_name,
+                rename_name,
+                path,
+                approval_status,
+                write_time,
+                cancel_yn,
+                cancel_document_id,
+                requester_id
+          FROM  rw_approval
+         WHERE  id = #{approvalId};
+    </select>
+
+    <select id="findVDetailByApprovalId" resultMap="approvalMap" parameterType="int">
+        SELECT
+                a.id,
+                a.start_time,
+                a.end_time,
+                a.content,
+                a.info_id,
+                a.approval_status,
+                a.write_time,
+                a.cancel_yn,
+                a.cancel_document_id,
+                a.requester_id,
+                c.type_name
+          FROM  vacation_approval a
+          JOIN  vacation_info b
+            ON  a.info_id = b.id
+          JOIN  vacation_type c
+            ON  b.type_id = c.id
+         WHERE  a.id = #{approvalId};
+    </select>
+
+    <select id="findAllBTApprovalByApproverId" resultMap="approvalMap" parameterType="map">
+        SELECT
+                b.id,
+                b.content,
+                c.employee_name,
+                c.employee_number,
+                b.write_time,
+                b.approval_status
+        FROM
+        <if test="typeId == 1">
+            bt_approval_chain a
+            JOIN  bt_approval b
+        </if>
+        <if test="typeId == 2">
+            o_approval_chain a
+            JOIN  overtime_approval b
+        </if>
+        <if test="typeId == 3">
+            rw_approval_chain a
+            JOIN  rw_approval b
+        </if>
+        <if test="typeId == 4">
+            v_approval_chain a
+            JOIN  vacation_approval b
+        </if>
+          ON  a.approval_id = b.id
+        JOIN  employee c
+          ON  b.requester_id = c.id
+        WHERE  a.employee_id = #{approverId}
+        <!-- 승인 -->
+        <if test="isApproval == 1">
+            AND  b.approval_status = 'A'
+        </if>
+        <!-- 반려 -->
+        <if test="isApproval == 2">
+            AND  b.approval_status = 'D'
+        </if>
+        <!-- 대기 -->
+        <if test="isApproval == 3">
+            AND  (b.approval_status = 'N'
+             OR  b.approval_status = 'V')
+        </if>
+        <!-- 취소 -->
+        <if test="isApproval == 4">
+            AND  (cancel_yn = 'Y'
+             OR  cancel_document_id != 0)
+        </if>
+        <!-- 결재 필요 <메인> -->
+        <if test="isApproval == 5">
+            AND  (b.approval_status = 'N'
+             OR  b.approval_status = 'V')
+            AND  a.approval_status = 'W'
+        </if>
+    </select>
+</mapper>

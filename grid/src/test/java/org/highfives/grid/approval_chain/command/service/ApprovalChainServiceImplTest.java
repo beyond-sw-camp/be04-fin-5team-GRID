@@ -1,7 +1,6 @@
 package org.highfives.grid.approval_chain.command.service;
 
 import jakarta.transaction.Transactional;
-import org.apache.ibatis.annotations.Arg;
 import org.highfives.grid.approval_chain.command.aggregate.ChainStatus;
 import org.highfives.grid.approval_chain.command.vo.ChainStatusVO;
 import org.highfives.grid.approval_chain.command.vo.CommentVO;

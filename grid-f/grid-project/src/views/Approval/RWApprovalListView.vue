@@ -1,10 +1,13 @@
 <script setup>
-  import {onMounted, reactive} from "vue";
-  import axios from "axios";
+  import {onMounted, reactive, ref} from "vue";
+    import axios from "axios";
 
-  import ApprovalList from "@/components/Approval/ApprovalList.vue";
+    import ApprovalList from "@/components/Approval/ApprovalList.vue";
 
-  const typeId = 3;
+  const userRole = ref('');
+  const userId = ref();
+
+  const isLoading = ref(true);
 
   const state = reactive({
     approvalList:[]
@@ -12,7 +15,6 @@
 
   const fetchApprovalList = async(id) => {
     try {
-
       const url = `http://localhost:8080/approval/all/${typeId}/5`;
 
       const response = await axios.get(url);
@@ -30,7 +32,7 @@
   }
 
   onMounted(async() => {
-    await fetchApprovalList(2);
+    await fetchApprovalList(userId.value);
   })
 </script>
 

@@ -102,6 +102,7 @@ onMounted(async () => {
     if (token) {
         const decodedToken = parseJwt(token);
         userRole.value = decodedToken?.auth || '';
+        console.log('토큰:', decodedToken.auth);
     }
 
     const response = await axios.get(`http://localhost:8080/users/${route.params.employeeNumber}`);

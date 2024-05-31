@@ -4,7 +4,8 @@ import lombok.*;
 import org.highfives.grid.approval.command.aggregate.ApprovalStatus;
 import org.highfives.grid.approval.command.aggregate.YN;
 
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 @ToString
