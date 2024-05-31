@@ -12,15 +12,17 @@
           <img src="@/assets/icon2.png" alt="Button 2" class="icon-image" />
         </button>
         <div class="dropdown">
-          <img src="https://talkimg.imbc.com/TVianUpload/tvian/TViews/image/2020/04/12/FydNALvKf23Z637223013461671479.jpg"
-            alt="profile" class="profile dropdown-toggle" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-          <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <li><a class="dropdown-item" href="#" @click="goToProfile(employeeNumber)">개인 정보</a></li>
+          <img
+              :src="profileUrl"
+              alt="profile" class="profile" @click="toggleDropdown">
+          <ul class="dropdown-menu" ref="dropdownMenu">
+            <li><a class="dropdown-item" href="#" @click="goToProfile">개인 정보</a></li>
             <li><a class="dropdown-item" href="#" @click="logout">로그 아웃</a></li>
           </ul>
         </div>
       </div>
     </header>
+
 
     <div class="offcanvas offcanvas-end" id="demo">
       <div class="offcanvas-header">
@@ -65,12 +67,19 @@ import { Dropdown } from 'bootstrap';
 import draggable from 'vuedraggable';
 import { useRouter } from 'vue-router';
 import { useStore} from 'vuex';
+import defaultProfileImage from '@/assets/defaultProfile.jpg';
+
 const departments = ref([]);
 const router = useRouter();
 const store = useStore();
 const dropdownMenu = ref(null);
 
 const user = computed(() => store.state.user);
+
+const profileUrl = computed(() => {
+  return user.value?.profilePath ? user.value.profilePath : defaultProfileImage;
+});
+
 
 const fetchDepartments = async () => {
   try {
@@ -242,11 +251,24 @@ onMounted(() => {
     return new Dropdown(dropdownToggleEl);
   });
 });
-const logout = () => {
-  localStorage.removeItem('access');
-  document.cookie = 'refresh=; Max-Age=0; path=/;';
-  router.push('/');
+
+const logout = async () => {
+  try {
+    await axios.post('http://localhost:8080/logout', {}, { withCredentials: true });
+    localStorage.removeItem('access');
+    store.dispatch('resetState');
+    alert('로그아웃 되었습니다');
+    router.push('/');
+  } catch (error) {
+    console.error('로그아웃 중 오류가 발생했습니다:', error);
+  }
 };
+
+function main() {
+  router.push('/main');
+}
+
+
 
 onMounted(fetchDepartments);
 </script>

@@ -1,14 +1,14 @@
 <script setup>
-import { computed } from 'vue';
+import { computed, onMounted } from 'vue';
 import { RouterView, useRoute } from 'vue-router';
 import Header from '@/components/Header.vue';
 import Sidebar from '@/components/Sidebar.vue';
 import Footer from '@/components/Footer.vue';
+import { useStore } from 'vuex';
 
-// 현재 경로를 가져오는 useRoute 훅 사용
+const store = useStore();
 const route = useRoute();
 
-// 특정 경로에서는 레이아웃을 숨기기 위한 경로 설정
 const layoutHiddenPaths = [
   '/',
   '/find/id',
@@ -17,8 +17,6 @@ const layoutHiddenPaths = [
   '/find/pwd/:email/result',
   '/test'
 ];
-
-
 const showLayout = computed(() => {
   return !layoutHiddenPaths.some(hiddenPath => {
     const regex = new RegExp(`^${hiddenPath.replace(/:\w+/g, '[^/]+')}$`);
@@ -26,65 +24,58 @@ const showLayout = computed(() => {
   });
 });
 
-
-// 컨테이너 클래스 설정
 const containerClass = computed(() => {
-
   return showLayout.value ? 'container' : 'container-full';
 });
 
-
-// 메인 컨텐츠 클래스 설정
 const mainContentClass = computed(() => {
-
   return showLayout.value ? 'main-content' : 'main-content-full';
+});
+
+onMounted(async () => {
+  const email = localStorage.getItem('email');
+  if (email) {
+    store.commit('setEmail', email);
+    await store.dispatch('fetchUserByEmail', email);
+  }
 });
 
 </script>
 
-
 <template>
   <div class="container" :class="containerClass">
     <div class="header" v-if="showLayout">
-      <Header />
+      <Header/>
     </div>
     <div class="sidebar" v-if="showLayout">
-      <Sidebar />
+      <Sidebar/>
     </div>
     <div class="main-content" :class="mainContentClass">
-      <RouterView />
+      <RouterView/>
     </div>
     <div class="footer" v-if="showLayout">
-<!--      <Footer />-->
+      <Footer/>
     </div>
   </div>
 
 </template>
 
 <style scoped>
-@font-face {
-  font-family: 'IBMPlexSansKR-Regular';
-  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_20-07@1.0/IBMPlexSansKR-Regular.woff') format('woff');
-  font-weight: normal;
-  font-style: normal;
-}
-
 body {
-    font-family: 'IBMPlexSansKR-Regular', sans-serif;
-    margin: 0;
-    padding: 0;
-    width: 100vw;
-    height: 100vh;
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
 }
 
 .container {
   display: grid;
-  grid-template-columns: 200px 1fr;
+  grid-template-columns: 250px 1fr;
   grid-template-rows: 60px auto 35px;
   grid-template-areas:
-    "header header"
-    "side body"
-    "side footer";
+        "header header"
+        "side body"
+        "side footer";
   height: 100%;
   min-width: 100%;
   width: 100%;
@@ -107,18 +98,17 @@ body {
   position: fixed;
   top: 60px;
   left: 0;
-  width: 200px;
+  width: 250px;
   height: calc(100vh - 60px);
   z-index: 800;
   font-size: 14px;
 }
 
 .main-content {
-    font-family: 'IBMPlexSansKR-Regular', sans-serif;
-    grid-area: body;
-    margin-top: 60px;
-    padding: 0 ;
-    height: calc(100vh - 60px);
+  grid-area: body;
+  margin-top: 60px;
+  padding: 0;
+  height: calc(100vh - 60px);
 }
 
 .footer {
@@ -130,7 +120,6 @@ body {
   font-size: 10px;
   justify-self: flex-end;
 }
-
 
 .container-full {
   display: flex;

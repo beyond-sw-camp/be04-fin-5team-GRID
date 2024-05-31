@@ -37,15 +37,15 @@ const router = createRouter({
             props: true
         },
         {
-            path: '/performance-review-goal/add',
+            path: '/performance-review/goal/add',
             component: () => import('../views/PerformanceReview/Goal/GoalAddView.vue')
         },
         {
-            path: '/performance-review-goal',
+            path: '/performance-review/goal',
             component: () => import('../views/PerformanceReview/Goal/GoalListView.vue')
         },
         {
-            path: '/review-goal/detail/:id',
+            path: '/performance-review/goal/detail/:id',
             component: () => import('../views/PerformanceReview/Goal/GoalDetailView.vue')
         },
         {
