@@ -344,12 +344,10 @@
                 a.cancel_yn,
                 a.cancel_document_id,
                 a.requester_id,
-                c.type_name
+                b.type_name
           FROM  vacation_approval a
-          JOIN  vacation_info b
+          JOIN  vacation_type b
             ON  a.info_id = b.id
-          JOIN  vacation_type c
-            ON  b.type_id = c.id
          WHERE  a.id = #{approvalId};
     </select>
 

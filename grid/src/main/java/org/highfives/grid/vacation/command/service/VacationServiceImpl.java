@@ -417,7 +417,7 @@ public class VacationServiceImpl implements VacationService {
 
     @Override
     @Transactional
-    public void plusVacationNum(int employeeId, int typeId) {
+    public void plusVacationNum(int employeeId, int typeId, long days) {
         VacationInfo vacationInfo = new VacationInfo();
         if (typeId == 5 || typeId == 6) {
             vacationInfo = vacationInfoRepository.findByEmployeeIdAndTypeId(employeeId, 1);
@@ -432,7 +432,7 @@ public class VacationServiceImpl implements VacationService {
         } else if (typeId == 6) {
             vacationInfo.setVacationNum(vacationInfo.getVacationNum() + 0.25);
         } else
-            vacationInfo.setVacationNum(vacationInfo.getVacationNum() + 1);
+            vacationInfo.setVacationNum(vacationInfo.getVacationNum() + days);
 
         VacationHistory inputVacationHistory = VacationHistory.builder()
                 .changeTime(today.toString())
@@ -448,7 +448,7 @@ public class VacationServiceImpl implements VacationService {
 
     @Override
     @Transactional
-    public void minusVacationNum(int employeeId, int typeId) {
+    public void minusVacationNum(int employeeId, int typeId, long days) {
         VacationInfo vacationInfo = new VacationInfo();
         if (typeId == 5 || typeId == 6) {
             vacationInfo = vacationInfoRepository.findByEmployeeIdAndTypeId(employeeId, 1);
@@ -463,7 +463,7 @@ public class VacationServiceImpl implements VacationService {
         } else if (typeId == 6) {
             vacationInfo.setVacationNum(vacationInfo.getVacationNum() - 0.25);
         } else
-            vacationInfo.setVacationNum(vacationInfo.getVacationNum() - 1);
+            vacationInfo.setVacationNum(vacationInfo.getVacationNum() - days);
 
         VacationHistory inputVacationHistory = VacationHistory.builder()
                 .changeTime(today.toString())
