@@ -1,11 +1,11 @@
 <template>
   <aside class="sidebar">
     <div class="profile">
-      <!-- 추후 이미지 파일 업로드로 받아오기. -->
-      <img src="@/assets/profile.png" alt="Profile Picture" class="profile-pic" />
+      <!-- 프로필 이미지 -->
+      <img :src="profileUrl" alt="Profile Picture" class="profile-pic" />
       <div class="profile-info">
-        <h3>{{employee.name}}</h3>
-        <p>{{employee.email}} </p>
+        <h3>{{ user?.name }}</h3>
+        <p>{{ user?.email }}</p>
       </div>
     </div>
     <nav class="menu">
@@ -13,7 +13,7 @@
         <li>
           <span @click="toggleMenu('workManagement')">근태 관리</span>
           <ul v-show="activeMenus.workManagement">
-            <li>근무 관리</li>
+            <li @click="toWorkCalender()">근무 관리</li>
             <li @click="navigateTo('/work')">근무 정보</li>
             <li @click="toVacationManage()">휴가 종류</li>
             <li @click="toVacationPolicy()">휴가 정책</li>
@@ -24,7 +24,9 @@
         <li>
           <span @click="toggleMenu('paymentManagement')">결재 관리</span>
           <ul v-show="activeMenus.paymentManagement">
+
             <li @click="navigateTo('/regist/main')">결재 문서 작성</li>
+
             <li @click="navigateTo('/approval')">결재 문서 목록</li>
           </ul>
         </li>
@@ -43,7 +45,7 @@
         <li>
           <span @click="toggleMenu('departmentEvaluation')">동료 평가</span>
           <ul v-show="activeMenus.departmentEvaluation">
-            <li>본인 평가 목록</li>
+            <li @click="goToTeamMyReview">본인 평가 목록</li>
             <li @click="goToTeamReviewList">동료 평가 작성</li>
             <li @click="goToAddTeamReview">평가 생성</li>
             <li @click="goToTeamReviewHistory">전체 평가 내역</li>
@@ -52,12 +54,12 @@
         <li>
           <span @click="toggleMenu('performanceReview')">업적 평가 관리</span>
           <ul v-show="activeMenus.performanceReview">
-            <li @click="navigateTo('/performance-review-goal/add')">목표 작성</li>
-            <li @click="navigateTo('/performance-review-goal')">목표 조회</li>
-            <li @click="navigateTo('/performance-review/mid')">중간 평가 작성</li>
-            <li @click="navigateTo('/performance-review/final')">연말 평가 작성</li>
-            <li @click="navigateTo('/performance-review')">평가 조회</li>
-            <li @click="navigateTo('/performance-review/total')">종합 평가 조회</li>
+            <li @click="toAddPerformanceReviewGoal()" v-if="userRole === 'ROLE_USER'">목표 작성</li>
+            <li @click="toPerformanceReviewGoal()" v-if="userRole === 'ROLE_USER'">목표 조회</li>
+            <li @click="toAddMidPerformanceReview()" v-if="userRole === 'ROLE_USER'">중간 평가 작성</li>
+            <li @click="toAddFinalPerformanceReview()" v-if="userRole === 'ROLE_USER'">연말 평가 작성</li>
+            <li @click="toPerformanceReview()" v-if="userRole === 'ROLE_USER'">평가 조회</li>
+            <li @click="toTotalPerformanceReview()">종합 평가 조회</li>
           </ul>
         </li>
       </ul>
@@ -67,48 +69,20 @@
 
 <script setup>
 import axios from 'axios';
-import { ref, onMounted,reactive } from 'vue';
+import { ref, onMounted, reactive, computed } from 'vue';
 import { useRouter } from 'vue-router';
+import { useStore } from 'vuex';
+import defaultProfileImage from '@/assets/defaultProfile.jpg';
 
-const employee = ref([]);
-const error = ref([]);
 const router = useRouter();
+const store = useStore();
 const userRole = ref('');
+const error = ref([]);
 
-const fetchEmployee = async () => {
-  try {
-    const response = await axios.get(`http://localhost:8080/users/240201`); // ${employeeNumber}로 수정예정
-    employee.value = response.data.result;
-  } catch (err) {
-    console.error('Error fetching employee:', err);
-    error.value = 'Failed to fetch employee data.';
-  }
-};
-
-function parseJwt(token) {
-    try {
-        const base64Url = token.split('.')[1];
-        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
-            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-        }).join(''));
-        return JSON.parse(jsonPayload);
-    } catch (error) {
-        console.error('Invalid token', error);
-        return null;
-    }
-}
-
-onMounted(() => {
-  const token = localStorage.getItem('access');
-    if (token) {
-        const decodedToken = parseJwt(token);
-        userRole.value = decodedToken?.auth || '';
-    }
-
-  fetchEmployee();
+const user = computed(() => store.state.user);
+const profileUrl = computed(() => {
+  return user.value?.profilePath ? user.value.profilePath : defaultProfileImage;
 });
-
 
 const activeMenus = reactive({
   workManagement: false,
@@ -116,6 +90,7 @@ const activeMenus = reactive({
   hrManagement: false,
   departmentManagement: false,
   departmentEvaluation: false,
+  performanceReview: false,
 });
 
 const toggleMenu = (menu) => {
@@ -127,22 +102,14 @@ const gotodepartmentInfo = () => {
 }
 
 const goToAddTeamReview = () => {
-  router.push('/team-review/add');
-}
-
-const goToTeamReviewHistory = () => {
-  router.push('/team-review/history');
-}
-
-const goToTeamReviewList = () => {
-  router.push(`/team-review/list/${id}`);
+  router.push('/addteamreview');
 }
 
 const navigateTo = (path) => {
   router.push(path);
 };
 
-function toHR () {
+function toHR() {
   router.push('/hr');
 }
 
@@ -162,14 +129,128 @@ function toVacationChangeInfo() {
   router.push('/vacation/changeInfo');
 }
 
+const goToTeamReviewHistory = () => {
+  router.push('/team-review/history');
+}
+
+const goToTeamReviewList = () => {
+  router.push(`/team-review/list/${user.value.id}`);
+}
+
+const goToTeamMyReview = () => {
+  router.push(`/team-review/myreview/${user.value.id}`);
+}
+
+function toAddPerformanceReviewGoal() {
+  if(user.value.duties.dutiesName === '팀원'){
+    router.push('/performance-review/goal/add');
+  } else {
+    alert('팀원만 작성 가능합니다.');
+  }
+
+
+  // 3월에만 평가 작성할 수 있게 함
+  // if(user.value.duties.dutiesName === '팀원'){
+  //   const currentMonth = new Date().getMonth() + 1; // JavaScript에서 월은 0부터 시작하므로 +1을 해줍니다.
+  //   if (currentMonth === 3) {
+  //     router.push('/performance-review/goal/add');
+  //   } else {
+  //     alert('현재 목표 작성 기간이 아닙니다.');
+  //   }
+  // } else {
+  //   alert('팀원만 작성 가능합니다.');
+  // }
+}
+
+function toPerformanceReviewGoal() {
+  router.push('/performance-review/goal');
+}
+
+function toAddMidPerformanceReview() {
+  if(user.value.duties.dutiesName === '팀원'){
+    router.push('/performance-review/mid');
+  } else {
+    alert('팀원만 작성 가능합니다.');
+  }
+
+  // 6월에만 평가 작성할 수 있게 함
+  // if(user.value.duties.dutiesName === '팀원'){
+  //   const currentMonth = new Date().getMonth() + 1; // JavaScript에서 월은 0부터 시작하므로 +1을 해줍니다.
+  //   if (currentMonth === 6) {
+  //     router.push('/performance-review/mid');
+  //   } else {
+  //     alert('현재 중간 평가 작성 기간이 아닙니다.');
+  //   }
+  // } else {
+  //   alert('팀원만 작성 가능합니다.');
+  // }
+}
+
+function toAddFinalPerformanceReview() {
+  if(user.value.duties.dutiesName === '팀원'){
+    router.push('/performance-review/final');
+  } else {
+    alert('팀원만 작성 가능합니다.');
+  }
+
+  // 12월에만 평가 작성할 수 있게 함
+  // if(user.value.duties.dutiesName === '팀원'){
+  //   const currentMonth = new Date().getMonth() + 1; // JavaScript에서 월은 0부터 시작하므로 +1을 해줍니다.
+  //   if (currentMonth === 12) {
+  //     router.push('/performance-review/final');
+  //   } else {
+  //     alert('현재 연말 평가 작성 기간이 아닙니다.');
+  //   }
+  // } else {
+  //   alert('팀원만 작성 가능합니다.');
+  // }
+
+}
+
+function toPerformanceReview() {
+  router.push('/performance-review');
+}
+
+function toTotalPerformanceReview() {
+  router.push('/performance-review/total');
+}
+
+function toWorkCalender() {
+  router.push('/work-calendar');
+}
+
+
+function parseJwt(token) {
+  try {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+    return JSON.parse(jsonPayload);
+  } catch (error) {
+    console.error('Invalid token', error);
+    return null;
+  }
+}
+
+
+
+onMounted(() => {
+  const token = localStorage.getItem('access');
+  if (token) {
+    const decodedToken = parseJwt(token);
+    userRole.value = decodedToken?.auth || '';
+  }
+});
 </script>
 
 <style scoped>
 @font-face {
-    font-family: 'IBMPlexSansKR-Regular';
-    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_20-07@1.0/IBMPlexSansKR-Regular.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
+  font-family: 'IBMPlexSansKR-Regular';
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_20-07@1.0/IBMPlexSansKR-Regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
 }
 
 .sidebar {
@@ -180,11 +261,13 @@ function toVacationChangeInfo() {
   overflow-y: auto;
   font-family: 'IBMPlexSansKR-Regular';
 }
-.sidebar{
-   -ms-overflow-style: none;
+
+.sidebar {
+  -ms-overflow-style: none;
 }
-.sidebar::-webkit-scrollbar{
-  display:none;
+
+.sidebar::-webkit-scrollbar {
+  display: none;
 }
 
 .profile {
@@ -244,4 +327,4 @@ function toVacationChangeInfo() {
 .menu li ul li {
   padding: 5px 0;
 }
-</style>  
+</style>
