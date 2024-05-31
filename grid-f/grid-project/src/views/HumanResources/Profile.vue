@@ -203,7 +203,7 @@ body {
 }
 
 .profile-icon {
-    width: 130%;
+    width: 110%;
     margin: 0 40px 10px 0;
     filter: invert(0%) sepia(64%) saturate(7%) hue-rotate(334deg) brightness(85%) contrast(101%);
 }

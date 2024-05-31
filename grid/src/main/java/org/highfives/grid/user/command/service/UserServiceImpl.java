@@ -284,6 +284,33 @@ public class UserServiceImpl implements UserService{
 
     private Employee inputNewInfo(Employee oldInfo, UserDTO givenInfo) {
 
+        if(givenInfo.getEmail() == null)
+            givenInfo.setEmail(oldInfo.getEmail());
+        if(givenInfo.getName() == null)
+            givenInfo.setName(oldInfo.getEmployeeName());
+        if(givenInfo.getEmployeeNumber() == null)
+            givenInfo.setEmployeeNumber(oldInfo.getEmployeeNumber());
+        if(givenInfo.getPhoneNumber() == null)
+            givenInfo.setPhoneNumber(oldInfo.getPhoneNumber());
+        if(givenInfo.getCallNumber() == null)
+            givenInfo.setCallNumber(oldInfo.getCallNumber());
+        if(givenInfo.getDepartmentId() == 0)
+            givenInfo.setDepartmentId(oldInfo.getDepartmentId());
+        if(givenInfo.getTeamId() == 0)
+            givenInfo.setTeamId(oldInfo.getTeamId());
+        if(givenInfo.getPositionId() == 0)
+            givenInfo.setPositionId(oldInfo.getPositionId());
+        if(givenInfo.getDutiesId() == 0)
+            givenInfo.setDutiesId(oldInfo.getDutiesId());
+        if(givenInfo.getWorkType() == null)
+            givenInfo.setWorkType(oldInfo.getWorkType());
+        if(givenInfo.getContractEndTime() == null)
+            givenInfo.setContractEndTime(oldInfo.getContractEndTime());
+        if(givenInfo.getZipCode() == null)
+            givenInfo.setZipCode(oldInfo.getZipCode());
+        if(givenInfo.getAddress() == null)
+            givenInfo.setAddress(oldInfo.getAddress());
+
         return Employee.builder()
                 .id(oldInfo.getId())
                 .email(givenInfo.getEmail())

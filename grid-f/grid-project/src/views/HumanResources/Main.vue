@@ -246,14 +246,14 @@ button {
 }
 
 .hr-title h1 {
-    margin-left: 0.5%;
-    font-weight: 600;
-    font-size: 25px;
+    margin-left: 1.2%;
+    font-weight: bold;
+    font-size: 14pt;
 }
 
 .hr-icon {
     color: black;
-    width: 80%;
+    width: 110%;
     filter: invert(0%) sepia(97%) saturate(0%) hue-rotate(82deg) brightness(98%) contrast(100%) !important;
 }
 

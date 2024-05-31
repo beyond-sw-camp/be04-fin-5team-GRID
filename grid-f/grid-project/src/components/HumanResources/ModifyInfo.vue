@@ -127,15 +127,16 @@
                 <span v-if="duplicateWarning.employeeNumber" class="warning">중복된 사번입니다.</span>
             </div>
             <div id="modify-basic-info3">
-                <input v-if="userRole === 'ROLE_ADMIN'" type="text" v-model="newEmail" @blur="checkDuplicate('email')" :class="{ modified: newEmail !== user.email }">
-                <span v-if="duplicateWarning.email" class="warning">중복된 이메일입니다.</span>
+                <input v-if="userRole === 'ROLE_ADMIN'" type="text" v-model="newEmail" @blur="checkEmailValidity" :class="{ modified: newEmail !== user.email }">
+                <img v-if="duplicateWarning.email && newEmail != ''" src="@/assets/HR/fail.png" alt="실패 이미지" style="width: 15px; height: 15px; margin: 0 0 1px 10px;">
             </div>
             <div id="modify-basic-info4">
-                <input v-if="userRole === 'ROLE_ADMIN'" type="text" v-model="newPhoneNumber" @blur="checkDuplicate('phoneNumber')" :class="{ modified: newPhoneNumber !== user.phoneNumber }">
-                <span v-if="duplicateWarning.phoneNumber" class="warning">중복된 휴대전화번호입니다.</span>
+                <input v-if="userRole === 'ROLE_ADMIN'" type="text" v-model="newPhoneNumber" @blur="checkPhoneValidity" :class="{ modified: newPhoneNumber !== user.phoneNumber }">
+                <img v-if="duplicateWarning.phoneNumber && newPhoneNumber != ''" src="@/assets/HR/fail.png" alt="실패 이미지" style="width: 15px; height: 15px; margin: 0 0 1px 10px;">
             </div>
             <div id="modify-basic-info5">
-                <input v-if="userRole === 'ROLE_ADMIN'" type="text" v-model="newCallNum" :class="{ modified: newCallNum !== user.callNumber }">
+                <input v-if="userRole === 'ROLE_ADMIN'" type="text" v-model="newCallNum" @blur="checkLandlineValidity" :class="{ modified: newCallNum !== user.callNumber }">
+                <img v-if="duplicateWarning.callNumber && newCallNum != ''" src="@/assets/HR/fail.png" alt="실패 이미지" style="width: 15px; height: 15px; margin: 0 0 1px 10px;">
             </div>
             <div id="modify-admin-info6">
                 <input v-if="userRole === 'ROLE_ADMIN'" v-model="newJoinTime" :class="{ modified: newJoinTime !== user.joinTime }" type="date" required>
@@ -228,7 +229,6 @@
     </div>
 </template>
 
-
 <script setup>
 import { defineProps, defineEmits, onMounted, ref, watch, computed } from 'vue';
 import axios from 'axios';
@@ -259,7 +259,8 @@ const address = ref('');
 const duplicateWarning = ref({
     employeeNumber: false,
     email: false,
-    phoneNumber: false
+    phoneNumber: false,
+    callNumber: false // 추가
 });
 const contractEndTime = ref('');
 
@@ -288,6 +289,10 @@ const newIsResigned = ref('N');
 const resignedTime = ref('');
 const newContractEndTime = ref('');
 const newContractStartTime = ref('');
+
+const isValidEmail = ref(true);
+const isValidPhoneNumber = ref(true);
+const isValidCallNumber = ref(true);
 
 const resultAddress = computed(() => `${newAddress.value} ${newAddressDetail.value}`);
 
@@ -409,6 +414,37 @@ const resignUser = async () => {
     }
 };
 
+const emailRegExp = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
+const phoneRegExp = /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/;
+const landlineRegExp = /^\d{2,3}-\d{3,4}-\d{4}$/;
+
+const checkEmailValidity = () => {
+    const emailTrimmed = newEmail.value.trim();
+    if (!emailTrimmed || !emailRegExp.test(emailTrimmed)) {
+        duplicateWarning.value.email = true;
+    } else {
+        duplicateWarning.value.email = false;
+    }
+};
+
+const checkPhoneValidity = () => {
+    const phoneTrimmed = newPhoneNumber.value.trim();
+    if (!phoneTrimmed || !phoneRegExp.test(phoneTrimmed)) {
+        duplicateWarning.value.phoneNumber = true;
+    } else {
+        duplicateWarning.value.phoneNumber = false;
+    }
+};
+
+const checkLandlineValidity = () => {
+    const callNumberTrimmed = newCallNum.value.trim();
+    if (!callNumberTrimmed || !landlineRegExp.test(callNumberTrimmed)) {
+        duplicateWarning.value.callNumber = true;
+    } else {
+        duplicateWarning.value.callNumber = false;
+    }
+};
+
 watch(
     () => [
         newDepartmentId.value,
@@ -466,6 +502,12 @@ watch(
 <style scoped>
 hr {
     margin-top: 1%;
+}
+
+.warning {
+    color: red;
+    font-weight: bold;
+    margin-left: 5px;
 }
 
 .hr-main {

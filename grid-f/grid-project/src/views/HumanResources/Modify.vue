@@ -1,7 +1,7 @@
 <template>
     <div class="profile-main">
         <div class="profile-title">
-            <img class="profile-icon" src="@/assets/profile.png" alt="인사 정보 메인 이미지">
+            <img class="profile-icon" src="@/assets/HR/modify-user.png" alt="인사 정보 메인 이미지">
             <h1>인사 정보 수정 </h1>
         </div>
         <div class="first" v-if="user">
@@ -269,7 +269,7 @@ body {
 }
 
 .profile-icon {
-    width: 130%;
+    width: 110%;
     margin: 0 40px 10px 0;
     filter: invert(0%) sepia(64%) saturate(7%) hue-rotate(334deg) brightness(85%) contrast(101%);
 }

@@ -1,7 +1,7 @@
 <template>
     <div class="hr-main">
         <div class="hr-title">
-            <img class="hr-icon" src="@/assets/HR/hr.png" alt="인사 정보 메인 이미지">
+            <img class="hr-icon" src="@/assets/HR/modify-user.png" alt="인사 정보 메인 이미지">
             <h1>인사 정보 일괄 수정</h1>
         </div>
         <div class="search">
@@ -399,13 +399,14 @@ button {
 }
 
 .hr-title h1 {
-    margin-left: 0.5%;
-    font-weight: 600;
-    font-size: 25px;
+    margin-left: 1.2%;
+    font-weight: bold;
+    font-size: 14pt;
 }
 
 .hr-icon {
-    width: 80%;
+    width: 110%;
+    margin: 0 40px 10px 0;
     filter: invert(0%) sepia(64%) saturate(7%) hue-rotate(334deg) brightness(85%) contrast(101%);
 }
 
