@@ -18,9 +18,9 @@
           <table >
             <thead>
               <tr>
-                <th>선택</th>
-                <th>항목</th>
-                <th>내용</th>
+                <th style="width: 5%;">선택</th>
+                <th style="width: 10%;">항목</th>
+                <th style="width: 85%;">내용</th>
               </tr>
             </thead>
             <tbody>

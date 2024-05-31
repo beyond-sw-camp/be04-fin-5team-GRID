@@ -143,15 +143,25 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap';
+import { useStore } from 'vuex';
+
+const store = useStore();
+
+const user = computed(() => store.state.user);
+
+const router = useRouter();
+const route = useRoute();
 
 const departments = ref([]);
 const leaders = ref([]);
 const currentPage = ref(1);
 const itemsPerPage = 10;
 const searchQuery = ref('');
+
 const newDepartment = ref({
   departmentName: '',
   departmentCode: '',
@@ -161,10 +171,12 @@ const newDepartment = ref({
   highDepartment: ''
 });
 
+
+
 // Fetch leader names
 const fetchLeaders = async () => {
   try {
-    const response = await axios.get(`http://localhost:8080/users/${id}`);
+    const response = await axios.get(`http://localhost:8080/users/id/${user.value.id}`);
     leaders.value = response.data.result;
   } catch (error) {
     console.error('책임자 정보를 불러오는 중 에러 발생:', error);
@@ -322,15 +334,13 @@ const goToDepartmentTeams = (id) => {
 }
 
 .header {
-}
-
-.header-title {
 
   grid-column-start: 2;
   display: grid;
   grid-template-columns: 90% 4.5% 1% 4.5%;
   align-items: center;
 }
+
 
 .header-title {
   align-items: center;

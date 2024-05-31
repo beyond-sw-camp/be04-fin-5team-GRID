@@ -88,13 +88,17 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import axios from 'axios';
+import { useStore } from 'vuex';
 
+const store = useStore();
 const searchQuery = ref('');
 const reviews = ref([]);
 const isModalOpen = ref(false);
 const selectedReview = ref(null);
 const reviewItems = ref([]);
 const selectedOptions = ref([]);
+
+const user = computed(() => store.state.user);
 
 const optionToScoreMap = {
   S: 95,
@@ -105,7 +109,7 @@ const optionToScoreMap = {
 
 const fetchReviews = async () => {
   try {
-    const response = await axios.get(`http://localhost:8080/review/assigned-review/${id}`);
+    const response = await axios.get(`http://localhost:8080/review/assigned-review/${user.value.id}`);
     const reviewList = response.data.result;
 
     await Promise.all(reviewList.map(async review => {
