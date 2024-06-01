@@ -412,7 +412,6 @@
                 start_time,
                 end_time,
                 content,
-                destination,
                 approval_status,
                 write_time,
                 cancel_yn,
@@ -420,7 +419,10 @@
                 requester_id
          FROM
             <if test="typeId == 1">bt_approval</if>
-            <if test="typeId == 2">v_approval</if>
-         WHERE  #{today} BETWEEN (STR_TO_DATE(start_time, '%Y-%m-%d %H:%i:%s')) AND (STR_TO_DATE(end_time, '%Y-%m-%d %H:%i:%s'));
+            <if test="typeId == 2">vacation_approval</if>
+         WHERE  (#{today} BETWEEN (STR_TO_DATE(start_time, '%Y-%m-%d %H:%i:%s')) AND (STR_TO_DATE(end_time, '%Y-%m-%d %H:%i:%s')))
+           AND  approval_status = 'A'
+           AND  cancel_yn = 'N'
+           AND  cancel_document_id = 0;
     </select>
 </mapper>
