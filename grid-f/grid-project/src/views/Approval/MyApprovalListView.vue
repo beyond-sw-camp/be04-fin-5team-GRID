@@ -25,9 +25,9 @@
     }
   }
 
-  const fetchReqApprovalList = async(typeId, approvalStatus, approverId) => {
+  const fetchApprovalList = async(typeId, approvalStatus, employeeId) => {
     try {
-      const response = await axios.get(`http://localhost:8080/approval/approver/${typeId}/${approvalStatus}/${approverId}`);
+      const response = await axios.get(`http://localhost:8080/approval/list/${typeId}/${approvalStatus}/${employeeId}`);
 
       if (response.status !== 200) {
         throw new Error("response is not ok");
@@ -50,7 +50,7 @@
       userId.value = decodedToken.id || '';
     }
 
-    await fetchReqApprovalList(1, 5, userId.value);
+    await fetchApprovalList(1, 0, userId.value);
 
     isLoading.value = false;
   })
