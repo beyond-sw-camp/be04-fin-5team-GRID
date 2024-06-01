@@ -61,6 +61,13 @@ onMounted(async () => {
 </template>
 
 <style scoped>
+@font-face {
+  font-family: 'IBMPlexSansKR-Regular';
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_20-07@1.0/IBMPlexSansKR-Regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -105,6 +112,7 @@ body {
 }
 
 .main-content {
+  font-family: 'IBMPlexSansKR-Regular', sans-serif;
   grid-area: body;
   margin-top: 60px;
   padding: 0;
