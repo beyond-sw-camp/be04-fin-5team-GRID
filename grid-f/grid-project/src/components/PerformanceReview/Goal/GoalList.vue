@@ -5,7 +5,7 @@
             <h1>업적 평가 목표 조회</h1>
         </div>
         <div class="tableContainer">
-            <table>
+            <table class="table">
                 <thead>
                     <tr>
                         <th>No</th>
@@ -18,24 +18,51 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(item, index) in paginatedGoals" :key="item.id">
+                    <tr v-for="(item, index) in paginatedHistories" :key="item.id">
                         <td>{{ (currentPage - 1) * itemsPerPage + index + 1 }}</td>
                         <td>{{ item.year }}</td>
                         <td>{{ item.reviewName }}</td>
                         <td>{{ getApprovalStatus(item.approvalStatus) }}</td>
                         <td>{{ getEmployeeName(item.writer) }}</td>
                         <td>{{ getEmployeeName(item.approver) }}</td>
-                        <td><button @click="goToDetailPage(item.id)">상세보기</button></td>
+                        <td><button @click="goToDetailPage(item.id)"><img class="more" src="@/assets/buttons/zoom.png"></button></td>
                     </tr>
                 </tbody>
             </table>
         </div>
-        <div class="pagination">
-            <button @click="prevPage" :disabled="currentPage === 1">Previous</button>
-            <button v-for="page in totalPages" :key="page" @click="goToPage(page)"
-                :class="{ active: page === currentPage }">{{ page }}</button>
-            <button @click="nextPage" :disabled="currentPage === totalPages">Next</button>
-        </div>
+<!--        <div class="pagination">-->
+<!--            <button @click="prevPage" :disabled="currentPage === 1">Previous</button>-->
+<!--            <button v-for="page in totalPages" :key="page" @click="goToPage(page)"-->
+<!--                :class="{ active: page === currentPage }">{{ page }}</button>-->
+<!--            <button @click="nextPage" :disabled="currentPage === totalPages">Next</button>-->
+<!--        </div>-->
+      <nav class="pg" aria-label="Page navigation example" v-if="totalPages > 1">
+        <ul class="pagination">
+          <li class="page-item" :class="{ disabled: currentPage === 1 }">
+            <a class="page-link" href="#" aria-label="First" @click.prevent="goToFirstPage">
+              <span aria-hidden="true">&laquo;&laquo;</span>
+            </a>
+          </li>
+          <li class="page-item" :class="{ disabled: currentPage === 1 }">
+            <a class="page-link" href="#" aria-label="Previous" @click.prevent="prevPage">
+              <span aria-hidden="true">&laquo;</span>
+            </a>
+          </li>
+          <li v-for="page in filteredPages" :key="page" class="page-item" :class="{ active: page === currentPage }">
+            <a class="page-link" @click.prevent="goToPage(page)">{{ page }}</a>
+          </li>
+          <li class="page-item" :class="{ disabled: currentPage === totalPages }">
+            <a class="page-link" aria-label="Next" @click.prevent="nextPage">
+              <span aria-hidden="true">&raquo;</span>
+            </a>
+          </li>
+          <li class="page-item" :class="{ disabled: currentPage === totalPages }">
+            <a class="page-link" href="#" aria-label="Last" @click.prevent="goToLastPage">
+              <span aria-hidden="true">&raquo;&raquo;</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
     </div>
 </template>
 
@@ -53,6 +80,9 @@ const router = useRouter();
 const goalList = ref([]);
 const currentPage = ref(1);
 const itemsPerPage = 10;
+const filteredInfo = ref([]);
+const filteredHistories = ref([]); // 필터링된 기록
+
 
 const fetchMemberGoal = async () => {
     try {
@@ -60,6 +90,8 @@ const fetchMemberGoal = async () => {
         const response = await axios.get(`http://localhost:8080/review-goal/member/${user.value.id}`);
 
         goalList.value = response.data.findGoalList;
+      filteredHistories.value = goalList.value;
+      // filteredInfo.value = goalList.value; // 초기화 시 전체 데이터를 필터링된 데이터에 할당
     } catch (error) {
         console.error('에러 발생:', error);
     }
@@ -72,6 +104,7 @@ const fetchLeaderGoal = async () => {
     const response = await axios.get(`http://localhost:8080/review-goal/leader/${user.value.id}`);
     console.log(response.data.findGoalList);
     goalList.value = response.data.findGoalList;
+    filteredHistories.value = goalList.value;
   } catch (error) {
     console.error('에러 발생:', error);
   }
@@ -86,31 +119,79 @@ onMounted(() => {
 
 });
 
-const paginatedGoals = computed(() => {
-    const start = (currentPage.value - 1) * itemsPerPage;
-    const end = start + itemsPerPage;
-    return goalList.value.slice(start, end);
+const totalPages = computed(() => {
+  return Math.ceil(filteredHistories.value.length / itemsPerPage);
 });
 
-const totalPages = computed(() => {
-    return Math.ceil(goalList.value.length / itemsPerPage);
+const paginatedHistories = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage;
+  const end = start + itemsPerPage;
+  return filteredHistories.value.slice(start, end);
+});
+
+const filteredPages = computed(() => {
+  const maxPages = 5; // 페이지당 최대 표시할 페이지 수
+  const startPage = Math.max(1, currentPage.value - Math.floor(maxPages / 2));
+  const endPage = Math.min(totalPages.value, startPage + maxPages - 1);
+
+  const pages = [];
+  for (let i = startPage; i <= endPage; i++) {
+    pages.push(i);
+  }
+  return pages;
 });
 
 const prevPage = () => {
-    if (currentPage.value > 1) {
-        currentPage.value--;
-    }
+  if (currentPage.value > 1) {
+    currentPage.value--;
+  }
 };
 
 const nextPage = () => {
-    if (currentPage.value < totalPages.value) {
-        currentPage.value++;
-    }
+  if (currentPage.value < totalPages.value) {
+    currentPage.value++;
+  }
 };
 
 const goToPage = (page) => {
-    currentPage.value = page;
+  currentPage.value = page;
 };
+
+// 처음 페이지로 이동
+const goToFirstPage = () => {
+  currentPage.value = 1;
+};
+
+// 마지막 페이지로 이동
+const goToLastPage = () => {
+  currentPage.value = totalPages.value;
+};
+
+// const paginatedGoals = computed(() => {
+//     const start = (currentPage.value - 1) * itemsPerPage;
+//     const end = start + itemsPerPage;
+//     return goalList.value.slice(start, end);
+// });
+//
+// const totalPages = computed(() => {
+//     return Math.ceil(goalList.value.length / itemsPerPage);
+// });
+//
+// const prevPage = () => {
+//     if (currentPage.value > 1) {
+//         currentPage.value--;
+//     }
+// };
+//
+// const nextPage = () => {
+//     if (currentPage.value < totalPages.value) {
+//         currentPage.value++;
+//     }
+// };
+//
+// const goToPage = (page) => {
+//     currentPage.value = page;
+// };
 
 const getApprovalStatus = (status) => {
     switch (status) {
@@ -142,7 +223,7 @@ const goToDetailPage = (id) => {
 <style scoped>
 .goalListContainer {
     display: grid;
-    grid-template-rows: 18% 4% 2% auto 5% 13%;
+    grid-template-rows: 18% 4% auto 5% 13%;
     grid-template-columns: 10% 80% 10%;
     height: 100%;
 }
@@ -160,11 +241,17 @@ const goToDetailPage = (id) => {
 }
 
 .goalListTitle h1 {
-    margin-left: 0.5%;
+  margin-left: 0.5%;
+  font-weight: 600;
+  font-size: 25px;
 }
 
 .GoalIcon {
     width: 80%;
+}
+
+.more {
+  width: 12px;
 }
 
 .search {
@@ -196,7 +283,7 @@ const goToDetailPage = (id) => {
 }
 
 .tableContainer {
-    grid-row-start: 4;
+    grid-row-start: 3;
     grid-column-start: 2;
     grid-column-end: 3;
     margin-top: 20px;
@@ -205,22 +292,22 @@ const goToDetailPage = (id) => {
 
 table {
     width: 100%;
-    border-collapse: collapse;
+    //border-collapse: collapse;
 }
 
 th,
 td {
-    border: 1px solid #dddddd;
+    //border: 1px solid #dddddd;
     text-align: left;
     padding: 6px;
     vertical-align: middle;
 }
 
 th {
-    background-color: #f2f2f2;
+    //background-color: #f2f2f2;
 }
 
-.pagination {
+/*.pagination {
     grid-row-start: 6;
     grid-column-start: 2;
     grid-column-end: 3;
@@ -254,5 +341,64 @@ th {
 .pagination span {
     display: flex;
     align-items: center;
+}*/
+
+.pg {
+  grid-row-start: 5;
+  grid-column-start: 2;
+  grid-column-end: 3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
 }
+
+.pagination .page-item.active .page-link {
+  background-color: #088A85; /* 원하는 배경색 */
+  border-color: #088A85; /* 원하는 테두리 색 */
+  color: white; /* 원하는 텍스트 색 */
+}
+
+.pagination .page-item .page-link {
+  color: #088A85; /* 기본 텍스트 색 */
+}
+
+.pagination .page-item.disabled .page-link {
+  color: #088A85; /* 비활성화된 페이지 색 */
+}
+
+
+/* 페이지네이션 추가 */
+/*.pg {
+  grid-row-start: 4;
+  grid-column-start: 2;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+}
+.pagination a {
+  color: rgb(124, 122, 122); !* 기본 글자색을 검은색으로 설정 *!
+}
+.pagination button {
+  background-color: white;
+  color: black;
+  padding: 0;
+  border: 1px solid #dddddd;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 0 5px;
+}
+.pagination button:disabled {
+  background-color: #dddddd;
+  cursor: not-allowed;
+}
+.page-item.active .page-link {
+  background-color: #088A85;
+  border-color: #088A85;
+  color: white; !* 선택된 버튼의 글자색을 흰색으로 설정 *!
+}*/
 </style>

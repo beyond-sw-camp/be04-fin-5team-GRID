@@ -25,56 +25,58 @@
       </table>
     </div>
     <div class="performanceTableContainer">
+      <table class="table">
+        <thead>
+        <tr>
+          <th>No</th>
+          <th>목표</th>
+          <th>실행과제</th>
+          <th>측정지표</th>
+          <th>세부계획</th>
+          <th>가중치</th>
+          <th>추진실적</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="(item, index) in reviewItemList" :key="item.id">
+          <td>{{ index + 1 }}</td>
+          <td>
+            {{ item.goal }}
+          </td>
+          <td>
+            {{ item.actionItem }}
+          </td>
+          <td>
+            {{ item.metric }}
+          </td>
+          <td>
+            {{ item.detailPlan }}
+          </td>
+          <td>
+            {{ item.weight }}
+          </td>
+          <td>
+            {{ item.performance }}
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="scoreTableContainer">
+      <div class="scoreTable">
         <table>
           <thead>
           <tr>
-            <th>No</th>
-            <th>목표</th>
-            <th>실행과제</th>
-            <th>측정지표</th>
-            <th>세부계획</th>
-            <th>가중치</th>
-            <th>추진실적</th>
+            <td>점수</td>
+            <td>{{ totalDetail.totalScore }}</td>
+          </tr>
+          <tr>
+            <td>등급</td>
+            <td>{{ totalDetail.totalGrade }}</td>
           </tr>
           </thead>
-          <tbody>
-          <tr v-for="(item, index) in reviewItemList" :key="item.id">
-            <td>{{ index + 1 }}</td>
-            <td>
-              {{ item.goal }}
-            </td>
-            <td>
-              {{item.actionItem}}
-            </td>
-            <td>
-              {{ item.metric }}
-            </td>
-            <td>
-              {{ item.detailPlan }}
-            </td>
-            <td>
-              {{ item.weight }}
-            </td>
-            <td>
-              {{ item.performance}}
-            </td>
-          </tr>
-          </tbody>
         </table>
-    </div>
-    <div class="scoreTableContainer">
-      <table>
-        <thead>
-        <tr>
-          <td>점수</td>
-          <td>{{totalDetail.totalScore}}</td>
-        </tr>
-        <tr>
-          <td>등급</td>
-          <td>{{totalDetail.totalGrade}}</td>
-        </tr>
-        </thead>
-      </table>
+      </div>
     </div>
   </div>
 </template>
@@ -112,7 +114,7 @@ const fetchReviewDetail = async () => {
     const responseTotalReview = await axios.get(`http://localhost:8080/total-performance-review/${id}`)
     console.log(responseTotalReview.data.findTotal);
 
-    const total =  responseTotalReview.data.findTotal;
+    const total = responseTotalReview.data.findTotal;
 
     totalDetail.value = {
       id: total.id,
@@ -120,8 +122,8 @@ const fetchReviewDetail = async () => {
       reviewName: total.reviewName,
       midtermId: total.midtermId,
       finalId: total.finalId,
-      totalGrade: total.totalGrade? total.totalGrade.grade : '없음',
-      totalScore: total.totalGrade? total.totalGrade.score : '없음',
+      totalGrade: total.totalGrade ? total.totalGrade.grade : '없음',
+      totalScore: total.totalGrade ? total.totalGrade.score : '없음',
       revieweeName: total.reviewee ? total.reviewee.employeeName : '없음',
       reviewerName: total.reviewer ? total.reviewer.employeeName : '없음'
     };
@@ -129,9 +131,9 @@ const fetchReviewDetail = async () => {
     console.log(totalDetail.value);
 
     // 연말 평가 조회하기
-    const finalId = totalDetail.value.id;
+    const finalId = totalDetail.value.finalId;
     const response = await axios.get(`http://localhost:8080/performance-review/detail/${finalId}`);
-    if(response.data.findDetailReview) {
+    if (response.data.findDetailReview) {
       const review = response.data.findDetailReview;
       reviewItemList.value = review.reviewItemList;
     }
@@ -159,8 +161,8 @@ const scoreMapping = {
 <style scoped>
 .reviewDetailContainer {
   display: grid;
-  grid-template-rows: 18% 21% 1% minmax(40%, auto) 3% 8% 13%;
-  grid-template-columns: 10% 40% 40% 10%;
+  grid-template-rows: 18% 18% 1% minmax(40%, auto) 3% 10% 13%;
+  grid-template-columns: 10% 80% 10%;
   height: 100%;
 }
 
@@ -178,6 +180,8 @@ const scoreMapping = {
 
 .reviewTitle h1 {
   margin-left: 0.5%;
+  font-weight: 600;
+  font-size: 25px;
 }
 
 .reviewIcon {
@@ -187,8 +191,7 @@ const scoreMapping = {
 .titleTableContainer {
   grid-row-start: 2;
   grid-column-start: 2;
-  grid-column-end: 4;
-  margin-top: 20px;
+  grid-column-end: 3;
   font-size: 12px;
 }
 
@@ -203,22 +206,10 @@ const scoreMapping = {
   font-weight: bold;
 }
 
-.GoalButtonContainer {
-  grid-row-start: 3;
-  grid-column-start: 2;
-  grid-column-end: 3;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 10px;
-  margin-top: 20px;
-}
-
-
 .performanceTableContainer {
   grid-row-start: 4;
   grid-column-start: 2;
-  grid-column-end: 4;
+  grid-column-end: 3;
   /* margin-top: 20px; */
   font-size: 12px;
 
@@ -232,8 +223,14 @@ const scoreMapping = {
 
 .scoreTableContainer {
   grid-row-start: 6;
-  grid-column-start: 3;
-  grid-column-end: 4;
+  grid-column-start: 2;
+  grid-column-end: 3;
+  display: grid;
+  grid-template-columns: 70% 30%;
+}
+
+.scoreTable {
+  grid-column-start: 2;
 }
 
 table {
@@ -259,6 +256,7 @@ th {
 .performanceTableContainer td {
   height: 100px;
 }
+
 .performanceTableContainer td {
   height: 100px;
 }
@@ -273,6 +271,7 @@ th {
 .performanceTableContainer th:nth-child(1),
 .performanceTableContainer td:nth-child(1) {
   min-width: 30px; /* No */
+  text-align: center;
 }
 
 .performanceTableContainer th:nth-child(2),
@@ -298,35 +297,11 @@ th {
 .performanceTableContainer th:nth-child(6),
 .performanceTableContainer td:nth-child(6) {
   min-width: 70px; /* 가중치 */
+  text-align: center;
 }
 
 .performanceTableContainer th:nth-child(7),
 .performanceTableContainer td:nth-child(7) {
   min-width: 500px; /* 추진실적 */
-}
-
-.performanceTableContainer th:nth-child(8),
-.performanceTableContainer td:nth-child(8) {
-  min-width: 90px; /* 자기 평가 */
-}
-
-.performanceTableContainer th:nth-child(9),
-.performanceTableContainer td:nth-child(9) {
-  min-width: 100px; /* 자기 평가 점수 */
-}
-
-.performanceTableContainer th:nth-child(10),
-.performanceTableContainer td:nth-child(10) {
-  min-width: 500px; /* 자기 평가 의견 */
-}
-
-.performanceTableContainer th:nth-child(11),
-.performanceTableContainer td:nth-child(11) {
-  min-width: 90px; /* 상급 평가 */
-}
-
-.performanceTableContainer th:nth-child(12),
-.performanceTableContainer td:nth-child(12) {
-  min-width: 100px; /* 상급 평가 점수 */
 }
 </style>

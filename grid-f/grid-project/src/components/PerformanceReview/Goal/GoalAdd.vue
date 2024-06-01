@@ -36,8 +36,8 @@
     </div>
     <div class="GoalButtonContainer">
       <div class="buttonWrapper">
-        <button class="goalBtn" @click="memberSave()">저장</button>
-        <button class="goalBtn" @click="submit()">상신</button>
+        <button class="goalBtn1" @click="memberSave()">저장</button>
+        <button class="goalBtn1" @click="submit()">상신</button>
       </div>
     </div>
     <div class="GoalAddTableContainer">
@@ -100,14 +100,14 @@
             {{ item.objection }}
           </td>
           <td v-if="!isReadOnly">
-            <button @click="deleteItem(index)">삭제</button>
+            <button class="goalBtn1" @click="deleteItem(index)">삭제</button>
           </td>
         </tr>
         </tbody>
       </table>
       <div class="addButton">
         <div>
-          <button class="goalBtn" @click="addRow()" v-if="!isReadOnly">+</button>
+          <button class="goalBtn2" @click="addRow()" v-if="!isReadOnly">+</button>
         </div>
       </div>
     </div>
@@ -139,18 +139,6 @@ const goalDetail = ref({
 });
 
 const isReadOnly = ref(true);
-
-
-const fields = [
-  {key: 'index', label: 'No', tdClass: 'goalNo'},
-  {key: 'jobName', label: '*업무명', tdClass: 'goalJobName'},
-  {key: 'goal', label: '*목표', tdClass: 'goalGoal'},
-  {key: 'metric', label: '측정지표', tdClass: 'goalMetric'},
-  {key: 'weight', label: '가중치', tdClass: 'goalWeight'},
-  {key: 'plan', label: '계획', tdClass: 'goalPlan'},
-  {key: 'objection', label: '반려의견', tdClass: 'goalObjection'},
-  {key: 'delete', label: '삭제', tdClass: 'goalDelete'} // 삭제 버튼 열
-];
 
 // 현재 시간
 function getCurrentDateTimeString() {
@@ -405,7 +393,7 @@ async function submit() {
 <style scoped>
 .goalDetailContainer {
   display: grid;
-  grid-template-rows: 18% 21% 8% minmax(50%, auto) 5% 13%;
+  grid-template-rows: 18% 23% 7% 39% 13%;
   grid-template-columns: 10% 80% 10%;
   height: 100%;
 }
@@ -458,7 +446,6 @@ async function submit() {
   justify-content: flex-end;
   align-items: center;
   gap: 10px;
-  margin-top: 20px;
 }
 
 .buttonWrapper {
@@ -495,14 +482,15 @@ table {
 th,
 td {
   border: 1px solid #dddddd;
-  text-align: center;
+  text-align: left;
   padding: 6px;
   vertical-align: middle;
 }
 
-th {
+.goalItemTable th {
   position: sticky;
   top: 0;
+  text-align: center;
 }
 
 .addButton {
@@ -514,10 +502,10 @@ th {
   align-items: center;
 }
 
-.goalBtn {
+.goalBtn1 {
   grid-column-start: 6;
   margin-left: 2%;
-  width: 100%;
+  width: 60px;
   background-color: #088A85;
   color: white;
   padding: 5px 5px;
@@ -525,9 +513,24 @@ th {
   border-radius: 4px;
   cursor: pointer;
   font-size: 12px;
-  font-style: bold;
 }
 
+.goalBtn2 {
+  grid-column-start: 6;
+  margin-left: 2%;
+  width: 100%;
+  background-color: #088A85;
+  color:  white;
+  padding: 5px 5px;
+  border: 1px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+.GoalAddTableContainer td {
+  height: 100px;
+}
 
 .GoalAddTableContainer input[type="text"],
 .GoalAddTableContainer input[type="number"],
@@ -541,6 +544,7 @@ th {
 .goalItemTable th:nth-child(1),
 .goalItemTable td:nth-child(1) {
   min-width: 30px; /* No */
+  text-align: center;
 }
 
 .goalItemTable th:nth-child(2),
@@ -577,6 +581,7 @@ th {
 .goalItemTable th:nth-child(8),
 .goalItemTable td:nth-child(8) {
   min-width: 100px; /* 삭제 */
+  text-align: center;
 }
 
 
