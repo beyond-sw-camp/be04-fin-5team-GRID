@@ -202,6 +202,7 @@
 <template>
   <div>
     <h5>결재 라인</h5>
+    <b-card class="container">
     <div v-for="chain in state.approvalChainList" :key="chain.id">
       <div><img :src="chain.user['profilePath']"></div>
       <div>{{ chain.user['name'] }}</div>
@@ -216,7 +217,10 @@
         <div>{{ chain.approvalTime }}</div>
       </template>
     </div>
+    </b-card>
+    <b-card>
     <div v-if="registCheck && props.requesterId !== userId">
+      <div>댓글</div>
     <!-- 무효화는 show를 활용 -->
       <b-input-group>
         <b-form-input v-model="putCommentData.comment"></b-form-input>
@@ -232,6 +236,7 @@
       <b-button variant="success" @click="registStatus('A')">승인</b-button>
       <b-button variant="danger" @click="registStatus('D')">반려</b-button>
     </div>
+    </b-card>
   </div>
 </template>
 

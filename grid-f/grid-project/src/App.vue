@@ -54,7 +54,7 @@ onMounted(async () => {
       <RouterView/>
     </div>
     <div class="footer" v-if="showLayout">
-      <Footer/>
+<!--      <Footer/>-->
     </div>
   </div>
 

@@ -103,7 +103,7 @@ import {onMounted, reactive, ref, watch} from "vue";
             label-cols-sm="3"
             label-align-sm="right"
         >
-          <b-form-input type="date" id="end" v-model="postData.e_date"></b-form-input>
+          <b-form-input type="date" id="end" v-model="postData.e_date" :min="postData.s_date"></b-form-input>
           <b-form-input type="time" id="start" v-model="postData.e_time"></b-form-input>
         </b-form-group>
 

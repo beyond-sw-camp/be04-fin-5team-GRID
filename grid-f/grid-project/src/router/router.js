@@ -179,6 +179,10 @@ const router = createRouter({
             component: () => import('@/views/Approval/RequiredApprovalListView.vue')
         },
         {
+            path: '/my',
+            component: () => import('@/views/Approval/MyApprovalListView.vue')
+        },
+        {
             path: '/regist/bt',
             component: () => import('@/views/Approval/RegistBTApprovalView.vue')
         },
