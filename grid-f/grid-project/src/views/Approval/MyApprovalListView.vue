@@ -57,7 +57,24 @@
 </script>
 
 <template>
-  <ApprovalList :approvalList="state.approvalList"/>
+  <div>
+    <b-card no-body>
+      <b-tabs card>
+        <b-tab title="출장" @click="fetchApprovalList(1, 0, userId)" active>
+          <b-card-text><ApprovalList :approvalList="state.approvalList"/></b-card-text>
+        </b-tab>
+        <b-tab title="시간 외 근무" @click="fetchApprovalList(2, 0, userId)">
+          <ApprovalList :approvalList="state.approvalList"/>
+        </b-tab>
+        <b-tab title="단축 근무" @click="fetchApprovalList(3, 0, userId)">
+          <ApprovalList :approvalList="state.approvalList"/>
+        </b-tab>
+        <b-tab title="휴가" @click="fetchApprovalList(4, 0, userId)">
+          <ApprovalList :approvalList="state.approvalList"/>
+        </b-tab>
+      </b-tabs>
+    </b-card>
+  </div>
 </template>
 
 <style scoped>

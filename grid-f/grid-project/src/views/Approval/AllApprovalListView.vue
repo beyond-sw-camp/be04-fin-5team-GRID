@@ -47,11 +47,13 @@
       if (response === null || response.status !== 200) {
         throw new Error("response is not ok");
       }
+
       state.approvalList = response.data.approvalEmpResultList;
       state.sApprovalList = response.data.approvalEmpResultList.slice(0, 5);
+
       state.approvalList.type = typeId;
       state.sApprovalList.type = typeId;
-      console.log(url);
+
     } catch (error) {
       console.error('Fetch error: ' + error.message);
     }
@@ -81,8 +83,12 @@
       userId.value = decodedToken.id || '';
     }
 
-    await fetchApprovalList(1, 0, userId.value);
-    await fetchReqApprovalList(1, 5, userId.value);
+    if (userRole.value === 'ROLE_ADMIN') {
+      await fetchApprovalList(1, 0, userId.value);
+    } else {
+      await fetchApprovalList(0, 0, userId.value);
+      await fetchReqApprovalList(0, 5, userId.value);
+    }
 
     isLoading.value = false;
   })
@@ -99,16 +105,16 @@
         <div>
           <b-card no-body>
             <b-tabs card>
-              <b-tab title="출장" @click="fetchApprovalList(1, 0, userId.value)" active>
+              <b-tab title="출장" @click="fetchApprovalList(1, 0, userId)" active>
                 <b-card-text><ApprovalList :approvalList="state.approvalList"/></b-card-text>
               </b-tab>
-              <b-tab title="시간 외 근무" @click="fetchApprovalList(2, 0, userId.value)">
+              <b-tab title="시간 외 근무" @click="fetchApprovalList(2, 0, userId)">
                 <ApprovalList :approvalList="state.approvalList"/>
               </b-tab>
-              <b-tab title="단축 근무" @click="fetchApprovalList(3, 0, userId.value)">
+              <b-tab title="단축 근무" @click="fetchApprovalList(3, 0, userId)">
                 <ApprovalList :approvalList="state.approvalList"/>
               </b-tab>
-              <b-tab title="휴가" @click="fetchApprovalList(4, 0, userId.value)">
+              <b-tab title="휴가" @click="fetchApprovalList(4, 0, userId)">
                 <ApprovalList :approvalList="state.approvalList"/>
               </b-tab>
             </b-tabs>

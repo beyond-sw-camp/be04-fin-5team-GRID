@@ -113,28 +113,25 @@
       </b-table>
     </template>
 
-    <table v-else-if="props.approvalList.type === 'v'">
-      <thead>
-      <tr>
-        <th>번호</th>
-        <th>내용</th>
-        <th>사번</th>
-        <th>작성자</th>
-        <th>휴가 유형</th>
-        <th>휴가 기간</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr v-for="(approval, index) in props.approvalList" :key="approval.id">
-        <td>{{ index + 1 }}</td>
-        <td>{{ approval.content }}</td>
-        <td>{{ approval.employeeNumber }}</td>
-        <td>{{ approval.employeeName }}</td>
-        <td>{{ approval.vacationType }}</td>
-        <td>{{ approval.startTime.substring(0, 16) }} ~ {{ approval.endTime.substring(0, 16) }}</td>
-      </tr>
-      </tbody>
-    </table>
+    <template v-else-if="props.approvalList.type === 0">
+      <b-table id="table" :fields="fields" :items="props.approvalList" hover small
+               :per-page=10 :current-page="currentPage" :sort-by.sync='employeeNumber' :sort-desc.sync="false">
+        <template #cell(index)="data">
+          {{ data.index + 1 }}
+        </template>
+        <template #cell(writeTime)="data">
+          <span>{{ data.value.substring(0, 10) }}</span>
+        </template>
+        <template #cell(approvalStatus)="data">
+          <b-badge variant="success" v-if="data.value === 'A'">승인</b-badge>
+          <b-badge variant="danger" v-if="data.value === 'D'">반려</b-badge>
+          <b-badge variant="warning" v-if="data.value === 'N'">대기</b-badge>
+        </template>
+        <template #cell()="data">
+          <span>{{ data.value }}</span>
+        </template>
+      </b-table>
+    </template>
 
     <template v-else>
       <b-table id="table" :fields="fields" :items="props.approvalList" hover small

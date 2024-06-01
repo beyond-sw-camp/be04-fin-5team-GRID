@@ -126,7 +126,7 @@ public class ApprovalController {
     @GetMapping("/today/v")
     public ResponseEntity<ResApprovalVO> findTodayV() {
 
-        List<ApprovalEmpDTO> result = approvalService.findTodayBT();
+        List<ApprovalEmpDTO> result = approvalService.findTodayV();
 
         ResApprovalVO response = ResApprovalVO.builder()
                 .statusCode(200)
