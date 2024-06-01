@@ -50,7 +50,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <ResetPwd :givenEmail="givenEmail" />
+                    <ResetPwd :givenEmail="givenEmail" @passwordResetSuccess="closeModal" />
                 </div>
             </div>
         </div>
@@ -60,7 +60,7 @@
 <script setup>
 import ModifyInfo from '@/components/HumanResources/ModifyInfo.vue';
 import ResetPwd from '@/components/Login/ResetPassword.vue';
-import { ref, onMounted, computed} from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import axios from 'axios';
 import defaultProfileImage from '@/assets/defaultProfile.jpg';
@@ -105,7 +105,7 @@ const cleanUserData = (userData) => {
         resignedTime: userData.resignedTime,
         departmentId: userData.departmentId,
         teamId: userData.teamId,
-        positionId: userData.positionId,    
+        positionId: userData.positionId,
         dutiesId: userData.dutiesId,
     };
 };
@@ -194,6 +194,19 @@ const submitModifications = async () => {
     }
 };
 
+const closeModal = () => {
+    const modalElement = document.getElementById('myModal');
+    const modalInstance = bootstrap.Modal.getInstance(modalElement);
+
+    if (modalInstance) {
+        modalInstance.hide();
+    }
+
+    const modalBackdrop = document.querySelector('.modal-backdrop');
+    if (modalBackdrop) {
+        modalBackdrop.remove();
+    }
+};
 
 const updateUser = (newData) => {
     updatedUser.value = {
@@ -215,9 +228,8 @@ onMounted(() => {
             user.value = parsedUser;
             givenEmail.value = user.value.email;
             updatedUser.value = { ...user.value };
-            console.log("유저 정보 확인: ", user.value);
+            sealPath.value = user.value.sealPath;
             profilePath.value = user.value.profilePath;
-            console.log("프로필 패스: ", profilePath.value);
         } else {
             console.error("유저 정보가 올바르지 않습니다. ID가 없습니다.");
         }
@@ -285,7 +297,7 @@ body {
 
 
 .image {
-    border-radius: 18%; 
+    border-radius: 18%;
     grid-column-start: 1;
     padding: 0;
     height: 100%;
@@ -294,14 +306,14 @@ body {
 }
 
 .image img {
-    border-radius: 18%; 
+    border-radius: 18%;
     width: 90%;
     height: 100%;
 }
 
 .sealImg {
     grid-column-start: 3;
-    display: flex; 
+    display: flex;
     align-items: flex-end;
     justify-content: center;
     overflow: hidden;
@@ -310,7 +322,7 @@ body {
 #sealImg {
     width: 50%;
     height: 50%;
-    margin-bottom: 15%;   
+    margin-bottom: 15%;
 }
 
 .name {

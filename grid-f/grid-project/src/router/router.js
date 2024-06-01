@@ -78,10 +78,6 @@ const router = createRouter({
             component: () => import('../views/HumanResources/AddMulti.vue')
         },
         {
-            path: '/hr/add',
-            component: () => import('../views/HumanResources/Add.vue')
-        },
-        {
             path: '/approval',
             component: () => import('@/views/Approval/AllApprovalListView.vue')
         },

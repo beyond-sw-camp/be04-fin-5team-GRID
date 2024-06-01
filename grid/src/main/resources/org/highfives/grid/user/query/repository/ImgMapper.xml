@@ -18,4 +18,13 @@
            AND T.type_name = '프로필'
     </select>
 
+    <select id="getSealImg" parameterType="_int">
+        SELECT
+        I.path
+        FROM employee_img I
+        JOIN img_type T ON I.type_id = T.id
+        WHERE I.employee_id = #{id}
+        AND T.type_name = '인감'
+    </select>
+
 </mapper>

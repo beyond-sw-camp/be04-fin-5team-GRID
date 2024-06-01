@@ -229,7 +229,7 @@ button {
 .hr-main {
     display: grid;
     grid-template-columns: 10% 80% 10%;
-    grid-template-rows: 18% 4% auto 5%;
+    grid-template-rows: 18% 4% 80% 5%;
     height: 100%;
 }
 

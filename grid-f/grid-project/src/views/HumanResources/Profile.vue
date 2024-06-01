@@ -103,6 +103,7 @@ function parseJwt(token) {
 
 function toModify(employeeNumber, user) {
     sessionStorage.setItem('user', JSON.stringify(user));
+    console.log('전해줄 유저:', user);
     console.log('전해줄 토큰: ', userRole.value);
     router.push({
         path: `/hr/modify/${employeeNumber}`,
@@ -123,10 +124,10 @@ onMounted(async () => {
     if (result.value.absenceYn === 'Y') {
         isAbsence.value = true;
     }
+    console.log('받아오는 유저: ', result.value);
 
     givenEmail.value = result.value.email;
 
-    // URL의 쿼리 파라미터를 기반으로 currentTab을 설정합니다.
     currentTab.value = route.query.tab || 'human-resources';
 });
 </script>
