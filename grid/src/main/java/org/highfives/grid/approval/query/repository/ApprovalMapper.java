@@ -8,6 +8,7 @@ import org.highfives.grid.approval.query.dto.ApprovalEmpDTO;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Mapper
 public interface ApprovalMapper {
@@ -23,4 +24,5 @@ public interface ApprovalMapper {
     ApprovalEmpDTO findRWDetailByApprovalId(int approvalId);
     ApprovalEmpDTO findVDetailByApprovalId(int approvalId);
     List<ApprovalEmpDTO> findAllBTApprovalByApproverId(Map<String, Integer> params);
+    List<ApprovalEmpDTO> findTodayBTandV(Map<String, Object> params);
 }

@@ -1,12 +1,11 @@
 <template>
-    <div class="all">
-      <GoalDetail />
-    </div>
+  <div class="content"><GoalDetail /></div>
 </template>
 
 <script setup>
 import { useRouter } from 'vue-router';
 import GoalDetail from '@/components/PerformanceReview/Goal/GoalDetail.vue';
+import GoalAdd from "@/components/PerformanceReview/Goal/GoalAdd.vue";
 
 const router = useRouter();
 
@@ -15,19 +14,9 @@ const router = useRouter();
 
 
 <style scoped>
-html,
-body {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
-}
-
-.all {
-    display: grid;
-    grid-template-rows: minmax(764px, auto);
-    grid-template-columns: minmax(1286px, auto);
-    width: 100%;
-    height: 100vh;
+.content {
+  width: 100%;
+  height: 100%;
+  background-color: white;
 }
 </style>

@@ -30,14 +30,14 @@
                 </div>
             </div>
         </div>
-        <div class="search">  
+        <div class="search">
             <select v-model="searchType" class="searchType">
                 <option value="name">이름</option>
                 <option value="employeeNumber">사번</option>
             </select>
             <input v-model="searchQuery" class="sortBox" type="text" placeholder="검색">
             <button @click="search" class="printBtn">검색</button>
-        </div> 
+        </div>
         <div class="tableContainer">
             <b-table hover small :fields="fields" :items="paginatedHistories" >
                 <template #cell(index)="data">
@@ -301,13 +301,13 @@ const giveMonthVacation = async () => {
 
 const getVacationType = async () => {
     try {
-      const response = await axios.get('/api/vacation/type');
-      types.value = response.data.result;
-      console.log(response.data.result);
+        const response = await axios.get('/api/vacation/type');
+        types.value = response.data.result;
+        console.log(response.data.result);
     } catch (error) {
-      console.error('Error:', error);
+        console.error('Error:', error);
     }
-  };
+};
 
 const validateAndRegistContent = () => {
     const form = document.querySelector('#giveVacation form');
@@ -373,7 +373,7 @@ const closeModal = (modalId) => {
 function giveAnnual() {
     try {
         const confirmed = window.confirm('지급하시겠습니까?');
-        if(confirmed) {
+        if (confirmed) {
             giveAnnualVacation();
             giveRegularVacation();
             alert('지급 완료되었습니다!')
@@ -387,7 +387,7 @@ function giveAnnual() {
 function giveMonth() {
     try {
         const confirmed = window.confirm('지급하시겠습니까?');
-        if(confirmed) {
+        if (confirmed) {
             giveHealthVacation();
             giveMonthVacation();
             alert('지급 완료되었습니다!')
@@ -441,113 +441,113 @@ onBeforeMount(() => {
         height: 100%;
     }
 
-    .historyTitle {
-        grid-column-start: 2;
-        grid-column-end: 3;
-        font-size: 12px;
-        font-weight: 600;
-        margin-top: 2%;
-        color: #000000;
-        display: grid;
-        grid-template-columns: 3% 97%;
-        align-items: center;
-    }
+.historyTitle {
+    grid-column-start: 2;
+    grid-column-end: 3;
+    font-size: 12px;
+    font-weight: 600;
+    margin-top: 2%;
+    color: #000000;
+    display: grid;
+    grid-template-columns: 3% 97%;
+    align-items: center;
+}
 
-    .historyTitle h1 {
-        margin-left: 0.5%;
-        margin-bottom: 0;
-        font-size: 25px;
-        font-weight: 600;
-    }
+.historyTitle h1 {
+    margin-left: 0.5%;
+    margin-bottom: 0;
+    font-size: 25px;
+    font-weight: 600;
+}
 
-    .historyIcon {
-        width: 80%;
-    }
+.historyIcon {
+    width: 80%;
+}
 
-    .vacations {
-        grid-column-start: 2;
-        grid-column-end: 3;
-        display: grid;
-        grid-template-columns: 20% 5% 20% 5% 20% 30%;
-        align-items: center;
-        margin-bottom: 5%;
-    }
+.vacations {
+    grid-column-start: 2;
+    grid-column-end: 3;
+    display: grid;
+    grid-template-columns: 20% 5% 20% 5% 20% 30%;
+    align-items: center;
+    margin-bottom: 5%;
+}
 
-    .vacationsTitle {
-        margin-left: 5%;
-        display: grid;
-        grid-template-columns: 85% 10% 5%;
-        align-items: center;
-        font-size: 12px;
-        height: 10vh;
-    }
+.vacationsTitle {
+    margin-left: 5%;
+    display: grid;
+    grid-template-columns: 85% 10% 5%;
+    align-items: center;
+    font-size: 12px;
+    height: 10vh;
+}
 
     .plusBtn {
         width: 100%;
         cursor: pointer;
     }
 
-    .annual {
-        width: calc(100% - 20px);
-        background-color: #F2F2F2;
-        font-size: 15px;
-    }
+.annual {
+    width: calc(100% - 20px);
+    background-color: #F2F2F2;
+    font-size: 15px;
+}
 
-    .month {
-        width: calc(100% - 20px);
-        background-color: #F2F2F2;
-        grid-column-start: 3;
-        font-size: 15px;
-    }
+.month {
+    width: calc(100% - 20px);
+    background-color: #F2F2F2;
+    grid-column-start: 3;
+    font-size: 15px;
+}
 
-    .diretly {
-        width: calc(100% - 20px);
-        background-color: #F2F2F2;
-        grid-column-start: 5;
-        font-size: 15px;
-    }
+.diretly {
+    width: calc(100% - 20px);
+    background-color: #F2F2F2;
+    grid-column-start: 5;
+    font-size: 15px;
+}
 
-    .search {
-        grid-row-start: 3;
-        grid-column-start: 2;
-        display: grid;
-        grid-template-columns: 74% 5% 1% 15% 1% 4%;
-        font-size: 12px;
-    }
+.search {
+    grid-row-start: 3;
+    grid-column-start: 2;
+    display: grid;
+    grid-template-columns: 74% 5% 1% 15% 1% 4%;
+    font-size: 12px;
+}
 
-    .searchType {
-        grid-column-start: 2;
-    }
+.searchType {
+    grid-column-start: 2;
+}
 
-    .sortBox {
-        grid-column-start: 4;
-        margin-left: 2%;
-        padding: 5px 5px;
-        border-radius: 4px;
-        font-size: 12px;
-        font-style: bold;
-    }
+.sortBox {
+    grid-column-start: 4;
+    margin-left: 2%;
+    padding: 5px 5px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-style: bold;
+}
 
-    .printBtn {
-        grid-column-start: 6;
-        margin-left: 2%;
-        width: 100%;
-        background-color: #088A85;
-        color: white;
-        padding: 5px 5px;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 12px;
-        font-style: bold;
-    }
+.printBtn {
+    grid-column-start: 6;
+    margin-left: 2%;
+    width: 100%;
+    background-color: #088A85;
+    color: white;
+    padding: 5px 5px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    font-style: bold;
+}
 
-    .tableContainer {
-        grid-column-start: 2;
-        grid-column-end: 3;
-        margin-top: 20px;
-        font-size: 12px;
-    }
+.tableContainer {
+    grid-column-start: 2;
+    grid-column-end: 3;
+    margin-top: 20px;
+    font-size: 12px;
+}
 
 
     .pg {
@@ -573,71 +573,72 @@ onBeforeMount(() => {
     .pagination .page-item.disabled .page-link {
         color: #088A85; /* 비활성화된 페이지 색 */
     }
-
+    
     .registMain {
+
     height: 100%;
     width: 100%;
     padding: 10px;
     background-color: #F2F2F2;
-  }
+}
 
-  .registMain h3 {
+.registMain h3 {
     font-size: 15px;
     margin: 0;
     font-weight: 600;
-  }
+}
 
-  .registTitle {
+.registTitle {
     margin-top: 2%;
     display: grid;
     grid-template-columns: 10% 20% 30% 10%;
     font-size: 14px;
     align-items: center;
-  }
+}
 
-  .registTitle h3 {
+.registTitle h3 {
     grid-column-start: 2;
-  }
+}
 
-  .registContent {
+.registContent {
     margin-top: 2%;
     display: grid;
     grid-template-columns: 10% 20% 50% 10%;
     font-size: 14px;
     align-items: center;
-  }
+}
 
-  .employeeNum {
+.employeeNum {
     margin-top: 2%;
     display: grid;
     grid-template-columns: 10% 20% 50% 10%;
     font-size: 14px;
     align-items: center;
-  }
+}
 
-  .employeeNum h3 {
+.employeeNum h3 {
     grid-column-start: 2;
-  }
+}
 
 
-  .vacationNum {
+.vacationNum {
     margin-top: 2%;
     display: grid;
     grid-template-columns: 10% 20% 50% 10%;
     font-size: 14px;
     align-items: center;
-  }
+}
 
-  .vacationNum h3 {
+.vacationNum h3 {
     grid-column-start: 2;
-  }
+}
 
-  .registContent h3 {
+.registContent h3 {
     grid-column-start: 2;
-  }
+}
 
 
-  .registBtn{
+.registBtn {
     width: 100%;
     background-color: #088A85;
     color: white;
@@ -648,16 +649,16 @@ onBeforeMount(() => {
     font-size: 12px;
     font-style: bold;
     grid-column-start: 2;
-  }
+}
 
-  .registBtnArea {
+.registBtnArea {
     display: grid;
     grid-template-columns: 40% 20% 40%;
     place-items: center;
     grid-row-start: 3;
     grid-column-start: 2;
     margin-top: 5%;
-  }
+}
 
 .btn-custom {
     font-size:11px;
@@ -694,5 +695,3 @@ onBeforeMount(() => {
     margin-top: 20px;
   }
 </style>
-
-

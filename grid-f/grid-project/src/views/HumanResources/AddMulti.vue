@@ -1,8 +1,8 @@
 <template>
     <div class="hr-main">
         <div class="hr-title">
-            <img class="hr-icon" src="@/assets/icon2.png" alt="인사 정보 메인 이미지">
-            <h1>인사 정보</h1>
+            <img class="hr-icon" src="@/assets/HR/addMulti.png" alt="인사 정보 메인 이미지">
+            <h1>사원 추가</h1>
         </div>
         <div class="search">
             <div class="guide">
@@ -26,7 +26,7 @@
                         <th>사번</th>
                         <th style="min-width: 140px;">이메일</th>
                         <th>성별</th>
-                        <th style="min-width: 110px;">휴대폰 번호</th>
+                        <th style="min-width: 140px;">휴대폰 번호</th>
                         <th>입사일</th>
                         <th>입사 유형</th>
                         <th>근로 유형</th>
@@ -53,9 +53,13 @@
                                 placeholder="사번"
                                 :style="{ color: employee.invalid && !employee.employeeNumber ? 'red' : '' }">
                         </td>
-                        <td style="width: 120px;">
-                            <input v-model="employee.email" type="email" class="no-border" required placeholder="이메일"
-                                :style="{ color: employee.invalid && !employee.email ? 'red' : '' }">
+                        <td style="width: 140px;">
+                            <div class="input-container">
+                                <input v-model="employee.email" type="email" class="no-border" required placeholder="이메일"
+                                    @blur="validateEmail(employee)"
+                                    :style="{ color: employee.invalidEmail ? 'red' : '' }" style="width: 90%;">
+                                    <img v-if="employee.invalidEmail && employee.email != ''" src="@/assets/HR/fail.png" alt="실패 이미지" style="width:15px; height:15px;">    
+                            </div>
                         </td>
                         <td>
                             <select v-model="employee.gender"
@@ -65,9 +69,13 @@
                                 <option value="F">여성</option>
                             </select>
                         </td>
-                        <td style="width: 120px;">
-                            <input v-model="employee.phoneNumber" class="no-border" required placeholder="휴대폰 번호"
-                                :style="{ color: employee.invalid && !employee.phoneNumber ? 'red' : '' }">
+                        <td style="width: 140px;">
+                            <div class="input-container">
+                                <input v-model="employee.phoneNumber" class="no-border" required placeholder="휴대폰 번호"
+                                    @blur="validatePhoneNumber(employee)"
+                                    :style="{ color: employee.invalidPhoneNumber ? 'red' : '' }" style="width: 80%;">
+                                <img v-if="employee.invalidPhoneNumber && employee.phoneNumber != ''" src="@/assets/HR/fail.png" alt="실패 이미지" style="width:15px; height:15px;">
+                            </div>
                         </td>
                         <td>
                             <input v-model="employee.hireDate" type="date" class="no-border" required placeholder="입사일">
@@ -214,6 +222,19 @@ const teams = ref([]);
 const positions = ref([]);
 const dutiesList = ref([]);
 const fileInput = ref(null);
+
+const emailRegExp = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
+const phoneRegExp = /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/;
+
+const validateEmail = (employee) => {
+    const emailTrimmed = employee.email.trim();
+    employee.invalidEmail = !emailTrimmed || !emailRegExp.test(emailTrimmed);
+};
+
+const validatePhoneNumber = (employee) => {
+    const phoneTrimmed = employee.phoneNumber.trim();
+    employee.invalidPhoneNumber = !phoneTrimmed || !phoneRegExp.test(phoneTrimmed);
+};
 
 const fetchDropdownData = async () => {
     const departmentRes = await axios.get('http://localhost:8080/department/find-all');
@@ -449,13 +470,14 @@ button {
 }
 
 .hr-title h1 {
-    margin-left: 0.5%;
-    font-weight: 600;
-    font-size: 25px;
+    margin-left: 1.2%;
+    font-weight: bold;
+    font-size: 14pt;
 }
 
 .hr-icon {
-    width: 80%;
+    width: 110%;
+    margin: 0 40px 10px 0;
     filter: invert(0%) sepia(64%) saturate(7%) hue-rotate(334deg) brightness(85%) contrast(101%);
 }
 
@@ -480,7 +502,6 @@ button {
     height: 60%;
     margin-top: 15%;
     margin-right: 15%;
-    filter: invert(41%) sepia(28%) saturate(1738%) hue-rotate(134deg) brightness(92%) contrast(94%);
     cursor: pointer;
 }
 
@@ -692,6 +713,19 @@ thead th {
     margin: 1% 3% 1% 0;
     filter: invert(100%) sepia(65%) saturate(424%) hue-rotate(91deg) brightness(129%) contrast(107%);
     transition: transform 0.3s ease;
+}
+
+.searchBtn {
+    background-color: #088A85;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 90%;
+    font-style: bold;
+    min-height: 20px;
+    min-width: 30px;
+    margin-right: 7%;
 }
 
 .address-container {

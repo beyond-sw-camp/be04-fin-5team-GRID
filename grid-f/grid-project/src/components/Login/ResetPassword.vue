@@ -124,8 +124,6 @@ if (inputValue2.value != inputValue.value) {
     return false;
 }
 
-console.log('이메일 전송 테스트 : ', props.givenEmail);
-
 await axios.put(`http://localhost:8080/users/pwd`, {
     pwd: inputValue.value,  
     email: props.givenEmail

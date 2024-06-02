@@ -95,6 +95,6 @@
         JOIN  approval_chain a
         ON  a.id = b.chain_id
         WHERE  b.approval_id = #{approvalId}
-        ORDER BY  a.stage;
+        ORDER BY a.stage
     </select>
 </mapper>

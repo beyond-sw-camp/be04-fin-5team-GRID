@@ -24,6 +24,7 @@
       }
 
       state.approval = response.data.approvalEmpResult;
+      console.log(response)
       state.user = state.approval.user;
 
     } catch (error) {
@@ -37,25 +38,34 @@
 </script>
 
 <template>
-  <div>
-    <h1 v-if="typeId === '1'">출장</h1>
-    <h1 v-if="typeId === '2'">시간 외 근무</h1>
-    <h1 v-if="typeId === '3'">단축</h1>
-    <h1 v-if="typeId === '4'">휴가</h1>
+  <div class="detail">
+    <div>결재 문서</div>
+    <b-card class="container">
+      <div>
+        <h1 v-if="typeId === '1'">출장</h1>
+        <h1 v-if="typeId === '2'">시간 외 근무</h1>
+        <h1 v-if="typeId === '3'">단축</h1>
+        <h1 v-if="typeId === '4'">휴가</h1>
+      </div>
+      <div v-if="state.approval && state.approval.user && state.approval.user.duties">
+        <img :src="state.user['profilePath']" alt="profile">
+        작성자: {{ state.user['name'] }}<br>
+        {{ state.approval.user.duties.dutiesName }} / {{ state.user['team'].teamName }}
+        <hr>
+        {{state.user['email']}}
+        {{state.user['callNumber']}}
+        <hr>
+      </div>
+      <ApprovalCard :approval="state.approval"/>
+    </b-card>
+    <ApprovalChain :typeId="typeId" :approvalId="approvalId" :approvalStatus="state.approval['approvalStatus']" :requesterId="state.approval['employeeId']" :cancelStatus="state.approval['cancelYN']"/>
   </div>
-  <div v-if="state.approval && state.approval.user && state.approval.user.duties">
-    <img :src="state.user['profilePath']" alt="profile">
-    작성자: {{ state.user['name'] }}<br>
-    {{ state.approval.user.duties.dutiesName }} / {{ state.user['team'].teamName }}
-    <hr>
-    {{state.user['email']}}
-    {{state.user['callNumber']}}
-    <hr>
-  </div>
-  <ApprovalCard :approval="state.approval"/>
-  <ApprovalChain :typeId="typeId" :approvalId="approvalId" :approvalStatus="state.approval['approvalStatus']" :requesterId="state.approval['employeeId']" :cancelStatus="state.approval['cancelYN']"/>
 </template>
 
 <style scoped>
-
+.detail {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: 10px;
+}
 </style>
