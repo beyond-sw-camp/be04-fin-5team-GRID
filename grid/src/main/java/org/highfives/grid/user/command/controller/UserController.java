@@ -90,6 +90,7 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity<ResUserVO> modifyUserInfo(@PathVariable("id") int id, @RequestBody UserDTO modifyInfo) {
 
+        System.out.println("modifyInfo = " + modifyInfo);
         if(!userService.idCheck(id, modifyInfo))
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new ResUserVO(400, "Unmatched Id info", "/users/{id}", null));
@@ -186,11 +187,11 @@ public class UserController {
                 new ResUserVO(400, "Failed to reset password", "/", null));
     }
 
-    @GetMapping("/duplication")
+    @PostMapping("/duplication")
     public ResponseEntity<ResUserVO> duplicateInfoCheck(UserDTO givenInfo) {
-
-        if (!userService.duplicateInfoCheck(givenInfo).equals("Pass")) {
-
+        System.out.println("givenInfo = " + givenInfo);
+        String result = userService.duplicateInfoCheck(givenInfo);
+        if (!result.equals("Pass")) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new ResUserVO(400,
                             userService.duplicateInfoCheck(givenInfo),
@@ -199,6 +200,5 @@ public class UserController {
 
         return null;
     }
-
 }
 

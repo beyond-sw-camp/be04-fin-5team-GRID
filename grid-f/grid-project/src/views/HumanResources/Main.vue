@@ -1,7 +1,7 @@
 <template>
     <div class="hr-main">
         <div class="hr-title">
-            <img class="hr-icon" src="@/assets/icon2.png" alt="인사 정보 메인 이미지">
+            <img class="hr-icon" src="@/assets/HR/hr.png" alt="인사 정보 메인 이미지">
             <h1>인사 정보</h1>
         </div>
         <div class="search">
@@ -9,11 +9,11 @@
                 <img src="@/assets/buttons/download.png" alt="download button">
                 Download
             </button>
-            <button type="button" class="modifyBtn" @click="toModify">
+            <button type="button" class="modifyBtn" @click="toModify" v-if="userRole === 'ROLE_ADMIN'">
                 <img src="@/assets/buttons/modify-btn.png" alt="modify button">
                 Modify
             </button>
-            <button type="button" class="addBtn" @click="toAddMulti">
+            <button type="button" class="addBtn" @click="toAddMulti" v-if="userRole === 'ROLE_ADMIN'">
                 <img src="@/assets/buttons/plus.png" alt="add button">
                 Add new
             </button>
@@ -92,8 +92,9 @@ const employeeList = ref([]);
 const searchCondition = ref('');
 const currentPage = ref(0);
 const totalPages = ref(0);
-const pageSize = ref(8); // 페이지당 항목 수
+const pageSize = ref(8);
 const visiblePages = ref([]);
+const userRole = ref('');
 
 const getProfileUrl = (profilePath) => {
     return profilePath ? profilePath : defaultProfileImage;
@@ -129,8 +130,9 @@ const updateVisiblePages = () => {
     }
 };
 
-const downloadCSV = () => {
-    const csvData = employeeList.value.map(
+const downloadCSV = async () => {
+    const response = await axios.get('http://localhost:8080/users/list/all');
+    const csvData = response.data.result.map(
         item => ({
             name: item.name,
             employeeNumber: item.employeeNumber,
@@ -189,7 +191,28 @@ const goToPage = (page) => {
     }
 };
 
+function parseJwt(token) {
+    try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        return JSON.parse(jsonPayload);
+    } catch (error) {
+        console.error('Invalid token', error);
+        return null;
+    }
+}
+
 onMounted(async () => {
+    const token = localStorage.getItem('access');
+    if (token) {
+        const decodedToken = parseJwt(token);
+        userRole.value = decodedToken?.auth || '';
+        console.log('토큰:', decodedToken.auth);
+    }
+
     try {
         await findUser();
     } catch {
@@ -206,7 +229,7 @@ button {
 .hr-main {
     display: grid;
     grid-template-columns: 10% 80% 10%;
-    grid-template-rows: 18% 4% auto 5%;
+    grid-template-rows: 18% 4% 80% 5%;
     height: 100%;
 }
 
@@ -223,14 +246,15 @@ button {
 }
 
 .hr-title h1 {
-    margin-left: 0.5%;
-    font-weight: 600;
-    font-size: 25px;
+    margin-left: 1.2%;
+    font-weight: bold;
+    font-size: 14pt;
 }
 
 .hr-icon {
-    width: 80%;
-    filter: invert(0%) sepia(64%) saturate(7%) hue-rotate(334deg) brightness(85%) contrast(101%);
+    color: black;
+    width: 110%;
+    filter: invert(0%) sepia(97%) saturate(0%) hue-rotate(82deg) brightness(98%) contrast(100%) !important;
 }
 
 .search {

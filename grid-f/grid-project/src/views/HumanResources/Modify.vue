@@ -1,7 +1,7 @@
 <template>
     <div class="profile-main">
         <div class="profile-title">
-            <img class="profile-icon" src="@/assets/profile.png" alt="인사 정보 메인 이미지">
+            <img class="profile-icon" src="@/assets/HR/modify-user.png" alt="인사 정보 메인 이미지">
             <h1>인사 정보 수정 </h1>
         </div>
         <div class="first" v-if="user">
@@ -39,7 +39,7 @@
             </div>
         </div>
         <div class="content">
-            <ModifyInfo :user="user" @update-user="updateUser" />
+            <ModifyInfo :user="user" :userRole="userRole" @update-user="updateUser" />
         </div>
     </div>
     <div class="modal fade" id="myModal">
@@ -50,7 +50,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <ResetPwd :givenEmail="givenEmail" />
+                    <ResetPwd :givenEmail="givenEmail" @passwordResetSuccess="closeModal" />
                 </div>
             </div>
         </div>
@@ -61,17 +61,19 @@
 import ModifyInfo from '@/components/HumanResources/ModifyInfo.vue';
 import ResetPwd from '@/components/Login/ResetPassword.vue';
 import { ref, onMounted, computed } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 import axios from 'axios';
 import defaultProfileImage from '@/assets/defaultProfile.jpg';
 import defaultSealImage from '@/assets/defaultSeal.png';
 
 const router = useRouter();
+const route = useRoute();
 const user = ref();
 const updatedUser = ref(null);
 const givenEmail = ref('');
 const profilePath = ref('');
 const sealPath = ref('');
+const userRole = ref('');
 
 const profileUrl = computed(() => {
     return profilePath.value ? `${profilePath.value}?t=${new Date().getTime()}` : defaultProfileImage;
@@ -103,7 +105,7 @@ const cleanUserData = (userData) => {
         resignedTime: userData.resignedTime,
         departmentId: userData.departmentId,
         teamId: userData.teamId,
-        positionId: userData.positionId,    
+        positionId: userData.positionId,
         dutiesId: userData.dutiesId,
     };
 };
@@ -172,27 +174,50 @@ const submitModifications = async () => {
         if (updatedUser.value.callNumber == '-') {
             updatedUser.value.callNumber = null;
         }
-        console.log('변경될 정보 확인: ', updatedUser.value);
-        const cleanedData = cleanUserData(updatedUser.value);
-        console.log('변경될 정보 확인22: ', cleanedData);
+        const cleanedData = cleanUserData(updatedUser.value);  // 변경된 데이터가 제대로 반영되었는지 확인
+        console.log('변경될 정보 확인 cleanedData: ', cleanedData);
         const response = await axios.put(`http://localhost:8080/users/${user.value.id}`, cleanedData);
         alert("수정이 완료되었습니다.");
-        router.push(`/hr/profile/${user.value.employeeNumber}`);
+        router.push(`/hr/profile/${cleanedData.employeeNumber}`);
     } catch (error) {
-        console.error("수정 중 오류 발생: ", error);
-        alert("수정 중 오류가 발생했습니다.");
+        if (error.response && error.response.data && error.response.data.message) {
+            console.error("수정 중 오류 발생: ", error.response.data.message);
+            let errorMessage = error.response.data.message;
+            if (errorMessage.length > 100) {  // 원하는 길이로 제한
+                errorMessage = errorMessage.substring(0, 100) + "...";
+            }
+            alert("수정 중 오류가 발생했습니다: " + errorMessage);
+        } else {
+            console.error("수정 중 오류 발생: ", error.message);
+            alert("수정 중 오류가 발생했습니다: " + error.message);
+        }
+    }
+};
+
+const closeModal = () => {
+    const modalElement = document.getElementById('myModal');
+    const modalInstance = bootstrap.Modal.getInstance(modalElement);
+
+    if (modalInstance) {
+        modalInstance.hide();
+    }
+
+    const modalBackdrop = document.querySelector('.modal-backdrop');
+    if (modalBackdrop) {
+        modalBackdrop.remove();
     }
 };
 
 const updateUser = (newData) => {
     updatedUser.value = {
-        ...user.value,
+        ...updatedUser.value,
         ...newData,
         departmentId: newData.departmentId !== undefined ? newData.departmentId : user.value.department?.id,
         teamId: newData.teamId !== undefined ? newData.teamId : user.value.team?.id,
         positionId: newData.positionId !== undefined ? newData.positionId : user.value.position?.id,
         dutiesId: newData.dutiesId !== undefined ? newData.dutiesId : user.value.duties?.id,
     };
+    console.log("Updated user: ", updatedUser.value);
 };
 
 onMounted(() => {
@@ -203,15 +228,17 @@ onMounted(() => {
             user.value = parsedUser;
             givenEmail.value = user.value.email;
             updatedUser.value = { ...user.value };
-            console.log("유저 정보 확인: ", user.value);
+            sealPath.value = user.value.sealPath;
             profilePath.value = user.value.profilePath;
-            console.log("프로필 패스: ", profilePath.value);
         } else {
             console.error("유저 정보가 올바르지 않습니다. ID가 없습니다.");
         }
     } else {
         console.error("SessionStorage에 유저 정보가 없습니다.");
     }
+
+    userRole.value = route.query.userRole;
+    console.log('권한확인: ', userRole.value);
 });
 
 </script>
@@ -254,7 +281,7 @@ body {
 }
 
 .profile-icon {
-    width: 130%;
+    width: 110%;
     margin: 0 40px 10px 0;
     filter: invert(0%) sepia(64%) saturate(7%) hue-rotate(334deg) brightness(85%) contrast(101%);
 }
@@ -268,24 +295,25 @@ body {
     max-width: 100%;
 }
 
+
 .image {
+    border-radius: 18%;
     grid-column-start: 1;
-    padding: 0.5em;
+    padding: 0;
     height: 100%;
     width: 100%;
-    min-width: 162.192px;
-    min-height: 209.19px;
     overflow: hidden;
 }
 
 .image img {
-    width: 100%;
+    border-radius: 18%;
+    width: 90%;
     height: 100%;
 }
 
 .sealImg {
     grid-column-start: 3;
-    display: flex; 
+    display: flex;
     align-items: flex-end;
     justify-content: center;
     overflow: hidden;
@@ -294,7 +322,7 @@ body {
 #sealImg {
     width: 50%;
     height: 50%;
-    margin-bottom: 15%;   
+    margin-bottom: 15%;
 }
 
 .name {

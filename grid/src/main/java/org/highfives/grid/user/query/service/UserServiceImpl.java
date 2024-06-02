@@ -38,6 +38,9 @@ public class UserServiceImpl implements UserService{
         try {
             UserDTO result = userMapper.getUserInfo(info);
             result.setProfilePath(imgMapper.getProfileImg(result.getId()));
+            result.setSealPath(imgMapper.getSealImg(result.getId()));
+
+            System.out.println("result = " + result);
             return result;
 
         } catch (NullPointerException e) {
@@ -54,6 +57,7 @@ public class UserServiceImpl implements UserService{
         try {
             UserDTO result = userMapper.getUserInfo(info);
             result.setProfilePath(imgMapper.getProfileImg(result.getId()));
+            result.setSealPath(imgMapper.getSealImg(result.getId()));
             return result;
 
         } catch (NullPointerException e) {
@@ -69,6 +73,7 @@ public class UserServiceImpl implements UserService{
         try {
             UserDTO result = userMapper.getUserInfo(info);
             result.setProfilePath(imgMapper.getProfileImg(result.getId()));
+            result.setSealPath(imgMapper.getSealImg(result.getId()));
             return result;
 
         } catch (NullPointerException e) {
@@ -170,7 +175,6 @@ public class UserServiceImpl implements UserService{
     public List<UserDTO> findTeamList(int teamId) {
 
         List<UserDTO> userDTOList = userMapper.findTeamList(teamId);
-
 
         return userDTOList;
     }

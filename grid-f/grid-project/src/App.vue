@@ -38,33 +38,33 @@ onMounted(async () => {
         store.commit('setEmail', email);
         await store.dispatch('fetchUserByEmail', email);
     }
-  return showLayout.value ? 'container' : 'container-full';
+    return showLayout.value ? 'container' : 'container-full';
 });
 
 onMounted(async () => {
-  const email = localStorage.getItem('email');
-  if (email) {
-    store.commit('setEmail', email);
-    await store.dispatch('fetchUserByEmail', email);
-  }
+    const email = localStorage.getItem('email');
+    if (email) {
+        store.commit('setEmail', email);
+        await store.dispatch('fetchUserByEmail', email);
+    }
 });
+
 </script>
 
 <template>
-  <div class="container" :class="containerClass">
-    <div class="header" v-if="showLayout">
-      <Header/>
+    <div class="container" :class="containerClass">
+        <div class="header" v-if="showLayout">
+            <Header />
+        </div>
+        <div class="sidebar" v-if="showLayout">
+            <Sidebar />
+        </div>
+        <div class="main-content" :class="mainContentClass">
+            <RouterView />
+        </div>
+        <div class="footer" v-if="showLayout">
+        </div>
     </div>
-    <div class="sidebar" v-if="showLayout">
-      <Sidebar/>
-    </div>
-    <div class="main-content" :class="mainContentClass">
-      <RouterView/>
-    </div>
-    <div class="footer" v-if="showLayout">
-      <Footer/>
-    </div>
-  </div>
 
 </template>
 
@@ -106,7 +106,7 @@ body {
     position: fixed;
     top: 60px;
     left: 0;
-    width: 250px    ;
+    width: 250px;
     height: calc(100vh - 60px);
     z-index: 800;
     font-size: 14px;
