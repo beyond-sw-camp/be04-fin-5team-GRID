@@ -2,6 +2,7 @@
   import {onMounted, reactive, ref} from "vue";
   import {useRoute} from "vue-router";
   import axios from "axios";
+  import router from "@/router/router.js";
 
   const route = useRoute();
 
@@ -43,6 +44,9 @@
 
       if (response.status !== 201) {
         throw new Error("response is not ok");
+      } else {
+        alert('결재가 제출되었습니다.')
+        router.push(response.data.href);
       }
 
     } catch (error) {
@@ -61,8 +65,9 @@ onMounted(async () => {
 </script>
 
 <template>
+  <div><h3 class="fw-bolder"><i class="bi bi-briefcase"></i>&nbsp; 출장 신청</h3></div>
   <div>
-    <b-card bg-variant="light">
+    <b-card class="mt-3" bg-variant="light">
       <b-form-group
           label-cols-lg="3"
           label="출장 결재"
@@ -106,7 +111,7 @@ onMounted(async () => {
           <b-form-textarea
               id="textarea-auto-height"
               v-model="postData.content"
-              placeholder="Auto height textarea"
+              placeholder="내용을 입력하세요."
               rows="3"
               max-rows="8"
           ></b-form-textarea>

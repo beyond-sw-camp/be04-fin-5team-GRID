@@ -2,6 +2,7 @@
 import {onMounted, reactive, ref, watch} from "vue";
   import {useRoute} from "vue-router";
   import axios from "axios";
+import router from "@/router/router.js";
 
   const route = useRoute();
 
@@ -35,24 +36,48 @@ import {onMounted, reactive, ref, watch} from "vue";
     postData.endTime = `${postData.e_date} ${postData.e_time}:00`;
   }
 
+  function  isStartDateValid() {
+    return this.postData.s_date !== "" ? true : false;
+  }
+  function isEndDateValid() {
+    return this.postData.e_date !== "" ? true : false;
+  }
+  function isContentValid() {
+    return this.postData.content.trim() !== "" ? true : false;
+  }
+
   const registApproval = async() => {
 
     alert('결재를 제출하시겠습니까?');
     postData.requesterId = userId.value;
 
+    const startTIme = new Date(postData.startTime);
+    const endTime = new Date(postData.endTime);
+
+    const diff = (endTime.getTime() - startTIme.getTime()) / (1000 * 60 * 60);
+
     try {
-      const response = await axios.post(`http://localhost:8080/approval/overtime`, postData, {
-        headers: {
-          'Content-Type': "application/json"
+      if (diff < 12) {
+        const response = await axios.post(`http://localhost:8080/approval/overtime`, postData, {
+          headers: {
+            'Content-Type': "application/json"
+          }
+        })
+        if (response.status === 201) {
+            alert('결재가 제출되었습니다.');
+            router.push(response.data.href);
+        } else {
+            throw new Error("response is not ok");
         }
-      })
-
-      if (response.status !== 201) {
-        throw new Error("response is not ok");
+      } else {
+          alert('시간 외 근무 시간은 12시간을 초과할 수 없습니다.');
       }
-
     } catch (error) {
-      console.error('Fail to post: ', error.message);
+      if (error.response.status === 400) {
+        alert('주별 시간 외 근무 시간의 합계가 12시간을 초과했숩니다.');
+      } else {
+        console.error('Fail to post: ', error.message);
+      }
     }
   }
 
@@ -78,8 +103,9 @@ import {onMounted, reactive, ref, watch} from "vue";
 </script>
 
 <template>
+  <div><h3 class="fw-bolder"><i class="bi bi-clock"></i>&nbsp; 시간 외 근무 신청</h3></div>
   <div>
-    <b-card bg-variant="light">
+    <b-card class="mt-3" bg-variant="light">
       <b-form-group
           label-cols-lg="3"
           label="시간 외 근무 결재"
@@ -93,7 +119,7 @@ import {onMounted, reactive, ref, watch} from "vue";
             label-cols-sm="3"
             label-align-sm="right"
         >
-          <b-form-input type="date" :state="false" id="start" v-model="postData.s_date"></b-form-input>
+          <b-form-input type="date" sid="start" v-model="postData.s_date"></b-form-input>
           <b-form-input type="time" id="start" v-model="postData.s_time"></b-form-input>
         </b-form-group>
 
@@ -116,7 +142,7 @@ import {onMounted, reactive, ref, watch} from "vue";
           <b-form-textarea
               id="textarea-auto-height"
               v-model="postData.content"
-              placeholder="Auto height textarea"
+              placeholder="내용을 입력하세요."
               rows="3"
               max-rows="8"
           ></b-form-textarea>

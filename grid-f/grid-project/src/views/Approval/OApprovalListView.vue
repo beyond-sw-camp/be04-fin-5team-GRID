@@ -93,15 +93,14 @@
 <template>
   <div v-if="isLoading">로딩 중</div>
   <div v-else>
-    <div>
-     이번 주 시간 외 근무 시간 합계:
+    <div v-if="userRole !== 'ROLE_ADMIN'">
+      <div>이번 주 시간 외 근무 시간 합계:</div>
+      <b-progress :max="12" height="2rem" show-progress class="mb-2">
+        <b-progress-bar variant="info" :value="state.overtimeInWeek">
+          <span>{{ state.overtimeInWeek }}시간 / 12시간</span>
+        </b-progress-bar>
+      </b-progress>
     </div>
-    <b-progress :max="12" height="2rem" show-progress class="mb-2">
-      <b-progress-bar variant="info" :value="6">
-        <span>6시간 / 12시간</span>
-      </b-progress-bar>
-    </b-progress>
-    <div v-if="userRole === 'ROLE_ADMIN'">{{ state.overtimeInWeek }}</div>
     <ApprovalList :approvalList="state.approvalList"/>
   </div>
 </template>

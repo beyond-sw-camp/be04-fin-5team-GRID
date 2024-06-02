@@ -201,41 +201,70 @@
 
 <template>
   <div>
-    <h5>결재 라인</h5>
+    <h3 class="fw-bolder"><i class="bi bi-people"></i>&nbsp; 결재 라인</h3>
     <b-card class="container">
-    <div v-for="chain in state.approvalChainList" :key="chain.id">
-      <div><img :src="chain.user['profilePath']"></div>
-      <div>{{ chain.user['name'] }}</div>
-      <div>{{ chain.user['team'].teamName }} {{ chain.user['duties'].dutiesName }}</div>
-      <div>{{ chain.stage }}</div>
-      <div>{{ chain.chainStatus }}</div>
-    </div>
-    <div v-for="chain in state.approvalChainList" :key="chain.id">
-      <template v-if="chain.comment !== null">
-        <div>{{ chain.user['name'] }}</div>
-        <div>{{ chain.comment }}</div>
-        <div>{{ chain.approvalTime }}</div>
-      </template>
-    </div>
+      <div href="#" class="list-group-item list-group-item-action d-flex" aria-current="true">
+        <div class=" mb-3 d-flex gap-2 w-100 justify-content-between">
+          <h6 class="opacity-50"></h6>
+          <h6 class="mb-0 opacity-75">이름</h6>
+          <h6 class="mb-0 opacity-75">&nbsp;&nbsp;&nbsp; 단계</h6>
+          <h6 class="mb-0 opacity-75">상태&nbsp;</h6>
+        </div>
+      </div>
+      <div v-for="chain in state.approvalChainList" :key="chain.id">
+        <div href="#" class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
+          <img :src="chain.user['profilePath']" alt="profile" width="50" height="50" class="rounded-circle flex-shrink-0">
+          <div class="d-flex gap-2 w-100 justify-content-between">
+            <div class="mt-1">
+              <h5 class="fw-bolder mb-0">&nbsp;&nbsp;&nbsp;&nbsp;{{ chain.user['name'] }}</h5>
+              <p class="mb-0 opacity-75">&nbsp;&nbsp;&nbsp;&nbsp;{{ chain.user['team'].teamName }} / {{ chain.user['duties'].dutiesName }}</p>
+            </div>
+            <h6 class="mt-3">{{ chain.stage }}단계</h6>
+            <div>
+              <b-badge class="mt-3" variant="success" v-if="chain.chainStatus === 'A'">승인</b-badge>
+              <b-badge class="mt-3" variant="danger" v-if="chain.chainStatus === 'D'">반려</b-badge>
+              <b-badge class="mt-3" variant="warning" v-if="chain.chainStatus === 'W'">대기</b-badge>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div v-for="chain in state.approvalChainList" :key="chain.id">
+        <template v-if="chain.comment !== null">
+          <div>{{ chain.user['name'] }}</div>
+          <div>{{ chain.comment }}</div>
+          <div>{{ chain.approvalTime }}</div>
+        </template>
+      </div>
     </b-card>
-    <b-card>
-    <div v-if="registCheck && props.requesterId !== userId">
+    <b-card class="mt-3">
       <div>댓글</div>
-    <!-- 무효화는 show를 활용 -->
-      <b-input-group>
-        <b-form-input v-model="putCommentData.comment"></b-form-input>
-        <b-input-group-append>
-          <b-button variant="outline-success" @click="registComment">Button</b-button>
-        </b-input-group-append>
-      </b-input-group>
-    </div>
-    <div v-if="props.requesterId === userId && props.cancelStatus === 'N'">
-      <b-button @click="cancelApproval">취소</b-button>
-    </div>
-    <div v-if="state.show">
-      <b-button variant="success" @click="registStatus('A')">승인</b-button>
-      <b-button variant="danger" @click="registStatus('D')">반려</b-button>
-    </div>
+      <!-- 무효화는 show를 활용 -->
+      <div class="d-flex text-body-secondary pt-3">
+        <svg class="bd-placeholder-img flex-shrink-0 me-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 32x32" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#007bff"></rect><text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text></svg>
+        <div class="pb-3 mb-0 small lh-sm border-bottom w-100">
+          <div class="d-flex justify-content-between">
+            <strong class="text-gray-dark">Full Name</strong>
+            <a href="#">Follow</a>
+          </div>
+          <span class="d-block">@username</span>
+        </div>
+      </div>
+      <div v-if="registCheck && props.requesterId !== userId">
+        <b-input-group>
+          <b-form-input v-model="putCommentData.comment"></b-form-input>
+          <b-input-group-append>
+            <b-button variant="outline-success" @click="registComment">Button</b-button>
+          </b-input-group-append>
+        </b-input-group>
+      </div>
+      <div v-if="props.requesterId === userId && props.cancelStatus === 'N'">
+        <b-button @click="cancelApproval">취소</b-button>
+      </div>
+      <div v-if="state.show">
+        <b-button variant="success" @click="registStatus('A')">승인</b-button>
+        <b-button variant="danger" @click="registStatus('D')">반려</b-button>
+      </div>
     </b-card>
   </div>
 </template>

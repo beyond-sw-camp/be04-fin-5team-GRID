@@ -65,10 +65,13 @@
       if (response.status !== 200) {
         throw new Error("response is not ok");
       }
+
       state.reqApprovalList = response.data.approvalEmpResultList;
       state.sReqApprovalList = response.data.approvalEmpResultList.slice(0, 5);
+
       state.reqApprovalList.type = typeId;
       state.sReqApprovalList.type = typeId;
+
     } catch (error) {
       console.error('Fetch error: ' + error.message);
     }
@@ -95,12 +98,12 @@
 </script>
 
 <template>
-    <div>결재 목록</div>
+  <div><h3 class="fw-bolder"><i class="bi bi-collection"></i>&nbsp; 결재 목록</h3></div>
     <div v-if="isLoading">
       로딩 중
     </div>
     <div v-else>
-      <div v-if="userRole !== 'ROLE_ADMIN'">
+      <div v-if="userRole === 'ROLE_ADMIN'">
         <!-- 관리자 -->
         <div>
           <b-card no-body>

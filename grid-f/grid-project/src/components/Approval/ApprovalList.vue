@@ -21,35 +21,19 @@
     { key: 'approvalStatus', label: '결재 상태', sortable: false }
   ]
 
-  const btFields = [
+  const approvalFields = [
     { key: 'index', label: '번호', sortable: false },
     { key: 'content', label: '내용', sortable: false },
     { key: 'employeeNumber', label: '사번', sortable: true },
     { key: 'employeeName', label: '작성자', sortable: false },
-    { key: 'destination', label: '출장지', sortable: true },
-    { key: 'startTimeendTIme', label: '출장 기간', sortable: false }
-  ]
-
-  const oFields = [
-    { key: 'index', label: '번호', sortable: false },
-    { key: 'content', label: '내용', sortable: false },
-    { key: 'employeeNumber', label: '사번', sortable: true },
-    { key: 'employeeName', label: '작성자', sortable: false },
-    { key: 'startTimeendTIme', label: '근무 기간', sortable: false }
-  ]
-
-  const rwFields = [
-    { key: 'index', label: '번호', sortable: false },
-    { key: 'content', label: '내용', sortable: false },
-    { key: 'employeeNumber', label: '사번', sortable: true },
-    { key: 'employeeName', label: '작성자', sortable: false },
-    { key: 'startTimeendTIme', label: '단축 기간', sortable: false }
+    { key: 'startTimeendTIme', label: '기간', sortable: false },
+    { key: 'details', label: '상세보기', sortable: false }
   ]
 
   const router = useRouter();
 
   const approvalDetail = (typeId, approvalId) => {
-    router.push(`/approval/detail/${typeId}/${approvalId}`);
+    router.push(`/approval/detail/${typeId}/${approvalId}`);    // 추후에 모달로 변경
   }
 </script>
 
@@ -59,17 +43,17 @@
   </div>
   <div v-else>
     <template v-if="props.approvalList.type === 'bt'">
-      <b-table id="table" :fields="btFields" :items="props.approvalList" hover small
-               :per-page=10 :current-page="currentPage">
+      <b-table id="table" :fields="approvalFields" :items="props.approvalList" hover small :per-page="10" :current-page="currentPage">
         <template #cell(index)="data">
           {{ data.index + 1 }}
         </template>
-        <template #cell(content)="data">
-<!--          <span @click="approvalDetail(1, data.item.id)">{{ data.value }}</span>-->
-          <span>{{ data.value }}</span>
-        </template>
         <template #cell(startTimeendTIme)="data">
-          <span>{{ data.item.startTime.substring(0, 10) }} ~ {{ data.item.endTime.substring(0, 10)}}</span>
+          <span>{{ data.item.startTime.substring(0, 10) }} ~ {{ data.item.endTime.substring(0, 10) }}</span>
+        </template>
+        <template #cell(details)="data">
+          <b-badge @click="approvalDetail(1, data.item.id)">
+            &#x2139;
+          </b-badge>
         </template>
         <template #cell()="data">
           <span>{{ data.value }}</span>
@@ -78,16 +62,18 @@
     </template>
 
     <template v-else-if="props.approvalList.type === 'o'">
-      <b-table id="table" :fields="oFields" :items="props.approvalList" hover small
+      <b-table id="table" :fields="approvalFields" :items="props.approvalList" hover small
                :per-page=10 :current-page="currentPage">
         <template #cell(index)="data">
           {{ data.index + 1 }}
         </template>
-        <template #cell(content)="data">
-          <span>{{ data.value }}</span>
-        </template>
         <template #cell(startTimeendTIme)="data">
           <span>{{ data.item.startTime }} ~ {{ data.item.endTime }}</span>
+        </template>
+        <template #cell(details)="data">
+          <b-badge @click="approvalDetail(2, data.item.id)">
+            &#x2139;
+          </b-badge>
         </template>
         <template #cell()="data">
           <span>{{ data.value }}</span>
@@ -96,16 +82,18 @@
     </template>
 
     <template v-else-if="props.approvalList.type === 'rw'">
-      <b-table id="table" :fields="rwFields" :items="props.approvalList" hover small
+      <b-table id="table" :fields="approvalFields" :items="props.approvalList" hover small
                :per-page=10 :current-page="currentPage">
         <template #cell(index)="data">
           {{ data.index + 1 }}
         </template>
-        <template #cell(content)="data">
-          <span>{{ data.value }}</span>
-        </template>
         <template #cell(startTimeendTIme)="data">
           <span>{{ data.item.startTime.substring(0, 10) }} ~ {{ data.item.endTime.substring(0, 10)}}</span>
+        </template>
+        <template #cell(details)="data">
+          <b-badge @click="approvalDetail(3, data.item.id)">
+            &#x2139;
+          </b-badge>
         </template>
         <template #cell()="data">
           <span>{{ data.value }}</span>
