@@ -134,7 +134,7 @@
         </association>
     </resultMap>
 
-    <select id="getUserList" resultMap="userInfo" parameterType="string">
+    <select id="getList" resultMap="userInfo" parameterType="string">
         SELECT
         E.id,
         E.employee_name,
@@ -162,28 +162,80 @@
         ORDER BY E.employee_name ASC;
     </select>
 
-    <select id="getUserListByName" resultMap="userInfo" parameterType="string">
-        SELECT
-        E.id,
-        E.employee_name,
-        E.employee_number,
-        DEP.id dep_id,
-        DEP.department_name,
-        T.id t_id,
-        T.team_name,
-        P.id p_id,
-        P.position_name,
-        D.id d_id,
-        D.duties_name,
-        E.phone_number,
-        E.absence_yn,
-        E.absence_content,
+<!--    <select id="getUserListByName" resultMap="userInfo" parameterType="string">-->
+<!--        SELECT-->
+<!--        E.id,-->
+<!--        E.employee_name,-->
+<!--        E.employee_number,-->
+<!--        DEP.id dep_id,-->
+<!--        DEP.department_name,-->
+<!--        T.id t_id,-->
+<!--        T.team_name,-->
+<!--        P.id p_id,-->
+<!--        P.position_name,-->
+<!--        D.id d_id,-->
+<!--        D.duties_name,-->
+<!--        E.phone_number,-->
+<!--        E.absence_yn,-->
+<!--        E.absence_content,-->
+<!--        E.join_time-->
+<!--        FROM Employee E-->
+<!--        JOIN Team T ON E.team_id = T.id-->
+<!--        JOIN Department DEP ON E.department_id = DEP.id-->
+<!--        JOIN e_Position P ON E.position_id = P.id-->
+<!--        JOIN Duties D ON E.duties_id = D.id-->
+<!--        WHERE E.resign_yn = 'N'-->
+<!--        AND E.id > 1-->
+<!--        AND E.employee_name LIKE CONCAT('%', #{name}, '%')-->
+<!--    </select>-->
+
+    <sql id="Base_Column_List">
+        E.id, E.employee_name, E.gender, E.employee_number,
+        DEP.id AS dep_id, DEP.department_name,
+        T.id AS t_id, T.team_name,
+        P.id AS p_id, P.position_name,
+        D.id AS d_id, D.duties_name,
+        E.phone_number, E.absence_yn, E.absence_content,
         E.join_time
+    </sql>
+
+    <select id="getUserList" resultMap="userInfo">
+        SELECT <include refid="Base_Column_List"/>
         FROM Employee E
         JOIN Team T ON E.team_id = T.id
         JOIN Department DEP ON E.department_id = DEP.id
-        JOIN e_Position P ON E.position_id = P.id
+        JOIN E_Position P ON E.position_id = P.id
         JOIN Duties D ON E.duties_id = D.id
+        WHERE E.resign_yn = 'N'
+        AND E.id > 1
+        ORDER BY E.employee_name ASC
+        LIMIT #{offset}, #{pageSize}
+    </select>
+
+    <select id="getUserListByName" resultMap="userInfo">
+        SELECT <include refid="Base_Column_List"/>
+        FROM Employee E
+        JOIN Team T ON E.team_id = T.id
+        JOIN Department DEP ON E.department_id = DEP.id
+        JOIN E_Position P ON E.position_id = P.id
+        JOIN Duties D ON E.duties_id = D.id
+        WHERE E.resign_yn = 'N'
+        AND E.id > 1
+        AND E.employee_name LIKE CONCAT('%', #{name}, '%')
+        ORDER BY E.employee_name ASC
+        LIMIT #{offset}, #{pageSize}
+    </select>
+
+    <select id="countAllUsers" resultType="long">
+        SELECT COUNT(*)
+        FROM Employee E
+        WHERE E.resign_yn = 'N'
+        AND E.id > 1
+    </select>
+
+    <select id="countUsersByName" resultType="long">
+        SELECT COUNT(*)
+        FROM Employee E
         WHERE E.resign_yn = 'N'
         AND E.id > 1
         AND E.employee_name LIKE CONCAT('%', #{name}, '%')

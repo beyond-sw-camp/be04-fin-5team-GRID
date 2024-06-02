@@ -37,9 +37,9 @@
       </table>
     </div>
     <div class="GoalButtonContainer">
-      <div>
-        <button @click="memberSave()">팀원 저장</button>
-        <button @click="submit()">상신</button>
+      <div class="buttonWrapper">
+        <button class="performanceBtn" @click="memberSave()">저장</button>
+        <button class="performanceBtn" @click="submit()">상신</button>
       </div>
     </div>
     <div class="performanceTableContainer">
@@ -386,7 +386,7 @@ async function submit() {
 <style scoped>
 .reviewAddContainer {
   display: grid;
-  grid-template-rows: 18% 21% 8% minmax(40%, auto) 8% 13%;
+  grid-template-rows: 18% 23% 7% 39% 13%;
   grid-template-columns: 10% 80% 10%;
   height: 100%;
 }
@@ -405,6 +405,8 @@ async function submit() {
 
 .reviewTitle h1 {
   margin-left: 0.5%;
+  font-weight: 600;
+  font-size: 25px;
 }
 
 .reviewIcon {
@@ -415,7 +417,6 @@ async function submit() {
   grid-row-start: 2;
   grid-column-start: 2;
   grid-column-end: 3;
-  margin-top: 20px;
   font-size: 12px;
 }
 
@@ -438,9 +439,28 @@ async function submit() {
   justify-content: flex-end;
   align-items: center;
   gap: 10px;
-  margin-top: 20px;
 }
 
+.performanceBtn {
+  grid-column-start: 6;
+  margin-left: 2%;
+  width: 60px;
+  background-color: #088A85;
+  color: white;
+  padding: 5px 5px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.buttonWrapper {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px; /* 버튼 사이의 간격 설정 */
+  width: 30%;
+}
 
 .performanceTableContainer {
   grid-row-start: 4;
@@ -473,13 +493,11 @@ td {
 th {
   position: sticky;
   top: 0;
-  background-color: #f2f2f2;
+  text-align: center;
+  //background-color: #f2f2f2;
   //z-index: 1;
 }
 
-.performanceTableContainer td {
-  height: 100px;
-}
 
 .performanceTableContainer td {
   height: 100px;
@@ -495,6 +513,7 @@ th {
 .performanceTableContainer th:nth-child(1),
 .performanceTableContainer td:nth-child(1) {
   min-width: 30px; /* No */
+  text-align: center;
 }
 
 .performanceTableContainer th:nth-child(2),
@@ -530,11 +549,13 @@ th {
 .performanceTableContainer th:nth-child(8),
 .performanceTableContainer td:nth-child(8) {
   min-width: 90px; /* 자기 평가 */
+  text-align: center;
 }
 
 .performanceTableContainer th:nth-child(9),
 .performanceTableContainer td:nth-child(9) {
   min-width: 100px; /* 자기 평가 점수 */
+  text-align: center;
 }
 
 .performanceTableContainer th:nth-child(10),
@@ -545,10 +566,12 @@ th {
 .performanceTableContainer th:nth-child(11),
 .performanceTableContainer td:nth-child(11) {
   min-width: 90px; /* 상급 평가 */
+  text-align: center;
 }
 
 .performanceTableContainer th:nth-child(12),
 .performanceTableContainer td:nth-child(12) {
   min-width: 100px; /* 상급 평가 점수 */
+  text-align: center;
 }
 </style>

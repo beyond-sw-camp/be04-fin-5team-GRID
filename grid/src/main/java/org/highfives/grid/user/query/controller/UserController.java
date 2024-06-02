@@ -8,6 +8,9 @@ import org.highfives.grid.user.query.service.UserService;
 import org.highfives.grid.user.query.vo.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,10 +34,10 @@ public class UserController {
     }
 
     // 전체 직원 조회
-    @GetMapping("/list")
+    @GetMapping("/list/all")
     public ResponseEntity<ResFindListVO> findAllUsers() {
         String name = null;
-        List<UserDTO> resultDTOs = userService.findAllUsers();
+        List<UserDTO> resultDTOs = userService.findList();
         List<SimpleInfo> resultList = DTOtoSimpleInfo(resultDTOs);
 
         System.out.println("resultDTOs = " + resultDTOs);
@@ -44,23 +47,35 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    // 전체 직원 조회
+    @GetMapping("/list")
+    public ResponseEntity<ResFindListVO> findAllUsers(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "8") int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<UserDTO> resultDTOs = userService.findAllUsers(pageable);
+        List<SimpleInfo> resultList = DTOtoSimpleInfo(resultDTOs.getContent());
+
+        ResFindListVO response = new ResFindListVO(200, "Success to find user list", "/users/{id}", resultList,
+                resultDTOs.getTotalElements(), resultDTOs.getTotalPages(), page);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
     // 이름에 해당하는 직원 조회
     @GetMapping("/list/{name}")
-    public ResponseEntity<ResFindListVO> findUsersByName(@PathVariable("name") String name) {
-        List<SimpleInfo> resultList = new ArrayList<>();
+    public ResponseEntity<ResFindListVO> findUsersByName(
+            @PathVariable("name") String name,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "8") int size) {
 
-        if(name == null || name.trim().isEmpty() ){
-            List<UserDTO> resultDTOs = userService.findAllUsers();
-            resultList = DTOtoSimpleInfo(resultDTOs);
-        }
+        Pageable pageable = PageRequest.of(page, size);
+        Page<UserDTO> resultDTOs = userService.findUsersByName(name, pageable);
+        List<SimpleInfo> resultList = DTOtoSimpleInfo(resultDTOs.getContent());
 
-        if(name != null) {
-            List<UserDTO> resultDTOs = userService.findUsersByName(name);
-            resultList = DTOtoSimpleInfo(resultDTOs);
-        }
-
-        ResFindListVO response =
-                new ResFindListVO(200, "Success to find user list", "/users/{id}", resultList);
+        ResFindListVO response = new ResFindListVO(200, "Success to find user list", "/users/{id}", resultList,
+                resultDTOs.getTotalElements(), resultDTOs.getTotalPages(), page);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
