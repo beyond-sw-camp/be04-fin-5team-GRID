@@ -37,19 +37,17 @@
       </table>
     </div>
     <div class="GoalButtonContainer">
-      <div v-if="isMember">
-        <button @click="memberSave()">팀원 저장</button>
-        <button @click="submit()">상신</button>
-      </div>
-      <div v-if="!isMember">
-        <button @click="leaderSave()">팀장 저장</button>
-        <button @click="complete()">확인</button>
-        <button @click="valid()">확정</button>
+      <div class="buttonWrapper">
+        <button class="performanceBtn" v-if="isMember" @click="memberSave()">저장</button>
+        <button class="performanceBtn" v-if="isMember" @click="submit()">상신</button>
+        <button class="performanceBtn" v-if="!isMember" @click="leaderSave()">저장</button>
+        <button class="performanceBtn" v-if="!isMember" @click="complete()">확인</button>
+        <button class="performanceBtn" v-if="!isMember" @click="valid()">확정</button>
       </div>
     </div>
     <div class="performanceTableContainer">
       <div v-if="isMember">
-        <table>
+        <table  class="table">
           <thead>
           <tr>
             <th>No</th>
@@ -254,7 +252,7 @@ const fetchReviewDetail = async () => {
         isReadOnly.value = false;
       console.log(reviewDetail.value.status);
     } else {
-      if (reviewDetail.value.status === '상신' || reviewDetail.value.status === '확인 중' || goalDetail.value.status === '확인 완료')
+      if (reviewDetail.value.status === '상신' || reviewDetail.value.status === '확인 중' || reviewDetail.value.status === '확인 완료')
         isReadOnly.value = false;
     }
   } catch (error) {
@@ -338,7 +336,7 @@ const updateSuperiorScore = (item) => {
 
 // 팀원 저장(in-progress)
 async function memberSave() {
-  if (goalDetail.value.status === '작성 중') {
+  if (reviewDetail.value.status === '작성 중') {
     if (confirm("평가를 저장하시겠습니까?")) {
       const sendData = {
         reviewId: reviewDetail.value.id,
@@ -376,7 +374,7 @@ async function memberSave() {
 
 // 팀원 상신(submit)
 async function submit() {
-  if (goalDetail.value.status === '작성 중') {
+  if (reviewDetail.value.status === '작성 중') {
     if (confirm("평가를 상신하시겠습니까?")) {
       const sendData = {
         reviewId: reviewDetail.value.id,
@@ -414,7 +412,7 @@ async function submit() {
 
 // 팀장 저장(read)
 async function leaderSave() {
-  if (goalDetail.value.status === '상신' || goalDetail.value.status === '확인 중') {
+  if (reviewDetail.value.status === '상신' || reviewDetail.value.status === '확인 중') {
     if (confirm("평가를 저장하시겠습니까?")) {
       const sendData = {
         reviewId: reviewDetail.value.id,
@@ -452,7 +450,7 @@ async function leaderSave() {
 
 // 팀장 확인(complete)
 async function complete() {
-  if (goalDetail.value.status === '상신' || goalDetail.value.status === '확인 중') {
+  if (reviewDetail.value.status === '상신' || reviewDetail.value.status === '확인 중') {
     if (confirm("평가를 확인 완료하시겠습니까?")) {
       const sendData = {
         reviewId: reviewDetail.value.id,
@@ -490,7 +488,7 @@ async function complete() {
 
 // 팀장 확정(complete)
 async function valid() {
-  if (goalDetail.value.status === '확인') {
+  if (reviewDetail.value.status === '확인 완료') {
     if (confirm("평가를 확정하시겠습니까?")) {
   const sendData = {
     reviewId: reviewDetail.value.id,
@@ -532,7 +530,7 @@ async function valid() {
 <style scoped>
 .reviewDetailContainer {
   display: grid;
-  grid-template-rows: 18% 21% 8% minmax(40%, auto) 8% 13%;
+  grid-template-rows: 18% 23% 7% 39% 13%;
   grid-template-columns: 10% 80% 10%;
   height: 100%;
 }
@@ -551,6 +549,8 @@ async function valid() {
 
 .reviewTitle h1 {
   margin-left: 0.5%;
+  font-weight: 600;
+  font-size: 25px;
 }
 
 .reviewIcon {
@@ -561,7 +561,6 @@ async function valid() {
   grid-row-start: 2;
   grid-column-start: 2;
   grid-column-end: 3;
-  margin-top: 20px;
   font-size: 12px;
 }
 
@@ -584,9 +583,28 @@ async function valid() {
   justify-content: flex-end;
   align-items: center;
   gap: 10px;
-  margin-top: 20px;
 }
 
+.buttonWrapper {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px; /* 버튼 사이의 간격 설정 */
+  width: 30%;
+}
+
+.performanceBtn {
+  grid-column-start: 6;
+  margin-left: 2%;
+  width: 60px;
+  background-color: #088A85;
+  color: white;
+  padding: 5px 5px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
 
 .performanceTableContainer {
   grid-row-start: 4;
@@ -619,7 +637,8 @@ td {
 th {
   position: sticky;
   top: 0;
-  background-color: #f2f2f2;
+  text-align: center;
+  //background-color: #f2f2f2;
   //z-index: 1;
 }
 
@@ -641,6 +660,7 @@ th {
 .performanceTableContainer th:nth-child(1),
 .performanceTableContainer td:nth-child(1) {
   min-width: 30px; /* No */
+  text-align: center;
 }
 
 .performanceTableContainer th:nth-child(2),
@@ -666,6 +686,7 @@ th {
 .performanceTableContainer th:nth-child(6),
 .performanceTableContainer td:nth-child(6) {
   min-width: 70px; /* 가중치 */
+  text-align: center;
 }
 
 .performanceTableContainer th:nth-child(7),
@@ -676,11 +697,13 @@ th {
 .performanceTableContainer th:nth-child(8),
 .performanceTableContainer td:nth-child(8) {
   min-width: 90px; /* 자기 평가 */
+  text-align: center;
 }
 
 .performanceTableContainer th:nth-child(9),
 .performanceTableContainer td:nth-child(9) {
   min-width: 100px; /* 자기 평가 점수 */
+  text-align: center;
 }
 
 .performanceTableContainer th:nth-child(10),
@@ -691,10 +714,12 @@ th {
 .performanceTableContainer th:nth-child(11),
 .performanceTableContainer td:nth-child(11) {
   min-width: 90px; /* 상급 평가 */
+  text-align: center;
 }
 
 .performanceTableContainer th:nth-child(12),
 .performanceTableContainer td:nth-child(12) {
   min-width: 100px; /* 상급 평가 점수 */
+  text-align: center;
 }
 </style>
