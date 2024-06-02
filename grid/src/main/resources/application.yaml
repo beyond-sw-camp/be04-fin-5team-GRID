@@ -33,9 +33,9 @@ cloud:
   aws:
     credentials:
       secret-key:
-      access-key: 
+      access-key:
     region:
-      static:
+      static: 
     s3:
       bucketName:
     stack:

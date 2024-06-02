@@ -219,7 +219,6 @@ function toWorkCalender() {
   router.push('/work-calendar');
 }
 
-
 function parseJwt(token) {
   try {
     const base64Url = token.split('.')[1];
@@ -240,7 +239,7 @@ onMounted(() => {
   const token = localStorage.getItem('access');
   if (token) {
     const decodedToken = parseJwt(token);
-    userRole.value = decodedToken?.auth || '';
+    userRole.value = decodedToken?.auth || '';    
   }
 });
 </script>
@@ -328,3 +327,4 @@ onMounted(() => {
   padding: 5px 0;
 }
 </style>
+

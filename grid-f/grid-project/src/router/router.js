@@ -37,15 +37,15 @@ const router = createRouter({
             props: true
         },
         {
-            path: '/performance-review/goal/add',
+            path: '/performance-review-goal/add',
             component: () => import('../views/PerformanceReview/Goal/GoalAddView.vue')
         },
         {
-            path: '/performance-review/goal',
+            path: '/performance-review-goal',
             component: () => import('../views/PerformanceReview/Goal/GoalListView.vue')
         },
         {
-            path: '/performance-review/goal/detail/:id',
+            path: '/review-goal/detail/:id',
             component: () => import('../views/PerformanceReview/Goal/GoalDetailView.vue')
         },
         {
@@ -76,10 +76,6 @@ const router = createRouter({
         {
             path: '/hr/add/list',
             component: () => import('../views/HumanResources/AddMulti.vue')
-        },
-        {
-            path: '/hr/add',
-            component: () => import('../views/HumanResources/Add.vue')
         },
         {
             path: '/approval',
@@ -215,10 +211,7 @@ const router = createRouter({
             component: () => import('@/views/Approval/RegistMainView.vue')
         },
         {
-            path: '/work-calendar/:id',
-            component: () => import('@/views/AdTime/WorkCalendarView.vue')
-        },
-        {
+
             path: '/team/member-list/:teamId',
             component: () => import('@/components/Department/TeamMemberList.vue')
         },
@@ -229,12 +222,7 @@ const router = createRouter({
         {
             path: '/work',
             component: () => import('@/views/Approval/AllWorkListView.vue')
-        },
-        {
-            path: '/work-calendar',
-            component: () => import('@/views/AdTime/WorkCalendarView.vue')
         }
-
 
     ]
 })
@@ -242,10 +230,12 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
     const accessToken = localStorage.getItem('access');
     const refreshToken = document.cookie.split('; ').find(row => row.startsWith('refresh='));
+    
+    const publicPaths = ['/', '/find/id', '/find/pwd', '/find/id/result', '/find/pwd/:email/result'];
 
-    if (to.path === '/' && (accessToken || refreshToken)) {
-        next({ path: '/main' });
-    } else if (to.path !== '/' && !accessToken && !refreshToken) {
+    if (publicPaths.includes(to.path)) {
+        next();
+    } else if (!accessToken && !refreshToken) {
         next({ path: '/' });
     } else {
         next();

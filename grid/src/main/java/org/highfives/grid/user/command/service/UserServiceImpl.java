@@ -137,36 +137,61 @@ public class UserServiceImpl implements UserService{
     // 중복 값 입력 예외 처리 메소드
     @Override
     public String duplicateInfoCheck(UserDTO givenInfo) {
-
         try {
-
-            Employee employee = userRepository.findByEmail(givenInfo.getEmail());
-            if (employee != null) {
-                if(employee.getEmail().equals(givenInfo.getEmail())) {
-                    return "Pass";
-                }
-                return "Already used Email : " + givenInfo.getEmail();
+            String emailCheckResult = checkDuplicateEmail(givenInfo.getEmail());
+            if (!emailCheckResult.equals("Pass")) {
+                return emailCheckResult;
             }
 
-            employee = userRepository.findByEmployeeNumber(givenInfo.getEmployeeNumber());
-            if (employee != null) {
-                if(employee.getEmployeeName().equals(givenInfo.getEmployeeNumber())) {
-                    return "Pass";
-                }
-                return "Already used Employee Number : " + givenInfo.getEmployeeNumber();
+            String employeeNumberCheckResult = checkDuplicateEmployeeNumber(givenInfo.getEmployeeNumber());
+            if (!employeeNumberCheckResult.equals("Pass")) {
+                return employeeNumberCheckResult;
             }
 
-            employee = userRepository.findByPhoneNumber(givenInfo.getPhoneNumber());
-            if ( employee != null) {
-                if(employee.getPhoneNumber().equals(givenInfo.getPhoneNumber())) {
-                    return "Pass";
-                }
-                return "Already used Phone Number : " + givenInfo.getPhoneNumber();
+            String phoneNumberCheckResult = checkDuplicatePhoneNumber(givenInfo.getPhoneNumber());
+            if (!phoneNumberCheckResult.equals("Pass")) {
+                return phoneNumberCheckResult;
             }
         } catch (Exception e) {
-            return "NP";
+            return "Unexpected error occurred: " + e.getMessage();
         }
 
+        return "Pass";
+    }
+
+    private String checkDuplicateEmail(String email) {
+        try {
+            Employee employee = userRepository.findByEmail(email);
+            if (employee != null && !employee.getEmail().equals(email)) {
+                return "Already used Email: " + email;
+            }
+        } catch (Exception e) {
+            return "Error while checking Email: " + e.getMessage();
+        }
+        return "Pass";
+    }
+
+    private String checkDuplicateEmployeeNumber(String employeeNumber) {
+        try {
+            Employee employee = userRepository.findByEmployeeNumber(employeeNumber);
+            if (employee != null && !employee.getEmployeeNumber().equals(employeeNumber)) {
+                return "Already used Employee Number: " + employeeNumber;
+            }
+        } catch (Exception e) {
+            return "Error while checking Employee Number: " + e.getMessage();
+        }
+        return "Pass";
+    }
+
+    private String checkDuplicatePhoneNumber(String phoneNumber) {
+        try {
+            Employee employee = userRepository.findByPhoneNumber(phoneNumber);
+            if (employee != null && !employee.getPhoneNumber().equals(phoneNumber)) {
+                return "Already used Phone Number: " + phoneNumber;
+            }
+        } catch (Exception e) {
+            return "Error while checking Phone Number: " + e.getMessage();
+        }
         return "Pass";
     }
 
@@ -258,6 +283,33 @@ public class UserServiceImpl implements UserService{
     }
 
     private Employee inputNewInfo(Employee oldInfo, UserDTO givenInfo) {
+
+        if(givenInfo.getEmail() == null)
+            givenInfo.setEmail(oldInfo.getEmail());
+        if(givenInfo.getName() == null)
+            givenInfo.setName(oldInfo.getEmployeeName());
+        if(givenInfo.getEmployeeNumber() == null)
+            givenInfo.setEmployeeNumber(oldInfo.getEmployeeNumber());
+        if(givenInfo.getPhoneNumber() == null)
+            givenInfo.setPhoneNumber(oldInfo.getPhoneNumber());
+        if(givenInfo.getCallNumber() == null)
+            givenInfo.setCallNumber(oldInfo.getCallNumber());
+        if(givenInfo.getDepartmentId() == 0)
+            givenInfo.setDepartmentId(oldInfo.getDepartmentId());
+        if(givenInfo.getTeamId() == 0)
+            givenInfo.setTeamId(oldInfo.getTeamId());
+        if(givenInfo.getPositionId() == 0)
+            givenInfo.setPositionId(oldInfo.getPositionId());
+        if(givenInfo.getDutiesId() == 0)
+            givenInfo.setDutiesId(oldInfo.getDutiesId());
+        if(givenInfo.getWorkType() == null)
+            givenInfo.setWorkType(oldInfo.getWorkType());
+        if(givenInfo.getContractEndTime() == null)
+            givenInfo.setContractEndTime(oldInfo.getContractEndTime());
+        if(givenInfo.getZipCode() == null)
+            givenInfo.setZipCode(oldInfo.getZipCode());
+        if(givenInfo.getAddress() == null)
+            givenInfo.setAddress(oldInfo.getAddress());
 
         return Employee.builder()
                 .id(oldInfo.getId())

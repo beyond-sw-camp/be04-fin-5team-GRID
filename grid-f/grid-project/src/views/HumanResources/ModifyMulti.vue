@@ -1,7 +1,7 @@
 <template>
     <div class="hr-main">
         <div class="hr-title">
-            <img class="hr-icon" src="@/assets/icon2.png" alt="인사 정보 메인 이미지">
+            <img class="hr-icon" src="@/assets/HR/modify-user.png" alt="인사 정보 메인 이미지">
             <h1>인사 정보 일괄 수정</h1>
         </div>
         <div class="search">
@@ -22,7 +22,7 @@
             <table>
                 <thead>
                     <tr>
-                        <th>변경할 사원 사번</th>
+                        <th>사번</th>
                         <th>이름</th>
                         <th>부서</th>
                         <th>팀</th>
@@ -44,8 +44,8 @@
                         </td>
                         <td>
                             <input v-model="employee.name"
-                                :class="{ 'invalid-input': employee.invalid && !employee.name }" required placeholder="이름"
-                                :style="{ color: employee.invalid && !employee.name ? 'red' : '' }">
+                                :class="{ 'invalid-input': employee.invalid && !employee.name }" required
+                                placeholder="이름" :style="{ color: employee.invalid && !employee.name ? 'red' : '' }">
                         </td>
                         <td>
                             <select v-model="employee.departmentId">
@@ -58,6 +58,7 @@
                         </td>
                         <td>
                             <select v-model="employee.teamId">
+                                <option disabled value="">선택</option>
                                 <option v-for="team in teams" :key="team.value" :value="team.value">
                                     {{ team.text }}
                                 </option>
@@ -65,6 +66,7 @@
                         </td>
                         <td>
                             <select v-model="employee.positionId">
+                                <option disabled value="">선택</option>
                                 <option v-for="position in positions" :key="position.value" :value="position.value">
                                     {{ position.text }}
                                 </option>
@@ -72,6 +74,7 @@
                         </td>
                         <td>
                             <select v-model="employee.dutiesId">
+                                <option disabled value="">선택</option>
                                 <option v-for="duty in dutiesList" :key="duty.value" :value="duty.value">
                                     {{ duty.text }}
                                 </option>
@@ -79,12 +82,13 @@
                         </td>
                         <td>
                             <select v-model="employee.workType">
+                                <option disabled value="">선택</option>
                                 <option value="R">정규직</option>
                                 <option value="C">계약직</option>
                             </select>
                         </td>
                         <td><input v-model="employee.contractEndDate" type="date" class="no-border" required></td>
-                        <td style="min-width: 350px;">
+                        <td class="address-column">
                             <div class="address-container">
                                 <div>
                                     <button class="searchBtn" @click="execDaumPostcode(employee)">검색</button>
@@ -94,14 +98,13 @@
                                         readonly>
                                 </div>
                                 <div id="address-container2">
-                                    <input v-model="employee.address2" placeholder="상세 주소" style="width: 82%;" required>
+                                    <input v-model="employee.address2" placeholder="상세 주소" style="width: 81%;" required>
                                 </div>
                             </div>
                         </td>
                         <td style="width: 60px;">
                             <button @click="removeEmployee(index)" class="deleteBtn">삭제</button>
                         </td>
-                        <td style="width: 60px;"><button @click="removeEmployee(index)" class="deleteBtn">삭제</button></td>
                     </tr>
                 </tbody>
             </table>
@@ -123,13 +126,11 @@
     <div class="modal fade" id="guideModal" tabindex="-1" aria-labelledby="guideModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-
                 <!-- Modal Header -->
                 <div class="modal-header">
                     <h4 class="modal-title" id="guideModalLabel">CSV 작성 가이드</h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-
                 <!-- Modal body -->
                 <div class="modal-body">
                     <div class="example">
@@ -145,12 +146,10 @@
                         <p>6. 엑셀 이외의 프로그램(메모장, 노트패드 등...)으로 편집시 쉼표(,)를 구분자로 사용하세요.</p>
                     </div>
                 </div>
-
                 <!-- Modal footer -->
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
                 </div>
-
             </div>
         </div>
     </div>
@@ -195,13 +194,14 @@ const openModal = () => {
 const addEmployee = () => {
     employees.push({
         employeeNumber: '',
-        name:'',
-        departmentId: null,
-        teamId: null,
-        positionId: null,
-        dutiesId: null,
-        workType: '',
+        name: '',
+        departmentId: '',
+        teamId: '',
+        positionId: '',
+        dutiesId: '',
+        workType: null,
         contractEndDate: '',
+        zipCode: '',
         address1: '',
         address2: '',
         invalid: false // Add invalid field for validation
@@ -258,7 +258,7 @@ const execDaumPostcode = (employee) => {
 
 const downloadCSV = () => {
     const csvData = [
-        ['변경할 사원 사번', '이름', '부서', '팀', '직위', '직책', '근무 유형', '계약 종료일', '주소 1', '주소 2'],
+        ['사번', '이름', '부서', '팀', '직위', '직책', '근무 유형', '계약 종료일', '우편 번호', '주소', '상세 주소'],
         ...employees.map(emp => [
             emp.employeeNumber,
             emp.name,
@@ -268,8 +268,9 @@ const downloadCSV = () => {
             emp.dutiesId,
             emp.workType,
             emp.contractEndDate,
-            emp.address1,
-            emp.address2,
+            emp.zipCode,
+            emp.address,
+            emp.address2
         ])
     ];
     const csv = Papa.unparse(csvData, {
@@ -292,7 +293,7 @@ const handleFileUpload = (event) => {
                 results.data.forEach(row => {
                     console.log('Processing row:', row); // 디버깅을 위한 콘솔 출력
                     employees.push({
-                        employeeNumber: (row['변경할 사원 사번'] || '').trim(),
+                        employeeNumber: (row['사번'] || '').trim(),
                         name: (row['이름'] || '').trim(),
                         departmentId: (row['부서'] || '').trim(),
                         teamId: (row['팀'] || '').trim(),
@@ -304,7 +305,6 @@ const handleFileUpload = (event) => {
                         address1: (row['주소'].split(' ')[0] || '').trim(),
                         address2: (row['상세 주소'] || ''),
                         invalid: false // Add invalid field for validation
-
                     });
                 });
             }
@@ -326,7 +326,6 @@ watch(formattedEmployees, (newVal) => {
 }, { deep: true });
 
 const submitForm = async () => {
-
     let hasInvalid = false;
     let hasData = false;
 
@@ -342,8 +341,8 @@ const submitForm = async () => {
             return cleanedEmp;
         })
         .filter(emp => Object.values(emp).some(value => value !== null && value !== ''));
-    
-    if(cleanedEmployees.length == 0) {
+
+    if (cleanedEmployees.length == 0) {
         alert('수정할 데이터가 없습니다.');
         return;
     }
@@ -400,13 +399,14 @@ button {
 }
 
 .hr-title h1 {
-    margin-left: 0.5%;
-    font-weight: 600;
-    font-size: 25px;
+    margin-left: 1.2%;
+    font-weight: bold;
+    font-size: 14pt;
 }
 
 .hr-icon {
-    width: 80%;
+    width: 110%;
+    margin: 0 40px 10px 0;
     filter: invert(0%) sepia(64%) saturate(7%) hue-rotate(334deg) brightness(85%) contrast(101%);
 }
 
@@ -431,7 +431,6 @@ button {
     height: 60%;
     margin-top: 15%;
     margin-right: 15%;
-    filter: invert(41%) sepia(28%) saturate(1738%) hue-rotate(134deg) brightness(92%) contrast(94%);
     cursor: pointer;
 }
 
@@ -478,8 +477,15 @@ button {
     width: 100%;
 }
 
-input,
-select {
+.uploadBtn img, .downloadBtn img {
+    width: 12%;
+    height: 50%;
+    margin: 0 7% 2% 0;
+    filter: invert(100%) sepia(65%) saturate(424%) hue-rotate(91deg) brightness(129%) contrast(107%);
+}
+
+select,
+input {
     border: none;
     width: 100%;
     box-sizing: border-box;
@@ -586,6 +592,14 @@ thead th {
     width: 100%;
 }
 
+.plusBtn img {
+    width: 14%;
+    height: 60%;
+    margin: 1% 3% 1% 0;
+    filter: invert(100%) sepia(65%) saturate(424%) hue-rotate(91deg) brightness(129%) contrast(107%);
+    transition: transform 0.3s ease;
+}
+
 .submitBtn {
     grid-column-start: 5;
     background-color: #088A85;
@@ -598,6 +612,14 @@ thead th {
     font-style: bold;
     justify-self: flex-start;
     width: 100%;
+}
+
+.submitBtn img {
+    width: 20%;
+    height: 80%;
+    margin: 0 6% 0 0;
+    filter: invert(100%) sepia(65%) saturate(424%) hue-rotate(91deg) brightness(129%) contrast(107%);
+    transition: transform 0.3s ease;
 }
 
 .deleteBtn {
@@ -622,38 +644,20 @@ thead th {
     font-style: bold;
     min-height: 20px;
     min-width: 40px;
+    max-height: 20px;
+    max-width: 40px;
     margin-bottom: 5px;
+    margin-right: 5%;
 }
 
-.downloadBtn img {
-    width: 20%;
-    height: 80%;
-    margin: 0 6% 4% 0;
-    filter: invert(100%) sepia(65%) saturate(424%) hue-rotate(91deg) brightness(129%) contrast(107%);
-    transition: transform 0.3s ease;
+.address-container {
+    display: flex;
+    flex-direction: column;
 }
 
-.uploadBtn img {
-    width: 12%;
-    height: 50%;
-    margin: 0 7% 2% 0;
-    filter: invert(100%) sepia(65%) saturate(424%) hue-rotate(91deg) brightness(129%) contrast(107%);
-}
-
-.submitBtn img {
-    width: 20%;
-    height: 80%;
-    margin: 0 6% 0 0;
-    filter: invert(100%) sepia(65%) saturate(424%) hue-rotate(91deg) brightness(129%) contrast(107%);
-    transition: transform 0.3s ease;
-}
-
-.plusBtn img {
-    width: 14%;
-    height: 60%;
-    margin: 1% 3% 1% 0;
-    filter: invert(100%) sepia(65%) saturate(424%) hue-rotate(91deg) brightness(129%) contrast(107%);
-    transition: transform 0.3s ease;
+#address-container2 {
+    display: flex;
+    justify-content: flex-end;
 }
 
 .address-container input::placeholder {
@@ -664,8 +668,8 @@ thead th {
     text-align: left;
 }
 
+
 .invalid-input::placeholder {
     color: rgb(240, 125, 125);
 }
-
 </style>

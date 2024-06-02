@@ -5,6 +5,9 @@ import org.highfives.grid.user.query.dto.DutiesDTO;
 import org.highfives.grid.user.query.dto.LeaderInfoDTO;
 import org.highfives.grid.user.query.dto.PositionDTO;
 import org.highfives.grid.user.query.dto.UserDTO;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Map;
@@ -20,9 +23,17 @@ public interface UserMapper {
 
     LeaderInfoDTO getTeamLeaderInfo(int teamLeaderId);
 
-    List<UserDTO> getUserList();
+    List<UserDTO> getList();
+//
+//    List<UserDTO> getUserListByName(String name);
 
-    List<UserDTO> getUserListByName(String name);
+    List<UserDTO> getUserList(@Param("offset") long offset, @Param("pageSize") int pageSize);
+
+    List<UserDTO> getUserListByName(@Param("name") String name, @Param("offset") long offset, @Param("pageSize") int pageSize);
+
+    long countAllUsers(); // 총 사용자 수를 계산하는 메소드
+
+    long countUsersByName(@Param("name") String name);
 
     UserDTO getUserInfo(Map<String, Object> info);
 
