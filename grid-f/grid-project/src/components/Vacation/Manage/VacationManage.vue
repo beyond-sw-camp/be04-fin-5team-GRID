@@ -572,30 +572,31 @@ onMounted(() => {
     .btn-custom {
     font-size:11px;
     font-weight: 600;
-    color:black;
-    background-color: #CDE8E5;
-    border-color:#CDE8E5 ;
+    color:white;
+    background-color: #77B0AA;
+    border-color:#77B0AA ;
+    grid-row-start: 4;
   }
 
   .vacations h3 {
       font-size: 15px;
       font-weight: 600;
-      color:black;
+      color:white;
       margin: 0;
     }
   
     .card-text {
-        font-size: 13px;
+        font-size: 12px;
       font-weight: 600;
-      color:black;
-      margin: 0;
+      color:white;
+      margin-bottom: 0;
     }
 
   .card-body {
     width:100%;
     padding: 0px 0px;
     display:grid;
-    grid-template-rows: 1fr 1fr 1fr;
+    grid-template-rows: 0.7fr 1fr 0.1fr 1fr ;
     margin: 0;
   }
 
