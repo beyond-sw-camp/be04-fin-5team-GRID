@@ -2,6 +2,7 @@
 import {onMounted, reactive, ref, watch} from "vue";
 import {useRoute} from "vue-router";
 import axios from "axios";
+import router from '@/router/router';
 
 const route = useRoute();
 
@@ -11,6 +12,8 @@ const vacationNum = ref(0);
 
 const state = reactive({
   vacationType: [],
+  isEndDateDisabled: false,
+  isTimeDisabled: false
 });
 
 const postData = reactive({
@@ -40,10 +43,17 @@ function parseJwt(token) {
 const getUserVacationInfo = async (id) => {
   try {
     const response = await axios.get(`/api/vacation/info/${userId.value}`);
-    const vacationInfo = allInfo.value.find(info => info.typeId === id);
 
     allInfo.value = response.data.result;
-    vacationNum.value = vacationInfo ? vacationInfo.vacationNum : 0;
+
+    if(id == 5 || id == 6) {
+      const vacationInfo = allInfo.value.find(info => info.typeId === 1);
+      vacationNum.value = vacationInfo ? vacationInfo.vacationNum : 0;
+    } else {
+      const vacationInfo = allInfo.value.find(info => info.typeId === id);
+      vacationNum.value = vacationInfo ? vacationInfo.vacationNum : 0;
+    }
+
   } catch (error) {
     console.error("Error:", error);
   }
@@ -74,13 +84,18 @@ const fetchVacationType = async() => {
 };
 
 const registApproval = async () => {
-
   postData.requesterId = userId.value;
+
+  if(postData.infoId == 5 || postData.infoId == 6) {
+    postData.e_date = postData.s_date;
+    postData.e_time = postData.s_time;
+  }
 
   await getUserVacationInfo(postData.infoId);
 
   try {
     const confirmed = window.confirm('휴가를 사용하시겠습니까?');
+
     if(confirmed) {
       if(vacationNum.value > 0) {
         const response = await axios.post(`http://localhost:8080/approval/vacation`, postData, {
@@ -90,7 +105,9 @@ const registApproval = async () => {
         })
         if (response.status !== 201) {
           throw new Error("response is not ok");
-
+        } else {
+          alert('결재가 제출되었습니다.')
+          router.push('/regist/main');
         }
       } else {
         alert('휴가가 부족합니다.');
@@ -101,6 +118,16 @@ const registApproval = async () => {
     console.error('Fail to post: ', error.message);
   }
 }
+
+watch(
+    () => postData.infoId,
+    (newInfoId) => {
+      const selectedType = state.vacationType.find(type => type.value === newInfoId);
+
+      state.isEndDateDisabled = selectedType && (selectedType.text === '반차' || selectedType.text === '반반차');
+      state.isTimeDisabled = selectedType && [1, 2, 3, 4].includes(selectedType.value);
+    }
+);
 
 watch(
     () => [postData.s_date, postData.s_time],
@@ -121,7 +148,8 @@ onMounted(async() => {
     userId.value = decodedToken.id || '';
   }
 
-  fetchVacationType();
+  await fetchVacationType();
+
 })
 </script>
 
@@ -136,37 +164,32 @@ onMounted(async() => {
           class="mb-0"
       >
         <b-form-group
-            label="시작 일자:"
-            label-for="nested-street"
-            label-cols-sm="3"
-            label-align-sm="right"
-        >
-          <b-form-input type="date" :state="false" id="start" v-model="postData.s_date"></b-form-input>
-          <b-form-input type="time" id="start" v-model="postData.s_time"></b-form-input>
-        </b-form-group>
-
-        <b-form-group
-            label="종료 일자:"
-            label-for="nested-city"
-            label-cols-sm="3"
-            label-align-sm="right"
-        >
-          <b-form-input type="date" id="end" v-model="postData.e_date"></b-form-input>
-          <b-form-input type="time" id="start" v-model="postData.e_time"></b-form-input>
-        </b-form-group>
-
-        <b-form-group
             label="휴가 종류:"
-            label-for="nested-city"
             label-cols-sm="3"
             label-align-sm="right"
         >
           <b-form-select v-model="postData.infoId" :options="state.vacationType"></b-form-select>
         </b-form-group>
+        <b-form-group
+            label="시작 일자:"
+            label-cols-sm="3"
+            label-align-sm="right"
+        >
+          <b-form-input type="date" :state="false" id="start" v-model="postData.s_date"></b-form-input>
+          <b-form-input type="time" id="start" v-model="postData.s_time" :disabled="state.isTimeDisabled"></b-form-input>
+        </b-form-group>
+
+        <b-form-group
+            label="종료 일자:"
+            label-cols-sm="3"
+            label-align-sm="right"
+        >
+          <b-form-input type="date" id="end" v-model="postData.e_date" :min="postData.s_date" :disabled="state.isEndDateDisabled"></b-form-input>
+          <b-form-input type="time" id="start" v-model="postData.e_time" :disabled="state.isEndDateDisabled || state.isTimeDisabled"></b-form-input>
+        </b-form-group>
 
         <b-form-group
             label="내용:"
-            label-for="nested-country"
             label-cols-sm="3"
             label-align-sm="right"
         >

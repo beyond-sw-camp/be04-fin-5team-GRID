@@ -65,10 +65,16 @@ onMounted(async () => {
         <div class="footer" v-if="showLayout">
         </div>
     </div>
-
 </template>
 
 <style scoped>
+@font-face {
+  font-family: 'IBMPlexSansKR-Regular';
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_20-07@1.0/IBMPlexSansKR-Regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
 body {
     margin: 0;
     padding: 0;
@@ -114,10 +120,11 @@ body {
 }
 
 .main-content {
-    grid-area: body;
-    margin-top: 60px;
-    padding: 0;
-    height: calc(100vh - 60px);
+  font-family: 'IBMPlexSansKR-Regular', sans-serif;
+  grid-area: body;
+  margin-top: 60px;
+  padding: 0;
+  height: calc(100vh - 60px);
 }
 
 .footer {

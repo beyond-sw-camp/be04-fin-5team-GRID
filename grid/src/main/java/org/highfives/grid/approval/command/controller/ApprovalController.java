@@ -35,7 +35,7 @@ public class ApprovalController {
         ResApprovalVO response = ResApprovalVO.builder()
                 .statusCode(201)
                 .message("출장 결재 생성 성공")
-                .href("")
+                .href("/approval/detail/1/" + result.getId())
                 .btResult(result)
                 .build();
 
@@ -47,10 +47,14 @@ public class ApprovalController {
 
         OvertimeApprovalDTO result = approvalService.addOvertimeApproval(overtimeApprovalVO);
 
+        if (result == null) {
+            return ResponseEntity.status(400).body(null);
+        }
+
         ResApprovalVO response = ResApprovalVO.builder()
                 .statusCode(201)
                 .message("시간 외 근무 결재 생성 성공")
-                .href("")
+                .href("/approval/detail/2/" + result.getId())
                 .overtimeResult(result)
                 .build();
 
@@ -65,7 +69,7 @@ public class ApprovalController {
         ResApprovalVO response = ResApprovalVO.builder()
                 .statusCode(201)
                 .message("단축 근무 결재 생성 성공")
-                .href("")
+                .href("/approval/detail/3/" + result.getId())
                 .rwResult(result)
                 .build();
 
@@ -80,7 +84,7 @@ public class ApprovalController {
         ResApprovalVO response = ResApprovalVO.builder()
                 .statusCode(201)
                 .message("휴가 결재 생성 성공")
-                .href("")
+                .href("/approval/detail/4/" + result.getId())
                 .vacationResult(result)
                 .build();
 

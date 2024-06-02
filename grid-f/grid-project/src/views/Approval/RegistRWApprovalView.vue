@@ -102,7 +102,7 @@
             label-cols-sm="3"
             label-align-sm="right"
         >
-          <b-form-input type="date" id="end" v-model="postData.endTime"></b-form-input>
+          <b-form-input type="date" id="end" v-model="postData.endTime" :min="postData.startTime"></b-form-input>
         </b-form-group>
 
         <b-form-group

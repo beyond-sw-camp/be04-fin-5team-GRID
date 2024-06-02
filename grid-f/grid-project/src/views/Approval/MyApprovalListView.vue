@@ -25,9 +25,9 @@
     }
   }
 
-  const fetchReqApprovalList = async(typeId, approvalStatus, approverId) => {
+  const fetchApprovalList = async(typeId, approvalStatus, employeeId) => {
     try {
-      const response = await axios.get(`http://localhost:8080/approval/approver/${typeId}/${approvalStatus}/${approverId}`);
+      const response = await axios.get(`http://localhost:8080/approval/list/${typeId}/${approvalStatus}/${employeeId}`);
 
       if (response.status !== 200) {
         throw new Error("response is not ok");
@@ -50,29 +50,31 @@
       userId.value = decodedToken.id || '';
     }
 
-    await fetchReqApprovalList(1, 5, userId.value);
+    await fetchApprovalList(1, 0, userId.value);
 
     isLoading.value = false;
   })
 </script>
 
 <template>
-  <b-card no-body>
-    <b-tabs card>
-      <b-tab title="출장" @click="fetchReqApprovalList(1, 5, userId)" active>
-        <b-card-text><ApprovalList :approvalList="state.approvalList"/></b-card-text>
-      </b-tab>
-      <b-tab title="시간 외 근무" @click="fetchReqApprovalList(2, 5, userId)">
-        <ApprovalList :approvalList="state.approvalList"/>
-      </b-tab>
-      <b-tab title="단축 근무" @click="fetchReqApprovalList(3, 5, userId)">
-        <ApprovalList :approvalList="state.approvalList"/>
-      </b-tab>
-      <b-tab title="휴가" @click="fetchReqApprovalList(4, 5, userId)">
-        <ApprovalList :approvalList="state.approvalList"/>
-      </b-tab>
-    </b-tabs>
-  </b-card>
+  <div>
+    <b-card no-body>
+      <b-tabs card>
+        <b-tab title="출장" @click="fetchApprovalList(1, 0, userId)" active>
+          <b-card-text><ApprovalList :approvalList="state.approvalList"/></b-card-text>
+        </b-tab>
+        <b-tab title="시간 외 근무" @click="fetchApprovalList(2, 0, userId)">
+          <ApprovalList :approvalList="state.approvalList"/>
+        </b-tab>
+        <b-tab title="단축 근무" @click="fetchApprovalList(3, 0, userId)">
+          <ApprovalList :approvalList="state.approvalList"/>
+        </b-tab>
+        <b-tab title="휴가" @click="fetchApprovalList(4, 0, userId)">
+          <ApprovalList :approvalList="state.approvalList"/>
+        </b-tab>
+      </b-tabs>
+    </b-card>
+  </div>
 </template>
 
 <style scoped>
