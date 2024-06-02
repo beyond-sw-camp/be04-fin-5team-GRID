@@ -35,8 +35,13 @@ cloud:
       secret-key:
       access-key:
     region:
-      static: 
+      static:
     s3:
       bucketName:
     stack:
       auto: false
+
+jasypt:
+  encryptor:
+    password:
+    bean: jasyptStringEncryptor
