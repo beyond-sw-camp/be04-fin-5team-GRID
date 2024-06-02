@@ -52,13 +52,19 @@
   const registApproval = async () => {
 
     alert('결재를 제출하시겠습니까?');
+
     postData.requesterId = userId.value;
 
+    const formData = new FormData();
+
+    formData.append('postData', JSON.stringify(postData));
+    formData.append('file', fileInput.value);
+
     try {
-      if (user.value.gender === 'F') {
-        const response = await axios.post(`http://localhost:8080/approval/rw`, postData, {
+      if (user.value.gender === 'M') {
+        const response = await axios.post(`http://localhost:8080/approval/rw`, formData, {
           headers: {
-            'Content-Type': "application/json"
+            'Content-Type': "multipart/form-data"
           }
         })
         if (response.status !== 201) {
