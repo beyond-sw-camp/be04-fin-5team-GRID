@@ -77,7 +77,7 @@ public class VacationServiceImpl implements VacationService {
         String firstDayString = firstDayOfMonth.toString();
         LocalDate lastDayOfMonth = LocalDate.now().withDayOfMonth(LocalDate.now().lengthOfMonth());
         String lastDayString = lastDayOfMonth.toString();
-        List<UserDTO> employees = userService.findList();
+        List<UserDTO> employees = userService.findAllUsers();
 
         // 1년은 안되고, 1달은 지난 직원이 사용안한 월차가 있으면 삭제하고 그 기록을 vacation_history에 저장
         for (int i = 1; i < employees.size(); i++) {
@@ -106,7 +106,7 @@ public class VacationServiceImpl implements VacationService {
             }
         }
 
-//         1년은 안되고, 1달은 지난 직원에게 월차를 제공하고 그 기록을 vacation_history에 저장
+        // 1년은 안되고, 1달은 지난 직원에게 월차를 제공하고 그 기록을 vacation_history에 저장
         for (int i = 1; i < employees.size(); i++) {
             int userId = employees.get(i).getId();
             int day = countDays(userId);
@@ -144,7 +144,7 @@ public class VacationServiceImpl implements VacationService {
         String firstDayString = firstDayOfYear.toString();
         LocalDate lastDayOfYear = LocalDate.now().withDayOfYear(LocalDate.now().lengthOfYear());
         String lastDayString = lastDayOfYear.toString();
-        List<UserDTO> employees = userService.findList();
+        List<UserDTO> employees = userService.findAllUsers();
 
         // 입사 후 1년이 지난 직원들이 사용안한 연차가 있다면 삭제하고 그 기록을 vacation_history에 저장
         for (int i = 1; i < employees.size(); i++) {
@@ -234,7 +234,7 @@ public class VacationServiceImpl implements VacationService {
         String firstDayString = firstDayOfYear.toString();
         LocalDate lastDayOfYear = LocalDate.now().withDayOfYear(LocalDate.now().lengthOfYear());
         String lastDayString = lastDayOfYear.toString();
-        List<UserDTO> employees = userService.findList();
+        List<UserDTO> employees = userService.findAllUsers();
 
         // 휴가를 새로 insert 하기 전, 기존의 휴가가 남아있다면 삭제하고, 그 기록을 vacation_history에 저장
         for (int i = 1; i < employees.size(); i++) {
@@ -299,7 +299,7 @@ public class VacationServiceImpl implements VacationService {
         String firstDayString = firstDayOfMonth.toString();
         LocalDate lastDayOfMonth = LocalDate.now().withDayOfMonth(LocalDate.now().lengthOfMonth());
         String lastDayString = lastDayOfMonth.toString();
-        List<UserDTO> employees = userService.findList();
+        List<UserDTO> employees = userService.findAllUsers();
 
         // 기존의 보건휴가가 남아있으면 지우고, 그 이력을 vacation_history에 저장
         for (int i = 1; i < employees.size(); i++) {
@@ -396,6 +396,7 @@ public class VacationServiceImpl implements VacationService {
                 .vacationNum(typeInfo.getVacationNum())
                 .dateOfUse(typeInfo.getDateOfUse())
                 .vacationExplain(typeInfo.getVacationExplain())
+                .useYn("Y")
                 .build();
         vacationTypeRepository.save(vacationType);
     }
@@ -407,6 +408,7 @@ public class VacationServiceImpl implements VacationService {
         vacationType.setVacationNum(typeInfo.getVacationNum());
         vacationType.setDateOfUse(typeInfo.getDateOfUse());
         vacationType.setVacationExplain(typeInfo.getVacationExplain());
+        vacationType.setUseYn(typeInfo.getUseYn());
     }
 
     @Override
@@ -417,7 +419,7 @@ public class VacationServiceImpl implements VacationService {
 
     @Override
     @Transactional
-    public void plusVacationNum(int employeeId, int typeId, long days) {
+    public void plusVacationNum(int employeeId, int typeId) {
         VacationInfo vacationInfo = new VacationInfo();
         if (typeId == 5 || typeId == 6) {
             vacationInfo = vacationInfoRepository.findByEmployeeIdAndTypeId(employeeId, 1);
@@ -432,7 +434,7 @@ public class VacationServiceImpl implements VacationService {
         } else if (typeId == 6) {
             vacationInfo.setVacationNum(vacationInfo.getVacationNum() + 0.25);
         } else
-            vacationInfo.setVacationNum(vacationInfo.getVacationNum() + days);
+            vacationInfo.setVacationNum(vacationInfo.getVacationNum() + 1);
 
         VacationHistory inputVacationHistory = VacationHistory.builder()
                 .changeTime(today.toString())
@@ -448,7 +450,7 @@ public class VacationServiceImpl implements VacationService {
 
     @Override
     @Transactional
-    public void minusVacationNum(int employeeId, int typeId, long days) {
+    public void minusVacationNum(int employeeId, int typeId) {
         VacationInfo vacationInfo = new VacationInfo();
         if (typeId == 5 || typeId == 6) {
             vacationInfo = vacationInfoRepository.findByEmployeeIdAndTypeId(employeeId, 1);
@@ -463,7 +465,7 @@ public class VacationServiceImpl implements VacationService {
         } else if (typeId == 6) {
             vacationInfo.setVacationNum(vacationInfo.getVacationNum() - 0.25);
         } else
-            vacationInfo.setVacationNum(vacationInfo.getVacationNum() - days);
+            vacationInfo.setVacationNum(vacationInfo.getVacationNum() - 1);
 
         VacationHistory inputVacationHistory = VacationHistory.builder()
                 .changeTime(today.toString())
