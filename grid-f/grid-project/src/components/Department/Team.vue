@@ -7,8 +7,11 @@
     </div>
 
     <div class="search">
-      <input type="text" class="searchBox" v-model="searchQuery" placeholder="이름 검색" />
-      <button @click="search" class="searchBtn">검색</button>
+      <div class="search-group">
+        <input type="text" class="searchBox" v-model="searchQuery" placeholder="이름 검색" />
+        <button @click="search" class="searchBtn">검색</button>
+      </div>
+      <button @click="showAddTeamModal" class="addTeamBtn">팀 추가</button>
     </div>
 
     <table class="teamTable">
@@ -50,6 +53,35 @@
       </button>
       <button @click="nextPage" :disabled="currentPage === totalPages">❯</button>
     </div>
+
+    <!-- Add Team Modal -->
+    <div class="modal fade" id="addNewTeamModal" tabindex="-1" aria-labelledby="addNewTeamModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addNewTeamModalLabel">팀 추가</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form @submit.prevent="addNewTeam">
+              <div class="mb-3">
+                <label for="teamName" class="form-label">팀명</label>
+                <input type="text" class="form-control" id="teamName" v-model="newTeam.teamName" required>
+              </div>
+              <div class="mb-3">
+                <label for="departmentName" class="form-label">상위 부서명</label>
+                <input type="text" class="form-control" id="departmentName" v-model="newTeam.departmentName" required>
+              </div>
+              <div class="mb-3">
+                <label for="leaderName" class="form-label">책임자 명</label>
+                <input type="text" class="form-control" id="leaderName" v-model="newTeam.leaderName" required>
+              </div>
+              <button type="submit" class="btn btn-primary">추가</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -57,6 +89,8 @@
 import { ref, computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import axios from 'axios';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap';
 
 const route = useRoute();
 const departmentId = ref(route.params.id);
@@ -66,6 +100,11 @@ const currentPage = ref(1);
 const itemsPerPage = 5;
 const teams = ref([]);
 const allTeams = ref([]); // 전체 팀 정보를 저장할 변수
+const newTeam = ref({
+  teamName: '',
+  departmentName: '',
+  leaderName: ''
+});
 
 // API에서 팀 정보를 가져오는 함수
 const fetchTeams = async () => {
@@ -129,6 +168,32 @@ const formatDate = (dateString) => {
 const goToTeamMembers = (id) => {
   window.location.href = `/team/member-list/${id}`;
 };
+
+const showAddTeamModal = () => {
+  const modal = new bootstrap.Modal(document.getElementById('addNewTeamModal'));
+  modal.show();
+};
+
+const addNewTeam = async () => {
+  try {
+    // 팀 추가 API 호출
+    await axios.post('http://localhost:8080/team/add', newTeam.value);
+
+    // 팀 목록을 다시 불러오기
+    await fetchTeams();
+
+    // 모달 닫기 및 초기화
+    const modal = bootstrap.Modal.getInstance(document.getElementById('addNewTeamModal'));
+    modal.hide();
+    newTeam.value = {
+      teamName: '',
+      departmentName: '',
+      leaderName: ''
+    };
+  } catch (error) {
+    console.error('팀을 추가하는 중 오류 발생:', error);
+  }
+};
 </script>
 
 <style scoped>
@@ -150,32 +215,48 @@ const goToTeamMembers = (id) => {
 .search {
   grid-row-start: 2;
   grid-column-start: 2;
-  display: grid;
-  grid-template-columns: 74% 5% 1% 15% 1% 4%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   font-size: 12px;
 }
 
+.search-group {
+  display: flex;
+  align-items: center;
+}
+
 .searchBox {
-    grid-column-start: 4;
-    margin-left: 2%;
-    padding: 5px 5px;
-    border-radius: 4px;
-    font-size: 12px;
-    font-style: bold;
+  width: 200px;
+  padding: 5px;
+  border-radius: 4px;
+  font-size: 12px;
+  margin-right: 5px;
 }
 
 .searchBtn {
-    grid-column-start: 6;
-    margin-left: 2%;
-    width: 100%;
-    background-color: #088A85;
-    color: white;
-    padding: 5px 5px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 12px;
-    font-style: bold;
+  background-color: #088A85;
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.addTeamBtn {
+  background-color: #088A85;
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.searchBtn:hover,
+.addTeamBtn:hover {
+  background-color: #065f5b;
 }
 
 .teamTable {
