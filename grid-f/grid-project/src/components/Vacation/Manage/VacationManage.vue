@@ -6,11 +6,11 @@
             <button class="manageRegist" type="button" @click="showModal('registVacation')" v-if="userRole === 'ROLE_ADMIN'">등록하기</button>
         </div>
         <div class="vacations">
-            <div class="card mb-3" v-for="type in types" :key="type.id">
+            <div class="card mb-3" v-for="type in types" :key="type.id" :class="{'inactive-card': type.useYn === 'N'}">
               <div class="card-body">
                 <h3 class="card-title">{{ type.typeName }}</h3>
                 <p class="card-text">{{ type.vacationExplain }}</p>
-                <button href="#" v-if="userRole === 'ROLE_ADMIN'" @click="openModifyModal(type.id)" class="btn btn-custom">살펴보기</button>
+                <button href="#" v-if="userRole === 'ROLE_ADMIN'" @click="openModifyModal(type.id)" class="btn btn-custom" :class="{'inactive-card-detail': type.useYn === 'N'}">살펴보기</button>
               </div>
             </div>
         </div>
@@ -101,8 +101,9 @@
                         </div>
                     </div>
                     <div class="button-container">
-                        <button type="submit" class="btn btn-primary">수정</button>
-                        <button type="button" class="btn btn-danger" @click="deleteVacationType(modifyType.id)">삭제</button>
+                        <button type="submit" class="btn btn-primary" :disabled="modifyType.useYn === 'N'">수정</button>
+                        <button type="button" class="btn btn-danger" @click="deleteVacationType(modifyType.id)" v-if="modifyType.useYn === 'Y'">비활성화</button>
+                        <button type="button" class="btn btn-danger" @click="changeUseYnToY(modifyType.id)" v-if="modifyType.useYn === 'N'">활성화</button>
                     </div>
                 </form>
             </div>
@@ -114,24 +115,23 @@
 </template>
 
 <script setup>
-import router from '@/router/router';
 import { onBeforeMount, ref, onMounted } from 'vue';
 import axios from "axios";
-import Modal from '@/components/Vacation/Manage/VacationManageModal.vue';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap';
 
 const types = ref([]);
-const showRegistModal = ref(false);
-const showModifyModal = ref(false);
 const userRole = ref('');
 const userId =ref('');
+const policies = ref([]);
+const allInfo = ref([]);
 const modifyType = ref({
     id: '',
     typeName: '',
     vacationNum: '',
     dateOfUse: '',
-    vacationExplain: ''
+    vacationExplain: '',
+    useYn: ''
 });
 const registVacationType = ref({
     id: '',
@@ -156,7 +156,6 @@ const getVacationType = async (id) => {
     try {
         const response = await axios.get(`/api/vacation/type/${id}`);
         modifyType.value = response.data.result;
-        console.log(response.data.result);
     } catch (error) {
         console.error("Error:", error);
     }
@@ -221,7 +220,8 @@ const modifyVacationType = async (id) => {
                 typeName: modifyType.value.typeName,
                 vacationNum: modifyType.value.vacationNum,
                 dateOfUse: modifyType.value.dateOfUse,
-                vacationExplain: modifyType.value.vacationExplain
+                vacationExplain: modifyType.value.vacationExplain,
+                useYn: 'Y'
             });
             alert('수정이 완료되었습니다.');
             window.location.reload();
@@ -233,10 +233,39 @@ const modifyVacationType = async (id) => {
 
 const deleteVacationType = async (id) => {
     try {
-        const confirmed = window.confirm('삭제하시겠습니까?');
+        // 해당 휴가 타입에 연관된 정책이 있는지 확인
+        const policiesResponse = await axios.get(`/api/vacation/policy/${id}`);
+        const associatedPolicies = policiesResponse.data.result;
+
+        if (associatedPolicies != null) {
+            alert('해당 휴가 타입에 등록된 정책이 있어 비활성화할 수 없습니다.');
+            return;
+        }
+
+        // 모든 휴가 정보 가져오기
+        const vacationInfoResponse = await axios.get("/api/vacation/info");
+        const allVacationInfo = vacationInfoResponse.data.result;
+
+        // allVacationInfo 안에 삭제하려는 타입의 아이디가 있는지 확인
+        const isTypeInUse = allVacationInfo.some(info => info.typeId === id);
+
+        if (isTypeInUse) {
+            alert('해당 휴가를 가지고있는 직원이 있어 비활성화할 수 없습니다.');
+            return;
+        }
+
+        const confirmed = window.confirm('비활성화 하시겠습니까?');
         if (confirmed) {
-            const response = await axios.delete(`/api/vacation/type/${id}`);
-            alert('삭제이 완료되었습니다.');
+            const response = await axios.put(`/api/vacation/type/${id}`,
+            {
+                id: modifyType.value.id,
+                typeName: modifyType.value.typeName,
+                vacationNum: modifyType.value.vacationNum,
+                dateOfUse: modifyType.value.dateOfUse,
+                vacationExplain: modifyType.value.vacationExplain,
+                useYn : 'N'
+            });
+            alert('비활성화가 완료되었습니다.');
             window.location.reload();
         }
         
@@ -244,11 +273,32 @@ const deleteVacationType = async (id) => {
         console.error("Error:", error);
     }
 };
+
+const changeUseYnToY = async (id) => {
+    try {
+        const confirmed = window.confirm('활성화 하시겠습니까?');
+        if (confirmed) {
+            const response = await axios.put(`/api/vacation/type/${id}`,
+            {
+                id: modifyType.value.id,
+                typeName: modifyType.value.typeName,
+                vacationNum: modifyType.value.vacationNum,
+                dateOfUse: modifyType.value.dateOfUse,
+                vacationExplain: modifyType.value.vacationExplain,
+                useYn : 'Y'
+            });
+            alert('활성화가 완료되었습니다.');
+            window.location.reload();
+        }
+    } catch (error) {
+        console.error("Error:", error);
+    }
+}
   
 
 const getAllVacationType = async () => {
     try {
-        const response = await axios.get("/api/vacation/type");
+        const response = await axios.get("/api/vacation/all/type");
         types.value = response.data.result;
         console.log(response.data.result);
     } catch (error) {
@@ -270,6 +320,16 @@ function parseJwt(token) {
     }
 }
 
+const getAllVacationPolicy = async () => {
+    try {
+      const response = await axios.get('/api/vacation/policy/all');
+      policies.value = response.data.result;
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
+
 
 onBeforeMount(() => {
     const token = localStorage.getItem('access');
@@ -279,6 +339,7 @@ onBeforeMount(() => {
         userId.value = decodedToken?.id || '';
     }
     getAllVacationType();
+    getAllVacationPolicy();
 });
 
 onMounted(() => {
@@ -554,8 +615,6 @@ onMounted(() => {
     }
 
     .btn-primary {
-        background-color: #088A85; /* 새로운 배경색 */
-        border-color: #088A85;
         justify-content: center;
     }
 
@@ -604,6 +663,15 @@ onMounted(() => {
     padding: 10px 10px;
     background-color: #088A85;
   }
+
+  .inactive-card {
+        background-color: #fc3613 !important; /* Tomato 색상 */
+    }
+
+    .inactive-card-detail {
+        background-color: #f36868 !important; 
+        border: #bd6d6d;
+    }
 
     
 </style>

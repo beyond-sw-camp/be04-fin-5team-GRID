@@ -2,15 +2,16 @@
     <div class="policyAll">
         <div class="policyTitle">
             <img class="policyIcon" src="@/assets/buttons/vacation.png">
-            <h1>휴가 정책</h1>
+            <h1 v-if="userRole === 'ROLE_USER'">휴가 종류/정책</h1>
+            <h1 v-if="userRole === 'ROLE_ADMIN'">휴가 정책</h1>
             <button class="policyRegist" @click="showModal('registPolicy')" v-if="userRole === 'ROLE_ADMIN'">등록하기</button>
         </div>
         <div class="vacations">
             <div class="card mb-3" v-for="policy in policies" :key="policy.id">
               <div class="card-body">
-                <h3 class="card-title">{{ policy.typeName + " " + "정책"}}</h3>
+                <h3 class="card-title">{{ policy.typeName }}</h3>
                 <p class="card-text"></p>
-                <button href="#" @click="openNewModifyModal(policy.id)" class="btn btn-custom">살펴보기</button>
+                <button href="#" @click="openNewModifyModal(policy.id)" class="btn btn-custom">정책보기</button>
               </div>
             </div>
           </div>
@@ -162,16 +163,26 @@ const openNewModifyModal = async (id) => {
   }
 };
   
-  const registPolicy = async () => {
-    if(!selectedType.value || !content.value) {
-      return; 
-    }
+const registPolicy = async () => {
+  // selectedType.value나 content.value가 비어있는지 확인
+  if(!selectedType.value || !content.value) {
+    return; 
+  }
+
+  // policies 배열 안에 typeId가 중복되는지 확인
+  const isDuplicate = policies.value.some(policy => policy.typeId === selectedType.value);
+  if (isDuplicate) {
+    alert('이미 존재하는 휴가의 정책입니다.');
+    return;
+  }
+
+  // 중복되지 않을 경우에만 등록 절차 진행
   try {
     const confirmed = window.confirm('등록하시겠습니까?');
     if(confirmed) {
       const response = await axios.post('/api/vacation/policy', {
-      typeId: selectedType.value,
-      content: content.value,
+        typeId: selectedType.value,
+        content: content.value,
       });
       alert('등록이 완료되었습니다.');
       window.location.reload();
@@ -180,6 +191,7 @@ const openNewModifyModal = async (id) => {
     console.error('Error:', error);
   }
 };
+
   
   const openModifyModal = async (id) => {
     try {
