@@ -2,6 +2,7 @@
   <div class="container">
     <div class="header">
       <div class="header-title">
+        <img class="reviewIcon" src="@/assets/list-check.png" alt="list-check" />
         <h1>팀 정보</h1>
       </div>
     </div>
@@ -144,7 +145,6 @@
         </div>
       </div>
     </div>
-
   </div>
 </template>
 
@@ -314,20 +314,54 @@ const selectLeader = (leader) => {
 }
 
 .container {
-  display: grid;
-  grid-template-columns: 10% 80% 10%;
-  grid-template-rows: 18% 3% 2% 65% 2% 5% 5%;
-  width: 80%;
+  display: flex;
+  flex-direction: column;
+  padding: 0 10%;
+  margin-top: 5%;
   font-family: 'IBMPlexSansKR-Regular';
 }
 
-.search {
-  grid-row-start: 2;
-  grid-column-start: 2;
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.header-title {
   display: flex;
   align-items: center;
+}
+
+.header-title h1 {
+  font-size: 25px;
+  font-weight: 600;
+  margin-left: 10px;
+}
+
+.reviewIcon {
+  width: 30px; /* 이미지 크기 유지 */
+}
+
+.addNewBtn {
+  background-color: #088A85;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.addNewBtn:hover {
+  background-color: #065f5b;
+}
+
+.search {
+  display: flex;
   justify-content: space-between;
-  font-size: 12px;
+  align-items: center;
+  margin-bottom: 20px;
 }
 
 .search-group {
@@ -336,21 +370,27 @@ const selectLeader = (leader) => {
 }
 
 .searchBox {
-  width: 200px;
-  padding: 5px;
+  padding: 10px;
+  font-size: 14px;
   border-radius: 4px;
-  font-size: 12px;
-  margin-right: 5px;
+  border: 1px solid #ddd;
+  width: 200px;
+  max-width: 200px;
 }
 
 .searchBtn {
   background-color: #088A85;
   color: white;
-  padding: 5px 10px;
+  padding: 10px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 14px;
+  margin-left: 10px;
+}
+
+.searchBtn:hover {
+  background-color: #065f5b;
 }
 
 .addTeamBtn {
@@ -363,78 +403,56 @@ const selectLeader = (leader) => {
   font-size: 12px;
 }
 
-.searchBtn:hover,
 .addTeamBtn:hover {
   background-color: #065f5b;
 }
 
+/* 테이블 스타일 */
 .teamTable {
-  grid-column-start: 2;
-  grid-row-start: 4;
-}
-
-.header {
-  grid-column-start: 2;
-  display: grid;
-  align-items: center;
-  margin-bottom: 15px;
-}
-
-.header-title {
-  display: grid; 
-  grid-template-columns: 1fr;
-}
-
-.header-title h1 {
-  font-size: 25px;
-  font-weight: 600;
-  margin-left: 0.5%;
-  margin-bottom: 0;
-}
-
-table {
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 20px;
   table-layout: fixed;
 }
 
+/* 테이블 헤더와 셀 스타일 */
 th, td {
-  padding: 6px;
+  padding: 8px;
   text-align: left;
+  border-top: 1px solid #ddd;
   border-bottom: 1px solid #ddd;
-  word-wrap: break-word;
 }
 
+/* 테이블 헤더 스타일 */
 th {
-  background-color: #f8f8f8;
+  background-color: #f2f2f2;
+  color: #333;
 }
 
+/* 테이블 데이터 셀 스타일 */
 td {
   font-size: 14px;
 }
 
+/* 테이블 행 호버 스타일 */
 tr:hover {
   background-color: #f1f1f1;
 }
 
+/* 페이지네이션 스타일 */
 .pagination {
-  grid-row-start: 6;
-  grid-column-start: 2;
   display: flex;
   justify-content: center;
-  align-items: center;
-  gap: 5px;
   margin-top: 20px;
 }
 
 .pagination button {
-  background-color: white;
+  margin: 0 5px;
+  padding: 10px 15px;
   border: 1px solid #ddd;
-  border-radius: 4px;
-  padding: 5px 10px;
+  border-radius: 5px;
+  background-color: white;
   cursor: pointer;
-  font-size: 14px;
 }
 
 .pagination button.active {
@@ -446,6 +464,10 @@ tr:hover {
 .pagination button:disabled {
   background-color: #ddd;
   cursor: not-allowed;
+}
+
+.pagination button:hover:not(.active):not(:disabled) {
+  background-color: #f1f1f1;
 }
 
 .view-details-btn {

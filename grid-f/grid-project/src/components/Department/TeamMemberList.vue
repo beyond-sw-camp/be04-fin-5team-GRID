@@ -2,12 +2,16 @@
   <div class="container">
     <div class="header">
       <div class="header-title">
+        <img class="reviewIcon" src="@/assets/list-check.png" alt="list-check" />
         <h2>팀 정보 > {{ teamName }}</h2>
       </div>
     </div>
 
-    <div class="search">
-      <input type="text" class="searchBox" placeholder="검색" v-model="searchQuery" @input="filterBySearch" />
+    <div class="search-and-add">
+      <div class="search-group">
+        <input type="text" class="searchBox" placeholder="검색" v-model="searchQuery" @input="filterBySearch" />
+        <button @click="search" class="searchBtn">검색</button>
+      </div>
     </div>
 
     <table class="teamTable">
@@ -149,97 +153,117 @@ const goToPage = (page) => {
 }
 
 .container {
-  display: grid;
-  grid-template-columns: 10% 80% 10%;
-  grid-template-rows: 10% 3% 2% 65% 2% 5% 5%;
-  width: 80%;
+  display: flex;
+  flex-direction: column;
+  padding: 0 10%;
+  margin-top: 5%;
   font-family: 'IBMPlexSansKR-Regular';
 }
 
-.search {
-  grid-row-start: 2;
-  grid-column-start: 2;
-  display: grid;
-  grid-template-columns: 74% 5% 1% 15% 1% 4%;
-  font-size: 12px;
-}
-
-.searchBox {
-    grid-column-start: 4;
-    margin-left: 2%;
-    padding: 5px 5px;
-    border-radius: 4px;
-    font-size: 12px;
-    font-style: bold;
-}
-
-.teamTable {
-  grid-column-start: 2;
-  grid-row-start: 4;
-}
-
 .header {
-  grid-column-start: 2;
-  display: grid;
+  display: flex;
+  justify-content: space-between;
   align-items: center;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 }
 
 .header-title {
-  display: grid; 
-  grid-template-columns: 1fr;
+  display: flex;
+  align-items: center;
 }
 
 .header-title h2 {
   font-size: 25px;
   font-weight: 600;
-  margin-left: 0.5%;
-  margin-bottom: 0;
+  margin-left: 10px;
 }
 
-table {
+.reviewIcon {
+  width: 30px; /* 이미지 크기 유지 */
+}
+
+.search-and-add {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.search-group {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+}
+
+.searchBox {
+  padding: 10px;
+  font-size: 14px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  width: 200px;
+  max-width: 200px;
+}
+
+.searchBtn {
+  background-color: #088A85;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-left: 10px;
+}
+
+.searchBtn:hover {
+  background-color: #065f5b;
+}
+
+/* 테이블 스타일 */
+.teamTable {
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 20px;
   table-layout: fixed;
 }
 
+/* 테이블 헤더와 셀 스타일 */
 th, td {
-  padding: 6px;
+  padding: 8px;
   text-align: left;
+  border-top: 1px solid #ddd;
   border-bottom: 1px solid #ddd;
-  word-wrap: break-word;
 }
 
+/* 테이블 헤더 스타일 */
 th {
-  background-color: #f8f8f8;
+  background-color: #f2f2f2;
+  color: #333;
 }
 
+/* 테이블 데이터 셀 스타일 */
 td {
   font-size: 14px;
 }
 
+/* 테이블 행 호버 스타일 */
 tr:hover {
   background-color: #f1f1f1;
 }
 
+/* 페이지네이션 스타일 */
 .pagination {
-  grid-row-start: 6;
-  grid-column-start: 2;
   display: flex;
   justify-content: center;
-  align-items: center;
-  gap: 5px;
   margin-top: 20px;
 }
 
 .pagination button {
-  background-color: white;
+  margin: 0 5px;
+  padding: 10px 15px;
   border: 1px solid #ddd;
-  border-radius: 4px;
-  padding: 5px 10px;
+  border-radius: 5px;
+  background-color: white;
   cursor: pointer;
-  font-size: 14px;
 }
 
 .pagination button.active {
@@ -251,5 +275,9 @@ tr:hover {
 .pagination button:disabled {
   background-color: #ddd;
   cursor: not-allowed;
+}
+
+.pagination button:hover:not(.active):not(:disabled) {
+  background-color: #f1f1f1;
 }
 </style>
