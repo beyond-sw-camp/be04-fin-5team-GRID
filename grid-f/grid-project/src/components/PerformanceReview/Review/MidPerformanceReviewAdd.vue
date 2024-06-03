@@ -240,6 +240,8 @@ const fetchReviewAdd = async () => {
     // 팀원일 때 작성중 상태만 수정 가능
   } catch (error) {
     console.error('에러 발생:', error);
+    alert('평가를 생성할 수 없습니다.')
+    router.push(`/performance-review`);
   }
 };
 
