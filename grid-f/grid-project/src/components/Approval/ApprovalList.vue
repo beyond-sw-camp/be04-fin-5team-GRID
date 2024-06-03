@@ -23,7 +23,7 @@
     { key: 'employeeNumber', label: '사번', sortable: true },
     { key: 'employeeName', label: '작성자', sortable: false },
     { key: 'writeTime', label: '작성일자', sortable: true },
-    { key: 'approvalStatus', label: '결재 상태', sortable: false }
+    { key: 'approvalStatuscancelYncancelDocId', label: '결재 상태', sortable: false }
   ]
 
   const approvalFields = [
@@ -89,8 +89,7 @@
       userId.value = decodedToken.id || '';
     }
 
-    console.log("출력:", props.approvalList);
-
+    console.log(props.approvalList);
     isLoading.value = false;
   })
 </script>
@@ -168,11 +167,13 @@
         <template #cell(writeTime)="data">
           <span>{{ data.value.substring(0, 10) }}</span>
         </template>
-        <template #cell(approvalStatus)="data">
-          <b-badge variant="success" v-if="data.value === 'A'">승인</b-badge>
-          <b-badge variant="danger" v-if="data.value === 'D'">반려</b-badge>
-          <b-badge variant="warning" v-if="data.value === 'V'">대기</b-badge>
-          <b-badge variant="secondary" v-if="data.value === 'N'">미열람</b-badge>
+        <template #cell(approvalStatuscancelYncancelDocId)="data">
+          <b-badge variant="dark" v-if="data.item.cancelYn === 'Y'">취소</b-badge>
+          <b-badge variant="success" v-else-if="data.item.approvalStatus === 'A'">승인</b-badge>
+          <b-badge variant="danger" v-else-if="data.item.approvalStatus === 'D'">반려</b-badge>
+          <b-badge variant="warning" v-else-if="data.item.approvalStatus === 'V'">대기</b-badge>
+          <b-badge variant="secondary" v-else-if="data.item.approvalStatus === 'N'">미열람</b-badge>
+          <b-badge variant="light" v-if="data.item.cancelDocId !== 0">취소결재</b-badge>
         </template>
         <template #cell()="data">
           <span>{{ data.value }}</span>
@@ -192,11 +193,13 @@
         <template #cell(writeTime)="data">
           <span>{{ data.value.substring(0, 10) }}</span>
         </template>
-        <template #cell(approvalStatus)="data">
-          <b-badge variant="success" v-if="data.value === 'A'">승인</b-badge>
-          <b-badge variant="danger" v-if="data.value === 'D'">반려</b-badge>
-          <b-badge variant="warning" v-if="data.value === 'V'">대기</b-badge>
-          <b-badge variant="secondary" v-if="data.value === 'N'">미열람</b-badge>
+        <template #cell(approvalStatuscancelYncancelDocId)="data">
+          <b-badge variant="dark" v-if="data.item.cancelYn === 'Y'">취소</b-badge>
+          <b-badge variant="success" v-else-if="data.item.approvalStatus === 'A'">승인</b-badge>
+          <b-badge variant="danger" v-else-if="data.item.approvalStatus === 'D'">반려</b-badge>
+          <b-badge variant="warning" v-else-if="data.item.approvalStatus === 'V'">대기</b-badge>
+          <b-badge variant="secondary" v-else-if="data.item.approvalStatus === 'N'">미열람</b-badge>
+          <b-badge variant="light" v-if="data.item.cancelDocId !== 0">취소결재</b-badge>
         </template>
         <template #cell()="data">
           <span>{{ data.value }}</span>
