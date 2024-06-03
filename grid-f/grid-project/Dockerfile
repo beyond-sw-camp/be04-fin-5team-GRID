@@ -22,4 +22,5 @@ RUN rm -rf node_modules package-lock.json && npm install
 RUN npm run build
 
 # 애플리케이션 시작 명령어
-CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
+#CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
+CMD ["npm", "run", "start"]
