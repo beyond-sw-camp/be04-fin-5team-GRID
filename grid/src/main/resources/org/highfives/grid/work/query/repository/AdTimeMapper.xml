@@ -62,7 +62,21 @@
         JOIN EMPLOYEE B ON A.EMPLOYEE_ID = B.ID
         ]]>
     </select>
-
+    <select id="selectAdTimeByStartTime" resultMap="adTimeResultMap" parameterType="String">
+        <![CDATA[
+        SELECT A.ID,
+        A.START_TIME,
+        A.END_TIME,
+        A.EMPLOYEE_ID,
+        B.EMPLOYEE_NAME,
+        B.EMPLOYEE_NUMBER,
+        CASE WHEN SUBSTRING(A.START_TIME, 12, 8) < '09:00:00' THEN '정시 출근'
+        ELSE '지각'
+        END AS ATTENDANCE_STATUS FROM AD_TIME A
+        JOIN EMPLOYEE B ON A.EMPLOYEE_ID = B.ID
+        WHERE DATE_FORMAT(A.start_time, '%Y-%m-%d') = #{startTime};
+        ]]>
+    </select>
 
 
 </mapper>

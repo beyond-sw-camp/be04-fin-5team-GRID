@@ -1,24 +1,60 @@
 <template>
   <div class="adTimeAddController">
     <div class="adTimeBox">
-      <div class="todayTitle">{{ today }}</div>
-      <b-card class="card arrival">
-        <div v-if="adTime.startTime">{{ adTime.startTime }}</div>
-        <div v-else>00:00</div>
-        <button @click="addArrivalTime()">출근</button>
-      </b-card>
-      <b-card class="card departure">
-        <div v-if="adTime.endTime">{{ adTime.endTime }}</div>
-        <div v-else>00:00</div>
-        <button @click="addDepartureTime()">퇴근</button>
-      </b-card>
+      <!--      <div class="todayTitle">{{ today }}</div>-->
+      <div class="card-deck adCard">
+        <div class="card adCardI" style="width: 18rem;">
+          <div class="card-body">
+            <h5 class="card-title" v-if="adTime.startTime">{{ adTime.startTime }}</h5>
+            <h5 class="card-title" v-else>00:00</h5>
+            <button @click="addArrivalTime()" class="btn btn-primary adBtn">출근</button>
+          </div>
+        </div>
+        <div class="card adCardI" style="width: 18rem;">
+          <div class="card-body">
+            <h5 class="card-title" v-if="adTime.startTime">{{ adTime.startTime }}</h5>
+            <h5 class="card-title" v-else>00:00</h5>
+            <button @click="addDepartureTime()" class="btn btn-primary adBtn">퇴근</button>
+          </div>
+        </div>
+
+        <!--        <div class="card arrival">-->
+        <!--          <div class="card-body">-->
+        <!--            <h3 class="card-title" v-if="adTime.startTime">{{ adTime.startTime }}</h3>-->
+        <!--            <h3 class="card-title" v-else>00:00</h3>-->
+        <!--            <a @click="addDepartureTime()" class="btn btn-primary">출근</a>-->
+        <!--          </div>-->
+        <!--        </div>-->
+        <!--        <div class="card ">-->
+        <!--          <div class="card-body">-->
+        <!--            <h3 class="card-title">오늘 출장 인원</h3>-->
+        <!--            <p class="card-text">{{ cntBt ? cntBt : 0 }}</p>-->
+        <!--          </div>-->
+        <!--        </div>-->
+        <!--        <div class="card ">-->
+        <!--          <div class="card-body">-->
+        <!--            <h3 class="card-title">오늘 휴가 인원</h3>-->
+        <!--            <p class="card-text">{{ cntVacation ? cntVacation : 0 }}</p>-->
+        <!--          </div>-->
+        <!--        </div>-->
+      </div>
+      <!--      <b-card class="card arrival">-->
+      <!--        <div v-if="adTime.startTime">{{ adTime.startTime }}</div>-->
+      <!--        <div v-else>00:00</div>-->
+      <!--        <button @click="addArrivalTime()">출근</button>-->
+      <!--      </b-card>-->
+      <!--      <b-card class="card departure">-->
+      <!--        <div v-if="adTime.endTime">{{ adTime.endTime }}</div>-->
+      <!--        <div v-else>00:00</div>-->
+      <!--        <button @click="addDepartureTime()">퇴근</button>-->
+      <!--      </b-card>-->
 
     </div>
-    <div class="weekCalender" id="calendar"></div>
+    <div class="weekCalender" id="app">
+      <div id="calendar"></div>
+    </div>
   </div>
-  <div class="weekCalender" id="app">
-    <div id="calendar"></div>
-  </div>
+
 
 </template>
 
@@ -111,13 +147,19 @@ const initCalendar = async (events) => {
       headerToolbar: {
         left: 'prev,next today',
         center: '',
-        right: 'monthCalendar'
+        right: 'monthCalendar adTime'
       },
       customButtons: {
         monthCalendar: {
           text: 'Month',
           click: function () {
             router.push('/work-calendar');
+          }
+        },
+        adTime: {
+          text: '출퇴근',
+          click: function () {
+            router.push('/ad-time');
           }
         }
       },
@@ -234,9 +276,8 @@ onMounted(async () => {
   }
 
   if (userRole.value === 'ROLE_ADMIN') {
-    fetchAllAdTime();
-
-    await fetchAllEvent();
+    // fetchAllAdTime();
+    // await fetchAllEvent();
     initCalendar(events);
   } else if (userRole.value === 'ROLE_USER') {
     console.log('조회');
@@ -267,182 +308,198 @@ onMounted(async () => {
 });
 
 
-const drawChart = () => {
-  const data = new google.visualization.DataTable();
-  data.addColumn('string', 'Topping');
-  data.addColumn('number', 'Slices');
-  data.addRows([
-    ['Mushrooms', 3],
-    ['Onions', 1],
-    ['Olives', 1],
-    ['Zucchini', 1],
-    ['Pepperoni', 2]
-  ]);
-
-  const options = {
-    title: 'How Much Pizza I Ate Last Night',
-    width: 400,
-    height: 300
-  };
-
-  const chart = new google.visualization.PieChart(document.querySelector('[ref="chart"]'));
-  chart.draw(data, options);
-}
-
-
 // 출근 시간 추가 요청
 const addArrivalTime = async () => {
-  const currentTime = getCurrentDateTimeString();
-  console.log(currentTime);
-  await axios.post(
-      'http://localhost:8080/ad-time/arrival-time',
-      {
-        id: null,
-        startTime: currentTime,
-        endTime: null,
-        employeeId: userId.value   // 로그인한 사람
-      })
-      .then(response => {
-        window.location.reload();
-        console.log('출근 시간이 기록되었습니다.');
-      })
-      .catch(error => {
-        alert('출근 시간이 존재합니다')
-        console.error('에러 발생:', error);
-      });
+  if (userRole.value === 'ROLE_USER') {
+    const currentTime = getCurrentDateTimeString();
+    console.log(currentTime);
+    await axios.post(
+        'http://localhost:8080/ad-time/arrival-time',
+        {
+          id: null,
+          startTime: currentTime,
+          endTime: null,
+          employeeId: userId.value   // 로그인한 사람
+        })
+        .then(response => {
+          window.location.reload();
+          console.log('출근 시간이 기록되었습니다.');
+        })
+        .catch(error => {
+          alert('출근 시간이 존재합니다')
+          console.error('에러 발생:', error);
+        });
+  } else {
+    alert('직원만 가능합니다.')
+  }
 }
 
 // 퇴근 시간 추가 요청
 const addDepartureTime = async () => {
-  const currentTime = getCurrentDateTimeString();
-  console.log(currentTime);
-  await axios.put(
-      'http://localhost:8080/ad-time/departure-time',
-      {
-        id: null,
-        startTime: null,
-        endTime: currentTime,
-        employeeId: userId.value   // 로그인한 사람
-      })
-      .then(response => {
+  if (userRole.value === 'ROLE_USER') {
+    const currentTime = getCurrentDateTimeString();
+    console.log(currentTime);
+    await axios.put(
+        'http://localhost:8080/ad-time/departure-time',
+        {
+          id: null,
+          startTime: null,
+          endTime: currentTime,
+          employeeId: userId.value   // 로그인한 사람
+        })
+        .then(response => {
 
-        window.location.reload();
-        console.log('퇴근 시간이 기록되었습니다.');
-      })
-      .catch(error => {
-        alert('퇴근 시간이 존재합니다');
-        console.error('에러 발생:', error);
-      });
-
+          window.location.reload();
+          console.log('퇴근 시간이 기록되었습니다.');
+        })
+        .catch(error => {
+          alert('퇴근 시간이 존재합니다');
+          console.error('에러 발생:', error);
+        });
+  } else {
+    alert('직원만 가능합니다.')
+  }
 }
 
 
 </script>
 
-<style scoped>
+<style>
 .adTimeAddController {
   display: grid;
-  grid-template-rows: 18% 4% auto 5% 13%;
-  grid-template-columns: 10% 80% 10%;
+  grid-template-rows: 40% 70%;
   height: 100%;
 }
 
-.adTimeListTitle {
-  grid-column-start: 2;
-  grid-column-end: 3;
-  font-size: 12px;
-  font-weight: 0;
-  margin-top: 2%;
-  color: #000000;
-  display: grid;
-  grid-template-columns: 3% 97%;
-  align-items: center;
-}
-
-.adTimeListTitle h1 {
-  margin-left: 0.5%;
-}
-
-.adTimeIcon {
-  width: 80%;
-}
-
 .adTimeBox {
-  grid-column-start: 2;
-  grid-column-end: 3;
-}
-
-.weekCalender {
-  grid-row-start: 3;
-  grid-column-start: 2;
-  grid-column-end: 3;
-}
-
-#calendar {
-  width: 100%;
-  max-height: 25%
-}
-
-.adTimeAddController {
-  display: grid;
-  grid-template-rows: 25% 4% auto;
-  grid-template-columns: 10% 80% 10%;
-  height: 100%;
-}
-
-.adTimeListTitle {
-  grid-column-start: 2;
-  grid-column-end: 3;
-  font-size: 12px;
-  font-weight: 0;
-  margin-top: 2%;
-  color: #000000;
-  display: grid;
-  grid-template-columns: 3% 97%;
-  align-items: center;
-}
-
-.adTimeListTitle h1 {
-  margin-left: 0.5%;
-}
-
-.adTimeIcon {
-  width: 80%;
-}
-
-.adTimeBox {
-  grid-column-start: 2;
-  grid-column-end: 3;
-  display: grid;
-  grid-template-rows: 10% 90%;
-  grid-template-columns: 25% 25% 50%;
-}
-
-.todayTitle {
   grid-row-start: 1;
+  width: 50%;
+  align-items: center;
 }
 
-.arrival {
-  grid-row-start: 2;
-  grid-column-start: 1;
-  grid-column-end: 2;
+.adCardI {
+  align-items: center;
 }
 
-.departure {
-  grid-row-start: 2;
-  grid-column-start: 2;
-  grid-column-end: 3;
+.adBtn {
+  width: 60px;
+  background-color: #088A85;
+  color: white;
+  padding: 5px 5px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
 }
 
 .weekCalender {
-  grid-row-start: 3;
-  grid-column-start: 2;
-  grid-column-end: 3;
+  grid-row-start: 2;
+  width: 100%;
+  height: 85%;
 }
 
 #calendar {
   width: 100%;
-  max-height: 25%
+  height: 10%;
+  overflow: hidden;
+}
+
+#calendar .fc-day-today {
+  background-color: #dfe9ff;
+}
+
+#calendar .fc-daygrid-day {
+  height: 80%; /* 날짜 셀의 고정 높이 */
+
+}
+
+/*#calendar .fc {
+  width: 100%;
+  height: 100%;
+}*/
+
+#calendar .fc-daygrid-day-events {
+  max-height: 100px; /* 날짜 셀의 고정 높이 */
+  text-align: left;
+  //overflow: hidden;
+  text-decoration: none;
+}
+
+#calendar .fc-col-header-cell {
+  background-color: #8ec0c0;
+}
+
+#calendar .fc-col-header-cell-cushion {
+  /* 밑줄 제거 */
+  text-decoration: none;
+
+  /* 기본 커서로 변경 */
+  cursor: default;
+
+  //background-color: #3fb9b8;
+  color: #ffffff;
+  height: 10%;
+}
+
+#calendar .fc-col-cell {
+
+}
+
+/* 날짜 칸 크기 고정 */
+#calendar .fc-daygrid-day-frame {
+  display: flex;
+  flex-direction: column;
+  height: 100px; /* 날짜 셀의 고정 높이 설정 */
+  overflow: hidden;
+}
+
+#calendar .fc-daygrid-day-top {
+  flex: 0 0 auto;
+}
+
+#calendar .fc-daygrid-day-events {
+  flex: 1 1 auto;
+  max-height: 60px; /* 이벤트 영역의 최대 높이 설정 */
+  overflow: hidden; /* 넘치는 내용 숨기기 */
+}
+
+/* 날짜 셀의 하이퍼링크를 일반 텍스트로 표시 */
+#calendar .fc-daygrid-day-number {
+  pointer-events: none; /* 클릭 이벤트 제거 */
+  text-decoration: none; /* 밑줄 제거 */
+  color: inherit; /* 기본 텍스트 색상 사용 */
+  cursor: default; /* 기본 커서로 변경 */
+}
+
+/*
+.fc .fc-event {
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}*/
+
+.fc .fc-toolbar-title {
+  color: rgb(6, 6, 31); /* 변경하고자 하는 색상으로 설정 */
+  font-size: 20px; /* 변경하고자 하는 크기로 설정 */
+  font-weight: bold; /* 변경하고자 하는 폰트의 높이로 설정 */
+}
+
+.fc .fc-button {
+  border: none; /* 버튼 테두리 제거 */
+  box-shadow: none; /* 버튼 그림자 제거 */
+  height: 35px;
+  font-size: 15px;
+}
+
+:root {
+  --fc-border-color: rgb(187, 187, 187);
+  --fc-daygrid-event-dot-width: 5px;
+  --fc-today-bg-color: #fefee9;
+  --fc-button-bg-color: rgb(142, 192, 192);
+  --fc-button-active-bg-color: rgb(99, 178, 177);
+  --fc-daygrid-day-height: 100px;
 }
 
 </style>

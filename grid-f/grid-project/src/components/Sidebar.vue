@@ -15,8 +15,9 @@
           <ul v-show="activeMenus.workManagement">
             <li @click="toWorkCalender()">근무 관리</li>
             <li @click="navigateTo('/work')">근무 정보</li>
-            <li @click="toVacationManage()">휴가 종류</li>
-            <li @click="toVacationPolicy()">휴가 정책</li>
+            <li @click="toVacationManage()" v-if="userRole === 'ROLE_ADMIN'">휴가 종류</li>
+            <li @click="toVacationPolicy()" v-if="userRole === 'ROLE_ADMIN'">휴가 정책</li>
+            <li @click="toVacationPolicy()" v-if="userRole === 'ROLE_USER'">휴가 종류/정책</li>
             <li @click="toVacationInfo()">휴가 보유 정보</li>
             <li @click="toVacationChangeInfo()">휴가 변화 이력</li>
           </ul>
@@ -219,6 +220,7 @@ function toWorkCalender() {
   router.push('/work-calendar');
 }
 
+
 function parseJwt(token) {
   try {
     const base64Url = token.split('.')[1];
@@ -239,7 +241,7 @@ onMounted(() => {
   const token = localStorage.getItem('access');
   if (token) {
     const decodedToken = parseJwt(token);
-    userRole.value = decodedToken?.auth || '';    
+    userRole.value = decodedToken?.auth || '';
   }
 });
 </script>
@@ -327,4 +329,3 @@ onMounted(() => {
   padding: 5px 0;
 }
 </style>
-
