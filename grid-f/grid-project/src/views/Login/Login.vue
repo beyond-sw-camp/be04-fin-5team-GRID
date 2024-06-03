@@ -113,35 +113,36 @@ async function Login() {
     return;
   }
 
-  try {
-    const response = await axios.post('http://localhost:8080/login', {
-      email: inputValue.value,
-      pwd: inputPwd.value
-    }, {
-      withCredentials: true
-    });
+  
+    try {
+        const response = await axios.post('http://localhost:8080/login', {
+            email: inputValue.value,
+            pwd: inputPwd.value
+        }, {
+            withCredentials: true
+        });
 
-    if (response.status === 200) {
-      const token = response.data.access;
+        if (response.status === 200) {
+            const token = response.data.access;
 
-      const response2 = await axios.get(`http://localhost:8080/users/mail/${inputValue.value}`);
-      const user = response2.data.result;
+            const response2 = await axios.get(`http://localhost:8080/users/mail/${inputValue.value}`);
+            const user = response2.data.result;
 
-      // 이메일과 토큰을 로컬 스토리지에 저장
-      localStorage.setItem('email', inputValue.value);
-      localStorage.setItem('access', token);
+            // 이메일과 토큰을 로컬 스토리지에 저장
+            localStorage.setItem('email', inputValue.value);
+            localStorage.setItem('access', token);
 
-      // Vuex 스토어에 사용자 정보와 이메일 저장
-      store.commit('setUser', user);
+            // Vuex 스토어에 사용자 정보와 이메일 저장
+            store.commit('setUser', user);
 
-      alert('로그인 되었습니다');
-      isWrong.value = false;
+            alert('로그인 되었습니다');
+            isWrong.value = false;
 
-      router.push('/main');
+            router.push('/main');
+        }
+    } catch (e) {
+        isWrong.value = true;
     }
-  } catch (e) {
-    isWrong.value = true;
-  }
 }
 
 
