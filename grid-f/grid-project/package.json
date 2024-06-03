@@ -41,7 +41,7 @@
     "@vitejs/plugin-vue": "^5.0.4",
     "vite": "^5.2.8"
   },
-  "resolutions": {
-    "rollup": "npm:@rollup/wasm-node"
+  "optionalDependencies": {
+    "@rollup/rollup-linux-x64-gnu": "4.9.5"
   }
 }
