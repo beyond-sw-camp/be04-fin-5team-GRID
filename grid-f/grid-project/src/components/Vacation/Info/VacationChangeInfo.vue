@@ -340,7 +340,7 @@ const closeModal = (modalId) => {
 
 const allUsers = async () => {
     try {
-        const response = await axios.get('/api/users/list');
+        const response = await axios.get('/api/users/list/all');
         users.value = response.data.result;
         console.log(users.value);
     } catch (error) {
