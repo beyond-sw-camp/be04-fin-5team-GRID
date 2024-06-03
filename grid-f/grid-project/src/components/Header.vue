@@ -5,11 +5,8 @@
         <img src="@/assets/logo.png" @click="main()" class="logoimage" style="cursor: pointer;">
       </div>
       <div class="icons">
-        <button class="icon-button">
-          <img src="@/assets/icon1.png" alt="Button 1" class="icon-image" />
-        </button>
         <button class="icon-button" type="button" data-bs-toggle="offcanvas" data-bs-target="#demo">
-          <img src="@/assets/icon2.png" alt="Button 2" class="icon-image" />
+          <img src="@/assets/people.png" alt="Button 2" class="icon-image" />
         </button>
         <div class="dropdown">
           <img
@@ -314,7 +311,7 @@ onMounted(fetchDepartments);
   height: 40px;
   border-radius: 50%;
   cursor: pointer;
-  margin-right: 50px;
+  margin-right: 20px;
   object-fit: cover;
 }
 
@@ -326,11 +323,12 @@ onMounted(fetchDepartments);
   cursor: pointer;
   display: flex;
   align-items: center;
+  margin-right: 20px;
 }
 
 .icon-image {
-  width: 24px;
-  height: 24px;
+  width: 25px;
+  height: 25px;
 }
 
 .list-group-item {

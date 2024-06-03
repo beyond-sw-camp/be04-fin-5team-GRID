@@ -220,7 +220,7 @@
 </script>
 
 <template>
-  <div>
+  <div class="lineAll">
     <h3 class="fw-bolder mb-3"><i class="bi bi-link-45deg"></i>&nbsp; 결재 라인</h3>
     <b-card class="container shadow">
       <div class="list-group-item list-group-item-action d-flex" aria-current="true">
@@ -274,20 +274,52 @@
         </b-input-group>
       </div>
     </b-card>
-    <div v-if="props.requesterId === userId">
-      <!-- 중복 취소 불가하는 코드 추가 -->
-      <b-button @click="cancelApproval">취소</b-button>
+    <div class="buttons">
+      <div class="cancel" v-if="props.requesterId === userId">
+        <!-- 중복 취소 불가하는 코드 추가 -->
+        <b-button @click="cancelApproval">취소</b-button>
+      </div>
+      <div class="print" v-if="props.requesterId === userId || userRole === 'ROLE_ADMIN'">
+        <b-button @click="printApproval">출력</b-button>
+      </div>
+      <div class="approvalBtn" v-if="state.show">
+        <b-button  variant="success" @click="registStatus('A')">승인</b-button>
+      </div>
+      <div class="danger" v-if="state.show">
+        <b-button  variant="danger" @click="registStatus('D')">반려</b-button>
+      </div> 
     </div>
-    <div v-if="props.requesterId === userId || userRole === 'ROLE_ADMIN'">
-      <b-button @click="printApproval">출력</b-button>
-    </div>
-    <div v-if="state.show">
-      <b-button variant="success" @click="registStatus('A')">승인</b-button>
-      <b-button variant="danger" @click="registStatus('D')">반려</b-button>
-    </div>
+    
   </div>
 </template>
 
 <style scoped>
+.lineAll h3{
+  margin-left: 0.5%;
+  margin-bottom: 0;
+  font-size: 25px;
+  font-weight: 600;
+}
 
+.buttons {
+  display:grid;
+  grid-template-columns: 10% 18% 2% 18% 2% 18% 2% 18% 2% 10%;
+  margin-top: 20px;
+}
+
+.cancel {
+  grid-column-start: 2;
+}
+
+.print {
+  grid-column-start: 4;
+}
+
+.approvalBtn {
+  grid-column-start: 6;
+}
+
+.danger {
+  grid-column-start: 8;
+}
 </style>
