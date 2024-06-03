@@ -496,15 +496,6 @@ onBeforeMount(() => {
         margin-bottom: 5%;
     }
 
-    .vacationsTitle {
-        margin-left: 5%;
-        display: grid;
-        grid-template-columns: 85% 10% 5%;
-        align-items: center;
-        font-size: 12px;
-        height: 10vh;
-    }
-
     .plusBtn {
         width: 100%;
         cursor: pointer;

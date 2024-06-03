@@ -1,12 +1,10 @@
 <template>
   <div class="container">
-    <div class="header">
       <div class="header-title">
         <img class="reviewIcon" src="@/assets/list-check.png" alt="list-check" />
         <h1>전체 평가 목록</h1>
+        <button href="#" class="addNewBtn" @click="showModal('addReview')">생성</button>
       </div>
-      <button href="#" class="addNewBtn" @click="showModal('addReview')">생성</button>
-    </div>
     <div class="search-and-add">
       <div class="search-group">
         <input type="text" v-model="searchQuery" placeholder="Title" class="searchBox"/>
@@ -321,19 +319,12 @@ const addNewReview = async () => {
   font-family: 'IBMPlexSansKR-Regular';
 }
 
-.header {
+.header-title {
   grid-column-start: 2;
   grid-row-start: 1;
+  align-items: center;
   display:grid;
   grid-template-columns: 3% 92% 5%;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.header-title {
-  align-items: center;
-  display:grid;
-  grid-template-columns: 3% 97%;
   grid-column-start:2;
 }
 
@@ -345,10 +336,12 @@ const addNewReview = async () => {
 }
 
 .reviewIcon {
-  width: 80%;
+  width: 25px;
 }
 
 .addNewBtn {
+  grid-column-start: 3;
+  grid-row-start: 1;
   background-color: #088A85;
   color: white;
   padding: 5px;
