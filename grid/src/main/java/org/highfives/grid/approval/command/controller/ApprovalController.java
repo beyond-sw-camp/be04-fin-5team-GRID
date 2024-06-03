@@ -60,10 +60,7 @@ public class ApprovalController {
     public ResponseEntity<ResApprovalVO> addOvertimeApproval(@RequestBody OvertimeApprovalVO overtimeApprovalVO) {
 
         OvertimeApprovalDTO result = approvalService.addOvertimeApproval(overtimeApprovalVO);
-
-        if (result == null) {
-            return ResponseEntity.status(400).body(null);
-        }
+        System.out.println(result);
 
         ResApprovalVO response = ResApprovalVO.builder()
                 .statusCode(201)

@@ -270,6 +270,7 @@ public class ApprovalChainServiceImpl implements ApprovalChainService{
     }
 
     @Override
+    @Transactional
     public BTApprovalDTO modifyBTApprovalStatus(int btApprovalId, ApprovalStatus approvalStatus) {
 
         BTApproval btApproval = btApprovalRepository.findById(btApprovalId).orElseThrow();
@@ -279,6 +280,7 @@ public class ApprovalChainServiceImpl implements ApprovalChainService{
     }
 
     @Override
+    @Transactional
     public OApprovalChainDTO modifyOChainStatus(ChainStatusVO chainStatusVO) {
 
         // 현재 승인 상태 체크에 사용
@@ -308,6 +310,7 @@ public class ApprovalChainServiceImpl implements ApprovalChainService{
     }
 
     @Override
+    @Transactional
     public RWApprovalChainDTO modifyRWChainStatus(ChainStatusVO chainStatusVO) {
 
         RWApprovalChain approvalChain = rwApprovalChainRepository.findByApprovalId(chainStatusVO.getApprovalId());
@@ -341,6 +344,7 @@ public class ApprovalChainServiceImpl implements ApprovalChainService{
     }
 
     @Override
+    @Transactional
     public VApprovalChainDTO modifyVChainStatus(ChainStatusVO chainStatusVO) {
 
         VApprovalChain approvalChain = vApprovalChainRepository.findByApprovalId(chainStatusVO.getApprovalId());
