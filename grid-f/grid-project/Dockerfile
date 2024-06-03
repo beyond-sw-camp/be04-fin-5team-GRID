@@ -7,16 +7,13 @@ RUN apk add --no-cache curl
 WORKDIR /usr/src/app
 
 # package.json과 package-lock.json을 복사
-COPY grid-f/grid-project/package*.json ./
+COPY ./package*.json ./
 
 # npm install 로 의존성 설치함
 RUN npm install
 
 # 소스 파일들을 복사
-COPY grid-f/grid-project .
-
-# package-lock.json을 복사한 후 npm install 다시 실행
-RUN rm -rf node_modules package-lock.json && npm install
+COPY . .
 
 # 애플리케이션 빌드
 RUN npm run build
