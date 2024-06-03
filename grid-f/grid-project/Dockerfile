@@ -9,8 +9,7 @@ WORKDIR /usr/src/app
 # package.json과 package-lock.json을 복사
 COPY package*.json ./
 
-# 의존성을 설치
-
+# npm install 로 의존성 설치 
 RUN npm install
 
 # 소스 파일들을 복사
