@@ -50,7 +50,7 @@
       userId.value = decodedToken.id || '';
     }
 
-    await fetchReqApprovalList(1, 5, userId.value);
+    await fetchReqApprovalList(1, 0, userId.value);
 
     isLoading.value = false;
   })
@@ -63,19 +63,37 @@
       <li class="breadcrumb-item active" aria-current="page"><span class="fw-bolder"><i class="bi bi-briefcase"></i>&nbsp; 결재 필요 문서</span></li>
     </ol>
   </nav>
-  <h3 class="fw-bolder pb-5"><i class="bi bi-briefcase"></i>&nbsp; 결재 필요 문서</h3>
+<!--  <h3 class="fw-bolder pb-5"><i class="bi bi-briefcase"></i>&nbsp; 결재 필요 문서</h3>-->
+<!--  <b-card no-body>-->
+<!--    <b-tabs card>-->
+<!--      <b-tab title="출장" @click="fetchReqApprovalList(1, 5, userId)" active>-->
+<!--        <b-card-text><ApprovalList :approvalList="state.approvalList"/></b-card-text>-->
+<!--      </b-tab>-->
+<!--      <b-tab title="시간 외 근무" @click="fetchReqApprovalList(2, 5, userId)">-->
+<!--        <ApprovalList :approvalList="state.approvalList"/>-->
+<!--      </b-tab>-->
+<!--      <b-tab title="단축 근무" @click="fetchReqApprovalList(3, 5, userId)">-->
+<!--        <ApprovalList :approvalList="state.approvalList"/>-->
+<!--      </b-tab>-->
+<!--      <b-tab title="휴가" @click="fetchReqApprovalList(4, 5, userId)">-->
+<!--        <ApprovalList :approvalList="state.approvalList"/>-->
+<!--      </b-tab>-->
+<!--    </b-tabs>-->
+<!--  </b-card>-->
+
+  <h3 class="fw-bolder pb-5"><i class="bi bi-briefcase"></i>&nbsp; 나의 결재 문서</h3>
   <b-card no-body>
     <b-tabs card>
-      <b-tab title="출장" @click="fetchReqApprovalList(1, 5, userId)" active>
+      <b-tab title="출장" @click="fetchReqApprovalList(1, 0, userId)" active>
         <b-card-text><ApprovalList :approvalList="state.approvalList"/></b-card-text>
       </b-tab>
-      <b-tab title="시간 외 근무" @click="fetchReqApprovalList(2, 5, userId)">
+      <b-tab title="시간 외 근무" @click="fetchReqApprovalList(2, 0, userId)">
         <ApprovalList :approvalList="state.approvalList"/>
       </b-tab>
-      <b-tab title="단축 근무" @click="fetchReqApprovalList(3, 5, userId)">
+      <b-tab title="단축 근무" @click="fetchReqApprovalList(3, 0, userId)">
         <ApprovalList :approvalList="state.approvalList"/>
       </b-tab>
-      <b-tab title="휴가" @click="fetchReqApprovalList(4, 5, userId)">
+      <b-tab title="휴가" @click="fetchReqApprovalList(4, 0, userId)">
         <ApprovalList :approvalList="state.approvalList"/>
       </b-tab>
     </b-tabs>

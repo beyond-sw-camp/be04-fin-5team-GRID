@@ -90,7 +90,7 @@
       await fetchApprovalList(1, 0, userId.value);
     } else {
       await fetchApprovalList(0, 0, userId.value);
-      await fetchReqApprovalList(0, 5, userId.value);
+      await fetchReqApprovalList(0, 0, userId.value);
     }
 
     isLoading.value = false;
@@ -133,7 +133,7 @@
           <ApprovalList :approvalList="state.sApprovalList" :short="1"/>
         </b-card>
         <br>
-        <b-card title="결재 필요 문서">
+        <b-card title="나의 결재 문서">
           <div class="text-end">
             <h6 class="text-muted" style="margin-bottom: 10px; margin-top: -30px;" @click="navigateTo('/required')">상세 <i class="bi bi-chevron-right"></i></h6>
           </div>
