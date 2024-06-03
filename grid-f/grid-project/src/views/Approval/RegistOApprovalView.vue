@@ -103,7 +103,13 @@ import router from "@/router/router.js";
 </script>
 
 <template>
-  <div><h3 class="fw-bolder"><i class="bi bi-clock"></i>&nbsp; 시간 외 근무 신청</h3></div>
+  <nav style="--bs-breadcrumb-divider: '>'; margin-top: -35px; margin-bottom: -7px;" aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="http://localhost:5173/regist/main" style="text-decoration: none; color: grey; font-size: 17px;"><i class="bi bi-pencil-square"></i>&nbsp; 결재 작성</a></li>
+      <li class="breadcrumb-item active" aria-current="page"><span class="fw-bolder"><i class="bi bi-clock"></i>&nbsp; 시간 외 근무</span></li>
+    </ol>
+  </nav>
+  <div><h3 class="fw-bolder mb-5"><i class="bi bi-clock"></i>&nbsp; 시간 외 근무 신청</h3></div>
   <div>
     <b-card class="mt-3" bg-variant="light">
       <b-form-group

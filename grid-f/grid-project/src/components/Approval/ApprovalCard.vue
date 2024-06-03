@@ -5,12 +5,12 @@
 </script>
 
 <template>
-  <div>
-    <div>시작 일자: {{ props.approval['startTime'] }}</div>
-    <div>종료 일자: {{ props.approval['endTime'] }}</div>
-    <div>내용: {{props.approval['content']}}</div>
-    <div v-if="props.approval['destination'] !== null">출장지: {{ props.approval['destination'] }}</div>
-    <div v-if="props.approval['vacationType'] !== null">휴가 유형: {{ props.approval['vacationType'] }}</div>
+  <div style="margin-top: 45px; margin-left: 10px;">
+    <div class="fs-6 text-muted mb-4"><strong>시작 일자 :  &nbsp;</strong>{{ props.approval['startTime'] }}</div>
+    <div class="fs-6 text-muted mb-4"><strong>종료 일자 :  &nbsp;</strong>{{ props.approval['endTime'] }}</div>
+    <div v-if="props.approval['destination'] !== null" class="fs-6 text-muted mb-4"><strong>출장지 :  &nbsp;</strong>{{ props.approval['destination'] }}</div>
+    <div v-if="props.approval['vacationType'] !== null" class="fs-6 text-muted mb-4"><strong>휴가 유형 :  &nbsp;</strong>{{ props.approval['vacationType'] }}</div>
+    <div class="fs-6 text-muted mb-4"><strong>내용 :  &nbsp;</strong>{{ props.approval['content'] }}</div>
   </div>
 </template>
 

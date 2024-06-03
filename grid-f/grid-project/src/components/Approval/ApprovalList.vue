@@ -1,6 +1,7 @@
 <script setup>
   import {useRouter} from "vue-router";
-  import {onMounted, reactive} from "vue";
+  import {onMounted, reactive, ref} from "vue";
+  import axios from "axios";
 
   const props = defineProps({
     approvalList: Array,
@@ -32,9 +33,68 @@
 
   const router = useRouter();
 
-  const approvalDetail = (typeId, approvalId) => {
+  const userRole = ref('');
+  const userId = ref();
+
+  const isLoading = ref(true);
+
+  function parseJwt(token) {
+    try {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      }).join(''));
+      return JSON.parse(jsonPayload);
+    } catch (error) {
+      console.error('Invalid token', error);
+      return null;
+    }
+  }
+
+  const registStatus = async (status, approvalId) => {
+
+    putStatusData.chainStatus = status;
+    putStatusData.typeId = state.type;
+    putStatusData.approvalId = approvalId;
+
+    console.log(putStatusData);
+
+    try {
+      const response = await axios.put(`http://localhost:8080/approval-chain/status`, putStatusData, {
+        headers: {
+          'Content-Type': "application/json"
+        }
+      })
+      if (response.status !== 200) {
+        throw new Error("response is not ok");
+
+      }
+
+      console.log(response)
+
+    } catch (error) {
+      console.error('Fail to post: ', error.message);
+    }
+  }
+  const approvalDetail = (typeId, approvalId, employeeId, approvalStatus) => {
+    if (approvalStatus === 'N' && userRole.value !== 'ROLE_ADMIN' && userId.value !== employeeId) {
+      registStatus('V', approvalId);
+    }
     router.push(`/approval/detail/${typeId}/${approvalId}`);    // 추후에 모달로 변경
   }
+
+  onMounted(async () => {
+    const token = localStorage.getItem('access');
+    if (token) {
+      const decodedToken = parseJwt(token);
+
+      userRole.value = decodedToken.auth || '';
+      userId.value = decodedToken.id || '';
+    }
+
+    isLoading.value = false;
+  })
 </script>
 
 <template>
@@ -113,7 +173,8 @@
         <template #cell(approvalStatus)="data">
           <b-badge variant="success" v-if="data.value === 'A'">승인</b-badge>
           <b-badge variant="danger" v-if="data.value === 'D'">반려</b-badge>
-          <b-badge variant="warning" v-if="data.value === 'N'">대기</b-badge>
+          <b-badge variant="warning" v-if="data.value === 'V'">대기</b-badge>
+          <b-badge variant="secondary" v-if="data.value === 'N'">미열람</b-badge>
         </template>
         <template #cell()="data">
           <span>{{ data.value }}</span>
@@ -128,7 +189,7 @@
           {{ data.index + 1 }}
         </template>
         <template #cell(content)="data">
-          <span @click="approvalDetail(props.approvalList.type, data.item.id)">{{ data.value }}</span>
+          <span @click="approvalDetail(props.approvalList.type, data.item.id, data.item.requesterId, data.item.approvalStatus)">{{ data.value }}</span>
         </template>
         <template #cell(writeTime)="data">
           <span>{{ data.value.substring(0, 10) }}</span>
@@ -136,7 +197,8 @@
         <template #cell(approvalStatus)="data">
           <b-badge variant="success" v-if="data.value === 'A'">승인</b-badge>
           <b-badge variant="danger" v-if="data.value === 'D'">반려</b-badge>
-          <b-badge variant="warning" v-if="data.value === 'N'">대기</b-badge>
+          <b-badge variant="warning" v-if="data.value === 'V'">대기</b-badge>
+          <b-badge variant="secondary" v-if="data.value === 'N'">미열람</b-badge>
         </template>
         <template #cell()="data">
           <span>{{ data.value }}</span>
