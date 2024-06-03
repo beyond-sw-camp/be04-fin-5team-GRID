@@ -12,7 +12,7 @@ COPY package*.json ./
 # npm install 로 의존성 설치함
 RUN npm install
 
-# 소스 파일들을 복사
+# 소스 파일들을 복사함
 COPY . .
 
 # 애플리케이션 빌드
