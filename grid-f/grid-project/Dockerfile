@@ -16,8 +16,8 @@ RUN npm install
 COPY . .
 
 # 애플리케이션 빌드
-RUN npm run build
+#RUN npm run build
 
 # 애플리케이션 시작 명령어
-#CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
-CMD ["npm", "run", "start"]
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
+#CMD ["npm", "run", "start"]
