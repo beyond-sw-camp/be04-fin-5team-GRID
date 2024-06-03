@@ -18,7 +18,7 @@ class PerformanceReviewGoalItemServiceImplTest {
 
     @DisplayName("업적 평가 목표 항목 추가")
     @Test
-
+    @Transactional
     public void addGoalItem() {
         PerformanceReviewGoalItemDTO performanceReviewGoalItemDTO = new PerformanceReviewGoalItemDTO(
                 null,
@@ -62,10 +62,10 @@ class PerformanceReviewGoalItemServiceImplTest {
     @Test
     @Transactional
     public void removeGoalItem() {
-        int id = 5;
+        int id = 1;
 
         int removeId = performanceReviewGoalItemService.removeGoalItem(id);
 
-        assertEquals(5, removeId);
+        assertEquals(1, removeId);
     }
 }

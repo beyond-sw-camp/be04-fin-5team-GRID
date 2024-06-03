@@ -25,9 +25,9 @@ class PerformanceReviewGoalServiceImplTest {
                 2025,
                 "2025 인사평가",
                 "IP",
-                6,
+                11,
                 "2025-03-01 08:00:00",
-                5
+                10
         );
 
         PerformanceReviewGoalDTO saveGoal = performanceReviewGoalService.addNewGoal(performanceReviewGoalDTO);
@@ -39,7 +39,7 @@ class PerformanceReviewGoalServiceImplTest {
     @Test
     @Transactional
     public void modifyGoalStatusInProgress(){
-        int id = 3;
+        int id = 1;
         PerformanceReviewGoalDTO modifyGoalDTO = performanceReviewGoalService.modifyGoalStatusInProgress(id);
 
         System.out.println(modifyGoalDTO);
@@ -51,7 +51,7 @@ class PerformanceReviewGoalServiceImplTest {
     @Test
     @Transactional
     public void modifyGoalStatusInProgressException(){
-        int id = 1;
+        int id = 2;
 
         assertThrows(RuntimeException.class, () -> {
             performanceReviewGoalService.modifyGoalStatusInProgress(id);
@@ -62,7 +62,7 @@ class PerformanceReviewGoalServiceImplTest {
     @Test
     @Transactional
     public void modifyGoalStatusSubmit(){
-        int id = 4;
+        int id = 1;
         PerformanceReviewGoalDTO modifyGoalDTO = performanceReviewGoalService.modifyGoalStatusSubmit(id);
 
         System.out.println(modifyGoalDTO);

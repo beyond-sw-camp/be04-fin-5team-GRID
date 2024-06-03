@@ -16,7 +16,7 @@ class TotalPerformanceReviewServiceImplTest {
     @DisplayName("종합 평가 평가대상자 기준으로 조회")
     @Test
     public void findTotalByRevieweeId(){
-        int employeeId = 6;
+        int employeeId = 11;
 
         assertNotNull(
                 totalPerformanceReviewService.findTotalByRevieweeId(employeeId)
@@ -27,7 +27,7 @@ class TotalPerformanceReviewServiceImplTest {
     @DisplayName("종합 평가 평가자 기준으로 조회")
     @Test
     public void findTotalByReviewerId(){
-        int employeeId = 5;
+        int employeeId = 10;
 
         assertNotNull(
                 totalPerformanceReviewService.findTotalByReviewerId(employeeId)
@@ -48,7 +48,7 @@ class TotalPerformanceReviewServiceImplTest {
     @DisplayName("종합 평가 하나 조회")
     @Test
     public void findTotalById(){
-        int id = 6;
+        int id = 1;
 
         assertNotNull(
                 totalPerformanceReviewService.findTotalById(id)

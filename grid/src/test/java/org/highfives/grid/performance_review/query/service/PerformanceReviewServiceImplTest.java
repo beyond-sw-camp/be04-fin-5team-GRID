@@ -17,20 +17,20 @@ class PerformanceReviewServiceImplTest {
     @Autowired
     private PerformanceReviewServiceImpl performanceReviewService;
 
-    @DisplayName("6번 직원의 작성한 평가항목 조회")
+    @DisplayName("11번 직원의 작성한 평가항목 조회")
     @Test
     public void findReviewByWriterId() {
-        int id = 6;
+        int id = 11;
         List<PerformanceReviewDTO> findReview = performanceReviewService.findPerformanceReviewByWriterId(id);
 
         System.out.println(findReview);
         assertNotNull(findReview);
     }
 
-    @DisplayName("5번 직원의 결재가 필요한 평가항목 조회")
+    @DisplayName("10번 직원의 결재가 필요한 평가항목 조회")
     @Test
     public void findReviewByApproverId() {
-        int id = 5;
+        int id = 10;
         List<PerformanceReviewDTO> findReview = performanceReviewService.findPerformanceReviewByApproverId(id);
 
         assertNotNull(findReview);

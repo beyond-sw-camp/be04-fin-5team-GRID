@@ -26,29 +26,29 @@ class TotalPerformanceReviewServiceImplTest {
         List<PerformanceReviewDTO> performanceReviewDTOList = new ArrayList<>();
 
         performanceReviewDTOList.add(new PerformanceReviewDTO(
-                5,
+                3,
                 "M",
-                2023,
-                "2023년 인사평가",
+                2024,
+                "2024년 인사평가",
                 "V",
-                6,
+                12,
                 "2024-06-01 12:00:00",
-                5,
+                10,
                 "2024-06-03 12:00:00",
-                4
+                2
         ));
 
         performanceReviewDTOList.add(new PerformanceReviewDTO(
-                6,
+                4,
                 "F",
-                2023,
+                2024,
                 "2023년 인사평가",
                 "V",
-                6,
+                12,
                 "2024-12-01 12:00:00",
-                5,
+                10,
                 "2024-12-02 12:00:00",
-                4
+                2
         ));
 
         TotalPerformanceReviewDTO total = totalPerformanceReviewService.addTotalReview(performanceReviewDTOList);

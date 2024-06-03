@@ -29,7 +29,7 @@ class PerformanceReviewServiceImplTest {
                 "M",
                 2024,
                 "2024 인사평가",
-                8
+                13
         );
 
         PerformanceReviewDTO addReview = performanceReviewService.addNewPerformanceReview(performanceReviewDTO);
@@ -106,7 +106,7 @@ class PerformanceReviewServiceImplTest {
         assertNotNull(modifyPerformanceReviewDTO);
     }
 
-    @DisplayName("업적 평가 저장")
+    @DisplayName("업적 평가 상신")
     @Test
     @Transactional
     public void modifyPerformanceReviewStatusSubmit(){
@@ -181,7 +181,7 @@ class PerformanceReviewServiceImplTest {
 
         List<PerformanceReviewItemDTO> performanceReviewItemList = new ArrayList<>();
         performanceReviewItemList.add(
-                new PerformanceReviewItemDTO( 1,
+                new PerformanceReviewItemDTO( 4,
                         "신규 모듈 추가를 위한 웹 애플리케이션 개발",
                         "3개월 안에 개발 완료",
                         "신규 모듈 개발 완료한 수",
@@ -193,12 +193,12 @@ class PerformanceReviewServiceImplTest {
                         "수정 신규 모듈을 개발하는 데 성공적으로 기여했고, 예상보다 빠르게 완료하여 팀 전체의 성과를 높였습니다.",
                         1,
                         28.5,
-                        1)
+                        2)
         );
 
 
         performanceReviewItemList.add(new PerformanceReviewItemDTO(
-                2,
+                5,
                 "웹 애플리케이션의 품질을 보장하기 위한 테스트 수행",
                 "매주 정기적인 테스트 수행",
                 "발견된 버그 수정 및 재테스트 완료한 비율",
@@ -210,11 +210,11 @@ class PerformanceReviewServiceImplTest {
                 "수정 매주 정기적으로 테스트를 수행하여 품질을 유지하고, 발견된 문제를 신속하게 해결하였습니다.",
                 2,
                 17.0,
-                1
+                2
         ));
 
         performanceReviewItemList.add(new PerformanceReviewItemDTO(
-                3,
+                6,
                 "신규 기능을 안정적으로 배포하기 위한 작업",
                 "매주 정기적인 배포",
                 "배포된 버전의 안정성 지표",
@@ -226,10 +226,10 @@ class PerformanceReviewServiceImplTest {
                 "수정 신규 기능을 안정적으로 배포하여 사용자들에게 원활한 서비스를 제공하였습니다.",
                 1,
                 47.5,
-                1
+                2
         ));
 
-        int reviewId = 1;
+        int reviewId = 2;
 
         RequestPerformanceReviewVO requestPerformanceReviewVO = new RequestPerformanceReviewVO(
                 reviewId,
@@ -249,7 +249,7 @@ class PerformanceReviewServiceImplTest {
 
         List<PerformanceReviewItemDTO> performanceReviewItemList = new ArrayList<>();
         performanceReviewItemList.add(
-                new PerformanceReviewItemDTO( 1,
+                new PerformanceReviewItemDTO( 4,
                         "신규 모듈 추가를 위한 웹 애플리케이션 개발",
                         "3개월 안에 개발 완료",
                         "신규 모듈 개발 완료한 수",
@@ -261,12 +261,12 @@ class PerformanceReviewServiceImplTest {
                         "수정 신규 모듈을 개발하는 데 성공적으로 기여했고, 예상보다 빠르게 완료하여 팀 전체의 성과를 높였습니다.",
                         1,
                         28.5,
-                        1)
+                        2)
         );
 
 
         performanceReviewItemList.add(new PerformanceReviewItemDTO(
-                2,
+                5,
                 "웹 애플리케이션의 품질을 보장하기 위한 테스트 수행",
                 "매주 정기적인 테스트 수행",
                 "발견된 버그 수정 및 재테스트 완료한 비율",
@@ -278,11 +278,11 @@ class PerformanceReviewServiceImplTest {
                 "수정 매주 정기적으로 테스트를 수행하여 품질을 유지하고, 발견된 문제를 신속하게 해결하였습니다.",
                 2,
                 17.0,
-                1
+                2
         ));
 
         performanceReviewItemList.add(new PerformanceReviewItemDTO(
-                3,
+                6,
                 "신규 기능을 안정적으로 배포하기 위한 작업",
                 "매주 정기적인 배포",
                 "배포된 버전의 안정성 지표",
@@ -294,10 +294,10 @@ class PerformanceReviewServiceImplTest {
                 "수정 신규 기능을 안정적으로 배포하여 사용자들에게 원활한 서비스를 제공하였습니다.",
                 1,
                 47.5,
-                1
+                2
         ));
 
-        int reviewId = 1;
+        int reviewId = 2;
 
         RequestPerformanceReviewVO requestPerformanceReviewVO = new RequestPerformanceReviewVO(
                 reviewId,
@@ -314,74 +314,6 @@ class PerformanceReviewServiceImplTest {
     @Test
     @Transactional
     public void modifyPerformanceReviewStatusValid(){
-
-        List<PerformanceReviewItemDTO> performanceReviewItemList = new ArrayList<>();
-        performanceReviewItemList.add(
-                new PerformanceReviewItemDTO( 1,
-                        "신규 모듈 추가를 위한 웹 애플리케이션 개발",
-                        "3개월 안에 개발 완료",
-                        "신규 모듈 개발 완료한 수",
-                        "수정 3개월 안에 개발 완료",
-                        30,
-                        "수정 2023년 1분기 신규 모듈 개발 완료",
-                        1,
-                        28.5,
-                        "수정 신규 모듈을 개발하는 데 성공적으로 기여했고, 예상보다 빠르게 완료하여 팀 전체의 성과를 높였습니다.",
-                        1,
-                        28.5,
-                        1)
-        );
-
-
-        performanceReviewItemList.add(new PerformanceReviewItemDTO(
-                2,
-                "웹 애플리케이션의 품질을 보장하기 위한 테스트 수행",
-                "매주 정기적인 테스트 수행",
-                "발견된 버그 수정 및 재테스트 완료한 비율",
-                "매주 정기적인 테스트 수행",
-                20,
-                "수정 2023년 1분기 테스트 완료율 유지",
-                1,
-                19.0,
-                "수정 매주 정기적으로 테스트를 수행하여 품질을 유지하고, 발견된 문제를 신속하게 해결하였습니다.",
-                2,
-                17.0,
-                1
-        ));
-
-        performanceReviewItemList.add(new PerformanceReviewItemDTO(
-                3,
-                "신규 기능을 안정적으로 배포하기 위한 작업",
-                "매주 정기적인 배포",
-                "배포된 버전의 안정성 지표",
-                "수정 매주 정기적인 배포",
-                50,
-                "2023년 1분기 안정적인 배포 진행",
-                1,
-                47.5,
-                "수정 신규 기능을 안정적으로 배포하여 사용자들에게 원활한 서비스를 제공하였습니다.",
-                1,
-                47.5,
-                1
-        ));
-
-        int reviewId = 1;
-
-        RequestPerformanceReviewVO requestPerformanceReviewVO = new RequestPerformanceReviewVO(
-                reviewId,
-                performanceReviewItemList
-        );
-
-        ModifyPerformanceReviewDTO modifyPerformanceReviewDTO = performanceReviewService.modifyPerformanceReviewStatusValid(requestPerformanceReviewVO);
-        System.out.println(modifyPerformanceReviewDTO);
-
-        assertNotNull(modifyPerformanceReviewDTO);
-    }
-
-    @DisplayName("연말 평가 확정")
-    @Test
-    @Transactional
-    public void modifyPerformanceReviewStatusValid2(){
 
         List<PerformanceReviewItemDTO> performanceReviewItemList = new ArrayList<>();
         performanceReviewItemList.add(
@@ -434,6 +366,74 @@ class PerformanceReviewServiceImplTest {
         ));
 
         int reviewId = 3;
+
+        RequestPerformanceReviewVO requestPerformanceReviewVO = new RequestPerformanceReviewVO(
+                reviewId,
+                performanceReviewItemList
+        );
+
+        ModifyPerformanceReviewDTO modifyPerformanceReviewDTO = performanceReviewService.modifyPerformanceReviewStatusValid(requestPerformanceReviewVO);
+        System.out.println(modifyPerformanceReviewDTO);
+
+        assertNotNull(modifyPerformanceReviewDTO);
+    }
+
+    @DisplayName("연말 평가 확정")
+    @Test
+    @Transactional
+    public void modifyPerformanceReviewStatusValid2(){
+
+        List<PerformanceReviewItemDTO> performanceReviewItemList = new ArrayList<>();
+        performanceReviewItemList.add(
+                new PerformanceReviewItemDTO( 10,
+                        "신규 모듈 추가를 위한 웹 애플리케이션 개발",
+                        "3개월 안에 개발 완료",
+                        "신규 모듈 개발 완료한 수",
+                        "수정 3개월 안에 개발 완료",
+                        30,
+                        "수정 2023년 1분기 신규 모듈 개발 완료",
+                        1,
+                        28.5,
+                        "수정 신규 모듈을 개발하는 데 성공적으로 기여했고, 예상보다 빠르게 완료하여 팀 전체의 성과를 높였습니다.",
+                        1,
+                        28.5,
+                        4)
+        );
+
+
+        performanceReviewItemList.add(new PerformanceReviewItemDTO(
+                11,
+                "웹 애플리케이션의 품질을 보장하기 위한 테스트 수행",
+                "매주 정기적인 테스트 수행",
+                "발견된 버그 수정 및 재테스트 완료한 비율",
+                "매주 정기적인 테스트 수행",
+                20,
+                "수정 2023년 1분기 테스트 완료율 유지",
+                1,
+                19.0,
+                "수정 매주 정기적으로 테스트를 수행하여 품질을 유지하고, 발견된 문제를 신속하게 해결하였습니다.",
+                2,
+                17.0,
+                4
+        ));
+
+        performanceReviewItemList.add(new PerformanceReviewItemDTO(
+                12,
+                "신규 기능을 안정적으로 배포하기 위한 작업",
+                "매주 정기적인 배포",
+                "배포된 버전의 안정성 지표",
+                "수정 매주 정기적인 배포",
+                50,
+                "2023년 1분기 안정적인 배포 진행",
+                1,
+                47.5,
+                "수정 신규 기능을 안정적으로 배포하여 사용자들에게 원활한 서비스를 제공하였습니다.",
+                1,
+                47.5,
+                4
+        ));
+
+        int reviewId = 4;
 
         RequestPerformanceReviewVO requestPerformanceReviewVO = new RequestPerformanceReviewVO(
                 reviewId,

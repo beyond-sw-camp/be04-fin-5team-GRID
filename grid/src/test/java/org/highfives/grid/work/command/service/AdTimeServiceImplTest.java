@@ -43,7 +43,7 @@ class AdTimeServiceImplTest {
     @DisplayName("출근 체크")
     @ParameterizedTest
     @MethodSource("addAdTimeDTO")
-//    @Transactional
+    @Transactional
     void addStartTime(AdTimeDTO adTimeDTO) {
         Assertions.assertDoesNotThrow(
                 () -> adTimeService.addStartTime(adTimeDTO)

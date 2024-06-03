@@ -17,20 +17,20 @@ class PerformanceReviewGoalServiceImplTest {
     @Autowired
     private PerformanceReviewGoalServiceImpl performanceReviewGoalService;
 
-    @DisplayName("6번 직원의 업적 평가 목록 조회")
+    @DisplayName("11번 직원의 업적 평가 목표 목록 조회")
     @Test
     public void findGoalByWriterId(){
-        int employeeId = 6;
+        int employeeId = 11;
         List<PerformanceReviewGoalDTO> findGoalList = performanceReviewGoalService.findAllGoalByWriterId(employeeId);
 
         System.out.println(findGoalList);
         assertNotNull(findGoalList);
     }
 
-    @DisplayName("5번 직원이 결재할 업적 평가 목록 조회")
+    @DisplayName("10번 직원이 결재할 업적 평가 목록 조회")
     @Test
     public void findGoalByEApproverId(){
-        int employeeId = 5;
+        int employeeId = 10;
         List<PerformanceReviewGoalDTO> findGoalList = performanceReviewGoalService.findAllGoalByApproverId(employeeId);
 
         System.out.println(findGoalList);
@@ -47,10 +47,10 @@ class PerformanceReviewGoalServiceImplTest {
     }
 
 
-    @DisplayName("6번 직원의 2024 업적 평가 목표 조회")
+    @DisplayName("11번 직원의 2024 업적 평가 목표 조회")
     @Test
     public void findGoalByWriterIdAndYear(){
-        int writerId = 6;
+        int writerId = 11;
 
         int year = 2024;
 

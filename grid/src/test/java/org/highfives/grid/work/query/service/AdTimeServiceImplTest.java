@@ -15,7 +15,8 @@ class AdTimeServiceImplTest {
     @DisplayName("직원id로 조회")
     @Test
     void findAdTimeByEmployeeId() {
-        int employeeId = 1;
+        int employeeId = 2;
+
         Assertions.assertDoesNotThrow(
                 () -> adTimeService.findAdTimeByEmployeeId(employeeId)
         );
@@ -24,7 +25,6 @@ class AdTimeServiceImplTest {
     @DisplayName("전체 조회")
     @Test
     void findAdTimeAll() {
-        System.out.println("전체 조회");
         Assertions.assertDoesNotThrow(
                 () -> adTimeService.findAdTimeAll()
         );
@@ -34,7 +34,7 @@ class AdTimeServiceImplTest {
     @Test
     void findAdTimeByStartTime() {
         Assertions.assertDoesNotThrow(
-                () -> adTimeService.findAdTimeByStartTime("2024-05-29")
+                () -> adTimeService.findAdTimeByStartTime("2024-05-26")
         );
     }
 }
