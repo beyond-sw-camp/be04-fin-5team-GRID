@@ -321,8 +321,23 @@ async function validateWeightInput(item) {
 
 // 팀원 저장(in-progress)
 async function memberSave() {
-  if (goalDetail.value.status === '작성 중') {
+  if (goalDetail.value.status === '작성 중' || goalDetail.value.status === '반려') {
     if (confirm("목표를 저장하시겠습니까?")) {
+
+      //목표 항목 빈 배열x
+      if(goalItemList.value === null  || goalItemList.value.length === 0){
+        alert('목표 항목을 입력해주세요');
+        return;
+      }
+
+      // 업무명, 목표 입력 확인
+      for (const item of goalItemList.value) {
+        if (!item.jobName || !item.goal) {
+          alert('업무명과 목표는 필수로 작성해주세요');
+          return;
+        }
+      }
+
       console.log(goalItemList.value);
       const sendData = {
         id: goalDetail.value.id,
@@ -343,7 +358,8 @@ async function memberSave() {
             sendData
         );
 
-        window.location.reload();
+        alert('목표를 저장했습니다.')
+        // window.location.reload();
       } catch (error) {
         console.error('Error sending data:', error);
       }
@@ -355,18 +371,34 @@ async function memberSave() {
 
 // 팀원 상신(submit)
 async function submit() {
-  if (goalDetail.value.status === '작성 중') {
+  if (goalDetail.value.status === '작성 중' || goalDetail.value.status === '반려') {
     if (confirm("목표를 상신하시겠습니까?")) {
+
+      //목표 항목 빈 배열x
+      if(goalItemList.value === null  || goalItemList.value.length === 0){
+        alert('목표 항목을 입력해주세요');
+        return;
+      }
+
+      // 필수 값이 입력되지 않은 경우
+      for (const item of goalItemList.value) {
+        if (!item.jobName || !item.goal || !item.metric || item.weight === undefined || item.weight === 0
+            || item.weight === null || !item.plan) {
+          alert('상신 시 모든 필수 값을 입력해야 합니다.');
+          return;
+        }
+      }
+
       const sendData = {
         id: goalDetail.value.id,
         goalItemList: goalItemList.value.map(item => ({
           id: item.id || null,
           jobName: item.jobName,
           goal: item.goal,
-          metric: item.metric || null,
-          weight: item.weight || 0,
-          plan: item.plan || null,
-          objection: item.objection || null
+          metric: item.metric,
+          weight: item.weight,
+          plan: item.plan,
+          objection: item.objection
         }))
       };
 
@@ -378,6 +410,7 @@ async function submit() {
             sendData
         );
 
+        alert('목표를 저장했습니다.')
         window.location.reload();
       } catch (error) {
         console.error('Error sending data:', error);
