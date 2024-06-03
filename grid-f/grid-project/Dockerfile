@@ -6,7 +6,7 @@ RUN apk add --no-cache curl
 # 작업 디렉토리를 설정
 WORKDIR /usr/src/app
 
-# package.json과 package-lock.json을 복사한다
+# package.json과 package-lock.json을 복사
 COPY package*.json ./
 
 # npm install 로 의존성 설치 
