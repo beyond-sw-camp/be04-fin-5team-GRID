@@ -71,7 +71,7 @@
 
       state.reqApprovalList.type = typeId;
       state.sReqApprovalList.type = typeId;
-      
+
     } catch (error) {
       console.error('Fetch error: ' + error.message);
     }
@@ -86,8 +86,12 @@
       userRole.value = decodedToken.auth || '';
     }
 
-    await fetchApprovalList(1, 0, userId.value);
-    await fetchReqApprovalList(1, 5, userId.value);
+    if (userRole.value === 'ROLE_ADMIN') {
+      await fetchApprovalList(1, 0, userId.value);
+    } else {
+      await fetchApprovalList(0, 0, userId.value);
+      await fetchReqApprovalList(0, 5, userId.value);
+    }
 
     isLoading.value = false;
   })
@@ -138,7 +142,6 @@
         </b-card>
       </div>
     </div>
-  </div>
 </template>
 
 <style scoped>
