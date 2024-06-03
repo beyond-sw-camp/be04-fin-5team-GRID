@@ -13,4 +13,5 @@ public class VacationType {
     private String vacationNum;
     private String dateOfUse;
     private String vacationExplain;
+    private String useYn;
 }

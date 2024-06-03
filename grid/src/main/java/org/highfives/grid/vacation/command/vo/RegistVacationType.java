@@ -11,5 +11,4 @@ public class RegistVacationType {
     private String vacationNum;
     private String dateOfUse;
     private String vacationExplain;
-
 }

@@ -2,93 +2,87 @@
     <div class="policyAll">
         <div class="policyTitle">
             <img class="policyIcon" src="@/assets/buttons/vacation.png">
-            <h1>휴가 정책</h1>
+            <h1 v-if="userRole === 'ROLE_USER'">휴가 종류/정책</h1>
+            <h1 v-if="userRole === 'ROLE_ADMIN'">휴가 정책</h1>
             <button class="policyRegist" @click="showModal('registPolicy')" v-if="userRole === 'ROLE_ADMIN'">등록하기</button>
         </div>
         <div class="vacations">
             <div class="card mb-3" v-for="policy in policies" :key="policy.id">
               <div class="card-body">
-                <h3 class="card-title">{{ policy.typeName + " " + "정책"}}</h3>
+                <h3 class="card-title">{{ policy.typeName }}</h3>
                 <p class="card-text"></p>
-                <button href="#" @click="openNewModifyModal(policy.id)" class="btn btn-custom">살펴보기</button>
+                <button href="#" @click="openNewModifyModal(policy.id)" class="btn btn-custom">정책보기</button>
               </div>
             </div>
-            <!-- <div class="typeBox" v-for="policy in policies" :key="policy.id">
-                <div class="vacationsTitle">
-                    <h3>{{ policy.typeName + " " + "정책"}}</h3>
-                    <img class="plusBtn" @click="openNewModifyModal(policy.id)" src="@/assets/buttons/plus.png">
-                </div>
-            </div> -->
           </div>
 
-<!-- 수정 모달 -->
-<div class="modal fade" id="modifyPolicy" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">휴가 정책 수정</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="closeModal('modifyPolicy')"></button>
-            </div>
-            <div class="modal-body">
-                <form class="needs-validation" novalidate>
-                    <div class="mb-3">
-                        <label for="modifyTypeName" class="form-label">휴가 이름</label>
-                        <input type="text" class="form-control" id="modifyTypeName" v-model="modifyPolicy.typeName" disabled>
-                    </div>
-                    <div class="mb-3">
-                        <label for="modifyVacationExplain" class="form-label">휴가 설명</label>
-                        <textarea class="form-control explainForm" id="modifyVacationExplain" v-model="modifyPolicyContent" :disabled="userRole === 'ROLE_USER'" required></textarea>
-                        <div class="invalid-feedback">
-                            휴가 설명을 입력해주세요.
-                        </div>
-                    </div>
-                    <div class="button-container">
-                        <button type="button" class="btn btn-primary" v-if="userRole==='ROLE_ADMIN'" @click="validateAndModifyContent(modifyPolicy.id)">수정</button>
-                        <button type="button" class="btn btn-danger" v-if="userRole==='ROLE_ADMIN'" @click="deleteVacationPolicy(modifyPolicy.id)">삭제</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
+      <!-- 수정 모달 -->
+      <div class="modal fade" id="modifyPolicy" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+                  <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">휴가 정책 수정</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="closeModal('modifyPolicy')"></button>
+                  </div>
+                  <div class="modal-body">
+                      <form class="needs-validation" novalidate>
+                          <div class="mb-3">
+                              <label for="modifyTypeName" class="form-label">휴가 이름</label>
+                              <input type="text" class="form-control" id="modifyTypeName" v-model="modifyPolicy.typeName" disabled>
+                          </div>
+                          <div class="mb-3">
+                              <label for="modifyVacationExplain" class="form-label">휴가 설명</label>
+                              <textarea class="form-control explainForm" id="modifyVacationExplain" v-model="modifyPolicyContent" :disabled="userRole === 'ROLE_USER'" required></textarea>
+                              <div class="invalid-feedback">
+                                  휴가 설명을 입력해주세요.
+                              </div>
+                          </div>
+                          <div class="button-container">
+                              <button type="button" class="btn btn-primary" v-if="userRole==='ROLE_ADMIN'" @click="validateAndModifyContent(modifyPolicy.id)">수정</button>
+                              <button type="button" class="btn btn-danger" v-if="userRole==='ROLE_ADMIN'" @click="deleteVacationPolicy(modifyPolicy.id)">삭제</button>
+                          </div>
+                      </form>
+                  </div>
+              </div>
+          </div>
+      </div>
 
 
-<!-- 등록 모달 -->
-<div class="modal fade" id="registPolicy" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">휴가 정책 등록</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="closeModal('registPolicy')"></button>
-            </div>
-            <div class="modal-body">
-                <form class="needs-validation" @submit.prevent="registPolicy(modifyPolicy.id)" novalidate>
-                    <div class="mb-3">
-                        <label for="modifyTypeName" class="form-label">휴가 이름</label>
-                        <select class="form-select" v-model="selectedType" id="modifyTypeName" required>
-                          <option value="" disabled selected>선택해주세요</option>
-                          <option v-for="type in types" :key="type.id" :value="type.id">{{ type.typeName }}</option>
-                        </select>
-                        <div class="invalid-feedback">
-                            휴가 이름을 선택해주세요.
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="modifyVacationExplain" class="form-label">휴가 설명</label>
-                        <textarea class="form-control explainForm" id="modifyVacationExplain" placeholder="내용을 입력해주세요." v-model="content" required></textarea>
-                        <div class="invalid-feedback">
-                            휴가 설명을 입력해주세요.
-                        </div>
-                    </div>
-                    <div class="button-container">
-                        <button type="submit" class="btn btn-primary">등록</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
+      <!-- 등록 모달 -->
+      <div class="modal fade" id="registPolicy" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+                  <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">휴가 정책 등록</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="closeModal('registPolicy')"></button>
+                  </div>
+                  <div class="modal-body">
+                      <form class="needs-validation" @submit.prevent="registPolicy(modifyPolicy.id)" novalidate>
+                          <div class="mb-3">
+                              <label for="modifyTypeName" class="form-label">휴가 이름</label>
+                              <select class="form-select" v-model="selectedType" id="modifyTypeName" required>
+                                <option value="" disabled selected>선택해주세요</option>
+                                <option v-for="type in types" :key="type.id" :value="type.id">{{ type.typeName }}</option>
+                              </select>
+                              <div class="invalid-feedback">
+                                  휴가 이름을 선택해주세요.
+                              </div>
+                          </div>
+                          <div class="mb-3">
+                              <label for="modifyVacationExplain" class="form-label">휴가 설명</label>
+                              <textarea class="form-control explainForm" id="modifyVacationExplain" placeholder="내용을 입력해주세요." v-model="content" required></textarea>
+                              <div class="invalid-feedback">
+                                  휴가 설명을 입력해주세요.
+                              </div>
+                          </div>
+                          <div class="button-container">
+                              <button type="submit" class="btn btn-primary">등록</button>
+                          </div>
+                      </form>
+                  </div>
+              </div>
+          </div>
+      </div>
     </div>
   </template>
   
@@ -96,16 +90,11 @@
   import { ref, onBeforeMount, watch,computed, onMounted } from 'vue';
   import axios from 'axios';
   import { useRoute } from 'vue-router';
-  import router from '@/router/router';
-  import Modal from '@/components/Vacation/Policy/VacationPolicyModal.vue'; // 모달 컴포넌트 임포트
   import 'bootstrap/dist/css/bootstrap.min.css';
   import 'bootstrap';
   
   const policies = ref([]);
   const userRole = ref('');
-  const showRegistModal = ref(false);
-  const showModifyModal = ref(false);
-  const showDetailModal = ref(false);
   const selectedType = ref('');
   const content = ref('');
   const types = ref([]);
@@ -174,16 +163,26 @@ const openNewModifyModal = async (id) => {
   }
 };
   
-  const registPolicy = async () => {
-    if(!selectedType.value || !content.value) {
-      return; 
-    }
+const registPolicy = async () => {
+  // selectedType.value나 content.value가 비어있는지 확인
+  if(!selectedType.value || !content.value) {
+    return; 
+  }
+
+  // policies 배열 안에 typeId가 중복되는지 확인
+  const isDuplicate = policies.value.some(policy => policy.typeId === selectedType.value);
+  if (isDuplicate) {
+    alert('이미 존재하는 휴가의 정책입니다.');
+    return;
+  }
+
+  // 중복되지 않을 경우에만 등록 절차 진행
   try {
     const confirmed = window.confirm('등록하시겠습니까?');
     if(confirmed) {
       const response = await axios.post('/api/vacation/policy', {
-      typeId: selectedType.value,
-      content: content.value,
+        typeId: selectedType.value,
+        content: content.value,
       });
       alert('등록이 완료되었습니다.');
       window.location.reload();
@@ -192,10 +191,10 @@ const openNewModifyModal = async (id) => {
     console.error('Error:', error);
   }
 };
+
   
   const openModifyModal = async (id) => {
     try {
-      showDetailModal.value = false;
       const response = await axios.get(`/api/vacation/policy/${id}`);
       modifyPolicy.value = response.data.result;
       modifyPolicyContent.value = modifyPolicy.value.content.replace(/<br\s*\/?>/gi, '\n');
@@ -354,7 +353,7 @@ onMounted(() => {
   
   .policyRegist {
     background-color: #088A85;
-    color: black;
+    color: white;
     padding: 5px 5px;
     border: none;
     border-radius: 4px;
@@ -530,26 +529,7 @@ onMounted(() => {
         cursor: pointer;
     }
 
-    .typeBox {
-        padding: 10px;
-        background-color: #F2F2F2;
-        display: grid;
-        grid-template-rows: 75% 25%;
-    }
 
-    /* 디테일 모달 css */
-    .detailMain {
-    height: 80%;
-    width: calc(100% - 20px);
-    padding: 10px;
-    background-color: #F2F2F2;
-  }
-
-  .detailMain h3 {
-    font-size: 15px;
-    margin: 0;
-    font-weight: 600;
-  }
   
   .detailTitle {
     margin-top: 2%;
@@ -600,15 +580,15 @@ onMounted(() => {
   .btn-custom {
     font-size:11px;
     font-weight: 600;
-    color:black;
-    background-color: #CDE8E5;
-    border-color:#CDE8E5 ;
+    color:white;
+    background-color: #77B0AA;
+    border-color:#77B0AA ;
   }
 
   .vacations h3 {
       font-size: 15px;
       font-weight: 600;
-      color:black;
+      color:white;
       margin: 0;
     }
   

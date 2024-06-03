@@ -106,7 +106,7 @@ public class VacationServiceImpl implements VacationService {
             }
         }
 
-//         1년은 안되고, 1달은 지난 직원에게 월차를 제공하고 그 기록을 vacation_history에 저장
+        // 1년은 안되고, 1달은 지난 직원에게 월차를 제공하고 그 기록을 vacation_history에 저장
         for (int i = 1; i < employees.size(); i++) {
             int userId = employees.get(i).getId();
             int day = countDays(userId);
@@ -396,6 +396,7 @@ public class VacationServiceImpl implements VacationService {
                 .vacationNum(typeInfo.getVacationNum())
                 .dateOfUse(typeInfo.getDateOfUse())
                 .vacationExplain(typeInfo.getVacationExplain())
+                .useYn("Y")
                 .build();
         vacationTypeRepository.save(vacationType);
     }
@@ -407,6 +408,7 @@ public class VacationServiceImpl implements VacationService {
         vacationType.setVacationNum(typeInfo.getVacationNum());
         vacationType.setDateOfUse(typeInfo.getDateOfUse());
         vacationType.setVacationExplain(typeInfo.getVacationExplain());
+        vacationType.setUseYn(typeInfo.getUseYn());
     }
 
     @Override
@@ -432,7 +434,7 @@ public class VacationServiceImpl implements VacationService {
         } else if (typeId == 6) {
             vacationInfo.setVacationNum(vacationInfo.getVacationNum() + 0.25);
         } else
-            vacationInfo.setVacationNum(vacationInfo.getVacationNum() + days);
+            vacationInfo.setVacationNum(vacationInfo.getVacationNum() + 1);
 
         VacationHistory inputVacationHistory = VacationHistory.builder()
                 .changeTime(today.toString())
@@ -463,7 +465,7 @@ public class VacationServiceImpl implements VacationService {
         } else if (typeId == 6) {
             vacationInfo.setVacationNum(vacationInfo.getVacationNum() - 0.25);
         } else
-            vacationInfo.setVacationNum(vacationInfo.getVacationNum() - days);
+            vacationInfo.setVacationNum(vacationInfo.getVacationNum() - 1);
 
         VacationHistory inputVacationHistory = VacationHistory.builder()
                 .changeTime(today.toString())

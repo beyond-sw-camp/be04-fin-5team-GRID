@@ -1,3 +1,4 @@
+
 <template>
     <div class="historyAll">
         <div class="historyTitle">
@@ -30,14 +31,14 @@
                 </div>
             </div>
         </div>
-        <div class="search">
+        <div class="search">  
             <select v-model="searchType" class="searchType">
                 <option value="name">이름</option>
                 <option value="employeeNumber">사번</option>
             </select>
             <input v-model="searchQuery" class="sortBox" type="text" placeholder="검색">
             <button @click="search" class="printBtn">검색</button>
-        </div>
+        </div> 
         <div class="tableContainer">
             <b-table hover small :fields="fields" :items="paginatedHistories" >
                 <template #cell(index)="data">
@@ -66,11 +67,16 @@
         <nav class="pg" aria-label="Page navigation example" v-if="totalPages > 1">
             <ul class="pagination">
                 <li class="page-item" :class="{ disabled: currentPage === 1 }">
+                    <a class="page-link" href="#" aria-label="First" @click.prevent="goToFirstPage">
+                        <span aria-hidden="true">&laquo;&laquo;</span>
+                    </a>
+                </li>
+                <li class="page-item" :class="{ disabled: currentPage === 1 }">
                     <a class="page-link" href="#" aria-label="Previous" @click.prevent="prevPage">
                         <span aria-hidden="true">&laquo;</span>
                     </a>
                 </li>
-                <li v-for="page in totalPages" :key="page" class="page-item" :class="{ active: page === currentPage }">
+                <li v-for="page in filteredPages" :key="page" class="page-item" :class="{ active: page === currentPage }">
                     <a class="page-link" @click.prevent="goToPage(page)">{{ page }}</a>
                 </li>
                 <li class="page-item" :class="{ disabled: currentPage === totalPages }">
@@ -78,8 +84,14 @@
                         <span aria-hidden="true">&raquo;</span>
                     </a>
                 </li>
+                <li class="page-item" :class="{ disabled: currentPage === totalPages }">
+                    <a class="page-link" href="#" aria-label="Last" @click.prevent="goToLastPage">
+                        <span aria-hidden="true">&raquo;&raquo;</span>
+                    </a>
+                </li>
             </ul>
         </nav>
+
     </div>
 
       <!-- 휴가지급 모달 -->
@@ -96,7 +108,7 @@
                         <label for="vacationType" class="form-label">휴가 타입</label>
                         <select class="form-select" v-model="selectedType" id="vacationType" required>
                             <option value="" disabled selected>휴가 타입을 선택해주세요</option>
-                            <option v-for="type in types" :key="type.id" :value="type.id">{{ type.typeName }}</option>
+                            <option v-for="type in filteredTypes" :key="type.id" :value="type.id">{{ type.typeName }}</option>
                         </select>
                         <div class="invalid-feedback">
                             휴가 타입을 선택해주세요.
@@ -154,10 +166,10 @@ const vacationNum = ref('');
 const employeeNum = ref('');
 const date = ref('');
 const selectedType = ref('');
+const users = ref([]);
+const filteredTypes = ref([]);
 
-const totalPages = computed(() => {
-    return Math.ceil(filteredHistories.value.length / itemsPerPage);
-});
+
 
 const fields = [
     { key: 'index', label: '번호' },
@@ -174,11 +186,53 @@ const showModal = (modalId) => {
   modal.show();
 };
 
+const totalPages = computed(() => {
+    return Math.ceil(filteredHistories.value.length / itemsPerPage);
+});
+
 const paginatedHistories = computed(() => {
     const start = (currentPage.value - 1) * itemsPerPage;
     const end = start + itemsPerPage;
     return filteredHistories.value.slice(start, end);
 });
+
+const filteredPages = computed(() => {
+    const maxPages = 5; // 페이지당 최대 표시할 페이지 수
+    const startPage = Math.max(1, currentPage.value - Math.floor(maxPages / 2));
+    const endPage = Math.min(totalPages.value, startPage + maxPages - 1);
+
+    const pages = [];
+    for (let i = startPage; i <= endPage; i++) {
+        pages.push(i);
+    }
+    return pages;
+});
+
+const prevPage = () => {
+    if (currentPage.value > 1) {
+        currentPage.value--;
+    }
+};
+
+const nextPage = () => {
+    if (currentPage.value < totalPages.value) {
+        currentPage.value++;
+    }
+};
+
+const goToPage = (page) => {
+    currentPage.value = page;
+};
+
+// 처음 페이지로 이동
+const goToFirstPage = () => {
+    currentPage.value = 1;
+};
+
+// 마지막 페이지로 이동
+const goToLastPage = () => {
+    currentPage.value = totalPages.value;
+};
 
 const getAllVacationHistory = async () => {
     try {
@@ -250,13 +304,13 @@ const giveMonthVacation = async () => {
 
 const getVacationType = async () => {
     try {
-        const response = await axios.get('/api/vacation/type');
-        types.value = response.data.result;
-        console.log(response.data.result);
+      const response = await axios.get('/api/vacation/type');
+      types.value = response.data.result;
+      filteredTypes.value = types.value.filter(type => type.typeName !== '반차' && type.typeName !== '반반차');
     } catch (error) {
-        console.error('Error:', error);
+      console.error('Error:', error);
     }
-};
+  };
 
 const validateAndRegistContent = () => {
     const form = document.querySelector('#giveVacation form');
@@ -284,11 +338,30 @@ const closeModal = (modalId) => {
   }
 };
 
+const allUsers = async () => {
+    try {
+        const response = await axios.get('/api/users/list');
+        users.value = response.data.result;
+        console.log(users.value);
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
   const giveVacationDirectly = async () => {
     if(!date.value) {
         alert('휴가 사용기한을 선택해주세요.')
         return;
     }
+
+    // 입력받은 사번을 users.value에서 찾기
+    const employee = users.value.find(user => user.employeeNumber === employeeNum.value);
+
+    if (!employee) {
+        alert('해당 사번의 직원이 없습니다.');
+        return;
+    }
+
     try {
         const confirmed = window.confirm('지급하시겠습니까?');
         if (confirmed) {
@@ -322,7 +395,7 @@ const closeModal = (modalId) => {
 function giveAnnual() {
     try {
         const confirmed = window.confirm('지급하시겠습니까?');
-        if (confirmed) {
+        if(confirmed) {
             giveAnnualVacation();
             giveRegularVacation();
             alert('지급 완료되었습니다!')
@@ -336,7 +409,7 @@ function giveAnnual() {
 function giveMonth() {
     try {
         const confirmed = window.confirm('지급하시겠습니까?');
-        if (confirmed) {
+        if(confirmed) {
             giveHealthVacation();
             giveMonthVacation();
             alert('지급 완료되었습니다!')
@@ -362,21 +435,7 @@ function parseJwt(token) {
     }
 }
 
-const prevPage = () => {
-    if (currentPage.value > 1) {
-        currentPage.value--;
-    }
-};
 
-const nextPage = () => {
-    if (currentPage.value < totalPages.value) {
-        currentPage.value++;
-    }
-};
-
-const goToPage = (page) => {
-    currentPage.value = page;
-};
 
 onBeforeMount(() => {
     const token = localStorage.getItem('access');
@@ -387,6 +446,7 @@ onBeforeMount(() => {
     }
 
     getVacationType();
+    allUsers();
 
     if (userRole.value === 'ROLE_ADMIN') {
         getAllVacationHistory();
@@ -404,130 +464,114 @@ onBeforeMount(() => {
         height: 100%;
     }
 
-.historyTitle {
-    grid-column-start: 2;
-    grid-column-end: 3;
-    font-size: 12px;
-    font-weight: 600;
-    margin-top: 2%;
-    color: #000000;
-    display: grid;
-    grid-template-columns: 3% 97%;
-    align-items: center;
-}
+    .historyTitle {
+        grid-column-start: 2;
+        grid-column-end: 3;
+        font-size: 12px;
+        font-weight: 600;
+        margin-top: 2%;
+        color: #000000;
+        display: grid;
+        grid-template-columns: 3% 97%;
+        align-items: center;
+    }
 
-.historyTitle h1 {
-    margin-left: 0.5%;
-    margin-bottom: 0;
-    font-size: 25px;
-    font-weight: 600;
-}
+    .historyTitle h1 {
+        margin-left: 0.5%;
+        margin-bottom: 0;
+        font-size: 25px;
+        font-weight: 600;
+    }
 
-.historyIcon {
-    width: 80%;
-}
+    .historyIcon {
+        width: 80%;
+    }
 
-.vacations {
-    grid-column-start: 2;
-    grid-column-end: 3;
-    display: grid;
-    grid-template-columns: 20% 5% 20% 5% 20% 30%;
-    align-items: center;
-    margin-bottom: 5%;
-}
+    .vacations {
+        grid-column-start: 2;
+        grid-column-end: 3;
+        display: grid;
+        grid-template-columns: 20% 5% 20% 5% 20% 30%;
+        align-items: center;
+        margin-bottom: 5%;
+    }
 
-.vacationsTitle {
-    margin-left: 5%;
-    display: grid;
-    grid-template-columns: 85% 10% 5%;
-    align-items: center;
-    font-size: 12px;
-    height: 10vh;
-}
+    .vacationsTitle {
+        margin-left: 5%;
+        display: grid;
+        grid-template-columns: 85% 10% 5%;
+        align-items: center;
+        font-size: 12px;
+        height: 10vh;
+    }
 
     .plusBtn {
         width: 100%;
         cursor: pointer;
     }
 
-.annual {
-    width: calc(100% - 20px);
-    background-color: #F2F2F2;
-    font-size: 15px;
-}
+    .annual {
+        width: calc(100% - 20px);
+        background-color: #F2F2F2;
+        font-size: 15px;
+    }
 
-.month {
-    width: calc(100% - 20px);
-    background-color: #F2F2F2;
-    grid-column-start: 3;
-    font-size: 15px;
-}
+    .month {
+        width: calc(100% - 20px);
+        background-color: #F2F2F2;
+        grid-column-start: 3;
+        font-size: 15px;
+    }
 
-.diretly {
-    width: calc(100% - 20px);
-    background-color: #F2F2F2;
-    grid-column-start: 5;
-    font-size: 15px;
-}
+    .diretly {
+        width: calc(100% - 20px);
+        background-color: #F2F2F2;
+        grid-column-start: 5;
+        font-size: 15px;
+    }
 
-.search {
-    grid-row-start: 3;
-    grid-column-start: 2;
-    display: grid;
-    grid-template-columns: 74% 5% 1% 15% 1% 4%;
-    font-size: 12px;
-}
+    .search {
+        grid-row-start: 3;
+        grid-column-start: 2;
+        display: grid;
+        grid-template-columns: 74% 5% 1% 15% 1% 4%;
+        font-size: 12px;
+    }
 
-.searchType {
-    grid-column-start: 2;
-}
+    .searchType {
+        grid-column-start: 2;
+    }
 
-.sortBox {
-    grid-column-start: 4;
-    margin-left: 2%;
-    padding: 5px 5px;
-    border-radius: 4px;
-    font-size: 12px;
-    font-style: bold;
-}
+    .sortBox {
+        grid-column-start: 4;
+        margin-left: 2%;
+        padding: 5px 5px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-style: bold;
+    }
 
-.printBtn {
-    grid-column-start: 6;
-    margin-left: 2%;
-    width: 100%;
-    background-color: #088A85;
-    color: white;
-    padding: 5px 5px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 12px;
-    font-style: bold;
-}
+    .printBtn {
+        grid-column-start: 6;
+        margin-left: 2%;
+        width: 100%;
+        background-color: #088A85;
+        color: white;
+        padding: 5px 5px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 12px;
+        font-style: bold;
+    }
 
-.tableContainer {
-    grid-column-start: 2;
-    grid-column-end: 3;
-    margin-top: 20px;
-    font-size: 12px;
-}
+    .tableContainer {
+        grid-column-start: 2;
+        grid-column-end: 3;
+        margin-top: 20px;
+        font-size: 12px;
+    }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-th,
-td {
-    border: 1px solid #dddddd;
-    text-align: left;
-    padding: 6px;
-    vertical-align: middle;
-}
-
-th {
-    background-color: #f2f2f2;
-}
 
     .pg {
         grid-row-start: 5;
@@ -539,99 +583,84 @@ th {
         margin-top: 10px;
     }
 
+    .pagination .page-item.active .page-link {
+    background-color: #088A85; /* 원하는 배경색 */
+    border-color: #088A85; /* 원하는 테두리 색 */
+    color: white; /* 원하는 텍스트 색 */
+    }
 
-.pagination button {
-    background-color: white;
-    color: black;
-    padding: 5px 10px;
-    border: 1px solid #dddddd;
-    border-radius: 4px;
-    cursor: pointer;
-    margin: 0 5px;
-}
+    .pagination .page-item .page-link {
+        color: #088A85; /* 기본 텍스트 색 */
+    }
 
-.pagination button.active {
-    background-color: #088A85;
-    font-weight: bold;
-    color: white;
-}
-
-.pagination button:disabled {
-    background-color: #dddddd;
-    cursor: not-allowed;
-}
-
-
-.pagination span {
-    display: flex;
-    align-items: center;
-}
+    .pagination .page-item.disabled .page-link {
+        color: #088A85; /* 비활성화된 페이지 색 */
+    }
 
     .registMain {
-
     height: 100%;
     width: 100%;
     padding: 10px;
     background-color: #F2F2F2;
-}
+  }
 
-.registMain h3 {
+  .registMain h3 {
     font-size: 15px;
     margin: 0;
     font-weight: 600;
-}
+  }
 
-.registTitle {
+  .registTitle {
     margin-top: 2%;
     display: grid;
     grid-template-columns: 10% 20% 30% 10%;
     font-size: 14px;
     align-items: center;
-}
+  }
 
-.registTitle h3 {
+  .registTitle h3 {
     grid-column-start: 2;
-}
+  }
 
-.registContent {
+  .registContent {
     margin-top: 2%;
     display: grid;
     grid-template-columns: 10% 20% 50% 10%;
     font-size: 14px;
     align-items: center;
-}
+  }
 
-.employeeNum {
+  .employeeNum {
     margin-top: 2%;
     display: grid;
     grid-template-columns: 10% 20% 50% 10%;
     font-size: 14px;
     align-items: center;
-}
+  }
 
-.employeeNum h3 {
+  .employeeNum h3 {
     grid-column-start: 2;
-}
+  }
 
 
-.vacationNum {
+  .vacationNum {
     margin-top: 2%;
     display: grid;
     grid-template-columns: 10% 20% 50% 10%;
     font-size: 14px;
     align-items: center;
-}
+  }
 
-.vacationNum h3 {
+  .vacationNum h3 {
     grid-column-start: 2;
-}
+  }
 
-.registContent h3 {
+  .registContent h3 {
     grid-column-start: 2;
-}
+  }
 
 
-.registBtn {
+  .registBtn{
     width: 100%;
     background-color: #088A85;
     color: white;
@@ -642,35 +671,30 @@ th {
     font-size: 12px;
     font-style: bold;
     grid-column-start: 2;
-}
+  }
 
-.registBtnArea {
+  .registBtnArea {
     display: grid;
     grid-template-columns: 40% 20% 40%;
     place-items: center;
     grid-row-start: 3;
     grid-column-start: 2;
     margin-top: 5%;
-}
-
-.no-data {
-    text-align: center;
-    vertical-align: middle;
-}   
+  }
 
 .btn-custom {
     font-size:11px;
     font-weight: 600;
-    color:black;
-    background-color: #CDE8E5;
-    border-color:#CDE8E5 ;
+    color:white;
+    background-color: #77B0AA;
+    border-color:#77B0AA ;
     margin-top: 10px;
   }
 
   .vacations h3 {
       font-size: 14px;
       font-weight: 600;
-      color:black;
+      color:white;
       margin: 0;
     }
 
@@ -685,5 +709,11 @@ th {
   .card {
     padding: 10px 10px;
     background-color: #088A85;
+  }
+
+  .button-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
   }
 </style>

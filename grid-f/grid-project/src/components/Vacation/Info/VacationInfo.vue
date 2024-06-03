@@ -39,36 +39,7 @@
             <button @click="search" class="printBtn">검색</button>
         </div> 
         <div class="tableContainer">
-            <!-- <table>
-                <thead>
-                    <tr>
-                        <th>번호</th>
-                        <th>이름</th>
-                        <th>사번</th>
-                        <th>휴가종류</th>
-                        <th>지급날짜</th>
-                        <th>휴가 사용기간</th>
-                        <th>지급개수</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <template v-if="paginatedInfo.length === 0">
-                        <tr>
-                            <td colspan="7" class="no-data">휴가 보유 정보가 없습니다.</td>
-                        </tr>
-                    </template>
-                    <tr v-for="(info, index) in paginatedInfo" :key="info.id">
-                        <td>{{ (currentPage - 1) * itemsPerPage + index + 1 }}</td>
-                        <td>{{ info.employeeName }}</td>
-                        <td>{{ info.employeeNumber }}</td>
-                        <td>{{ info.typeName }}</td>
-                        <td>{{ info.addTime }}</td>
-                        <td>{{ info.addTime + "~" +info.endTime }}</td>
-                        <td>{{ info.vacationNum }}</td>
-                    </tr>
-                </tbody>
-            </table> -->
-            <b-table hover small :fields="fields" :items="paginatedInfo" >
+            <b-table empty-html hover small :fields="fields" :items="paginatedInfo" >
                 <template #cell(index)="data">
                     {{ (currentPage - 1) * itemsPerPage + data.index + 1 }}
                 </template>
@@ -95,16 +66,26 @@
         <nav class="pg" aria-label="Page navigation example" v-if="totalPages > 1">
             <ul class="pagination">
                 <li class="page-item" :class="{ disabled: currentPage === 1 }">
+                    <a class="page-link" href="#" aria-label="First" @click.prevent="goToFirstPage">
+                        <span aria-hidden="true">&laquo;&laquo;</span>
+                    </a>
+                </li>
+                <li class="page-item" :class="{ disabled: currentPage === 1 }">
                     <a class="page-link" href="#" aria-label="Previous" @click.prevent="prevPage">
                         <span aria-hidden="true">&laquo;</span>
                     </a>
                 </li>
-                <li v-for="page in totalPages" :key="page" class="page-item" :class="{ active: page === currentPage }">
+                <li v-for="page in filteredPages" :key="page" class="page-item" :class="{ active: page === currentPage }">
                     <a class="page-link" @click.prevent="goToPage(page)">{{ page }}</a>
                 </li>
                 <li class="page-item" :class="{ disabled: currentPage === totalPages }">
                     <a class="page-link" aria-label="Next" @click.prevent="nextPage">
                         <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+                <li class="page-item" :class="{ disabled: currentPage === totalPages }">
+                    <a class="page-link" href="#" aria-label="Last" @click.prevent="goToLastPage">
+                        <span aria-hidden="true">&raquo;&raquo;</span>
                     </a>
                 </li>
             </ul>
@@ -119,6 +100,7 @@ import axios from "axios";
 const searchType = ref('name');
 const searchQuery = ref('');
 const allInfo = ref([]);
+const vacationNum= ref('');
 const currentPage = ref(1);
 const itemsPerPage = 10;
 const filteredInfo = ref([]);
@@ -156,7 +138,6 @@ const getUserVacationInfo = async () => {
         allInfo.value = response.data.result;
         filteredInfo.value = allInfo.value; // 초기화 시 전체 데이터를 필터링된 데이터에 할당
         calculateVacationNums();
-        console.log(allInfo.value)
     } catch (error) {
         console.error("Error:", error);
     }
@@ -191,6 +172,18 @@ const paginatedInfo = computed(() => {
     return filteredInfo.value.slice(start, end);
 });
 
+const filteredPages = computed(() => {
+    const maxPages = 5; // 페이지당 최대 표시할 페이지 수
+    const startPage = Math.max(1, currentPage.value - Math.floor(maxPages / 2));
+    const endPage = Math.min(totalPages.value, startPage + maxPages - 1);
+
+    const pages = [];
+    for (let i = startPage; i <= endPage; i++) {
+        pages.push(i);
+    }
+    return pages;
+});
+
 const totalPages = computed(() => {
     return Math.ceil(filteredInfo.value.length / itemsPerPage);
 });
@@ -211,6 +204,14 @@ const nextPage = () => {
     if (currentPage.value < totalPages.value) {
         currentPage.value++;
     }
+};
+
+const goToFirstPage = () => {
+    currentPage.value = 1;
+};
+
+const goToLastPage = () => {
+    currentPage.value = totalPages.value;
 };
 
 function parseJwt(token) {
@@ -305,10 +306,16 @@ onBeforeMount(() => {
 .annual {
     width: calc(100% - 20px);
     background-color: #F2F2F2;
+    
 }
 
 .annual h3 {
     font-size: 15px;
+    color:white;
+}
+
+.annual p {
+    color:white;
 }
 
 .month {
@@ -319,6 +326,11 @@ onBeforeMount(() => {
 
 .month h3 {
     font-size: 15px;
+    color:white;
+}
+
+.month p {
+    color:white;
 }
 
 .diretly {
@@ -329,6 +341,11 @@ onBeforeMount(() => {
 
 .diretly h3 {
     font-size: 15px;
+    color:white;
+}
+
+.diretly p {
+    color:white;
 }
 
 .sortBox {
@@ -388,26 +405,19 @@ th {
     margin-top: 10px;
 }
 
-.pagination button {
-    background-color: white;
-    color: black;
-    padding: 5px 10px;
-    border: 1px solid #dddddd;
-    border-radius: 4px;
-    cursor: pointer;
-    margin: 0 5px;
-}
+.pagination .page-item.active .page-link {
+    background-color: #088A85; /* 원하는 배경색 */
+    border-color: #088A85; /* 원하는 테두리 색 */
+    color: white; /* 원하는 텍스트 색 */
+    }
 
-.pagination button.active {
-    background-color: #088A85;
-    font-weight: bold;
-    color: white;
-}
+    .pagination .page-item .page-link {
+        color: #088A85; /* 기본 텍스트 색 */
+    }
 
-.pagination button:disabled {
-    background-color: #dddddd;
-    cursor: not-allowed;
-}
+    .pagination .page-item.disabled .page-link {
+        color: #088A85; /* 비활성화된 페이지 색 */
+    }
 
 .vacationsNum {
     grid-column-start: 1;
@@ -453,4 +463,3 @@ th {
     height: 100%;
   }
 </style>
-
