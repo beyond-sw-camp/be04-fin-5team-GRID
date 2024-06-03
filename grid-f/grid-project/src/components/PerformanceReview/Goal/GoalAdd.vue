@@ -186,15 +186,15 @@ const fetchGoalAdd = async () => {
           sandData
       );
 
-      // const id = responseAdd.data.goal.id;
-      // const response = await axios.get(`http://localhost:8080/review-goal/detail/${id}`);
-      // console.log(response.data);
-      // const goal = response.data.findDetailGoal;
-      // goalItemList.value = goal.goalItemList;
-      //
-      // console.log(goalItemList.value);
+      const id = responseAdd.data.goal.id;
+      const response = await axios.get(`http://localhost:8080/review-goal/detail/${id}`);
+      console.log(response.data);
+      const goal = response.data.findDetailGoal;
+      goalItemList.value = goal.goalItemList;
+
+      console.log(goalItemList.value);
       goalDetail.value = {
-        id: goal.id,
+        id: id,
         year: goal.year,
         reviewName: goal.reviewName,
         writerName: goal.writer ? goal.writer.employeeName : '없음',

@@ -180,6 +180,15 @@ const fetchReviewAdd = async () => {
     const currentYear = new Date().getFullYear();   // 올해 년도
     const currentTime = getCurrentDateTimeString()  // 현재 시간
 
+    const responseGoal = await axios.get(`http://localhost:8080/review-goal/${currentYear}/${user.value.id}`);
+
+    console.log(responseGoal.data.findGoal.approvalStatus);
+
+    // 승인된 목표만 생성 가능
+    if(responseGoal.data.findGoal.approvalStatus !== 'A'){
+      throw new Error('평가 목표가 승인되지 않았습니다.');
+    }
+
     const responseReview = await axios.get(`http://localhost:8080/performance-review/mid/${currentYear}/${user.value.id}`)
 
 

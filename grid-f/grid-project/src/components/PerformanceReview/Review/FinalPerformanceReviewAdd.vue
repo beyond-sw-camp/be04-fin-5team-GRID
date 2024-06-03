@@ -180,13 +180,26 @@ const fetchReviewAdd = async () => {
     const currentYear = new Date().getFullYear();   // 올해 년도
     const currentTime = getCurrentDateTimeString()  // 현재 시간
 
-    const responseReview = await axios.get(`http://localhost:8080/performance-review/final/${currentYear}/${user.value.id}`)
+    const responseReview = await axios.get(`http://localhost:8080/performance-review/final/${currentYear}/${user.value.id}`);
 
+    const responseGoal = await axios.get(`http://localhost:8080/review-goal/${currentYear}/${user.value.id}`);
+
+    // 승인된 목표만 생성 가능
+    if(responseGoal.data.findGoal.approvalStatus !== 'A'){
+      throw new Error('평가 목표가 승인되지 않았습니다.');
+    }
+
+    const responseMid = await axios.get(`http://localhost:8080/performance-review/mid/${currentYear}/${user.value.id}`)
+
+    // 승인된 중간 평가가 없으면 예외
+    if(responseMid.data.findReview.approvalStatus !== 'A') {
+      throw new Error('중간 평가가 승인되지 않았습니다.');
+    }
 
     console.log(responseReview);
 
     if (!responseReview.data.findReview) {
-      // 생성된 중간 평가 없을 때
+      // 생성된 연말 평가 없을 때
       const sendData = {
         type: "F",
         year: currentYear,
