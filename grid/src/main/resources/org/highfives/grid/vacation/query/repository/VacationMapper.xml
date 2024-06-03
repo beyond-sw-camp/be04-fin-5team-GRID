@@ -51,6 +51,7 @@
         <result property="vacationNum" column="VACATION_NUM"/>
         <result property="dateOfUse" column="DATE_OF_USE"/>
         <result property="vacationExplain" column="VACATION_EXPLAIN"/>
+        <result property="useYn" column="USE_YN"/>
     </resultMap>
     <select id="selectAllVacationInfo" resultMap="vacationInfoResultMap" >
         SELECT
@@ -238,7 +239,20 @@
         TYPE_NAME,
         VACATION_NUM,
         DATE_OF_USE,
-        VACATION_EXPLAIN
+        VACATION_EXPLAIN,
+        USE_YN
+        FROM VACATION_TYPE
+        WHERE USE_YN = 'Y'
+        ORDER BY ID ASC
+    </select>
+    <select id="selectAllTypeNoUseYn" resultMap="vacationTypeResultMap">
+        SELECT
+        ID,
+        TYPE_NAME,
+        VACATION_NUM,
+        DATE_OF_USE,
+        VACATION_EXPLAIN,
+        USE_YN
         FROM VACATION_TYPE
         ORDER BY ID ASC
     </select>
@@ -248,7 +262,8 @@
         TYPE_NAME,
         VACATION_NUM,
         DATE_OF_USE,
-        VACATION_EXPLAIN
+        VACATION_EXPLAIN,
+        USE_YN
         FROM VACATION_TYPE
         WHERE ID = #{id}
         ORDER BY ID ASC

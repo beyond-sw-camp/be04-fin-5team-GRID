@@ -7,6 +7,9 @@ import org.highfives.grid.user.query.dto.UserDTO;
 import org.highfives.grid.user.query.repository.UserMapper;
 import org.highfives.grid.user.query.repository.ImgMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -35,6 +38,9 @@ public class UserServiceImpl implements UserService{
         try {
             UserDTO result = userMapper.getUserInfo(info);
             result.setProfilePath(imgMapper.getProfileImg(result.getId()));
+            result.setSealPath(imgMapper.getSealImg(result.getId()));
+
+            System.out.println("result = " + result);
             return result;
 
         } catch (NullPointerException e) {
@@ -51,6 +57,7 @@ public class UserServiceImpl implements UserService{
         try {
             UserDTO result = userMapper.getUserInfo(info);
             result.setProfilePath(imgMapper.getProfileImg(result.getId()));
+            result.setSealPath(imgMapper.getSealImg(result.getId()));
             return result;
 
         } catch (NullPointerException e) {
@@ -66,6 +73,7 @@ public class UserServiceImpl implements UserService{
         try {
             UserDTO result = userMapper.getUserInfo(info);
             result.setProfilePath(imgMapper.getProfileImg(result.getId()));
+            result.setSealPath(imgMapper.getSealImg(result.getId()));
             return result;
 
         } catch (NullPointerException e) {
@@ -74,10 +82,10 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public List<UserDTO> findAllUsers() {
+    public List<UserDTO> findList() {
 
         // employee 테이블 정보 조회
-        List<UserDTO> userList = userMapper.getUserList();
+        List<UserDTO> userList = userMapper.getList();
 
         // profile 이미지 조회 해서 입력
         for (int i = 0; i < userList.size(); i++) {
@@ -90,17 +98,33 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public List<UserDTO> findUsersByName(String name) {
+    public Page<UserDTO> findAllUsers(Pageable pageable) {
+        long offset = pageable.getOffset();
+        int pageSize = pageable.getPageSize();
+        List<UserDTO> userList = userMapper.getUserList(offset, pageSize);
 
-        List<UserDTO> userList = userMapper.getUserListByName(name);
-
-        for (int i = 0; i < userList.size(); i++) {
-            UserDTO userDTO = userList.get(i);
+        userList.forEach(userDTO -> {
             userDTO.setProfilePath(imgMapper.getProfileImg(userDTO.getId()));
-            userList.set(i, userDTO);
-        }
+        });
 
-        return userList;
+        long total = userMapper.countAllUsers(); // 총 사용자 수를 계산하는 메소드가 필요합니다.
+
+        return new PageImpl<>(userList, pageable, total);
+    }
+
+    @Override
+    public Page<UserDTO> findUsersByName(String name, Pageable pageable) {
+        long offset = pageable.getOffset();
+        int pageSize = pageable.getPageSize();
+        List<UserDTO> userList = userMapper.getUserListByName(name, offset, pageSize);
+
+        userList.forEach(userDTO -> {
+            userDTO.setProfilePath(imgMapper.getProfileImg(userDTO.getId()));
+        });
+
+        long total = userMapper.countUsersByName(name); // 총 이름 검색 결과 수를 계산하는 메소드가 필요합니다.
+
+        return new PageImpl<>(userList, pageable, total);
     }
 
     @Override
@@ -151,7 +175,6 @@ public class UserServiceImpl implements UserService{
     public List<UserDTO> findTeamList(int teamId) {
 
         List<UserDTO> userDTOList = userMapper.findTeamList(teamId);
-
 
         return userDTOList;
     }

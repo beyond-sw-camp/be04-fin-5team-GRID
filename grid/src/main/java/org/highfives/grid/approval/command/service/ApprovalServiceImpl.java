@@ -153,25 +153,6 @@ public class ApprovalServiceImpl implements ApprovalService {
 //            나머지
 //        }
 
-        todayCount = ChronoUnit.HOURS.between(startDate, endDate);
-
-        if (count + todayCount < 12) {
-            OvertimeApproval overtimeApproval = OvertimeApproval.builder()
-                    .startTime(overtimeApprovalVO.getStartTime())
-                    .endTime(overtimeApprovalVO.getEndTime())
-                    .content(overtimeApprovalVO.getContent())
-                    .writeTime(LocalDateTime.now().format(dateFormat))
-                    .requesterId(overtimeApprovalVO.getRequesterId())
-                    .build();
-
-            oApprovalRepository.save(overtimeApproval);
-
-            ReqAddApprovalChainVO request = new ReqAddApprovalChainVO(2, overtimeApproval.getId(), overtimeApproval.getRequesterId());
-            approvalChainService.addOApprovalChain(request);
-
-            return mapper.map(overtimeApproval, OvertimeApprovalDTO.class);
-        }
-
         return null;
     }
 

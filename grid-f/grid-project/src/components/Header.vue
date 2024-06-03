@@ -13,8 +13,8 @@
         </button>
         <div class="dropdown">
           <img
-              :src="profileUrl"
-              alt="profile" class="profile" @click="toggleDropdown">
+            :src="profileUrl"
+            alt="profile" class="profile" @click="toggleDropdown">
           <ul class="dropdown-menu" ref="dropdownMenu">
             <li><a class="dropdown-item" href="#" @click="goToProfile">개인 정보</a></li>
             <li><a class="dropdown-item" href="#" @click="logout">로그 아웃</a></li>

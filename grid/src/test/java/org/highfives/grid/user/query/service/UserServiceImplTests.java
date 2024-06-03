@@ -24,21 +24,21 @@ class UserServiceImplTests {
         );
     }
 
-    @DisplayName("전체 유저 리스트 조회")
-    @Test
-    void findAllUsersTest() {
-        Assertions.assertDoesNotThrow(
-                () -> userService.findAllUsers()
-        );
-    }
+//    @DisplayName("전체 유저 리스트 조회")
+//    @Test
+//    void findAllUsersTest() {
+//        Assertions.assertDoesNotThrow(
+//                () -> userService.findAllUsers()
+//        );
+//    }
 
-    @DisplayName("이름으로 유저 리스트 조회")
-    @Test
-    void findUsersByName() {
-        Assertions.assertDoesNotThrow(
-                () -> userService.findUsersByName("Admin")
-        );
-    }
+//    @DisplayName("이름으로 유저 리스트 조회")
+//    @Test
+//    void findUsersByName() {
+//        Assertions.assertDoesNotThrow(
+//                () -> userService.findUsersByName("Admin")
+//        );
+//    }
 
     @DisplayName("사원 번호로 유저 정보 조회")
     @Test

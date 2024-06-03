@@ -95,8 +95,7 @@ public class PdfServiceImpl implements PdfService {
 
         UserDTO user = userService.findUserById(btApproval.getRequesterId());
 
-//        String filePath = "출장 신청서" + user.getName() + date + ".pdf";
-        String filePath = "출장 신청서.pdf";
+        String filePath = "1" + btApproval.getId() + ".pdf";
 
         try {
             PdfWriter.getInstance(document, new FileOutputStream(filePath));
@@ -201,8 +200,7 @@ public class PdfServiceImpl implements PdfService {
 
         UserDTO user = userService.findUserById(overtimeApproval.getRequesterId());
 
-//        String filePath = "출장 신청서" + user.getName() + date + ".pdf";
-        String filePath = "시간 외 근무 신청서.pdf";
+        String filePath = "2" + overtimeApproval.getId() + ".pdf";
 
         try {
             PdfWriter.getInstance(document, new FileOutputStream(filePath));
@@ -301,8 +299,7 @@ public class PdfServiceImpl implements PdfService {
 
         UserDTO user = userService.findUserById(rwApproval.getRequesterId());
 
-//        String filePath = "출장 신청서" + user.getName() + date + ".pdf";
-        String filePath = "단축 근무 신청서.pdf";
+        String filePath = "3" + rwApproval.getId() + ".pdf";
 
         try {
             PdfWriter.getInstance(document, new FileOutputStream(filePath));
@@ -401,8 +398,7 @@ public class PdfServiceImpl implements PdfService {
         ResOneVacationTypeVO vacation = vacationService.getVacationTypeById(vacationApproval.getInfoId());
         UserDTO user = userService.findUserById(vacationApproval.getRequesterId());
 
-//        String filePath = "출장 신청서" + user.getName() + date + ".pdf";
-        String filePath = "휴가 신청서.pdf";
+        String filePath = "4" + vacationApproval.getId() + ".pdf";
 
         try {
             PdfWriter.getInstance(document, new FileOutputStream(filePath));

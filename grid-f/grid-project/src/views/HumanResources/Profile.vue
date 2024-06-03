@@ -9,7 +9,7 @@
                 <img :src="profileUrl" alt="프로필 이미지">
             </div>
             <div class="name">
-                <div id="name">
+                <div id="name" >
                     {{ result.name }}
                 </div>
                 <div id="other-info">
@@ -26,42 +26,48 @@
                     </div>
                 </div>
             </div>
-            <div class="button" v-if="userRole === 'ROLE_ADMIN'">
+            <div class="button" v-if="userRole === 'ROLE_ADMIN' || userId == result.id">
                 <div>
-                    <button class="modifyBtn" @click="toModify(result.employeeNumber, result)">회원 정보 수정</button>
+                    <button class="modifyBtn" @click="toModify(result.employeeNumber, result)" :userRole="userRole">회원 정보 수정</button>
                 </div>
             </div>
         </div>
         <div class="second">
-            <ul class="nav nav-tabs">
-                <li class="nav-item" @click="currentTab = 'human-resources'">
-                    <a class="nav-link" :class="{ active: currentTab === 'human-resources' }" href="#">정보</a>
-                </li>
-                <li class="nav-item" @click="currentTab = 'wb'">
-                    <a class="nav-link" :class="{ active: currentTab === 'wb' }" href="#">근무/휴가</a>
-                </li>
-            </ul>
+            <div style="width: 50%;">
+                <b-nav pills>
+                    <b-nav-item
+                        :class="[currentTab === 'human-resources' ? 'active-tab' : 'inactive-tab', 'tab-button']"
+                        @click="navigateToTab('human-resources')">
+                        <div style="color: white;">정보</div>
+                    </b-nav-item>
+                    <b-nav-item :class="[currentTab === 'wb' ? 'active-tab' : 'inactive-tab', 'tab-button']"
+                        @click="navigateToTab('wb')" style="margin-left: 2%;">
+                        <div style="color: white;"> 근무/휴가 </div>
+                    </b-nav-item>
+                </b-nav>
+            </div>
         </div>
         <div class="content">
-            <component :is="currentTabComponent" :result="result" :userRole="userRole"></component>
+            <component :is="currentTabComponent" :result="result" :userRole="userRole" :userId="userId"></component>
         </div>
     </div>
 </template>
 
 <script setup>
 import HumanResourcesInfo from '@/components/HumanResources/HumanResourcesInfo.vue';
-import WB from '@/components/HumanResources/WorkVacation.vue';
+import WB from '@/components/AdTime/WorkCalendar.vue';
 import defaultProfileImage from '@/assets/defaultProfile.jpg';
 
 import { ref, computed, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import axios from 'axios';
 
-const currentTab = ref('human-resources');
+const currentTab = ref('');
 const route = useRoute();
 const result = ref({});
 const isAbsence = ref(false);
 const userRole = ref('');
+const userId = ref('');
 const givenEmail = ref('');
 const router = useRouter();
 
@@ -75,6 +81,11 @@ const tabComponents = {
 };
 
 const currentTabComponent = computed(() => tabComponents[currentTab.value]);
+
+function navigateToTab(tab) {
+    currentTab.value = tab;
+    router.push({ query: { tab: tab } });
+}
 
 function parseJwt(token) {
     try {
@@ -92,8 +103,11 @@ function parseJwt(token) {
 
 function toModify(employeeNumber, user) {
     sessionStorage.setItem('user', JSON.stringify(user));
+    console.log('전해줄 유저:', user);
+    console.log('전해줄 토큰: ', userRole.value);
     router.push({
-        path: `/hr/modify/${employeeNumber}`
+        path: `/hr/modify/${employeeNumber}`,
+        query: { userRole: userRole.value }
     });
 }
 
@@ -102,7 +116,7 @@ onMounted(async () => {
     if (token) {
         const decodedToken = parseJwt(token);
         userRole.value = decodedToken?.auth || '';
-        console.log('토큰:', decodedToken.auth);
+        userId.value = decodedToken?.id || '';
     }
 
     const response = await axios.get(`http://localhost:8080/users/${route.params.employeeNumber}`);
@@ -110,12 +124,12 @@ onMounted(async () => {
     if (result.value.absenceYn === 'Y') {
         isAbsence.value = true;
     }
-    console.log(result.value.profilePath);
-    console.log('온마운트결과:', result.value);
-    givenEmail.value = result.value.email;
-}
+    console.log('받아오는 유저: ', result.value);
 
-)
+    givenEmail.value = result.value.email;
+
+    currentTab.value = route.query.tab || 'human-resources';
+});
 </script>
 
 <style scoped>
@@ -139,6 +153,40 @@ body {
     height: 100%;
 }
 
+.tab-button {
+    width: 110px; /* 고정된 너비 */
+    height: 30px;
+    text-align: center;
+    font-weight: bold;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.active-tab {
+    background-color: #088A85;
+    color: white !important;
+}
+
+.inactive-tab {
+    background-color: #c1dcdb; /* 비활성화된 탭의 배경색 */
+    color: black !important;
+}
+
+.b-nav-item:hover {
+    cursor: pointer;
+}
+
+.b-nav-item .nav-link {
+    font-weight: bold; /* 볼드체 적용 */
+    text-decoration: none; /* 기본 밑줄 제거 */
+    padding: 0;
+}
+
 .profile-title {
     grid-column-start: 2;
     grid-column-end: 3;
@@ -156,7 +204,7 @@ body {
 }
 
 .profile-icon {
-    width: 130%;
+    width: 110%;
     margin: 0 40px 10px 0;
     filter: invert(0%) sepia(64%) saturate(7%) hue-rotate(334deg) brightness(85%) contrast(101%);
 }
@@ -168,17 +216,21 @@ body {
     grid-template-columns: 23% 47% 30%;
     max-height: 100%;
     max-width: 100%;
+    height: 300px; /* 고정 높이 설정 */
 }
 
 .image {
+    border-radius: 18%; /* 이미지 컨테이너 둥근 모서리 */
     grid-column-start: 1;
-    padding: 0.5em;
+    padding: 0;
     height: 100%;
     width: 100%;
+    overflow: hidden; /* 이미지가 컨테이너를 넘지 않도록 설정 */
 }
 
 .image img {
-    width: 100%;
+    border-radius: 18%; /* 이미지 둥근 모서리 */
+    width: 90%;
     height: 100%;
 }
 
@@ -199,7 +251,6 @@ body {
 #other-info {
     display: flex;
     flex-direction: row;
-
 }
 
 #teamInfo {
@@ -258,6 +309,7 @@ body {
 .second {
     grid-row-start: 3;
     grid-column-start: 2;
+    grid-column-end: 3;
     height: 100%;
     width: 100%;
     display: flex;
@@ -268,6 +320,8 @@ body {
     grid-row-start: 4;
     grid-column-start: 2;
     margin-top: 15px;
+    overflow-y: auto; /* 스크롤 가능하게 설정 */
+    min-height: 750px; /* 고정 높이 설정 */
 }
 
 .modal-body {

@@ -22,9 +22,9 @@ public interface VacationService {
 
     void registVacationType(RegistVacationType typeInfo);
 
-    void minusVacationNum(int employeeId, int typeId);
+    void minusVacationNum(int employeeId, int typeId, long days);
 
-    void plusVacationNum(int employeeId, int typeId);
+    void plusVacationNum(int employeeId, int typeId, long days);
 
     void modifyVacationType(ModifyVacationType typeInfo, int id);
 

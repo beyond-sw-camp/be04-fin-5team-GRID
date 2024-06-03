@@ -16,4 +16,5 @@ public class VacationTypeDTO {
     private String vacationNum;
     private String dateOfUse;
     private String vacationExplain;
+    private String useYn;
 }

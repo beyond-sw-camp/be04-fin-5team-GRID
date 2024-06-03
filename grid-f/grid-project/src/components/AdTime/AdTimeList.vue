@@ -4,13 +4,30 @@
       <img class="adTimeIcon" src="@/assets/icons/goal_icon.png">
       <h1>출퇴근 조회</h1>
     </div>
-    <div class="workerContainer">
-      <div>
-        오늘 지각 인원: {{cntLate}}
+    <div class="workerContainer" v-if="userRole === 'ROLE_ADMIN'">
+      <div class="card-deck cnt">
+        <div class="card cntI">
+          <div class="card-body">
+            <h3 class="card-title">오늘 지각 인원</h3>
+            <p class="card-text">{{ cntLate ? cntLate : 0 }}</p>
+          </div>
+        </div>
+        <div class="card cntI">
+          <div class="card-body">
+            <h3 class="card-title">오늘 출장 인원</h3>
+            <p class="card-text">{{ cntBt ? cntBt : 0 }}</p>
+          </div>
+        </div>
+        <div class="card cntI">
+          <div class="card-body">
+            <h3 class="card-title">오늘 휴가 인원</h3>
+            <p class="card-text">{{ cntVacation ? cntVacation : 0 }}</p>
+          </div>
+        </div>
       </div>
     </div>
     <div class="adTableContainer">
-      <table>
+      <table class="table">
         <thead>
         <tr>
           <th>No</th>
@@ -59,6 +76,8 @@ const userId = ref('');
 
 
 const cntLate = ref();
+const cntBt = ref();
+const cntVacation = ref();
 
 // 유저 확인
 function parseJwt(token) {
@@ -97,21 +116,20 @@ const fetchAllAdTime = async () => {
     const currentTime = getCurrentDateTimeString();
     const today = currentTime.slice(0, 10)
 
-    const responseToday = await axios.get(`http://localhost:8080/ad-time/date/${today}`)
-    todayList.value = responseToday.data.adTimeDTOList;
+    const responseTodayAd = await axios.get(`http://localhost:8080/ad-time/date/${today}`)
+    todayList.value = responseTodayAd.data.adTimeDTOList;
 
     const lateAttendanceList = todayList.value.filter(item => item.attendanceStatus === "지각");
     cntLate.value = lateAttendanceList.length;
 
-    console.log(cntLate.value);
-
     //오늘 출장 인원 조회
+    const responseTodayBt = await axios.get(`http://localhost:8080/approval/today/bt`)
+    cntBt.value = responseTodayBt.data.approvalEmpResultList.length;
 
-    //오늘 단축 근무 인원 조회
-
-    //오늘 시간외 근무 인원 조회
 
     //오늘 휴가 인원 조회
+    const responseTodayVacation = await axios.get(`http://localhost:8080/approval/today/v`)
+    cntVacation.value = responseTodayVacation.data.approvalEmpResultList.length;
 
   } catch (error) {
     console.error('에러 발생:', error);
@@ -186,7 +204,7 @@ const goToPage = (page) => {
 <style scoped>
 .adTimeListContainer {
   display: grid;
-  grid-template-rows: 18% 4% 2% auto 5% 13%;
+  grid-template-rows: 18% 10% auto 5% 13%;
   grid-template-columns: 10% 80% 10%;
   height: 100%;
 }
@@ -210,10 +228,29 @@ const goToPage = (page) => {
 
 .adTimeListTitle h1 {
   margin-left: 0.5%;
+  font-weight: 600;
+  font-size: 25px;
 }
 
 .adTimeIcon {
   width: 80%;
+}
+
+.cnt {
+  width: 45%;
+}
+
+.cnt h3 {
+  font-size: 15px;
+}
+
+.cntI {
+  align-items: center;
+  background-color: #F2F2F2;
+}
+
+.workerContainer p {
+  text-align: center;
 }
 
 .search {
@@ -245,7 +282,7 @@ const goToPage = (page) => {
 }
 
 .adTableContainer {
-  grid-row-start: 4;
+  grid-row-start: 3;
   grid-column-start: 2;
   grid-column-end: 3;
   margin-top: 20px;
@@ -259,14 +296,14 @@ table {
 
 th,
 td {
-  border: 1px solid #dddddd;
+  //border: 1px solid #dddddd;
   text-align: left;
   padding: 6px;
   vertical-align: middle;
 }
 
 th {
-  background-color: #f2f2f2;
+  //background-color: #f2f2f2;
 }
 
 .pagination {

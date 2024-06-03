@@ -32,10 +32,25 @@ const mainContentClass = computed(() => {
   return showLayout.value ? 'main-content' : 'main-content-full';
 });
 
+function parseJwt(token) {
+  try {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+    return JSON.parse(jsonPayload);
+  } catch (error) {
+    console.error('Invalid token', error);
+    return null;
+  }
+}
+
 onMounted(async () => {
-  const email = localStorage.getItem('email');
-  if (email) {
-    store.commit('setEmail', email);
+  const token = localStorage.getItem('access');
+  if (token) {
+    const decodedToken = parseJwt(token);
+    const email = decodedToken?.sub || '';
     await store.dispatch('fetchUserByEmail', email);
   }
 });

@@ -10,6 +10,7 @@ public class GiveVacation {
     private double vacationNum;
     private String endTime;
     private String employeeNum;
+    private int employeeId;
     private int typeId;
 
 }

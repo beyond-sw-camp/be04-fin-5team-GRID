@@ -39,7 +39,6 @@ public class ApprovalChainController {
 
         List<ChainDTO> result = approvalChainService.findChainByApprovalId(typeId, approvalId);
 
-
         ResApprovalChainVO response = ResApprovalChainVO.builder()
                 .statusCode(200)
                 .message("결재 라인 상세 조회 성공")

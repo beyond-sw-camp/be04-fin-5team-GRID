@@ -90,6 +90,12 @@ public class VacationController {
         return ResponseEntity.status(HttpStatus.OK).body(types);
     }
 
+    @GetMapping("/all/type")
+    public ResponseEntity<ResVacationTypeVO> getAllVacationType() {
+        ResVacationTypeVO types = vacationService.getAllVacationType();
+        return ResponseEntity.status(HttpStatus.OK).body(types);
+    }
+
     @GetMapping("/type/{id}")
     public ResponseEntity<ResOneVacationTypeVO> getVacationTypeById(@PathVariable int id) {
         ResOneVacationTypeVO types = vacationService.getVacationTypeById(id);

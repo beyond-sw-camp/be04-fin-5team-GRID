@@ -5,7 +5,7 @@
             <h1>업적 평가 목표 조회</h1>
         </div>
         <div class="tableContainer">
-            <table>
+            <table class="table">
                 <thead>
                     <tr>
                         <th>No</th>
@@ -25,7 +25,7 @@
                         <td>{{ getApprovalStatus(item.approvalStatus) }}</td>
                         <td>{{ getEmployeeName(item.writer) }}</td>
                         <td>{{ getEmployeeName(item.approver) }}</td>
-                        <td><button @click="goToDetailPage(item.id)">상세보기</button></td>
+                        <td><button @click="goToDetailPage(item.id)"><img class="more" src="@/assets/buttons/zoom.png"></button></td>
                     </tr>
                 </tbody>
             </table>
@@ -53,6 +53,7 @@ const router = useRouter();
 const goalList = ref([]);
 const currentPage = ref(1);
 const itemsPerPage = 10;
+
 
 const fetchMemberGoal = async () => {
     try {
@@ -142,7 +143,7 @@ const goToDetailPage = (id) => {
 <style scoped>
 .goalListContainer {
     display: grid;
-    grid-template-rows: 18% 4% 2% auto 5% 13%;
+    grid-template-rows: 18% 4% auto 5% 13%;
     grid-template-columns: 10% 80% 10%;
     height: 100%;
 }
@@ -160,11 +161,17 @@ const goToDetailPage = (id) => {
 }
 
 .goalListTitle h1 {
-    margin-left: 0.5%;
+  margin-left: 0.5%;
+  font-weight: 600;
+  font-size: 25px;
 }
 
 .GoalIcon {
     width: 80%;
+}
+
+.more {
+  width: 12px;
 }
 
 .search {
@@ -196,7 +203,7 @@ const goToDetailPage = (id) => {
 }
 
 .tableContainer {
-    grid-row-start: 4;
+    grid-row-start: 3;
     grid-column-start: 2;
     grid-column-end: 3;
     margin-top: 20px;
@@ -205,19 +212,19 @@ const goToDetailPage = (id) => {
 
 table {
     width: 100%;
-    border-collapse: collapse;
+    //border-collapse: collapse;
 }
 
 th,
 td {
-    border: 1px solid #dddddd;
+    //border: 1px solid #dddddd;
     text-align: left;
     padding: 6px;
     vertical-align: middle;
 }
 
 th {
-    background-color: #f2f2f2;
+    //background-color: #f2f2f2;
 }
 
 .pagination {
@@ -255,4 +262,5 @@ th {
     display: flex;
     align-items: center;
 }
+
 </style>

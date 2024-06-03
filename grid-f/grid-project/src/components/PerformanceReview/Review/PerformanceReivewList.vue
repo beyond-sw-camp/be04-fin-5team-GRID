@@ -5,7 +5,7 @@
       <h1>업적 평가 조회</h1>
     </div>
     <div class="PerformanceTableContainer">
-      <table>
+      <table class="table">
         <thead>
         <tr>
           <th>No</th>
@@ -27,7 +27,7 @@
           <td>{{ getApprovalStatus(item.approvalStatus) }}</td>
           <td>{{ getEmployeeName(item.writer) }}</td>
           <td>{{ getEmployeeName(item.approver) }}</td>
-          <td><button @click="goToDetailPage(item.id)">상세보기</button></td>
+          <td><button @click="goToDetailPage(item.id)"><img class="more" src="@/assets/buttons/zoom.png"></button></td>
         </tr>
         </tbody>
       </table>
@@ -160,7 +160,7 @@ const goToDetailPage = (id) => {
 <style scoped>
 .PerformanceReviewListContainer {
   display: grid;
-  grid-template-rows: 18% 4% 2% auto 5% 13%;
+  grid-template-rows: 18% 4% auto 5% 13%;
   grid-template-columns: 10% 80% 10%;
   height: 100%;
 }
@@ -177,12 +177,18 @@ const goToDetailPage = (id) => {
   align-items: center;
 }
 
-.goalListTitle h1 {
+.PerformanceReviewListTitle h1 {
   margin-left: 0.5%;
+  font-weight: 600;
+  font-size: 25px;
 }
 
 .PerformanceIcon {
   width: 80%;
+}
+
+.more {
+  width: 12px;
 }
 
 .search {
@@ -214,7 +220,7 @@ const goToDetailPage = (id) => {
 }
 
 .PerformanceTableContainer {
-  grid-row-start: 4;
+  grid-row-start: 3;
   grid-column-start: 2;
   grid-column-end: 3;
   margin-top: 20px;
@@ -228,14 +234,14 @@ table {
 
 th,
 td {
-  border: 1px solid #dddddd;
+  //border: 1px solid #dddddd;
   text-align: left;
   padding: 6px;
   vertical-align: middle;
 }
 
 th {
-  background-color: #f2f2f2;
+  //background-color: #f2f2f2;
 }
 
 .pagination {

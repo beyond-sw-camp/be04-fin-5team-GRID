@@ -5,68 +5,65 @@
         </div>
         <hr id="hr-1">
         <div class="hr-info-name">
-            <div id="hr-info-name">
+            <div id="hr-info-name1" style="color: rgb(180, 177, 177);">
                 <img src="@/assets/HR/info-team.png" alt="부서 아이콘" class="info-img">
                 부서
             </div>
-            <div id="hr-info-name">
+            <div id="hr-info-name2" style="color: rgb(180, 177, 177);">
                 <img src="@/assets/HR/info-team.png" alt="부서 아이콘" class="info-img">
                 팀
             </div>
-            <div id="hr-info-name">
-                <img src="@/assets/HR/time.png" alt="시간 표시" class="info-img">
+            <div id="hr-info-name3" style="color: rgb(180, 177, 177);">
+                <img src="@/assets/HR/assignedTask.png" alt="담당 업무" class="info-img">
                 담당 업무
             </div>
-            <div id="hr-info-name">
-                <img src="@/assets/HR/time.png" alt="시간 표시" class="info-img">
+            <div id="hr-info-name4" style="color: rgb(180, 177, 177);">
+                <img src="@/assets/HR/position.png" alt="직위" class="info-img">
                 직위
             </div>
-            <div id="hr-info-name">
-                <img src="@/assets/HR/time.png" alt="시간 표시" class="info-img">
+            <div id="hr-info-name5" style="color: rgb(180, 177, 177);">
+                <img src="@/assets/HR/duties.png" alt="직책" class="info-img">
                 직책
             </div>
         </div>
         <div class="hr-info-content">
-            <div id="hr-info-content">
+            <div id="hr-info-content1">
                 {{ user.department ? user.department.departmentName : 'N/A' }}
             </div>
-            <div id="hr-info-content">
+            <div id="hr-info-content2">
                 {{ user.team ? user.team.teamName : 'N/A' }}
             </div>
-            <div id="hr-info-content">
+            <div id="hr-info-content3">
                 {{ assignedTask }}
             </div>
-            <div id="hr-info-content">
+            <div id="hr-info-content4">
                 {{ user.position ? user.position.positionName : 'N/A' }}
             </div>
-            <div id="hr-info-content">
+            <div id="hr-info-content5">
                 {{ user.duties ? user.duties.dutiesName : 'N/A' }}
             </div>
         </div>
         <div class="modify-hr-info">
-            <div id="modify-hr-info">
-                <select v-model="newDepartmentId" :class="{ modified: newDepartmentId !== user.department.id }">
-                    <option v-for="dept in departmentInfo" :key="dept.id" :value="dept.id">{{ dept.departmentName }}
-                    </option>
+            <div id="modify-hr-info1">
+                <select v-if="userRole === 'ROLE_ADMIN'" v-model="newDepartmentId" :class="{ modified: newDepartmentId !== user.department.id }">
+                    <option v-for="dept in departmentInfo" :key="dept.id" :value="dept.id">{{ dept.departmentName }}</option>
                 </select>
             </div>
-            <div id="modify-hr-info">
-                <select v-model="newTeamId" :class="{ modified: newTeamId !== user.team.id }">
+            <div id="modify-hr-info2">
+                <select v-if="userRole === 'ROLE_ADMIN'" v-model="newTeamId" :class="{ modified: newTeamId !== user.team.id }">
                     <option v-for="team in teamInfo" :key="team.id" :value="team.id">{{ team.teamName }}</option>
                 </select>
             </div>
-            <div id="modify-hr-info">
-                <input type="text" v-model="newAssignedTask"
-                    :class="{ modified: newAssignedTask !== user.assignedTask }">
+            <div id="modify-hr-info3">
+                <input type="text" v-model="newAssignedTask" :class="{ modified: newAssignedTask !== user.assignedTask }">
             </div>
-            <div id="modify-hr-info">
-                <select v-model="newPositionId" :class="{ modified: newPositionId !== user.position.id }">
-                    <option v-for="position in positionInfo" :key="position.id" :value="position.id">{{
-                        position.positionName }}</option>
+            <div id="modify-hr-info4">
+                <select v-if="userRole === 'ROLE_ADMIN'" v-model="newPositionId" :class="{ modified: newPositionId !== user.position.id }">
+                    <option v-for="position in positionInfo" :key="position.id" :value="position.id">{{ position.positionName }}</option>
                 </select>
             </div>
-            <div id="modify-hr-info">
-                <select v-model="newDutiesId" :class="{ modified: newDutiesId !== user.duties.id }">
+            <div id="modify-hr-info5">
+                <select v-if="userRole === 'ROLE_ADMIN'" v-model="newDutiesId" :class="{ modified: newDutiesId !== user.duties.id }">
                     <option v-for="duty in dutiesInfo" :key="duty.id" :value="duty.id">{{ duty.dutiesName }}</option>
                 </select>
             </div>
@@ -76,75 +73,73 @@
         </div>
         <hr id="hr-2">
         <div class="basic-info-name">
-            <div id="basic-info-name">
-                <img src="@/assets/HR/info-team.png" alt="부서 아이콘" class="info-img">
+            <div id="basic-info-name1" style="color: rgb(180, 177, 177);">
+                <img src="@/assets/HR/name.png" alt="이름" class="info-img">
                 이름
             </div>
-            <div id="basic-info-name">
-                <img src="@/assets/HR/info-team.png" alt="부서 아이콘" class="info-img">
+            <div id="basic-info-name2" style="color: rgb(180, 177, 177);">
+                <img src="@/assets/HR/employeeNumber.png" alt="사번" class="info-img">
                 사번
             </div>
-            <div id="basic-info-name">
-                <img src="@/assets/HR/info-team.png" alt="부서 아이콘" class="info-img">
+            <div id="basic-info-name3" style="color: rgb(180, 177, 177);">
+                <img src="@/assets/HR/email.png" alt="이메일" class="info-img">
                 이메일
             </div>
-            <div id="basic-info-name">
-                <img src="@/assets/HR/info-team.png" alt="부서 아이콘" class="info-img">
+            <div id="basic-info-name4" style="color: rgb(180, 177, 177);">
+                <img src="@/assets/HR/smartPhone.png" alt="휴대전화번호" class="info-img">
                 휴대전화번호
             </div>
-            <div id="basic-info-name">
-                <img src="@/assets/HR/info-team.png" alt="부서 아이콘" class="info-img">
+            <div id="basic-info-name5" style="color: rgb(180, 177, 177);">
+                <img src="@/assets/HR/oldPhone.png" alt="전화번호" class="info-img">
                 전화번호
             </div>
-            <div id="basic-info-name">
-                <img src="@/assets/HR/info-team.png" alt="부서 아이콘" class="info-img">
+            <div id="basic-info-name6" style="color: rgb(180, 177, 177);">
+                <img src="@/assets/HR/date.png" alt="입사일" class="info-img">
                 입사일
             </div>
         </div>
         <div class="basic-info-content">
-            <div id="basic-info-content">
+            <div id="basic-info-content1">
                 {{ user.name }}
             </div>
-            <div id="basic-info-content">
+            <div id="basic-info-content2">
                 {{ user.employeeNumber }}
             </div>
-            <div id="basic-info-content">
+            <div id="basic-info-content3">
                 {{ user.email }}
             </div>
-            <div id="basic-info-content">
+            <div id="basic-info-content4">
                 {{ user.phoneNumber }}
             </div>
-            <div id="basic-info-content">
+            <div id="basic-info-content5">
                 {{ callNum }}
             </div>
-            <div id="basic-info-content">
+            <div id="basic-info-content6">
                 {{ user.joinTime }}
             </div>
         </div>
         <div class="modify-basic-info">
-            <div id="modify-basic-info">
-                <input type="text" v-model="newName" :class="{ modified: newName !== user.name }">
+            <div id="modify-basic-info1">
+                <input type="text" v-if="userRole === 'ROLE_ADMIN'" v-model="newName" :class="{ modified: newName !== user.name }">
             </div>
-            <div id="modify-basic-info">
-                <input type="text" v-model="newEmployeeNumber" @blur="checkDuplicate('employeeNumber')"
-                    :class="{ modified: newEmployeeNumber !== user.employeeNumber }">
+            <div id="modify-basic-info2">
+                <input v-if="userRole === 'ROLE_ADMIN'" type="text" v-model="newEmployeeNumber" @blur="checkDuplicate('employeeNumber')" :class="{ modified: newEmployeeNumber !== user.employeeNumber }">
                 <span v-if="duplicateWarning.employeeNumber" class="warning">중복된 사번입니다.</span>
             </div>
-            <div id="modify-basic-info">
-                <input type="text" v-model="newEmail" @blur="checkDuplicate('email')"
-                    :class="{ modified: newEmail !== user.email }">
-                <span v-if="duplicateWarning.email" class="warning">중복된 이메일입니다.</span>
+            <div id="modify-basic-info3">
+                <input v-if="userRole === 'ROLE_ADMIN'" type="text" v-model="newEmail" @blur="checkEmailValidity" :class="{ modified: newEmail !== user.email }">
+                <img v-if="duplicateWarning.email && newEmail != ''" src="@/assets/HR/fail.png" alt="실패 이미지" style="width: 15px; height: 15px; margin: 0 0 1px 10px;">
             </div>
-            <div id="modify-basic-info">
-                <input type="text" v-model="newPhoneNumber" @blur="checkDuplicate('phoneNumber')"
-                    :class="{ modified: newPhoneNumber !== user.phoneNumber }">
-                <span v-if="duplicateWarning.phoneNumber" class="warning">중복된 휴대전화번호입니다.</span>
+            <div id="modify-basic-info4">
+                <input v-if="userRole === 'ROLE_ADMIN'" type="text" v-model="newPhoneNumber" @blur="checkPhoneValidity" :class="{ modified: newPhoneNumber !== user.phoneNumber }">
+                <img v-if="duplicateWarning.phoneNumber && newPhoneNumber != ''" src="@/assets/HR/fail.png" alt="실패 이미지" style="width: 15px; height: 15px; margin: 0 0 1px 10px;">
             </div>
-            <div id="modify-basic-info">
-                <input type="text" v-model="newCallNum" :class="{ modified: newCallNum !== user.callNumber }">
+            <div id="modify-basic-info5">
+                <input v-if="userRole === 'ROLE_ADMIN'" type="text" v-model="newCallNum" @blur="checkLandlineValidity" :class="{ modified: newCallNum !== user.callNumber }">
+                <img v-if="duplicateWarning.callNumber && newCallNum != ''" src="@/assets/HR/fail.png" alt="실패 이미지" style="width: 15px; height: 15px; margin: 0 0 1px 10px;">
             </div>
-            <div id="modify-admin-info">
-                <input v-model="newJoinTime" :class="{ modified: newJoinTime !== user.joinTime }" type="date" required>
+            <div id="modify-admin-info6">
+                <input v-if="userRole === 'ROLE_ADMIN'" v-model="newJoinTime" :class="{ modified: newJoinTime !== user.joinTime }" type="date" required>
             </div>
         </div>
         <div class="admin-info-title">
@@ -152,86 +147,83 @@
         </div>
         <hr id="hr-3">
         <div class="admin-info-name">
-            <div id="admin-info-name">
-                <img src="@/assets/HR/info-team.png" alt="부서 아이콘" class="info-img">
+            <div id="admin-info-name1" style="color: rgb(180, 177, 177);">
+                <img src="@/assets/HR/address.png" alt="주소" class="info-img">
                 주소
             </div>
-            <div id="admin-info-name" style="margin-top: 20%;">
-                <img src="@/assets/HR/time.png" alt="시간 표시" class="info-img">
+            <div id="admin-info-name2" style="color: rgb(180, 177, 177);">
+                <img src="@/assets/HR/type.png" alt="입사 유형" class="info-img">
                 입사 유형
             </div>
-            <div id="admin-info-name">
-                <img src="@/assets/HR/time.png" alt="시간 표시" class="info-img">
+            <div id="admin-info-name3" style="color: rgb(180, 177, 177);">
+                <img src="@/assets/HR/type.png" alt="고용" class="info-img">
                 고용 유형
             </div>
-            <div id="admin-info-name">
-                <img src="@/assets/HR/time.png" alt="시간 표시" class="info-img">
+            <div id="admin-info-name4" style="color: rgb(180, 177, 177);">
+                <img src="@/assets/HR/date.png" alt="계약 시작일" class="info-img">
                 계약 시작일
             </div>
-            <div id="admin-info-name">
-                <img src="@/assets/HR/time.png" alt="시간 표시" class="info-img">
+            <div id="admin-info-name5" style="color: rgb(180, 177, 177);">
+                <img src="@/assets/HR/date.png" alt="계약 종료일" class="info-img">
                 계약 종료일
             </div>
-            <div id="admin-info-name">
-                <img src="@/assets/HR/time.png" alt="시간 표시" class="info-img">
+            <div id="admin-info-name6" style="color: rgb(180, 177, 177);">
+                <img src="@/assets/HR/resign.png" alt="퇴사 여부" class="info-img">
                 퇴사 여부
             </div>
         </div>
-        <div class="admin-info-content">
-            <div id="admin-info-content">
+        <div class="admin-info-content" >
+            <div id="admin-info-content1" style="padding: 0 15px 0 0">
                 {{ user.zipCode }} <br>
-                {{ user.address }}
+                {{ address }}
             </div>
-            <div id="admin-info-content" style="margin-top: 11%;">
+            <div id="admin-info-content2">
                 {{ joinType }}
             </div>
-            <div id="admin-info-content">
+            <div id="admin-info-content3">
                 {{ workType }}
             </div>
-            <div id="admin-info-content">
+            <div id="admin-info-content4">
                 {{ user.contractStartTime }}
             </div>
-            <div id="admin-info-content">
+            <div id="admin-info-content5">
                 {{ contractEndTime }}
             </div>
-            <div id="admin-info-content">
-                {{ isResigned ? '퇴사' : '재직' }} &nbsp ({{ resignTime }})
+            <div id="admin-info-content6">
+                {{ isResigned ? '퇴사' : '재직' }} &nbsp {{ resignTime }}
             </div>
         </div>
         <div class="modify-admin-info">
-            <div id="modify-admin-info">
+            <div id="modify-admin-info1">
                 <div id="modify-admin-info-sub1">
-                    <button @click="execDaumPostcode">검색</button><br>
-                    <input type="text" v-model="newZipCode" readonly :class="{ modified: newZipCode !== user.zipCode }"
-                    placeholder="우편 번호" id="sub-1-1">
-                    <input type="text" v-model="newAddress" readonly :class="{ modified: newAddress !== user.address }"
-                    placeholder="기본 주소" id="sub-1-2">
+                    <button @click="execDaumPostcode" v-if="userRole === 'ROLE_ADMIN'" >검색</button><br>
+                    <input v-if="userRole === 'ROLE_ADMIN'" type="text" v-model="newZipCode" readonly :class="{ modified: newZipCode !== user.zipCode }" placeholder="우편 번호" id="sub-1-1">
+                    <input v-if="userRole === 'ROLE_ADMIN'" type="text" v-model="newAddress" readonly :class="{ modified: newAddress !== user.address }" placeholder="기본 주소" id="sub-1-2">
                 </div>
                 <div id="modify-admin-info-sub2">
-                    <input type="text" v-model="newAddressDetail" placeholder="상세 주소"
-                        :class="{ modified: newAddressDetail !== '' }">
+                    <input v-if="userRole === 'ROLE_ADMIN'" type="text" v-model="newAddressDetail" placeholder="상세 주소" :class="{ modified: newAddressDetail !== '' }">
                 </div>
             </div>
-            <div id="modify-admin-info">
-                <select v-model="newJoinType" :class="{ modified: newJoinType !== user.joinType }">
+            <div id="modify-admin-info2">
+                <select v-if="userRole === 'ROLE_ADMIN'" v-model="newJoinType" :class="{ modified: newJoinType !== user.joinType }">
                     <option value="NEW">신입</option>
                     <option value="EXPERIENCED">경력</option>
                 </select>
             </div>
-            <div id="modify-admin-info">
-                <select v-model="newWorkType" :class="{ modified: newWorkType !== user.workType }">
+            <div id="modify-admin-info3">
+                <select v-if="userRole === 'ROLE_ADMIN'" v-model="newWorkType" :class="{ modified: newWorkType !== user.workType }">
                     <option value="R">정규직</option>
                     <option value="C">계약직</option>
                 </select>
             </div>
-            <div id="modify-admin-info">
-                <input v-model="newContractStartTime" type="date" required>
+            <div id="modify-admin-info4">
+                <input v-if="userRole === 'ROLE_ADMIN'" v-model="newContractStartTime" type="date" required>
             </div>
-            <div id="modify-admin-info">
-                <input v-model="newContractEndTime" type="date" required>
+            <div id="modify-admin-info5">
+                <input v-if="userRole === 'ROLE_ADMIN'" v-model="newContractEndTime" type="date" required>
             </div>
-            <div id="modify-admin-info">
-                <button @click="confirmResignation">퇴사</button>
+            <div id="modify-admin-info6">
+                <button v-if="userRole === 'ROLE_ADMIN'" @click="confirmResignation">퇴사</button>
             </div>
         </div>
     </div>
@@ -247,6 +239,10 @@ const props = defineProps({
     user: {
         type: Object,
         required: true
+    },
+    userRole: {
+        type: String,
+        required: true
     }
 });
 
@@ -258,10 +254,13 @@ const joinType = ref('');
 const workType = ref('');
 const isResigned = ref(false);
 const resignTime = ref('');
+const address = ref('');
+
 const duplicateWarning = ref({
     employeeNumber: false,
     email: false,
-    phoneNumber: false
+    phoneNumber: false,
+    callNumber: false // 추가
 });
 const contractEndTime = ref('');
 
@@ -291,6 +290,10 @@ const resignedTime = ref('');
 const newContractEndTime = ref('');
 const newContractStartTime = ref('');
 
+const isValidEmail = ref(true);
+const isValidPhoneNumber = ref(true);
+const isValidCallNumber = ref(true);
+
 const resultAddress = computed(() => `${newAddress.value} ${newAddressDetail.value}`);
 
 const changeValues = (user) => {
@@ -304,7 +307,7 @@ const changeValues = (user) => {
     workType.value = user.workType === 'R' ? '정규직' : '계약직';
     isResigned.value = user.resignYn === 'Y';
     contractEndTime.value = user.contractEndTime != null ? user.contractEndTime : '-';
-
+    address.value = user.address != null ? user.address : '-';
     if (user.resignTime != null) {
         resignTime.value = user.resignTime;
     }
@@ -346,10 +349,18 @@ onMounted(async () => {
 
 const checkDuplicate = async (field) => {
     try {
-        const response = await axios.post('http://localhost:8080/user/duplication', { field, value: user[field] });
+        console.log('체크 정보 확인: ', props.user[field]);
+        const response = await axios.post('http://localhost:8080/users/duplication', { field, value: props.user[field] });
         duplicateWarning.value[field] = response.data.isDuplicate;
     } catch (error) {
-        console.error("중복 확인 중 오류 발생: ", error);
+        if (error.response) {
+            console.error("중복 확인 중 오류 발생: ", error.response.data);
+            alert("중복 확인 중 오류 발생: " + error.response.data);
+        } else if (error.request) {
+            console.error("서버로부터 응답을 받지 못했습니다. 네트워크 문제일 수 있습니다.");
+        } else {
+            console.error("오류가 발생했습니다: ", error.message);
+        }
     }
 };
 
@@ -400,6 +411,37 @@ const resignUser = async () => {
         
     } catch (error) {
         console.error("퇴사 처리 중 오류 발생: ", error);
+    }
+};
+
+const emailRegExp = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
+const phoneRegExp = /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/;
+const landlineRegExp = /^\d{2,3}-\d{3,4}-\d{4}$/;
+
+const checkEmailValidity = () => {
+    const emailTrimmed = newEmail.value.trim();
+    if (!emailTrimmed || !emailRegExp.test(emailTrimmed)) {
+        duplicateWarning.value.email = true;
+    } else {
+        duplicateWarning.value.email = false;
+    }
+};
+
+const checkPhoneValidity = () => {
+    const phoneTrimmed = newPhoneNumber.value.trim();
+    if (!phoneTrimmed || !phoneRegExp.test(phoneTrimmed)) {
+        duplicateWarning.value.phoneNumber = true;
+    } else {
+        duplicateWarning.value.phoneNumber = false;
+    }
+};
+
+const checkLandlineValidity = () => {
+    const callNumberTrimmed = newCallNum.value.trim();
+    if (!callNumberTrimmed || !landlineRegExp.test(callNumberTrimmed)) {
+        duplicateWarning.value.callNumber = true;
+    } else {
+        duplicateWarning.value.callNumber = false;
     }
 };
 
@@ -462,10 +504,16 @@ hr {
     margin-top: 1%;
 }
 
+.warning {
+    color: red;
+    font-weight: bold;
+    margin-left: 5px;
+}
+
 .hr-main {
     display: grid;
-    grid-template-columns: 25% auto 45%;
-    grid-template-rows: 4% 2% auto 4% 2% auto 4% 2% auto;
+    grid-template-columns: 25% auto 35%;
+    grid-template-rows: 4% 2% 30% 4% 2% 36% 4% 2% 42%;
     width: 100%;
     height: 100%;
 }
@@ -511,23 +559,128 @@ hr {
 }
 
 .hr-info-name {
+    display: grid;
+    grid-template-rows: auto auto auto auto auto;
     grid-row-start: 3;
     margin-top: 10px;
     height: 100%;
     width: 100%;
-    justify-content: center;
 }
 
-#hr-info-name,
-#basic-info-name,
-#admin-info-name {
-    margin-top: 3%;
-    margin-bottom: 9%;
-    margin-left: 15%;
-    color: rgb(180, 177, 177);
+#hr-info-name1, 
+#hr-info-content1,
+#modify-hr-info1,
+#basic-info-name1,
+#basic-info-content1,
+#modify-basic-info1 {
+    grid-row-start: 1;
+    min-height: 47.76px;
+}
+
+#hr-info-name2,
+#hr-info-content2,
+#modify-hr-info2,
+#basic-info-name2,
+#basic-info-content2,
+#modify-basic-info2 {
+    grid-row-start: 2;
+    min-height: 47.76px;
+}
+
+#hr-info-name3,
+#hr-info-content3,
+#modify-hr-info3,
+#basic-info-name3,
+#basic-info-content3,
+#modify-basic-info3 {
+    grid-row-start: 3;
+    min-height: 47.76px;
+}
+
+#hr-info-name4,
+#hr-info-content4,
+#modify-hr-info4,
+#basic-info-name4,
+#basic-info-content4,
+#modify-basic-info4 {
+    grid-row-start: 4;
+    min-height: 47.76px;
+}
+
+#hr-info-name5,
+#hr-info-content5,
+#modify-hr-info5,
+#basic-info-name5,
+#basic-info-content5,
+#modify-basic-info5 {
+    grid-row-start: 5;
+    min-height: 47.76px;
+}
+
+#basic-info-name6,
+#basic-info-content6,
+#modify-basic-info6 {
+    grid-row-start: 6;
+    min-height: 47.76px;
+}
+
+
+#admin-info-name1,
+#admin-info-content1,
+#modify-admin-info1 {
+    grid-row-start: 1;
+    grid-row-end: 2;
+    min-height: 80px;
+}
+
+#admin-info-name2,
+#admin-info-content2,
+#modify-admin-info2 {
+    grid-row-start: 3;
+    min-height: 47.76px;
+}
+
+#admin-info-name3,
+#admin-info-content3,
+#modify-admin-info3 {
+    grid-row-start: 4;
+    min-height: 47.76px;
+}
+
+#admin-info-name4,
+#admin-info-content4,
+#modify-admin-info4 {
+    grid-row-start: 5;
+    min-height: 47.76px;
+}
+
+#admin-info-name5,
+#admin-info-content5,
+#modify-admin-info5 {
+    grid-row-start: 6;
+    min-height: 47.76px;
+}
+
+#admin-info-name6,
+#admin-info-content6,
+#modify-admin-info6 {
+    grid-row-start: 7;
+    min-height: 47.76px;
+}
+
+.modify-admin-info input,
+.modify-basic-info input,
+.modify-hr-info input,
+.modify-admin-info select,
+.modify-basic-info select,
+.modify-hr-info select{
+    border: 0.5px solid;
+    font-size: 13px;
 }
 
 .hr-info-content {
+    display: grid;
+    grid-template-rows: auto auto auto auto auto;
     grid-row-start: 3;
     grid-column-start: 2;
     margin-top: 10px;
@@ -536,6 +689,8 @@ hr {
 }
 
 .modify-hr-info {
+    display: grid;
+    grid-template-rows: auto auto auto auto auto;
     grid-row-start: 3;
     grid-column-start: 3;
     margin-top: 10px;
@@ -544,6 +699,8 @@ hr {
 }
 
 .modify-basic-info {
+    display: grid;
+    grid-template-rows: auto auto auto auto auto auto;
     grid-row-start: 6;
     grid-column-start: 3;
     margin-top: 10px;
@@ -552,6 +709,8 @@ hr {
 }
 
 .modify-admin-info {
+    display: grid;
+    grid-template-rows: auto auto auto auto auto auto auto;
     grid-row-start: 9;
     grid-column-start: 3;
     margin-top: 10px;
@@ -570,28 +729,6 @@ hr {
     cursor: pointer;
     font-size: 12px;
     font-style: bold;
-}
-
-#hr-info-content,
-#basic-info-content {
-    margin-top: 1%;
-    margin-bottom: 8.5%;
-}
-
-#admin-info-content {
-    margin-top: 1%;
-    margin-bottom: 7.5%;
-}
-
-#modify-hr-info,
-#modify-basic-info {
-    margin-top: 1%;
-    margin-bottom: 4.5%;
-}
-
-#modify-admin-info {
-    margin-top: 1%;
-    margin-bottom: 4%;
 }
 
 #modify-admin-info-sub1 {
@@ -616,11 +753,11 @@ hr {
     margin-left: 2%;
     margin-right: 2%;
     width: 23%;
-    min-width: 95px;
+    min-width: 80px;
 }
 
 #sub-1-2 {
-    min-width: 220px;
+    min-width: 150px;
     width: 100%;
 }
 
@@ -641,6 +778,8 @@ hr {
 }
 
 .basic-info-name {
+    display: grid;
+    grid-template-rows: auto auto auto auto auto auto;
     grid-row-start: 6;
     margin-top: 10px;
     height: 100%;
@@ -648,6 +787,8 @@ hr {
 }
 
 .basic-info-content {
+    display: grid;
+    grid-template-rows: auto auto auto auto auto auto;
     grid-row-start: 6;
     grid-column-start: 2;
     margin-top: 10px;
@@ -666,6 +807,8 @@ hr {
 }
 
 .admin-info-name {
+    display: grid;
+    grid-template-rows: auto auto auto auto auto auto auto;
     grid-row-start: 9;
     margin-top: 10px;
     height: 100%;
@@ -673,6 +816,8 @@ hr {
 }
 
 .admin-info-content {
+    display: grid;
+    grid-template-rows: auto auto auto auto auto auto auto;
     grid-row-start: 9;
     grid-column-start: 2;
     margin-top: 10px;
@@ -706,5 +851,10 @@ hr {
 
 .modified {
     border: 2px solid #088A85;
+}
+
+input, select {
+    border: solid 0.5px;
+    border-radius: 4px;
 }
 </style>

@@ -1,9 +1,14 @@
 <script setup>
-  import {onMounted, reactive, ref} from "vue";
+  import {computed, onMounted, reactive, ref} from "vue";
   import {useRoute} from "vue-router";
   import axios from "axios";
+  import router from "@/router/router.js";
+  import {useStore} from "vuex";
 
   const route = useRoute();
+  const store = useStore();
+
+  const user = computed(() => store.state.user);
 
   const userId = ref();
 
@@ -47,21 +52,32 @@
   const registApproval = async () => {
 
     alert('결재를 제출하시겠습니까?');
+
     postData.requesterId = userId.value;
 
-    console.log(postData)
+    const formData = new FormData();
+
+    formData.append('postData', JSON.stringify(postData));
+    formData.append('file', fileInput.value);
 
     try {
-      const response = await axios.post(`http://localhost:8080/approval/rw`, postData, {
-        headers: {
-          'Content-Type': "application/json"
+      if (user.value.gender === 'M') {
+        const response = await axios.post(`http://localhost:8080/approval/rw`, formData, {
+          headers: {
+            'Content-Type': "multipart/form-data"
+          }
+        })
+        if (response.status !== 201) {
+          throw new Error("response is not ok");
+        } else {
+          alert('결재가 제출되었습니다.')
+          router.push(response.data.href);
         }
-      })
-
-      if (response.status !== 201) {
-        throw new Error("response is not ok");
+      } else if (user.value.gender === 'M'){
+        alert('남직원은 임신 단축 근무를 신청할 수 없습니다.')
+      } else {
+        alert('단축 근무 기간입니다.')
       }
-
     } catch (error) {
       console.error('Fail to post: ', error.message);
     }
@@ -78,8 +94,15 @@
 </script>
 
 <template>
+  <nav style="--bs-breadcrumb-divider: '>'; margin-top: -35px; margin-bottom: -7px;" aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="http://localhost:5173/regist/main" style="text-decoration: none; color: grey; font-size: 17px;"><i class="bi bi-pencil-square"></i>&nbsp; 결재 작성</a></li>
+      <li class="breadcrumb-item active" aria-current="page"><span class="fw-bolder"><i class="bi bi-heart-pulse"></i>&nbsp; 단축 근무</span></li>
+    </ol>
+  </nav>
+  <div><h3 class="fw-bolder pb-5"><i class="bi bi-heart-pulse"></i>&nbsp; 단축 근무 신청</h3></div>
   <div>
-    <b-card bg-variant="light">
+    <b-card class="mt-3" bg-variant="light">
       <b-form-group
           label-cols-lg="3"
           label="단축 근무 결재"
@@ -102,7 +125,7 @@
             label-cols-sm="3"
             label-align-sm="right"
         >
-          <b-form-input type="date" id="end" v-model="postData.endTime"></b-form-input>
+          <b-form-input type="date" id="end" v-model="postData.endTime" :min="postData.startTime"></b-form-input>
         </b-form-group>
 
         <b-form-group
@@ -123,7 +146,7 @@
           <b-form-textarea
               id="textarea-auto-height"
               v-model="postData.content"
-              placeholder="Auto height textarea"
+              placeholder="내용을 입력하세요."
               rows="3"
               max-rows="8"
           ></b-form-textarea>

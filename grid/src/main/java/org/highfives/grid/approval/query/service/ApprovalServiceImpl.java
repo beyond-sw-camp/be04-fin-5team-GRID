@@ -14,10 +14,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 @Service(value = "QueryApprovalService")
@@ -25,14 +22,12 @@ public class ApprovalServiceImpl implements ApprovalService{
 
     private final ModelMapper mapper;
     private final ApprovalMapper approvalMapper;
-    private final BTApprovalRepository btApprovalRepository;
     private final UserService userService;
 
     @Autowired
-    public ApprovalServiceImpl(ModelMapper mapper, ApprovalMapper approvalMapper, BTApprovalRepository btApprovalRepository, UserService userService) {
+    public ApprovalServiceImpl(ModelMapper mapper, ApprovalMapper approvalMapper, UserService userService) {
         this.mapper = mapper;
         this.approvalMapper = approvalMapper;
-        this.btApprovalRepository = btApprovalRepository;
         this.userService = userService;
     }
 
@@ -57,6 +52,21 @@ public class ApprovalServiceImpl implements ApprovalService{
         params.put("employeeId", employeeId);
 
         switch (typeId) {
+            case 0:
+                approvalEmpList.addAll(approvalMapper.findAllBTApprovalByEmployeeId(params));
+                approvalEmpList.addAll(approvalMapper.findAllOApprovalByEmployeeId(params));
+                approvalEmpList.addAll(approvalMapper.findAllRWApprovalByEmployeeId(params));
+                approvalEmpList.addAll(approvalMapper.findAllVApprovalByEmployeeId(params));
+
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+                approvalEmpList.sort((emp1, emp2) -> {
+                    LocalDateTime dateTime1 = LocalDateTime.parse(emp1.getWriteTime(), formatter);
+                    LocalDateTime dateTime2 = LocalDateTime.parse(emp2.getWriteTime(), formatter);
+                    return dateTime2.compareTo(dateTime1);
+                });
+                break;
+
             case 1:
                 approvalEmpList = approvalMapper.findAllBTApprovalByEmployeeId(params);
                 break;
@@ -110,6 +120,28 @@ public class ApprovalServiceImpl implements ApprovalService{
 
         Map<String, Integer> params = new HashMap<>();
 
+        if (typeId == 0) {
+            List<ApprovalEmpDTO> approvalEmpList = new ArrayList<>();
+
+            for (int i = 0; i < 4; i++) {
+                params.put("typeId", i + 1);
+                params.put("isApproval", isApproval);
+                params.put("approverId", approverId);
+
+                approvalEmpList.addAll(approvalMapper.findAllBTApprovalByApproverId(params));
+            }
+
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+            approvalEmpList.sort((emp1, emp2) -> {
+                LocalDateTime dateTime1 = LocalDateTime.parse(emp1.getWriteTime(), formatter);
+                LocalDateTime dateTime2 = LocalDateTime.parse(emp2.getWriteTime(), formatter);
+                return dateTime2.compareTo(dateTime1);
+            });
+
+            return approvalEmpList;
+        }
+
         params.put("typeId", typeId);
         params.put("isApproval", isApproval);
         params.put("approverId", approverId);
@@ -134,5 +166,38 @@ public class ApprovalServiceImpl implements ApprovalService{
         }
 
         return sum;
+    }
+
+    @Override
+    public List<ApprovalEmpDTO> findTodayBT() {
+
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String today = LocalDateTime.now().format(dateFormat);
+
+        Map<String, Object> params = new HashMap<>();
+
+        params.put("typeId", 1);
+        params.put("today", today);
+
+        List<ApprovalEmpDTO> approvalEmpList = approvalMapper.findTodayBTandV(params);
+        System.out.println(approvalEmpList);
+
+        return approvalEmpList;
+    }
+
+    @Override
+    public List<ApprovalEmpDTO> findTodayV() {
+
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String today = LocalDateTime.now().format(dateFormat);
+
+        Map<String, Object> params = new HashMap<>();
+
+        params.put("typeId", 2);
+        params.put("today", today);
+
+        List<ApprovalEmpDTO> approvalEmpList = approvalMapper.findTodayBTandV(params);
+
+        return approvalEmpList;
     }
 }

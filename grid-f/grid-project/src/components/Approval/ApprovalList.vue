@@ -1,6 +1,7 @@
 <script setup>
   import {useRouter} from "vue-router";
-  import {onMounted, reactive} from "vue";
+  import {onMounted, reactive, ref} from "vue";
+  import axios from "axios";
 
   const props = defineProps({
     approvalList: Array,
@@ -21,36 +22,79 @@
     { key: 'approvalStatus', label: '결재 상태', sortable: false }
   ]
 
-  const btFields = [
+  const approvalFields = [
     { key: 'index', label: '번호', sortable: false },
     { key: 'content', label: '내용', sortable: false },
     { key: 'employeeNumber', label: '사번', sortable: true },
     { key: 'employeeName', label: '작성자', sortable: false },
-    { key: 'destination', label: '출장지', sortable: true },
-    { key: 'startTimeendTIme', label: '출장 기간', sortable: false }
-  ]
-
-  const oFields = [
-    { key: 'index', label: '번호', sortable: false },
-    { key: 'content', label: '내용', sortable: false },
-    { key: 'employeeNumber', label: '사번', sortable: true },
-    { key: 'employeeName', label: '작성자', sortable: false },
-    { key: 'startTimeendTIme', label: '근무 기간', sortable: false }
-  ]
-
-  const rwFields = [
-    { key: 'index', label: '번호', sortable: false },
-    { key: 'content', label: '내용', sortable: false },
-    { key: 'employeeNumber', label: '사번', sortable: true },
-    { key: 'employeeName', label: '작성자', sortable: false },
-    { key: 'startTimeendTIme', label: '단축 기간', sortable: false }
+    { key: 'startTimeendTIme', label: '기간', sortable: false },
+    { key: 'details', label: '상세보기', sortable: false }
   ]
 
   const router = useRouter();
 
-  const approvalDetail = (typeId, approvalId) => {
-    router.push(`/approval/detail/${typeId}/${approvalId}`);
+  const userRole = ref('');
+  const userId = ref();
+
+  const isLoading = ref(true);
+
+  function parseJwt(token) {
+    try {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      }).join(''));
+      return JSON.parse(jsonPayload);
+    } catch (error) {
+      console.error('Invalid token', error);
+      return null;
+    }
   }
+
+  const registStatus = async (status, approvalId) => {
+
+    putStatusData.chainStatus = status;
+    putStatusData.typeId = state.type;
+    putStatusData.approvalId = approvalId;
+
+    console.log(putStatusData);
+
+    try {
+      const response = await axios.put(`http://localhost:8080/approval-chain/status`, putStatusData, {
+        headers: {
+          'Content-Type': "application/json"
+        }
+      })
+      if (response.status !== 200) {
+        throw new Error("response is not ok");
+
+      }
+
+      console.log(response)
+
+    } catch (error) {
+      console.error('Fail to post: ', error.message);
+    }
+  }
+  const approvalDetail = (typeId, approvalId, employeeId, approvalStatus) => {
+    if (approvalStatus === 'N' && userRole.value !== 'ROLE_ADMIN' && userId.value !== employeeId) {
+      registStatus('V', approvalId);
+    }
+    router.push(`/approval/detail/${typeId}/${approvalId}`);    // 추후에 모달로 변경
+  }
+
+  onMounted(async () => {
+    const token = localStorage.getItem('access');
+    if (token) {
+      const decodedToken = parseJwt(token);
+
+      userRole.value = decodedToken.auth || '';
+      userId.value = decodedToken.id || '';
+    }
+
+    isLoading.value = false;
+  })
 </script>
 
 <template>
@@ -59,17 +103,17 @@
   </div>
   <div v-else>
     <template v-if="props.approvalList.type === 'bt'">
-      <b-table id="table" :fields="btFields" :items="props.approvalList" hover small
-               :per-page=10 :current-page="currentPage">
+      <b-table id="table" :fields="approvalFields" :items="props.approvalList" hover small :per-page="10" :current-page="currentPage">
         <template #cell(index)="data">
           {{ data.index + 1 }}
         </template>
-        <template #cell(content)="data">
-<!--          <span @click="approvalDetail(1, data.item.id)">{{ data.value }}</span>-->
-          <span>{{ data.value }}</span>
-        </template>
         <template #cell(startTimeendTIme)="data">
-          <span>{{ data.item.startTime.substring(0, 10) }} ~ {{ data.item.endTime.substring(0, 10)}}</span>
+          <span>{{ data.item.startTime.substring(0, 10) }} ~ {{ data.item.endTime.substring(0, 10) }}</span>
+        </template>
+        <template #cell(details)="data">
+          <b-badge @click="approvalDetail(1, data.item.id)">
+            &#x2139;
+          </b-badge>
         </template>
         <template #cell()="data">
           <span>{{ data.value }}</span>
@@ -78,16 +122,18 @@
     </template>
 
     <template v-else-if="props.approvalList.type === 'o'">
-      <b-table id="table" :fields="oFields" :items="props.approvalList" hover small
+      <b-table id="table" :fields="approvalFields" :items="props.approvalList" hover small
                :per-page=10 :current-page="currentPage">
         <template #cell(index)="data">
           {{ data.index + 1 }}
         </template>
-        <template #cell(content)="data">
-          <span>{{ data.value }}</span>
-        </template>
         <template #cell(startTimeendTIme)="data">
           <span>{{ data.item.startTime }} ~ {{ data.item.endTime }}</span>
+        </template>
+        <template #cell(details)="data">
+          <b-badge @click="approvalDetail(2, data.item.id)">
+            &#x2139;
+          </b-badge>
         </template>
         <template #cell()="data">
           <span>{{ data.value }}</span>
@@ -96,16 +142,18 @@
     </template>
 
     <template v-else-if="props.approvalList.type === 'rw'">
-      <b-table id="table" :fields="rwFields" :items="props.approvalList" hover small
+      <b-table id="table" :fields="approvalFields" :items="props.approvalList" hover small
                :per-page=10 :current-page="currentPage">
         <template #cell(index)="data">
           {{ data.index + 1 }}
         </template>
-        <template #cell(content)="data">
-          <span>{{ data.value }}</span>
-        </template>
         <template #cell(startTimeendTIme)="data">
           <span>{{ data.item.startTime.substring(0, 10) }} ~ {{ data.item.endTime.substring(0, 10)}}</span>
+        </template>
+        <template #cell(details)="data">
+          <b-badge @click="approvalDetail(3, data.item.id)">
+            &#x2139;
+          </b-badge>
         </template>
         <template #cell()="data">
           <span>{{ data.value }}</span>
@@ -113,28 +161,26 @@
       </b-table>
     </template>
 
-    <table v-else-if="props.approvalList.type === 'v'">
-      <thead>
-      <tr>
-        <th>번호</th>
-        <th>내용</th>
-        <th>사번</th>
-        <th>작성자</th>
-        <th>휴가 유형</th>
-        <th>휴가 기간</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr v-for="(approval, index) in props.approvalList" :key="approval.id">
-        <td>{{ index + 1 }}</td>
-        <td>{{ approval.content }}</td>
-        <td>{{ approval.employeeNumber }}</td>
-        <td>{{ approval.employeeName }}</td>
-        <td>{{ approval.vacationType }}</td>
-        <td>{{ approval.startTime.substring(0, 16) }} ~ {{ approval.endTime.substring(0, 16) }}</td>
-      </tr>
-      </tbody>
-    </table>
+    <template v-else-if="props.approvalList.type === 0">
+      <b-table id="table" :fields="fields" :items="props.approvalList" hover small
+               :per-page=10 :current-page="currentPage" :sort-by.sync='employeeNumber' :sort-desc.sync="false">
+        <template #cell(index)="data">
+          {{ data.index + 1 }}
+        </template>
+        <template #cell(writeTime)="data">
+          <span>{{ data.value.substring(0, 10) }}</span>
+        </template>
+        <template #cell(approvalStatus)="data">
+          <b-badge variant="success" v-if="data.value === 'A'">승인</b-badge>
+          <b-badge variant="danger" v-if="data.value === 'D'">반려</b-badge>
+          <b-badge variant="warning" v-if="data.value === 'V'">대기</b-badge>
+          <b-badge variant="secondary" v-if="data.value === 'N'">미열람</b-badge>
+        </template>
+        <template #cell()="data">
+          <span>{{ data.value }}</span>
+        </template>
+      </b-table>
+    </template>
 
     <template v-else>
       <b-table id="table" :fields="fields" :items="props.approvalList" hover small
@@ -143,7 +189,7 @@
           {{ data.index + 1 }}
         </template>
         <template #cell(content)="data">
-          <span @click="approvalDetail(props.approvalList.type, data.item.id)">{{ data.value }}</span>
+          <span @click="approvalDetail(props.approvalList.type, data.item.id, data.item.requesterId, data.item.approvalStatus)">{{ data.value }}</span>
         </template>
         <template #cell(writeTime)="data">
           <span>{{ data.value.substring(0, 10) }}</span>
@@ -151,7 +197,8 @@
         <template #cell(approvalStatus)="data">
           <b-badge variant="success" v-if="data.value === 'A'">승인</b-badge>
           <b-badge variant="danger" v-if="data.value === 'D'">반려</b-badge>
-          <b-badge variant="warning" v-if="data.value === 'N'">대기</b-badge>
+          <b-badge variant="warning" v-if="data.value === 'V'">대기</b-badge>
+          <b-badge variant="secondary" v-if="data.value === 'N'">미열람</b-badge>
         </template>
         <template #cell()="data">
           <span>{{ data.value }}</span>

@@ -78,10 +78,6 @@ const router = createRouter({
             component: () => import('../views/HumanResources/AddMulti.vue')
         },
         {
-            path: '/hr/add',
-            component: () => import('../views/HumanResources/Add.vue')
-        },
-        {
             path: '/approval',
             component: () => import('@/views/Approval/AllApprovalListView.vue')
         },
@@ -179,6 +175,14 @@ const router = createRouter({
             component: () => import('@/views/Approval/RequiredApprovalListView.vue')
         },
         {
+            path: '/my',
+            component: () => import('@/views/Approval/MyApprovalListView.vue')
+        },
+        {
+            path: '/regist/main',
+            component: () => import('@/views/Approval/RegistMainView.vue')
+        },
+        {
             path: '/regist/bt',
             component: () => import('@/views/Approval/RegistBTApprovalView.vue')
         },
@@ -207,10 +211,6 @@ const router = createRouter({
             component: () => import('@/components/TeamReview/ReviewList.vue')
         },
         {
-            path: '/regist/main',
-            component: () => import('@/views/Approval/RegistMainView.vue')
-        },
-        {
             path: '/work-calendar/:id',
             component: () => import('@/views/AdTime/WorkCalendarView.vue')
         },
@@ -227,10 +227,17 @@ const router = createRouter({
             component: () => import('@/views/Approval/AllWorkListView.vue')
         },
         {
+            path: '/work-calendar/:id',
+            component: () => import('@/views/AdTime/WorkCalendarView.vue')
+        },
+        {
             path: '/work-calendar',
             component: () => import('@/views/AdTime/WorkCalendarView.vue')
+        },
+        {
+            path: '/main',
+            component: () => import('@/views/Main/Main.vue')
         }
-
 
     ]
 })
@@ -238,10 +245,12 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
     const accessToken = localStorage.getItem('access');
     const refreshToken = document.cookie.split('; ').find(row => row.startsWith('refresh='));
+    
+    const publicPaths = ['/', '/find/id', '/find/pwd', '/find/id/result', '/find/pwd/:email/result'];
 
-    if (to.path === '/' && (accessToken || refreshToken)) {
-        next({ path: '/main' });
-    } else if (to.path !== '/' && !accessToken && !refreshToken) {
+    if (publicPaths.includes(to.path)) {
+        next();
+    } else if (!accessToken && !refreshToken) {
         next({ path: '/' });
     } else {
         next();

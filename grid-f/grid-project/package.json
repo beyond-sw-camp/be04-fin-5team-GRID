@@ -18,6 +18,7 @@
     "@vuepic/vue-datepicker": "^8.7.0",
     "axios": "^1.6.8",
     "bootstrap": "^5.3.3",
+    "bootstrap-icons": "^1.11.3",
     "bootstrap-vue-3": "^0.5.1",
     "date-fns": "^3.6.0",
     "element-plus": "^2.7.3",

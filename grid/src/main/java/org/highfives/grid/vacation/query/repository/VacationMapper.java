@@ -33,6 +33,8 @@ public interface VacationMapper {
 
     List<VacationTypeDTO> selectAllType();
 
+    List<VacationTypeDTO> selectAllTypeNoUseYn();
+
     VacationTypeDTO selectTypeById(int id);
 
     List<VacationHistory> searchVacationHistoryById(String employeeNumber);
