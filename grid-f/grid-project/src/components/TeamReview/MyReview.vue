@@ -234,6 +234,7 @@ const closeModal = () => {
 .search-group {
   display: flex;
   align-items: center;
+  justify-content: end;
   flex-grow: 1;
 }
 
