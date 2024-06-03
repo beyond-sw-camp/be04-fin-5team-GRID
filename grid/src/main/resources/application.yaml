@@ -1,0 +1,42 @@
+spring:
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+  jpa:
+    generate-ddl: false
+    show-sql: true
+    database: mysql
+    properties:
+      hibernate:
+        '[format_sql]': true
+
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+
+    url: ENC(LET/TvulAeK1cyMgW2B0ZXkrT4XcYCgTDdvFsQCL5yNlIbgCLg2oS0f+dzQqoCP0OA2GQDjlyb0uKO8S79DFyPQraCeq7ET1nmSSDj5DsMLvAtQ8F02r6Q==)
+    username: ENC(IcZGTKix8EdkHPilDy82CQ==)
+    password: ENC(sSAEDfEoJabK/NnjUT9ULp4LxgcxlsyN)
+
+application:
+  security:
+    jwt:
+      secretKey: ENC(f3wKWCQ/OmBLNnU6eprBvXJ4ef1/csgBkQJ7w+oovLurPBPtYJTqR32OSW5mrkiA+1aDHYyKYXgB/54ZDi1H4ea9wNNJlBHIXHQMM3KwOimaMX7OzYjsoCkChl++daFKizqZuFJ9ZCI=)
+      expiration_time: 300000 # 5분
+      refresh-token:
+        expiration_time: 86400000 # 하루
+  redis:
+    host: localhost
+    port: 6379
+
+cloud:
+  aws:
+    credentials:
+      secret-key: ENC(72uIBqAtUh5oQRTdWPpyzkrNa8LJ8cjOHDz/1WZezdeChWKRG4ybe8seo7nArw7lS9CzKAfFe6k=)
+      access-key: ENC(SxEadoBpc86A6fjuzhpmvNSbKNlgksM+mrzmL9kCDqc=)
+    region:
+      static: ENC(6EUUAT6aKM4cwjK1i88BRhFrvovaJWOh)
+    s3:
+      bucketName: ENC(AxkWVAblj5LXXbz3TDkaGJABO7vNbY98)
+    stack:
+      auto: false

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.highfives.grid.work.query.repository.RwApprovalMapper">
+
+    <resultMap id="rwResultMap" type="org.highfives.grid.work.query.aggregate.RwApproval">
+        <id property="id" column="ID"/>
+        <result property="startTime" column="START_TIME"/>
+        <result property="endTime" column="END_TIME"/>
+        <result property="content" column="CONTENT"/>
+        <result property="approvalStatus" column="APPROVAL_STATUS"/>
+        <result property="requesterId" column="REQUESTER_ID"/>
+        <result property="writeTime" column="WRITE_TIME"/>
+        <result property="cancelYn" column="CANCEL_YN"/>
+        <result property="originName" column="ORIGIN_NAME"/>
+        <result property="renameName" column="RENAME_NAME"/>
+        <result property="cancelDocumentId" column="CANCEL_DOCUMENT_ID"/>
+        <result property="path" column="PATH"/>
+    </resultMap>
+
+    <select id="selectAllRw" resultMap="rwResultMap">
+        SELECT
+        ID
+        , START_TIME
+        , END_TIME
+        , CONTENT
+        , APPROVAL_STATUS
+        , REQUESTER_ID
+        , WRITE_TIME
+        , CANCEL_YN
+        , ORIGIN_NAME
+        , RENAME_NAME
+        , CANCEL_DOCUMENT_ID
+        , PATH
+        FROM RW_APPROVAL
+        WHERE APPROVAL_STATUS = '승인'
+        AND CANCEL_YN = 'N'
+        AND CANCEL_DOCUMENT_ID IS NULL;
+    </select>
+
+    <select id="selectRwByEmployeeId" resultMap="rwResultMap" parameterType="int">
+        SELECT
+        ID
+        , START_TIME
+        , END_TIME
+        , CONTENT
+        , APPROVAL_STATUS
+        , REQUESTER_ID
+        , WRITE_TIME
+        , CANCEL_YN
+        , ORIGIN_NAME
+        , RENAME_NAME
+        , CANCEL_DOCUMENT_ID
+        , PATH
+        FROM RW_APPROVAL
+        WHERE APPROVAL_STATUS = '승인'
+        AND CANCEL_YN = 'N'
+        AND CANCEL_DOCUMENT_ID IS NULL
+        AND REQUESTER_ID = #{employeeId};
+    </select>
+
+</mapper>

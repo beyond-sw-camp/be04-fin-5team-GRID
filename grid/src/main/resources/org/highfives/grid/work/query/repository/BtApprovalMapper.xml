@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.highfives.grid.work.query.repository.BtApprovalMapper">
+    <resultMap id="btResultMap" type="org.highfives.grid.approval.common.dto.BTApprovalDTO">
+        <id property="id" column="ID"/>
+        <result property="startTime" column="START_TIME"/>
+        <result property="endTime" column="END_TIME"/>
+        <result property="destination" column="DESTINATION"/>
+        <result property="content" column="APPROVAL_STATUS"/>
+        <result property="writeTime" column="WRITE_TIME"/>
+        <result property="cancelYn" column="CANCEL_YN"/>
+        <result property="requesterId" column="REQUESTER_ID"/>
+        <result property="cancelDocumentId" column="CANCEL_DOCUMENT_ID"/>
+    </resultMap>
+
+    <select id="selectAllBt" resultMap="btResultMap">
+        SELECT
+        ID
+        , START_TIME
+        , END_TIME
+        , DESTINATION
+        , CONTENT
+        , APPROVAL_STATUS
+        , WRITE_TIME
+        , CANCEL_YN
+        , REQUESTER_ID
+        , CANCEL_DOCUMENT_ID
+        FROM BT_APPROVAL
+        WHERE APPROVAL_STATUS = '승인'
+        AND CANCEL_YN = 'N'
+        AND CANCEL_DOCUMENT_ID IS NULL
+    </select>
+
+    <select id="selectBtByEmployeeId" resultMap="btResultMap" parameterType="int">
+        SELECT
+        ID
+        , START_TIME
+        , END_TIME
+        , DESTINATION
+        , CONTENT
+        , APPROVAL_STATUS
+        , WRITE_TIME
+        , CANCEL_YN
+        , REQUESTER_ID
+        , CANCEL_DOCUMENT_ID
+        FROM BT_APPROVAL
+        WHERE APPROVAL_STATUS = '승인'
+        AND CANCEL_YN = 'N'
+        AND CANCEL_DOCUMENT_ID IS NULL
+    </select>
+</mapper>
+<!--collection은 여러개로 묶을 때-->

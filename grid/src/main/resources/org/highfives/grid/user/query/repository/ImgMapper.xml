@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.highfives.grid.user.query.repository.ImgMapper">
+
+<!--    <resultMap id="depInfo" type="org.highfives.grid.user.query.dto.UserDTO">-->
+<!--        <result property="depName" column="department_name"/>-->
+<!--        <result property="depLeaderId" column="leader_id"/>-->
+<!--    </resultMap>-->
+
+    <select id="getProfileImg" parameterType="_int">
+        SELECT
+               I.path
+          FROM employee_img I
+          JOIN img_type T ON I.type_id = T.id
+         WHERE I.employee_id = #{id}
+           AND T.type_name = '프로필'
+    </select>
+
+    <select id="getSealImg" parameterType="_int">
+        SELECT
+        I.path
+        FROM employee_img I
+        JOIN img_type T ON I.type_id = T.id
+        WHERE I.employee_id = #{id}
+        AND T.type_name = '인감'
+    </select>
+
+</mapper>

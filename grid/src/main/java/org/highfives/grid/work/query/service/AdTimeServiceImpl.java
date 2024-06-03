@@ -1,13 +1,12 @@
 package org.highfives.grid.work.query.service;
 
-import org.highfives.grid.work.query.dto.AdTimeDTO;
+import org.highfives.grid.work.common.dto.AdTimeDTO;
 import org.highfives.grid.work.query.repository.AdTimeMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service(value="QueryAdTimeServiceImpl")
 public class AdTimeServiceImpl implements AdTimeService {
@@ -31,6 +30,16 @@ public class AdTimeServiceImpl implements AdTimeService {
     @Override
     public List<AdTimeDTO> findAdTimeAll() {
 
+        System.out.println(adTimeMapper.selectAdTimeAll());
         return adTimeMapper.selectAdTimeAll();
+    }
+
+    // 날짜로 조회
+    @Override
+    public List<AdTimeDTO> findAdTimeByStartTime(String startTime) {
+
+        System.out.println(startTime);
+        System.out.println(adTimeMapper.selectAdTimeByStartTime(startTime));
+        return adTimeMapper.selectAdTimeByStartTime(startTime);
     }
 }
