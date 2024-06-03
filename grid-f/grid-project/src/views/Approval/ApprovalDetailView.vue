@@ -24,7 +24,6 @@
       }
 
       state.approval = response.data.approvalEmpResult;
-      console.log(response)
       state.user = state.approval.user;
 
     } catch (error) {
@@ -39,25 +38,41 @@
 
 <template>
   <div class="detail">
-    <div>결재 문서</div>
-    <b-card class="container">
-      <div>
-        <h1 v-if="typeId === '1'">출장</h1>
-        <h1 v-if="typeId === '2'">시간 외 근무</h1>
-        <h1 v-if="typeId === '3'">단축</h1>
-        <h1 v-if="typeId === '4'">휴가</h1>
-      </div>
-      <div v-if="state.approval && state.approval.user && state.approval.user.duties">
-        <img :src="state.user['profilePath']" alt="profile">
-        작성자: {{ state.user['name'] }}<br>
-        {{ state.approval.user.duties.dutiesName }} / {{ state.user['team'].teamName }}
-        <hr>
-        {{state.user['email']}}
-        {{state.user['callNumber']}}
-        <hr>
-      </div>
-      <ApprovalCard :approval="state.approval"/>
-    </b-card>
+    <div>
+      <h3 class="fw-bolder mb-3"><i class="bi bi-file-earmark-text"></i>&nbsp; 결재 문서</h3>
+      <b-card class="container shadow">
+        <div class="mx-1 my-3">
+          <div class="text-success" v-if="state.approval['approvalStatus'] === 'A'"> <h5 >승인됨</h5></div>
+          <div class="text-danger" v-if="state.approval['approvalStatus'] === 'D'"> <h5 >반려됨</h5></div>
+          <div class="text-muted" v-if="state.approval['approvalStatus'] === 'N'"> <h5 >대기중</h5></div>
+        </div>
+        <div>
+          <h1 v-if="typeId === '1'">출장 신청서</h1>
+          <h1 v-if="typeId === '2'">시간 외 근무 신청서</h1>
+          <h1 v-if="typeId === '3'">단축 근무 신청서</h1>
+          <h1 v-if="typeId === '4'">휴가 신청서</h1>
+        </div>
+        <div class="text-secondary mb-4">{{ state.approval['writeTime'] }} &nbsp;작성</div>
+        <div v-if="state.approval && state.approval.user && state.approval.user.duties">
+          <div href="#" class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true" style="margin-bottom: -10px;">
+            <img :src="state.user['profilePath']" alt="profile" width="50" height="50" class="rounded-circle flex-shrink-0">
+            <div class="d-flex gap-2 w-100 justify-content-between">
+              <div class="mt-1">
+                <h5 class="fw-bolder mb-0">&nbsp;&nbsp;&nbsp;{{ state.user['name'] }}</h5>
+                <p class="mb-0 opacity-75">&nbsp;&nbsp;&nbsp;{{ state.user['team'].teamName }} / {{ state.user['duties'].dutiesName }}</p>
+              </div>
+            </div>
+          </div>
+          <hr style="border-top: 2px dotted #000; margin-bottom: 20px;">
+          <div style="margin-left: 10px;">
+            <h6 class="mb-3"><strong><i class="bi fs-5 bi-envelope"></i>&nbsp; &nbsp;</strong> {{ state.user['email'] }}</h6>
+            <h6><strong><i class="bi fs-5 bi-telephone"></i>&nbsp; &nbsp; </strong> 061-723-2093{{ state.user['callNumber'] }}</h6>
+          </div>
+          <hr style="border-top: 2px dotted #000; margin-top: 20px; margin-bottom: 30px;">
+        </div>
+        <ApprovalCard :approval="state.approval"/>
+      </b-card>
+    </div>
     <ApprovalChain :typeId="typeId" :approvalId="approvalId" :approvalStatus="state.approval['approvalStatus']" :requesterId="state.approval['employeeId']" :cancelStatus="state.approval['cancelYN']"/>
   </div>
 </template>
@@ -65,7 +80,7 @@
 <style scoped>
 .detail {
   display: grid;
-  grid-template-columns: 3fr 2fr;
-  gap: 10px;
+  grid-template-columns: 3.5fr 2fr;
+  gap: 20px;
 }
 </style>

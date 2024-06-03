@@ -12,7 +12,6 @@
 
   const isLoading = ref(true);
 
-
   const state = reactive({
     approvalList: [],
     btApprovalList: [],
@@ -109,23 +108,29 @@
   })
 </script>
 <template>
-  <div>근무 목록</div>
+  <div><h3 class="fw-bolder mb-5"><i class="bi bi-list-check"></i>&nbsp; 근무 목록</h3></div>
   <div v-if="isLoading">로딩 중</div>
   <div v-else>
-    <b-button @click="navigateTo('/bt')">상세</b-button>
-    <b-card title="출장">
+    <b-card title="출장" class="shadow mt-3 mb-3">
+      <div class="text-end">
+        <h6 class="text-muted" style="margin-bottom: 10px; margin-top: -30px;" @click="navigateTo('/bt')">상세 <i class="bi bi-chevron-right"></i></h6>
+      </div>
       <br>
       <ApprovalList :approvalList="state.btApprovalList" :short="1"/>
     </b-card>
-    <b-button @click="navigateTo('/overtime')">상세</b-button>
-    <b-card title="시간 외 근무">
+    <b-card title="시간 외 근무" class="shadow mt-3 mb-3">
+      <div class="text-end">
+        <h6 class="text-muted" style="margin-bottom: 10px; margin-top: -30px;" @click="navigateTo('/overtime')">상세 <i class="bi bi-chevron-right"></i></h6>
+      </div>
       <br>
       <ApprovalList :approvalList="state.oApprovalList" :short="1"/>
     </b-card>
     <!-- 관리자 -->
     <div v-if="userRole === 'ROLE_ADMIN'">
-      <b-button @click="navigateTo('/rw')">상세</b-button>
-      <b-card title="단축 근무">
+      <b-card title="단축 근무" class="shadow mt-3 mb-3">
+        <div class="text-end">
+          <h6 class="text-muted" style="margin-bottom: 10px; margin-top: -30px;" @click="navigateTo('/rw')">상세 <i class="bi bi-chevron-right"></i></h6>
+        </div>
         <br>
         <ApprovalList :approvalList="state.rwApprovalList" :short="1"/>
       </b-card>

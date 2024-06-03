@@ -463,4 +463,4 @@ hr {
   color: #002366;
   transform: scale(0.85) translate(8px, -33px);
 }
-</style>
+</style> 이거 디벨롭도 그대로 아니야?

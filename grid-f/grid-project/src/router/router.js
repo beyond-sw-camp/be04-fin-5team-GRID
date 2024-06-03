@@ -179,6 +179,10 @@ const router = createRouter({
             component: () => import('@/views/Approval/MyApprovalListView.vue')
         },
         {
+            path: '/regist/main',
+            component: () => import('@/views/Approval/RegistMainView.vue')
+        },
+        {
             path: '/regist/bt',
             component: () => import('@/views/Approval/RegistBTApprovalView.vue')
         },
@@ -207,11 +211,10 @@ const router = createRouter({
             component: () => import('@/components/TeamReview/ReviewList.vue')
         },
         {
-            path: '/regist/main',
-            component: () => import('@/views/Approval/RegistMainView.vue')
+            path: '/work-calendar/:id',
+            component: () => import('@/views/AdTime/WorkCalendarView.vue')
         },
         {
-
             path: '/team/member-list/:teamId',
             component: () => import('@/components/Department/TeamMemberList.vue')
         },
