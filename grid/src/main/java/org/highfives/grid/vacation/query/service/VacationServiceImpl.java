@@ -175,6 +175,18 @@ public class VacationServiceImpl implements VacationService {
     }
 
     @Override
+    public ResVacationTypeVO getAllVacationType() {
+        List<VacationTypeDTO> types = vacationMapper.selectAllTypeNoUseYn();
+
+        ResVacationTypeVO resVacationTypeVO = new ResVacationTypeVO();
+        resVacationTypeVO.setStatusCode(200);
+        resVacationTypeVO.setMessage("조회 성공");
+        resVacationTypeVO.setResult(types);
+
+        return resVacationTypeVO;
+    }
+
+    @Override
     public ResOneVacationTypeVO getVacationTypeById(int id) {
         VacationTypeDTO type = vacationMapper.selectTypeById(id);
 

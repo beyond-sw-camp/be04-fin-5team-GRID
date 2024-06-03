@@ -138,14 +138,6 @@ const getUserVacationInfo = async () => {
         allInfo.value = response.data.result;
         filteredInfo.value = allInfo.value; // 초기화 시 전체 데이터를 필터링된 데이터에 할당
         calculateVacationNums();
-        const vacationNum = allInfo.value
-            .filter(info => info.typeId === 3)
-            .map(info => info.vacationNum);
-        console.log(allInfo.value)
-        console.log(vacationNum)
-        if(vacationNum == 100){
-            console.log('야호');
-        }
     } catch (error) {
         console.error("Error:", error);
     }
@@ -471,4 +463,3 @@ th {
     height: 100%;
   }
 </style>
-
