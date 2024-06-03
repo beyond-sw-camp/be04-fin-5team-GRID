@@ -13,6 +13,10 @@
     short: props.short
   })
 
+  let pathList = [
+    'bt', 'overtime', 'rw', 'vacation'
+  ]
+
   const fields = [
     { key: 'index', label: '번호', sortable: false },
     { key: 'content', label: '내용', sortable: false },
@@ -54,14 +58,8 @@
 
   const registStatus = async (status, approvalId) => {
 
-    putStatusData.chainStatus = status;
-    putStatusData.typeId = state.type;
-    putStatusData.approvalId = approvalId;
-
-    console.log(putStatusData);
-
     try {
-      const response = await axios.put(`http://localhost:8080/approval-chain/status`, putStatusData, {
+      const response = await axios.put("http://localhost:8080/approval/" + pathList[props.approvalList.type - 1] + `-status/${approvalId}`, {
         headers: {
           'Content-Type': "application/json"
         }
@@ -70,13 +68,11 @@
         throw new Error("response is not ok");
 
       }
-
-      console.log(response)
-
     } catch (error) {
       console.error('Fail to post: ', error.message);
     }
   }
+
   const approvalDetail = (typeId, approvalId, employeeId, approvalStatus) => {
     if (approvalStatus === 'N' && userRole.value !== 'ROLE_ADMIN' && userId.value !== employeeId) {
       registStatus('V', approvalId);
@@ -92,6 +88,8 @@
       userRole.value = decodedToken.auth || '';
       userId.value = decodedToken.id || '';
     }
+
+    console.log("출력:", props.approvalList);
 
     isLoading.value = false;
   })
@@ -189,7 +187,7 @@
           {{ data.index + 1 }}
         </template>
         <template #cell(content)="data">
-          <span @click="approvalDetail(props.approvalList.type, data.item.id, data.item.requesterId, data.item.approvalStatus)">{{ data.value }}</span>
+          <span @click="approvalDetail(props.approvalList.type, data.item.id, data.item.employeeId, data.item.approvalStatus)">{{ data.value }}</span>
         </template>
         <template #cell(writeTime)="data">
           <span>{{ data.value.substring(0, 10) }}</span>

@@ -19,7 +19,7 @@
             <i class="bi bi-briefcase"></i>
           </div>
           <h3 class="fs-1 text-body-emphasis py-3">출장</h3>
-          <p>출장 결재를 작성할 때는 출장의 목적, 기간, 경로 및 예상 비용을 명확히 기재해 주세요. 승인 절차를 원활하게 진행하기 위해 필요한 모든 세부 정보를 빠짐없이 포함해야 합니다.<br><br></p>
+          <p>출장 결재를 작성할 때는 출장의 목적, 기간, 경로 및 예상 비용을 명확히 기재해 주세요. 승인 절차를 원활하게 진행하기 위해 필요한 모든 세부 정보를 빠짐없이 포함해야 합니다.</p>
           <br><button class="btn btn-primary btn-sm" @click="navigateTO('bt')">작성하기</button>
         </b-card>
       </div>
@@ -39,7 +39,7 @@
             <i class="bi bi-heart-pulse"></i>
           </div>
           <h3 class="fs-1 text-body-emphasis py-3">단축 근무</h3>
-          <p>단축 근무 신청 결재는 임신 중인 직원만 제출 가능하며, 승인 시 신청 기간동안 1일 2시간씩 근무 시간이 단축됩니다. 원활한 승인 절차를 위해 결재 제출 시 증명 서류 첨부가 필요합니다.<br><br></p>
+          <p>단축 근무 신청 결재는 임신 중인 직원만 제출 가능하며, 승인 시 신청 기간동안 1일 2시간씩 근무 시간이 단축됩니다. 원활한 승인 절차를 위해 결재 제출 시 증명 서류 첨부가 필요합니다.</p>
           <br><button class="btn btn-primary btn-sm" @click="navigateTO('rw')">작성하기</button>
         </b-card>
       </div>
@@ -49,7 +49,7 @@
             <i class="bi bi-brightness-high"></i>
           </div>
           <h3 class="fs-1 text-body-emphasis py-3">휴가</h3>
-          <p>휴가 결재를 작성할 때, 여러 종류의 휴가를 동시에 사용하려면 각각 별도의 결재를 작성해야 합니다. 정기 휴가, 연차, 월차는 자신이 보유한 휴가 일수를 초과하여 사용할 수 없습니다.<br><br></p>
+          <p>휴가 결재를 작성할 때, 여러 종류의 휴가를 동시에 사용하려면 각각 별도의 결재를 작성해야 합니다. 정기 휴가, 연차, 월차는 자신이 보유한 휴가 일수를 초과하여 사용할 수 없습니다.</p>
           <br><button class="btn btn-primary btn-sm" @click="navigateTO('vacation')">작성하기</button>
         </b-card>
       </div>
