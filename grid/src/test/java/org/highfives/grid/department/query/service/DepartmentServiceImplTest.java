@@ -32,4 +32,6 @@ class DepartmentServiceImplTest {
         // Then
         assertThat(departmentDTOList).isNotNull();
     }
+
+
 }
