@@ -82,9 +82,10 @@ const deleteSelectedReviews = async () => {
     }
     reviews.value = reviews.value.filter(review => !selectedReviews.value.includes(review.id));
     selectedReviews.value = [];
+    alert('삭제되었습니다.');
   } catch (error) {
     console.error('에러 발생:', error);
-    alert('삭제하는 데 에러가 발생했습니다.');
+    alert('평가되지 않는 항목만 삭제할 수 있습니다.');
   }
 };
 
@@ -100,7 +101,7 @@ const addReview = async () => {
     });
     reviews.value.push(response.data.result);
     newReviewText.value = '';
-
+    alert('추가되었습니다.');
     const modalElement = document.getElementById('addQuestionModal');
     const modal = bootstrap.Modal.getInstance(modalElement);
     if (modal) {

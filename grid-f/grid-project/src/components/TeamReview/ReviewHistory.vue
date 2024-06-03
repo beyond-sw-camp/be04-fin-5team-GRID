@@ -285,7 +285,6 @@ const addNewReview = async () => {
     year: newReviewYear.value,
     quarter: newReviewQuarter.value,
     revieweeId: newRevieweeId.value,
-    reviewerId: 1 // 현재 로그인한 리뷰어 ID를 사용합니다.
   };
 
   try {

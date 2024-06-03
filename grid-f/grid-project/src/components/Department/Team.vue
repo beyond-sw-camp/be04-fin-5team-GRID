@@ -264,6 +264,10 @@ const showModal = (modalId) => {
 };
 
 const addNewTeam = async () => {
+  if (!newTeam.value.leaderId) {
+    alert('책임자를 선택해야 합니다.');
+    return;
+  }
   try {
     // 팀 추가 API 호출
     await axios.post('http://localhost:8080/team', {

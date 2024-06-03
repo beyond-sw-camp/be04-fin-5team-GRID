@@ -63,7 +63,7 @@
               <div class="mb-3">
                 <label for="leaderName" class="form-label">책임자</label>
                 <div class="input-group">
-                  <input type="text" class="form-control" id="leaderName" v-model="newDepartment.leaderName" readonly>
+                  <input type="text" class="form-control" id="leaderName" v-model="newDepartment.leaderName" readonly required>
                   <button type="button" class="btn btn-secondary" @click="showModal('selectLeaderModal')">조회</button>
                 </div>
               </div>
@@ -166,13 +166,19 @@ onMounted(() => {
   fetchLeaders();
 });
 
+const filteredDepartments = computed(() => {
+  return departments.value.filter(department =>
+    department.departmentName.includes(searchQuery.value)
+  );
+});
+
 const totalPages = computed(() => {
-  return Math.ceil(departments.value.length / itemsPerPage);
+  return Math.ceil(filteredDepartments.value.length / itemsPerPage);
 });
 
 const paginatedDepartments = computed(() => {
   const start = (currentPage.value - 1) * itemsPerPage;
-  return departments.value.slice(start, start + itemsPerPage);
+  return filteredDepartments.value.slice(start, start + itemsPerPage);
 });
 
 const changePage = (page) => {
@@ -193,6 +199,10 @@ const showModal = (modalId) => {
 };
 
 const addNewDepartment = async () => {
+  if (!newDepartment.value.leaderId) {
+    alert('책임자를 선택해야 합니다.');
+    return;
+  }
   try {
     await axios.post('http://localhost:8080/department', newDepartment.value);
     await fetchDepartments();
@@ -206,6 +216,7 @@ const addNewDepartment = async () => {
       leaderId: '',
       leaderName: ''
     };
+    alert("추가되었습니다.");
   } catch (error) {
     console.error('에러 발생:', error);
   }
