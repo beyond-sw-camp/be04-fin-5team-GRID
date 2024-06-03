@@ -68,7 +68,6 @@
       state.reqApprovalList = response.data.approvalEmpResultList;
       state.sReqApprovalList = response.data.approvalEmpResultList.slice(0, 5);
       state.reqApprovalList.type = typeId;
-      state.sReqApprovalList.type = typeId;
     } catch (error) {
       console.error('Fetch error: ' + error.message);
     }
@@ -83,58 +82,53 @@
       userId.value = decodedToken.id || '';
     }
 
-    if (userRole.value === 'ROLE_ADMIN') {
-      await fetchApprovalList(1, 0, userId.value);
-    } else {
-      await fetchApprovalList(0, 0, userId.value);
-      await fetchReqApprovalList(0, 5, userId.value);
-    }
+    await fetchApprovalList(1, 0, userId.value);
+    await fetchReqApprovalList(1, 5, userId.value);
 
     isLoading.value = false;
   })
 </script>
 
 <template>
-    <div>결재 목록</div>
-    <div v-if="isLoading">
-      로딩 중
+  <div>결재 목록</div>
+  <div v-if="isLoading">
+    로딩 중
+  </div>
+  <div v-else>
+    <div v-if="userRole === 'ROLE_ADMIN'">
+      <!-- 관리자 -->
+      <div>
+        <b-card no-body>
+          <b-tabs card>
+            <b-tab title="출장" @click="fetchApprovalList(1, 0, userId.value)" active>
+              <b-card-text><ApprovalList :approvalList="state.approvalList"/></b-card-text>
+            </b-tab>
+            <b-tab title="시간 외 근무" @click="fetchApprovalList(2, 0, userId.value)">
+              <ApprovalList :approvalList="state.approvalList"/>
+            </b-tab>
+            <b-tab title="단축 근무" @click="fetchApprovalList(3, 0, userId.value)">
+              <ApprovalList :approvalList="state.approvalList"/>
+            </b-tab>
+            <b-tab title="휴가" @click="fetchApprovalList(4, 0, userId.value)">
+              <ApprovalList :approvalList="state.approvalList"/>
+            </b-tab>
+          </b-tabs>
+        </b-card>
+      </div>
     </div>
     <div v-else>
-      <div v-if="userRole !== 'ROLE_ADMIN'">
-        <!-- 관리자 -->
-        <div>
-          <b-card no-body>
-            <b-tabs card>
-              <b-tab title="출장" @click="fetchApprovalList(1, 0, userId)" active>
-                <b-card-text><ApprovalList :approvalList="state.approvalList"/></b-card-text>
-              </b-tab>
-              <b-tab title="시간 외 근무" @click="fetchApprovalList(2, 0, userId)">
-                <ApprovalList :approvalList="state.approvalList"/>
-              </b-tab>
-              <b-tab title="단축 근무" @click="fetchApprovalList(3, 0, userId)">
-                <ApprovalList :approvalList="state.approvalList"/>
-              </b-tab>
-              <b-tab title="휴가" @click="fetchApprovalList(4, 0, userId)">
-                <ApprovalList :approvalList="state.approvalList"/>
-              </b-tab>
-            </b-tabs>
-          </b-card>
-        </div>
-      </div>
-      <div v-else>
-        <b-card title="내가 작성한 문서">
-          <div @click="navigateTo('/my')">상세</div>
-          <br>
-          <ApprovalList :approvalList="state.sApprovalList" :short="1"/>
-        </b-card>
+      <b-card title="내가 작성한 문서">
         <br>
-        <b-card title="결재 필요 문서">
-          <div @click="navigateTo('/required')">상세</div>
-          <br>
-          <ApprovalList :approvalList="state.sReqApprovalList" :short="1"/>
-        </b-card>
-      </div>
+        <ApprovalList :approvalList="state.sApprovalList" :short="1"/>
+      </b-card>
+      <br>
+      <b-card title="결재 필요 문서">
+        <div @click="navigateTo('/bt')">상세</div>
+        <br>
+        <ApprovalList :approvalList="state.sReqApprovalList" :short="1"/>
+      </b-card>
     </div>
+  </div>
 </template>
 
 <style scoped>
