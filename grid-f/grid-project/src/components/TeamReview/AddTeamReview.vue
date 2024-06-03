@@ -1,11 +1,9 @@
 <template>
-  <div class="content">
-    <div class="reviewAll">
+  <div class="reviewAll">
       <div class="reviewHeader">
         <img class="reviewIcon" src="@/assets/list-check.png" alt="list-check" />
-        <h3 class="reviewTitle">평가 생성</h3>
+        <h1>평가 생성</h1>
       </div>
-      <div class="reviewContent">
         <div class="buttonContainer">
           <button type="button" class="deleteBtn" @click="deleteSelectedReviews">선택 항목 삭제</button>
           <button type="button" class="addBtn" data-bs-toggle="modal" data-bs-target="#addQuestionModal">항목 추가</button>
@@ -28,7 +26,6 @@
             </tbody>
           </table>
         </div>
-      </div>
 
       <!-- Modal Structure -->
       <div class="modal fade" id="addQuestionModal" tabindex="-1" aria-labelledby="addQuestionModalLabel" aria-hidden="true">
@@ -51,7 +48,6 @@
           </div>
         </div>
       </div>
-    </div>
   </div>
 </template>
 
@@ -129,35 +125,33 @@ const addReview = async () => {
   font-style: normal;
 }
 
-.content {
-  flex-grow: 1;
-  margin-right: 10%;
-  margin-left: 10%;
+.reviewAll {
+  display: grid;
+  grid-template-rows: 18% 13% 4% 53% 8%;
+  grid-template-columns: 10% 80% 10%;
+  height:100%;
+  padding: 0;
   font-family: 'IBMPlexSansKR-Regular';
 }
 
-.reviewAll {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-}
 
 .reviewHeader {
-  display: flex;
+  grid-column-start: 2;
+  grid-row-start: 1;
+  display:grid;
+  grid-template-columns: 3% 97%;
   align-items: center;
-  font-size: 25px;
-  margin-top: 8%;
-  color: #000000;
 }
 
 .reviewHeader img {
-  width: 20px;
-  margin-right: 10px;
-  margin-bottom: 5px;
+  width: 25px;
 }
 
-.reviewTitle {
-  font-weight: 600 !important;
+.reviewHeader h1 {
+  margin-left: 0.5%;
+  margin-bottom: 0;
+  font-size: 25px;
+  font-weight: 600;
 }
 
 .reviewContent {
@@ -165,15 +159,20 @@ const addReview = async () => {
 }
 
 .buttonContainer {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 10px;
-  gap: 10px;
+  grid-row-start: 3;
+  grid-column-start: 2;
+  align-items: center;
+  margin-bottom: 20px;
+  display: grid;
+  grid-template-columns:80% 9% 2% 9%;
 }
 
 .reviewBox {
+  grid-row-start: 4;
+  grid-column-start: 2;
   width: 100%;
-  padding: 10px;
+  border-collapse: collapse;
+  height:10px;
 }
 
 .reviewContent table {
@@ -235,14 +234,30 @@ tr:hover {
 }
 
 /* 버튼 스타일 */
-.deleteBtn, .addBtn {
-  background-color: #088A85;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
+.deleteBtn {
+  width: 100%;
+    background-color: #088A85;
+    color: white;
+    padding: 5px 5px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    font-style: bold;
+    grid-column-start: 2;
+}
+
+.addBtn {
+  width: 100%;
+    background-color: #088A85;
+    color: white;
+    padding: 5px 5px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    font-style: bold;
+    grid-column-start: 4;
 }
 
 .deleteBtn:hover, .addBtn:hover {
