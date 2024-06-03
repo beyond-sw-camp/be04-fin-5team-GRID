@@ -84,19 +84,21 @@ const profileUrl = computed(() => {
 const fetchDepartments = async () => {
   try {
     const response = await axios.get('http://localhost:8080/department/find-all');
-    departments.value = response.data.result.map(department => ({
-      id: department.id,
-      departmentName: department.departmentName,
-      departmentStatus: department.departmentStatus,
-      startTime: department.startTime,
-      endTime: department.endTime,
-      memberCnt: department.memberCnt,
-      leaderId: department.leaderId,
-      departmentCode: department.departmentCode,
-      sequence: department.sequence,
-      showTeams: false,  // 팀 리스트를 보여줄지 여부
-      teams: []  // 팀 데이터
-    }));
+    departments.value = response.data.result
+      .map(department => ({
+        id: department.id,
+        departmentName: department.departmentName,
+        departmentStatus: department.departmentStatus,
+        startTime: department.startTime,
+        endTime: department.endTime,
+        memberCnt: department.memberCnt,
+        leaderId: department.leaderId,
+        departmentCode: department.departmentCode,
+        sequence: department.sequence,
+        showTeams: false,  // 팀 리스트를 보여줄지 여부
+        teams: []  // 팀 데이터
+      }))
+      .sort((a, b) => a.sequence - b.sequence);  // sequence 순으로 정렬
   } catch (error) {
     console.error('부서 정보를 가져오는 데 실패했습니다:', error);
   }
@@ -112,11 +114,13 @@ const goToProfile = () => {
 const fetchTeams = async (departmentId) => {
   try {
     const response = await axios.get(`http://localhost:8080/team/sub-department/${departmentId}`);
-    return response.data.result.map(team => ({
-      ...team,
-      showEmployees: false, // 팀원 리스트를 보여줄지 여부
-      employees: [] // 팀원 데이터
-    }));
+    return response.data.result
+      .map(team => ({
+        ...team,
+        showEmployees: false, // 팀원 리스트를 보여줄지 여부
+        employees: [] // 팀원 데이터
+      }))
+      .sort((a, b) => a.sequence - b.sequence);  // sequence 순으로 정렬
   } catch (error) {
     console.error('팀 정보를 가져오는 데 실패했습니다:', error);
     return [];
@@ -126,7 +130,7 @@ const fetchTeams = async (departmentId) => {
 const fetchEmployees = async (teamId) => {
   try {
     const response = await axios.get(`http://localhost:8080/users/team-list/${teamId}`);
-    return response.data.result;
+    return response.data.result.sort((a, b) => a.sequence - b.sequence);  // sequence 순으로 정렬
   } catch (error) {
     console.error('직원 정보를 가져오는 데 실패했습니다:', error);
     return [];
@@ -168,7 +172,6 @@ const handleDragEnd = async () => {
     const updatedDepartments = departments.value.map((department, index) => ({
       id: department.id,
       departmentName: department.departmentName,
-      order: index + 1,
       departmentStatus: department.departmentStatus,
       startTime: department.startTime,
       endTime: department.endTime,

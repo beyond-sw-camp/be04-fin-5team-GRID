@@ -69,7 +69,6 @@ class DepartmentServiceImplTest {
         DepartmentDTO departmentDTO = DepartmentDTO.builder()
                 .id(8)
                 .departmentName("update")
-                .highDepartment("update2")
                 .departmentStatus("N")
                 .leaderId(1)
                 .build();
@@ -80,7 +79,6 @@ class DepartmentServiceImplTest {
         // Then
 
         assertThat(departmentDTOList.getDepartmentName()).isEqualTo("update");
-        assertThat(departmentDTOList.getHighDepartment()).isEqualTo("update2");
         assertThat(departmentDTOList.getLeaderId()).isEqualTo(1);
 
     }
@@ -96,7 +94,6 @@ class DepartmentServiceImplTest {
         DepartmentDTO departmentDTO1 = DepartmentDTO.builder()
                 .id(8)
                 .departmentName("update8")
-                .highDepartment("update2")
                 .departmentStatus("N")
                 .leaderId(1)
                 .departmentCode("0010")
@@ -105,7 +102,6 @@ class DepartmentServiceImplTest {
         DepartmentDTO departmentDTO2 = DepartmentDTO.builder()
                 .id(6)
                 .departmentName("update6")
-                .highDepartment("update2")
                 .departmentStatus("N")
                 .leaderId(1)
                 .departmentCode("0020")
@@ -113,7 +109,6 @@ class DepartmentServiceImplTest {
         DepartmentDTO departmentDTO3 = DepartmentDTO.builder()
                 .id(7)
                 .departmentName("update7")
-                .highDepartment("update2")
                 .departmentStatus("N")
                 .leaderId(1)
                 .departmentCode("0030")
@@ -134,7 +129,6 @@ class DepartmentServiceImplTest {
 
             assertThat(updatedDepartment.getId()).isEqualTo(expectedDepartment.getId());
             assertThat(updatedDepartment.getDepartmentName()).isEqualTo(expectedDepartment.getDepartmentName());
-            assertThat(updatedDepartment.getHighDepartment()).isEqualTo(expectedDepartment.getHighDepartment());
             assertThat(updatedDepartment.getDepartmentStatus()).isEqualTo(expectedDepartment.getDepartmentStatus());
             assertThat(updatedDepartment.getLeaderId()).isEqualTo(expectedDepartment.getLeaderId());
             assertThat(updatedDepartment.getDepartmentCode()).isEqualTo(expectedDepartment.getDepartmentCode());

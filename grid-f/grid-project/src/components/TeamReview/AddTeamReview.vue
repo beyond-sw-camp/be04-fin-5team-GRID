@@ -3,24 +3,20 @@
     <div class="reviewAll">
       <div class="reviewHeader">
         <img class="reviewIcon" src="@/assets/list-check.png" alt="list-check" />
-        <h3>평가 생성</h3>
+        <h3 class="reviewTitle">평가 생성</h3>
       </div>
       <div class="reviewContent">
         <div class="buttonContainer">
-          <button type="button" class="btn btn-danger me-2" @click="deleteSelectedReviews">
-            선택 항목 삭제
-          </button>
-          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addQuestionModal">
-            항목 추가
-          </button>
+          <button type="button" class="deleteBtn" @click="deleteSelectedReviews">선택 항목 삭제</button>
+          <button type="button" class="addBtn" data-bs-toggle="modal" data-bs-target="#addQuestionModal">항목 추가</button>
         </div>
         <div class="reviewBox">
-          <table >
+          <table>
             <thead>
               <tr>
-                <th>선택</th>
-                <th>항목</th>
-                <th>내용</th>
+                <th style="width: 5%;">선택</th>
+                <th style="width: 10%;">항목</th>
+                <th style="width: 85%;">내용</th>
               </tr>
             </thead>
             <tbody>
@@ -113,7 +109,6 @@ const addReview = async () => {
     const modal = bootstrap.Modal.getInstance(modalElement);
     if (modal) {
       modal.hide();
-      // 강제로 모달 상태를 초기화
       modalElement.addEventListener('hidden.bs.modal', () => {
         document.body.classList.remove('modal-open');
         document.querySelectorAll('.modal-backdrop').forEach(backdrop => backdrop.remove());
@@ -134,19 +129,11 @@ const addReview = async () => {
   font-style: normal;
 }
 
-.main-layout {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-}
-
-.body-layout {
-  display: flex;
-  flex-grow: 1;
-}
-
 .content {
   flex-grow: 1;
+  margin-right: 10%;
+  margin-left: 10%;
+  font-family: 'IBMPlexSansKR-Regular';
 }
 
 .reviewAll {
@@ -158,14 +145,19 @@ const addReview = async () => {
 .reviewHeader {
   display: flex;
   align-items: center;
-  font-size: 20px;
-  font-weight: 600;
-  margin-top: 1%;
+  font-size: 25px;
+  margin-top: 8%;
   color: #000000;
 }
 
 .reviewHeader img {
-  margin-right: 10px; /* 이미지와 텍스트 간의 간격 조절 */
+  width: 20px;
+  margin-right: 10px;
+  margin-bottom: 5px;
+}
+
+.reviewTitle {
+  font-weight: 600 !important;
 }
 
 .reviewContent {
@@ -176,16 +168,12 @@ const addReview = async () => {
   display: flex;
   justify-content: flex-end;
   margin-bottom: 10px;
-  gap: 10px; /* 버튼 간 간격 조절 */
+  gap: 10px;
 }
 
 .reviewBox {
   width: 100%;
   padding: 10px;
-}
-
-.reviewIcon {
-  width: 30px; /* 아이콘 크기 조정 */
 }
 
 .reviewContent table {
@@ -195,8 +183,8 @@ const addReview = async () => {
 
 .reviewContent th,
 .reviewContent td {
-  border-top: 1px solid #ddd; /* 테이블 상단에만 선 추가 */
-  border-bottom: 1px solid #ddd; /* 테이블 하단에만 선 추가 */
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
   padding: 8px;
   text-align: left;
 }
@@ -246,4 +234,31 @@ tr:hover {
   background-color: #f1f1f1;
 }
 
+/* 버튼 스타일 */
+.deleteBtn, .addBtn {
+  background-color: #088A85;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.deleteBtn:hover, .addBtn:hover {
+  background-color: #065f5b;
+}
+
+.btn-close {
+  background-color: #888;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.btn-close:hover {
+  background-color: #555;
+}
 </style>
