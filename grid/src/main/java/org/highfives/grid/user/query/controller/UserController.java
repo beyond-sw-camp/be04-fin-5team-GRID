@@ -217,4 +217,9 @@ public class UserController {
 
         return result;
     }
+    @GetMapping("/health")
+    public String healthCheck() {
+
+        return "Health check success";
+    }
 }
