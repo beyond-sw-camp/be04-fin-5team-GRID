@@ -43,8 +43,9 @@
       <b-card class="container shadow">
         <div class="mx-1 my-3">
           <div class="text-success" v-if="state.approval['approvalStatus'] === 'A'"> <h5 >승인됨</h5></div>
-          <div class="text-danger" v-if="state.approval['approvalStatus'] === 'D'"> <h5 >반려됨</h5></div>
-          <div class="text-muted" v-if="state.approval['approvalStatus'] === 'N'"> <h5 >대기중</h5></div>
+          <div class="text-danger" v-else-if="state.approval['approvalStatus'] === 'D'"> <h5 >반려됨</h5></div>
+          <div class="text-warning" v-else-if="state.approval['cancelYn'] === 'Y'"> <h5 >취소</h5></div>
+          <div class="text-muted" v-else> <h5 >결재 대기</h5></div>
         </div>
         <div>
           <h1 v-if="typeId === '1'">출장 신청서</h1>
