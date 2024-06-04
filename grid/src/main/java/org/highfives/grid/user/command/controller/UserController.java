@@ -60,13 +60,13 @@ public class UserController {
     public ResponseEntity<ResUserListVO> addMultiUser(@RequestBody List<UserDTO> infoList) {
 
         System.out.println("infoList = " + infoList);
-        //받아온 데이터 간 중복 체크
+
         if(!userService.multiInfoInputCheck(infoList).equals("P"))
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new ResUserListVO(
                             400, "Some given infos are duplicated..",
                             "/users/list", null));
-        
+
         List<UserDTO> givenInfo = new ArrayList<>();
 
         for (UserDTO info : infoList) {
