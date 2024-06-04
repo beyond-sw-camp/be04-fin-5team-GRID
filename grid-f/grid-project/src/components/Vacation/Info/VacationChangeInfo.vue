@@ -64,7 +64,7 @@
                 </template>
             </b-table>
         </div>
-        <nav class="pg" aria-label="Page navigation example" v-if="totalPages > 1">
+        <nav class="pg" aria-label="Page navigation example">
             <ul class="pagination">
                 <li class="page-item" :class="{ disabled: currentPage === 1 }">
                     <a class="page-link" href="#" aria-label="First" @click.prevent="goToFirstPage">
@@ -677,15 +677,15 @@ onBeforeMount(() => {
     font-size:11px;
     font-weight: 600;
     color:white;
-    background-color: #77B0AA;
-    border-color:#77B0AA ;
+    background-color: #088A85;
+    border-color:#088A85 ;
     margin-top: 10px;
   }
 
   .vacations h3 {
       font-size: 14px;
       font-weight: 600;
-      color:white;
+      color:black;
       margin: 0;
     }
 
@@ -699,7 +699,7 @@ onBeforeMount(() => {
 
   .card {
     padding: 10px 10px;
-    background-color: #088A85;
+    border: 2px solid #a0a0a0;
   }
 
   .button-container {

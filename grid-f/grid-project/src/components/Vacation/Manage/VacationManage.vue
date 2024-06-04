@@ -632,22 +632,22 @@ onMounted(() => {
     font-size:11px;
     font-weight: 600;
     color:white;
-    background-color: #77B0AA;
-    border-color:#77B0AA ;
+    background-color: #088A85;
+    border-color:#088A85 ;
     grid-row-start: 4;
   }
 
   .vacations h3 {
       font-size: 15px;
       font-weight: 600;
-      color:white;
+      color:black;
       margin: 0;
     }
   
     .card-text {
         font-size: 12px;
       font-weight: 600;
-      color:white;
+      color:black;
       margin-bottom: 0;
     }
 
@@ -661,7 +661,7 @@ onMounted(() => {
 
   .card {
     padding: 10px 10px;
-    background-color: #088A85;
+    border: 2px solid #a0a0a0;
   }
 
   .inactive-card {
