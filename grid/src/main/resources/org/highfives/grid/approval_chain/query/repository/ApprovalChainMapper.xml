@@ -64,7 +64,18 @@
         b.employee_id,
         b.chain_id
         FROM  approval_chain a
-        JOIN  bt_approval_chain b
+        <if test="typeId == 1">
+            JOIN  bt_approval_chain b
+        </if>
+        <if test="typeId == 2">
+            JOIN  o_approval_chain b
+        </if>
+        <if test="typeId == 3">
+            JOIN  rw_approval_chain b
+        </if>
+        <if test="typeId == 4">
+            JOIN  v_approval_chain b
+        </if>
         ON  a.id = b.chain_id
         WHERE  b.chain_id = #{chainId} and b.approval_id = #{approvalId};
     </select>
