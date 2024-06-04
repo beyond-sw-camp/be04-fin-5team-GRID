@@ -66,8 +66,7 @@ public class UserController {
                     .body(new ResUserListVO(
                             400, "Some given infos are duplicated..",
                             "/users/list", null));
-
-        //DB데이터 체크를 위한 List 객체 생성
+        
         List<UserDTO> givenInfo = new ArrayList<>();
 
         for (UserDTO info : infoList) {
