@@ -1,7 +1,7 @@
 <template>
   <div class="adTimeListContainer">
     <div class="adTimeListTitle">
-      <img class="adTimeIcon" src="@/assets/icons/goal_icon.png">
+      <img class="adTimeIcon" src="@/assets/icons/ad-time-icon.png">
       <h1>출퇴근 조회</h1>
     </div>
     <div class="workerContainer" v-if="userRole === 'ROLE_ADMIN'">
