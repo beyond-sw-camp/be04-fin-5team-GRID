@@ -104,8 +104,10 @@ public class PdfServiceImpl implements PdfService {
 
         String filePath = "1" + btApproval.getId() + ".pdf";
 
-        String d_imgPath = imgMapper.getSealImg(approvalChainService.findLeaderByEmployeeId(user.getId(), 1));
-        String t_imgPath = imgMapper.getSealImg(approvalChainService.findLeaderByEmployeeId(user.getId(), 2));
+//        String d_imgPath = imgMapper.getSealImg(approvalChainService.findLeaderByEmployeeId(user.getId(), 1));
+        String d_imgPath = "https://png.pngtree.com/png-clipart/20220113/ourmid/pngtree-cartoon-hand-drawn-default-avatar-png-image_4156500.png";
+//        String t_imgPath = imgMapper.getSealImg(approvalChainService.findLeaderByEmployeeId(user.getId(), 2));
+        String t_imgPath =  "https://png.pngtree.com/png-clipart/20220113/ourmid/pngtree-cartoon-hand-drawn-default-avatar-png-image_4156500.png";
 
         try {
             PdfWriter.getInstance(document, new FileOutputStream(filePath));
