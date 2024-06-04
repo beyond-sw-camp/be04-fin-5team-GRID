@@ -64,9 +64,9 @@
         em.EMPLOYEE_NAME,
         em.EMPLOYEE_NUMBER,
         vt.TYPE_NAME
-        FROM VACATION_INFO vi
-        JOIN VACATION_TYPE vt ON vi.TYPE_ID = vt.ID
-        JOIN EMPLOYEE em ON vi.EMPLOYEE_ID = em.ID
+        FROM vacation_info vi
+        JOIN vacation_type vt ON vi.TYPE_ID = vt.ID
+        JOIN employee em ON vi.EMPLOYEE_ID = em.ID
         ORDER BY vi.ID ASC
     </select>
     <select id="selectUserVacationInfo" parameterType="_int" resultMap="vacationInfoResultMap" >
@@ -80,9 +80,9 @@
         em.EMPLOYEE_NAME,
         em.EMPLOYEE_NUMBER,
         vt.TYPE_NAME
-        FROM VACATION_INFO vi
-        JOIN VACATION_TYPE vt ON vi.TYPE_ID = vt.ID
-        JOIN EMPLOYEE em ON vi.EMPLOYEE_ID = em.ID
+        FROM vacation_info vi
+        JOIN vacation_type vt ON vi.TYPE_ID = vt.ID
+        JOIN employee em ON vi.EMPLOYEE_ID = em.ID
         WHERE vi.EMPLOYEE_ID = #{employeeId}
         ORDER BY vi.ID ASC
     </select>
@@ -92,8 +92,8 @@
         vp.CONTENT,
         vp.TYPE_ID,
         vt.TYPE_NAME
-        FROM VACATION_POLICY vp
-        JOIN VACATION_TYPE vt ON vp.TYPE_ID = vt.ID
+        FROM vacation_policy vp
+        JOIN vacation_type vt ON vp.TYPE_ID = vt.ID
         WHERE vp.ID = #{id}
     </select>
     <select id="selectRealAllPolicy" resultMap="vacationPolicyWithTypeNameResultMap">
@@ -102,8 +102,8 @@
         vp.CONTENT,
         vp.TYPE_ID,
         vt.TYPE_NAME
-        FROM VACATION_POLICY vp
-        JOIN VACATION_TYPE vt ON vp.TYPE_ID = vt.ID
+        FROM vacation_policy vp
+        JOIN vacation_type vt ON vp.TYPE_ID = vt.ID
     </select>
     <select id="selectAllHistories" resultMap="vacationHistoryResultMap">
         SELECT
@@ -113,7 +113,7 @@
         TYPE_ID,
         CHANGE_TYPE_ID,
         EMPLOYEE_ID
-        FROM VACATION_HISTORY
+        FROM vacation_history
     </select>
     <select id="searchVacationInfoByName" parameterType="org.highfives.grid.vacation.query.vo.NameSearch" resultMap="vacationInfoResultMap">
         SELECT
@@ -123,8 +123,8 @@
         VI.END_TIME,
         VI.EMPLOYEE_ID,
         VI.TYPE_ID
-        FROM VACATION_INFO VI
-        JOIN EMPLOYEE EM ON VI.EMPLOYEE_ID = EM.ID
+        FROM vacation_info VI
+        JOIN employee EM ON VI.EMPLOYEE_ID = EM.ID
         WHERE EM.EMPLOYEE_NAME LIKE CONCAT('%',#{NAME},'%')
     </select>
     <select id="searchVacationInfoByDept" parameterType="org.highfives.grid.vacation.query.vo.DeptSearch" resultMap="vacationInfoResultMap">
@@ -135,9 +135,9 @@
         VI.END_TIME,
         VI.EMPLOYEE_ID,
         VI.TYPE_ID
-        FROM VACATION_INFO VI
-        JOIN EMPLOYEE EM ON VI.EMPLOYEE_ID = EM.ID
-        JOIN DEPARTMENT DE ON EM.DEPARTMENT_ID = DE.ID
+        FROM vacation_info VI
+        JOIN employee EM ON VI.EMPLOYEE_ID = EM.ID
+        JOIN department DE ON EM.DEPARTMENT_ID = DE.ID
         WHERE DE.DEPARTMENT_NAME LIKE CONCAT('%',#{DEPT},'%')
     </select>
     <select id="searchVacationHistories" parameterType="org.highfives.grid.vacation.query.vo.HistorySearch">
@@ -152,10 +152,10 @@
         e.EMOLOYEE_NUMBER AS EMPLOYEE_NUMBER,
         vt.TYPE_NAME AS TYPE_NAME,
         vct.TYPE_NAME AS CHANGE_TYPE_NAME
-        FROM VACATION_HISTORY
-        JOIN EMPLOYEE e ON vh.employee_id = e.id
-        JOIN VACATION_TYPE vt ON vt.id = vh.type_id
-        JOIN VACATION_CHANGE_TYPE vct on vh.change_type_id = vct.id
+        FROM vacation_history
+        JOIN employee e ON vh.employee_id = e.id
+        JOIN vacation_type vt ON vt.id = vh.type_id
+        JOIN vacation_change_type vct on vh.change_type_id = vct.id
         WHERE TYPE_ID = #{typeId} AND EMPLOYEE_ID = #{employeeId} AND CHANGE_TYPE_ID = #{changeTypeId}
     </select>
     <select id="searchVacationHistoryByName" parameterType="String" resultMap="vacationHistoryDTOResultMap">
@@ -170,10 +170,10 @@
         e.EMPLOYEE_NUMBER AS EMPLOYEE_NUMBER,
         vt.TYPE_NAME AS TYPE_NAME,
         vct.TYPE_NAME AS CHANGE_TYPE_NAME
-        FROM VACATION_HISTORY vh
-        JOIN EMPLOYEE e ON vh.employee_id = e.id
-        JOIN VACATION_TYPE vt ON vt.id = vh.type_id
-        JOIN VACATION_CHANGE_TYPE vct on vh.change_type_id = vct.id
+        FROM vacation_history vh
+        JOIN employee e ON vh.employee_id = e.id
+        JOIN vacation_type vt ON vt.id = vh.type_id
+        JOIN vacation_change_type vct on vh.change_type_id = vct.id
         WHERE e.EMPLOYEE_NAME = #{employeeName}
         ORDER BY vh.ID ASC
     </select>
@@ -189,10 +189,10 @@
         e.EMPLOYEE_NUMBER AS EMPLOYEE_NUMBER,
         vt.TYPE_NAME AS TYPE_NAME,
         vct.TYPE_NAME AS CHANGE_TYPE_NAME
-        FROM VACATION_HISTORY vh
-        JOIN EMPLOYEE e ON vh.employee_id = e.id
-        JOIN VACATION_TYPE vt ON vt.id = vh.type_id
-        JOIN VACATION_CHANGE_TYPE vct on vh.change_type_id = vct.id
+        FROM vacation_history vh
+        JOIN employee e ON vh.employee_id = e.id
+        JOIN vacation_type vt ON vt.id = vh.type_id
+        JOIN vacation_change_type vct on vh.change_type_id = vct.id
         WHERE e.EMPLOYEE_NUMBER = #{employeeNumber}
         ORDER BY vh.ID ASC
     </select>
@@ -208,10 +208,10 @@
         e.EMPLOYEE_NUMBER AS EMPLOYEE_NUMBER,
         vt.TYPE_NAME AS TYPE_NAME,
         vct.TYPE_NAME AS CHANGE_TYPE_NAME
-        FROM VACATION_HISTORY vh
-        JOIN EMPLOYEE e ON vh.employee_id = e.id
-        JOIN VACATION_TYPE vt ON vt.id = vh.type_id
-        JOIN VACATION_CHANGE_TYPE vct on vh.change_type_id = vct.id
+        FROM vacation_history vh
+        JOIN employee e ON vh.employee_id = e.id
+        JOIN vacation_type vt ON vt.id = vh.type_id
+        JOIN vacation_change_type vct on vh.change_type_id = vct.id
         ORDER BY vh.ID ASC
     </select>
     <select id="userVacationHistoryTable" parameterType="_int" resultMap="vacationHistoryDTOResultMap">
@@ -226,10 +226,10 @@
         e.EMPLOYEE_NUMBER AS EMPLOYEE_NUMBER,
         vt.TYPE_NAME AS TYPE_NAME,
         vct.TYPE_NAME AS CHANGE_TYPE_NAME
-        FROM VACATION_HISTORY vh
-        JOIN EMPLOYEE e ON vh.employee_id = e.id
-        JOIN VACATION_TYPE vt ON vt.id = vh.type_id
-        JOIN VACATION_CHANGE_TYPE vct on vh.change_type_id = vct.id
+        FROM vacation_history vh
+        JOIN employee e ON vh.employee_id = e.id
+        JOIN vacation_type vt ON vt.id = vh.type_id
+        JOIN vacation_change_type vct on vh.change_type_id = vct.id
         WHERE vh.EMPLOYEE_ID = #{employeeId}
         ORDER BY vh.ID ASC
     </select>
@@ -241,7 +241,7 @@
         DATE_OF_USE,
         VACATION_EXPLAIN,
         USE_YN
-        FROM VACATION_TYPE
+        FROM vacation_type
         WHERE USE_YN = 'Y'
         ORDER BY ID ASC
     </select>
@@ -253,7 +253,7 @@
         DATE_OF_USE,
         VACATION_EXPLAIN,
         USE_YN
-        FROM VACATION_TYPE
+        FROM vacation_type
         ORDER BY ID ASC
     </select>
     <select id="selectTypeById" parameterType="_int" resultMap="vacationTypeResultMap">
@@ -264,7 +264,7 @@
         DATE_OF_USE,
         VACATION_EXPLAIN,
         USE_YN
-        FROM VACATION_TYPE
+        FROM vacation_type
         WHERE ID = #{id}
         ORDER BY ID ASC
     </select>

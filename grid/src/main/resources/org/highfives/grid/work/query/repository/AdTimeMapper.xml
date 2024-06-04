@@ -27,8 +27,8 @@
         WHEN SUBSTRING(A.START_TIME, 12, 8) < '09:00:00' THEN '정시 출근'
         ELSE '지각'
         END AS ATTENDANCE_STATUS
-        FROM AD_TIME A
-        JOIN EMPLOYEE B ON A.EMPLOYEE_ID = B.ID
+        FROM ad_time A
+        JOIN employee B ON A.EMPLOYEE_ID = B.ID
         WHERE EMPLOYEE_ID = #{employeeId}
         ORDER BY A.START_TIME DESC
         ]]>
@@ -59,8 +59,8 @@
         WHEN SUBSTRING(A.START_TIME, 12, 8) < '09:00:00' THEN '정시 출근'
         ELSE '지각'
         END AS ATTENDANCE_STATUS
-        FROM AD_TIME A
-        JOIN EMPLOYEE B ON A.EMPLOYEE_ID = B.ID
+        FROM ad_time A
+        JOIN employee B ON A.EMPLOYEE_ID = B.ID
         ORDER BY A.START_TIME DESC
         ]]>
     </select>
@@ -74,8 +74,9 @@
         B.EMPLOYEE_NUMBER,
         CASE WHEN SUBSTRING(A.START_TIME, 12, 8) < '09:00:00' THEN '정시 출근'
         ELSE '지각'
-        END AS ATTENDANCE_STATUS FROM AD_TIME A
-        JOIN EMPLOYEE B ON A.EMPLOYEE_ID = B.ID
+        END AS ATTENDANCE_STATUS
+        FROM ad_time A
+        JOIN employee B ON A.EMPLOYEE_ID = B.ID
         WHERE DATE_FORMAT(A.start_time, '%Y-%m-%d') = #{startTime};
         ]]>
     </select>

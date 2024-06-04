@@ -63,7 +63,7 @@
                 </template>
             </b-table>
         </div>
-        <nav class="pg" aria-label="Page navigation example" v-if="totalPages > 1">
+        <nav class="pg" aria-label="Page navigation example" >
             <ul class="pagination">
                 <li class="page-item" :class="{ disabled: currentPage === 1 }">
                     <a class="page-link" href="#" aria-label="First" @click.prevent="goToFirstPage">
@@ -311,11 +311,12 @@ onBeforeMount(() => {
 
 .annual h3 {
     font-size: 15px;
-    color:white;
+    font-weight: 600;
+    color:black;
 }
 
 .annual p {
-    color:white;
+    color:black;
 }
 
 .month {
@@ -326,11 +327,12 @@ onBeforeMount(() => {
 
 .month h3 {
     font-size: 15px;
-    color:white;
+    font-weight: 600;
+    color:black;
 }
 
 .month p {
-    color:white;
+    color:black;
 }
 
 .diretly {
@@ -341,11 +343,12 @@ onBeforeMount(() => {
 
 .diretly h3 {
     font-size: 15px;
-    color:white;
+    font-weight: 600;
+    color:black;
 }
 
 .diretly p {
-    color:white;
+    color:black;
 }
 
 .sortBox {
@@ -458,7 +461,7 @@ th {
 
   .card {
     padding: 10px 10px;
-    background-color: #088A85;
+    border: 2px solid #a0a0a0;
     margin-bottom:0;
     height: 100%;
   }
