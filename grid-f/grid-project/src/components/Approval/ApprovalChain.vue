@@ -1,18 +1,22 @@
 <script setup>
   import axios from "axios";
   import {onMounted, reactive, ref} from "vue";
+  import {useRouter} from "vue-router";
 
   const userId = ref();
   const userRole = ref();
 
   const isLoading = ref(true);
 
+  const router = useRouter();
+
   const props = defineProps({
     typeId: 0,
     approvalId: 0,
     approvalStatus: '',
     requesterId: 0,
-    cancelStatus: ''
+    cancelStatus: '',
+    cancelDoc: 0
   })
 
   const state = reactive({
@@ -120,7 +124,8 @@
             }
           })
 
-          console.log(`http://localhost:8080/approval-chain/${pathList[props.typeId - 1]}`)
+          window.location.reload();
+
           if (response.status !== 200) {
             throw new Error("response is not ok");
           }
@@ -131,8 +136,6 @@
     } else {
       alert('댓글 작성이 불가합니다.');
     }
-
-    window.location.reload();
   }
 
   const registStatus = async (status) => {
@@ -159,6 +162,9 @@
             'Content-Type': "application/json"
           }
         })
+
+        window.location.reload();
+
         if (response.status !== 200) {
           throw new Error("response is not ok");
         }
@@ -166,8 +172,6 @@
     } catch (error) {
       console.error('Fail to post: ', error.message);
     }
-
-    window.location.reload();
   }
 
   const cancelApproval = async () => {
@@ -181,13 +185,17 @@
         if (response.status !== 201) {
           throw new Error("response is not ok");
         }
-        alert('결재가 취소되었습니다.');
+        if (props.approvalStatus === 'N') {
+          alert('결재 제출이 취소되었습니다.');
+          window.location.reload();
+        } else {
+          alert('취소 결재가 생성되었습니다.')
+          router.push('/my');
+        }
       }
     } catch (error) {
       console.error('Fail to post: ', error.message);
     }
-
-    window.location.reload();
   }
 
   const printApproval = async () => {
@@ -225,8 +233,6 @@
     await fetchApprovalChain(props.typeId, props.approvalId);
     await setChain();
 
-    console.log(state.approvalChainList)
-
     if (state.chain !== null) {
       await statusCheck();
       await registCheck();
@@ -262,7 +268,7 @@
               <div>
                 <b-badge class="mt-3" variant="success" v-if="chain.chainStatus === 'A'">승인</b-badge>
                 <b-badge class="mt-3" variant="danger" v-if="chain.chainStatus === 'D'">반려</b-badge>
-                <b-badge class="mt-3" variant="warning" v-if="chain.chainStatus === 'W'">대기</b-badge>
+                <b-badge class="mt-3" variant="warning" v-if="chain.chainStatus === 'W'">진행중</b-badge>
               </div>
             </div>
           </div>
@@ -288,7 +294,8 @@
           <b-input-group>
             <b-form-input v-model="putCommentData.comment"></b-form-input>
             <b-input-group-append>
-              <b-button variant="outline-success" @click="registComment">등록</b-button>
+                <b-button v-if="userId === props.requesterId || props.approvalStatus === 'A' || props.approvalStatus === 'D'" variant="outline-success" @click="registComment" disabled>등록</b-button>
+                <b-button v-else variant="outline-success" @click="registComment">등록</b-button>
             </b-input-group-append>
           </b-input-group>
         </div>
@@ -296,10 +303,10 @@
       <div>
           <!-- 중복 취소 불가하는 코드 추가 -->
           <div class="d-flex justify-content-center mt-3">
-            <b-button v-if="props.requesterId === userId" @click="cancelApproval" class="mx-2">취소</b-button>
-            <b-button v-if="props.requesterId === userId || userRole === 'ROLE_ADMIN'" @click="printApproval" class="mx-2">출력</b-button>
+            <b-button v-if="props.requesterId === userId && props.cancelStatus === 'N' && props.cancelDoc === 0" @click="cancelApproval" class="mx-2">취소</b-button>
+            <b-button v-if="(props.requesterId === userId || userRole === 'ROLE_ADMIN') && props.approvalStatus === 'A'" @click="printApproval" class="mx-2">출력</b-button>
           </div>
-          <div v-if="state.show" class="d-flex justify-content-center mt-3">
+          <div v-if="state.show && props.cancelStatus === 'N'" class="d-flex justify-content-center mt-3">
             <b-button variant="success" @click="registStatus('A')" class="mx-2">승인</b-button>
             <b-button variant="danger" @click="registStatus('D')" class="mx-2">반려</b-button>
           </div>
