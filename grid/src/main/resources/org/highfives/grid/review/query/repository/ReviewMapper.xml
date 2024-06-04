@@ -87,6 +87,7 @@
         A.ID AS HISTORY_ID,
         A.CONTENT,
         A.WRITE_TIME ,
+        A.REVIEW_STATUS,
         A.YEAR,
         A.QUARTER,
         A.REVIEWER_ID,

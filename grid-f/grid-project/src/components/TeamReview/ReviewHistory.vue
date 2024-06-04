@@ -16,11 +16,12 @@
         <tr>
           <th style="width: 10%;">직원</th>
           <th style="width: 10%;">부서 명</th>
-          <th style="width: 30%;">평가 명</th>
+          <th style="width: 20%;">평가 명</th>
           <th style="width: 20%;">작성일</th>
           <th style="width: 10%;">연도</th>
           <th style="width: 10%;">분기</th>
           <th style="width: 10%;">대상자</th>
+          <!-- <th style="width: 10%;">평가 보기</th> -->
         </tr>
       </thead>
       <tbody>
@@ -32,6 +33,9 @@
           <td>{{ review.year }}</td>
           <td>{{ review.quarter }}</td>
           <td>{{ review.revieweeName }}</td>
+          <!-- <td>
+            <button class="view-review-btn" @click="openModal(review.id)">평가 보기</button>
+          </td> -->
         </tr>
       </tbody>
     </table>
@@ -117,6 +121,8 @@
       </div>
     </div>
   </div>
+
+
 </template>
 
 <script setup>
@@ -130,16 +136,21 @@ const searchQuery = ref('');
 const reviews = ref([]);
 const filteredReviews = ref([]);
 const currentPage = ref(1);
-const itemsPerPage = 7;
+const itemsPerPage = 10;
 
-// New state for Add New modal
-const isAddNewModalOpen = ref(false);
 const employees = ref([]);
 const newReviewContent = ref('');
 const newReviewYear = ref(new Date().getFullYear());
 const newReviewQuarter = ref(1);
 const newRevieweeId = ref('');
 const userRole = ref('');
+const user = ref({});
+const selectedReviews = ref([]);
+const isModalOpen = ref(false);
+const selectedReview = ref(null);
+const reviewItems = ref([]);
+const reviewContents = ref({});
+
 
 const showModal = (modalId) => {
   const modal = new bootstrap.Modal(document.getElementById(modalId));
@@ -196,6 +207,7 @@ onMounted(() => {
   if (token) {
     const decodedToken = parseJwt(token);
     userRole.value = decodedToken?.auth || '';
+    user.value = decodedToken || {};
   }
 
   if (userRole.value !== 'ROLE_ADMIN') {
@@ -305,6 +317,18 @@ const addNewReview = async () => {
   };
 
   try {
+    // 중복된 리뷰가 있는지 확인
+    const isDuplicate = reviews.value.some(review =>
+      review.year === newReview.year &&
+      review.quarter === newReview.quarter &&
+      review.revieweeId === newReview.revieweeId
+    );
+
+    if (isDuplicate) {
+      alert('같은 연도, 같은 분기, 같은 대상자로 이미 생성된 평가가 있습니다.');
+      return;
+    }
+
     const confirmed = window.confirm('생성하시겠습니까?');
     if (confirmed) {
       await axios.post('http://localhost:8080/review/history', newReview);
@@ -317,6 +341,8 @@ const addNewReview = async () => {
     console.error('Error adding new review:', error);
   }
 };
+
+
 </script>
 
 <style scoped>
@@ -405,7 +431,7 @@ const addNewReview = async () => {
   margin-left: 10px;
 }
 
-.searchBtn:hover {
+searchBtn:hover {
   background-color: #065f5b;
 }
 
@@ -459,5 +485,19 @@ tr:hover {
 
 .pagination .page-item.disabled .page-link {
   color: #088A85; /* 비활성화된 페이지 색 */
+}
+
+.view-review-btn {
+  background-color: #088A85;
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.view-review-btn:hover {
+  background-color: #065f5b;
 }
 </style>
