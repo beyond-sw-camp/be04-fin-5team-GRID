@@ -142,7 +142,7 @@ public class PdfServiceImpl implements PdfService {
             headers.add(new PdfPCell(new Paragraph("팀장", headerFont)));
 
             contents.add(new PdfPCell(new Paragraph(user.getName(), font)));
-            contents.add(new PdfPCell(new Paragraph(btApproval.getWriteTime().substring(0, 10), font)));
+            contents.add(new PdfPCell(new Paragraph(btApproval.getWriteTime(), font)));
             contents.add(new PdfPCell(new Paragraph(btApproval.getStartTime().substring(0, 10), font)));
             contents.add(new PdfPCell(new Paragraph(btApproval.getEndTime().substring(0, 10), font)));
             contents.add(new PdfPCell(new Paragraph(btApproval.getDestination(), font)));
@@ -261,9 +261,9 @@ public class PdfServiceImpl implements PdfService {
             headers.add(new PdfPCell(new Paragraph("팀장", headerFont)));
 
             contents.add(new PdfPCell(new Paragraph(user.getName(), font)));
-            contents.add(new PdfPCell(new Paragraph(overtimeApproval.getWriteTime().substring(0, 10), font)));
-            contents.add(new PdfPCell(new Paragraph(overtimeApproval.getStartTime().substring(0, 10), font)));
-            contents.add(new PdfPCell(new Paragraph(overtimeApproval.getEndTime().substring(0, 10), font)));
+            contents.add(new PdfPCell(new Paragraph(overtimeApproval.getWriteTime(), font)));
+            contents.add(new PdfPCell(new Paragraph(overtimeApproval.getStartTime(), font)));
+            contents.add(new PdfPCell(new Paragraph(overtimeApproval.getEndTime(), font)));
             contents.add(new PdfPCell(new Paragraph(overtimeApproval.getContent(), font)));
 
             for (PdfPCell header : headers) {
@@ -372,7 +372,7 @@ public class PdfServiceImpl implements PdfService {
             headers.add(new PdfPCell(new Paragraph("팀장", headerFont)));
 
             contents.add(new PdfPCell(new Paragraph(user.getName(), font)));
-            contents.add(new PdfPCell(new Paragraph(rwApproval.getWriteTime().substring(0, 10), font)));
+            contents.add(new PdfPCell(new Paragraph(rwApproval.getWriteTime(), font)));
             contents.add(new PdfPCell(new Paragraph(rwApproval.getStartTime().substring(0, 10), font)));
             contents.add(new PdfPCell(new Paragraph(rwApproval.getEndTime().substring(0, 10), font)));
             contents.add(new PdfPCell(new Paragraph(rwApproval.getContent(), font)));
@@ -483,7 +483,7 @@ public class PdfServiceImpl implements PdfService {
             headers.add(new PdfPCell(new Paragraph("팀장", headerFont)));
 
             contents.add(new PdfPCell(new Paragraph(user.getName(), font)));
-            contents.add(new PdfPCell(new Paragraph(vacationApproval.getWriteTime().substring(0, 10), font)));
+            contents.add(new PdfPCell(new Paragraph(vacationApproval.getWriteTime(), font)));
             contents.add(new PdfPCell(new Paragraph(vacationApproval.getStartTime().substring(0, 10), font)));
             contents.add(new PdfPCell(new Paragraph(vacationApproval.getEndTime().substring(0, 10), font)));
             contents.add(new PdfPCell(new Paragraph(vacation.getResult().getTypeName(), font)));
