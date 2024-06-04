@@ -174,19 +174,31 @@ function getCurrentDateTimeString() {
 
 const fetchReviewAdd = async () => {
   try {
-    // 연말 평가 기간이 아니라면 작성x 추가 필요
     // 올해 생성된 연말 평가가 있으면 조회 아니라면 새로 생성
 
     const currentYear = new Date().getFullYear();   // 올해 년도
     const currentTime = getCurrentDateTimeString()  // 현재 시간
 
-    const responseReview = await axios.get(`http://localhost:8080/performance-review/final/${currentYear}/${user.value.id}`)
+    const responseReview = await axios.get(`http://localhost:8080/performance-review/final/${currentYear}/${user.value.id}`);
 
+    const responseGoal = await axios.get(`http://localhost:8080/review-goal/${currentYear}/${user.value.id}`);
+
+    // 승인된 목표만 생성 가능
+    if(!responseGoal || responseGoal.data.findGoal.approvalStatus !== 'A'){
+      throw new Error('평가 목표가 승인되지 않았습니다.');
+    }
+
+    const responseMid = await axios.get(`http://localhost:8080/performance-review/mid/${currentYear}/${user.value.id}`)
+
+    // 승인된 중간 평가가 없으면 예외
+    if(!responseMid || responseMid.data.findReview.approvalStatus !== 'A') {
+      throw new Error('중간 평가가 승인되지 않았습니다.');
+    }
 
     console.log(responseReview);
 
     if (!responseReview.data.findReview) {
-      // 생성된 중간 평가 없을 때
+      // 생성된 연말 평가 없을 때
       const sendData = {
         type: "F",
         year: currentYear,
@@ -237,9 +249,10 @@ const fetchReviewAdd = async () => {
       };
     }
 
-    // 팀원일 때 작성중 상태만 수정 가능
   } catch (error) {
     console.error('에러 발생:', error);
+    alert('평가를 생성할 수 없습니다.')
+    router.push(`/performance-review`);
   }
 };
 
@@ -307,6 +320,7 @@ const updateSelfScore = (item) => {
 async function memberSave() {
   if (reviewDetail.value.status === '작성 중') {
     if (confirm("평가를 저장하시겠습니까?")) {
+
       const sendData = {
         reviewId: reviewDetail.value.id,
         performanceReviewItemList: reviewItemList.value.map(item => ({
@@ -331,9 +345,11 @@ async function memberSave() {
             `http://localhost:8080/performance-review/in-progress`,
             sendData
         );
+        alert('평가를 저장했습니다.')
         // window.location.reload();
       } catch (error) {
         console.error('Error sending data:', error);
+        alert('평가를 저장할 수 없습니다.')
       }
     }
   } else {
@@ -345,6 +361,17 @@ async function memberSave() {
 async function submit() {
   if (reviewDetail.value.status === '작성 중') {
     if (confirm("평가를 상신하시겠습니까?")) {
+
+      // 필수 값이 입력되지 않은 경우
+      for (const item of reviewItemList.value) {
+        if (!item.goal || !item.actionItem || !item.metric || item.weight === undefined || item.weight === 0
+            || item.weight === null || !item.detailPlan || !item.performance || !item.selfComment
+            || !item.selfId || !item.selfScore) {
+          alert('상신 시 모든 필수 값을 입력해야 합니다.');
+          return;
+        }
+      }
+
       const sendData = {
         reviewId: reviewDetail.value.id,
         performanceReviewItemList: reviewItemList.value.map(item => ({
@@ -369,9 +396,12 @@ async function submit() {
             `http://localhost:8080/performance-review/submit`,
             sendData
         );
+
+        alert('평가를 상신했습니다.')
         window.location.reload();
       } catch (error) {
         console.error('Error sending data:', error);
+        alert('평가를 상신할 수 없습니다.')
       }
     }
   } else {

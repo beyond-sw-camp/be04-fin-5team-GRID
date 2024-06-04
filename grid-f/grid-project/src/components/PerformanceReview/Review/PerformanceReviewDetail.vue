@@ -76,6 +76,7 @@
                   v-model="item.actionItem"
                   type="text"
               />
+              <span v-else>{{ item.actionItem }}</span>
             </td>
             <td>
               {{ item.metric }}
@@ -86,6 +87,7 @@
                   v-model="item.detailPlan"
                   type="text"
               />
+              <span v-else>{{ item.detailPlan }}</span>
             </td>
             <td>
               {{ item.weight }}
@@ -105,9 +107,10 @@
                 <option value="4">B</option>
                 <option value="5">C</option>
               </select>
+              <span v-else>{{ gradeMapping[item.selfId] || 0 }}</span>
             </td>
             <td>
-              {{ gradeMapping[item.selfId] || 0 }}
+              {{ item.selfScore }}
             </td>
             <td>
               <input
@@ -115,6 +118,7 @@
                   v-model="item.selfComment"
                   type="text"
               />
+              <span v-else>{{ item.selfComment }}</span>
             </td>
             <td>
               {{ gradeMapping[item.superiorId] || 0 }}
@@ -166,7 +170,7 @@
               {{ item.performance }}
             </td>
             <td>
-              {{ item.selfId }}
+              {{ gradeMapping[item.selfId] || 0 }}
             </td>
             <td>
               {{ item.selfScore }}
@@ -183,6 +187,7 @@
                 <option value="4">B</option>
                 <option value="5">C</option>
               </select>
+              <span v-else>{{ gradeMapping[item.superiorId] || 0 }}</span>
             </td>
             <td>
               {{ item.superiorScore }}
@@ -263,12 +268,24 @@ const fetchReviewDetail = async () => {
 const getApprovalStatus = (status) => {
   switch (status) {
     case 'IP':
+      if (isMember.value) {
+        isReadOnly.value = false;
+      }
       return '작성 중';
     case 'S':
+      if (!isMember.value) {
+        isReadOnly.value = false;
+      }
       return '상신';
     case 'R':
+      if (!isMember.value) {
+        isReadOnly.value = false;
+      }
       return '확인 중';
     case 'C':
+      if (!isMember.value) {
+        isReadOnly.value = false;
+      }
       return '확인 완료';
     case 'V':
       return '확정 완료';
@@ -295,6 +312,7 @@ onMounted(() => {
       if (user.value.duties.dutiesName === '팀장')
         isMember.value = false;
 
+      console.log('멤버확인',isMember.value);
       fetchReviewDetail();
 
     }
@@ -338,6 +356,7 @@ const updateSuperiorScore = (item) => {
 async function memberSave() {
   if (reviewDetail.value.status === '작성 중') {
     if (confirm("평가를 저장하시겠습니까?")) {
+
       const sendData = {
         reviewId: reviewDetail.value.id,
         performanceReviewItemList: reviewItemList.value.map(item => ({
@@ -362,9 +381,11 @@ async function memberSave() {
             `http://localhost:8080/performance-review/in-progress`,
             sendData
         );
+        alert('평가를 저장했습니다.')
         window.location.reload();
       } catch (error) {
         console.error('Error sending data:', error);
+        alert('평가를 저장할 수 없습니다.')
       }
     }
   } else {
@@ -376,6 +397,17 @@ async function memberSave() {
 async function submit() {
   if (reviewDetail.value.status === '작성 중') {
     if (confirm("평가를 상신하시겠습니까?")) {
+
+      // 필수 값이 입력되지 않은 경우
+      for (const item of reviewItemList.value) {
+        if (!item.goal || !item.actionItem || !item.metric || item.weight === undefined || item.weight === 0
+            || item.weight === null || !item.detailPlan || !item.performance || !item.selfComment
+            || !item.selfId || !item.selfScore) {
+          alert('상신 시 모든 필수 값을 입력해야 합니다.');
+          return;
+        }
+      }
+
       const sendData = {
         reviewId: reviewDetail.value.id,
         performanceReviewItemList: reviewItemList.value.map(item => ({
@@ -414,6 +446,17 @@ async function submit() {
 async function leaderSave() {
   if (reviewDetail.value.status === '상신' || reviewDetail.value.status === '확인 중') {
     if (confirm("평가를 저장하시겠습니까?")) {
+
+      // 필수 값이 입력되지 않은 경우
+      for (const item of reviewItemList.value) {
+        if (!item.goal || !item.actionItem || !item.metric || item.weight === undefined || item.weight === 0
+            || item.weight === null || !item.detailPlan || !item.performance || item.selfComment
+            || !item.selfId || !item.selfScore || !item.superiorId || !item.superiorScore) {
+          alert('저장 시 모든 필수 값을 입력해야 합니다.');
+          return;
+        }
+      }
+
       const sendData = {
         reviewId: reviewDetail.value.id,
         performanceReviewItemList: reviewItemList.value.map(item => ({
@@ -438,9 +481,11 @@ async function leaderSave() {
             `http://localhost:8080/performance-review/read`,
             sendData
         );
+        alert('평가를 저장했습니다.')
         window.location.reload();
       } catch (error) {
         console.error('Error sending data:', error);
+        alert('평가를 저장할 수 없습니다.')
       }
     }
   } else {
@@ -452,6 +497,17 @@ async function leaderSave() {
 async function complete() {
   if (reviewDetail.value.status === '상신' || reviewDetail.value.status === '확인 중') {
     if (confirm("평가를 확인 완료하시겠습니까?")) {
+
+      // 필수 값이 입력되지 않은 경우
+      for (const item of reviewItemList.value) {
+        if (!item.goal || !item.actionItem || !item.metric || item.weight === undefined || item.weight === 0
+            || item.weight === null || !item.detailPlan || !item.performance || !item.selfComment
+            || !item.selfId || !item.selfScore || !item.superiorId || !item.superiorScore) {
+          alert('확인 완료 시 모든 필수 값을 입력해야 합니다.');
+          return;
+        }
+      }
+
       const sendData = {
         reviewId: reviewDetail.value.id,
         performanceReviewItemList: reviewItemList.value.map(item => ({
@@ -476,9 +532,12 @@ async function complete() {
             `http://localhost:8080/performance-review/complete`,
             sendData
         );
+
+        alert('평가를 확인 완료했습니다.')
         window.location.reload();
       } catch (error) {
         console.error('Error sending data:', error);
+        alert('평가를 확인 완료할 수 없습니다.')
       }
     }
   } else {
@@ -490,6 +549,17 @@ async function complete() {
 async function valid() {
   if (reviewDetail.value.status === '확인 완료') {
     if (confirm("평가를 확정하시겠습니까?")) {
+
+      // 필수 값이 입력되지 않은 경우
+      for (const item of reviewItemList.value) {
+        if (!item.goal || !item.actionItem || !item.metric || item.weight === undefined || item.weight === 0
+            || item.weight === null || !item.detailPlan || !item.performance || !item.selfComment
+            || !item.selfId || !item.selfScore || !item.superiorId || !item.superiorScore) {
+          alert('확정 시 모든 필수 값을 입력해야 합니다.');
+          return;
+        }
+      }
+
   const sendData = {
     reviewId: reviewDetail.value.id,
     performanceReviewItemList: reviewItemList.value.map(item => ({
@@ -514,9 +584,12 @@ async function valid() {
         `http://localhost:8080/performance-review/valid`,
         sendData
     );
+
+    alert('평가를 확정했습니다.')
     window.location.reload();
   } catch (error) {
     console.error('Error sending data:', error);
+    alert('평가를 확정할 수 없습니다.')
   }
     }
   } else {
