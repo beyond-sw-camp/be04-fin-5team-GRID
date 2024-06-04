@@ -34,7 +34,7 @@
         </tbody>
       </table>
     </div>
-    <div class="GoalButtonContainer">
+    <div class="GoalButtonContainer" v-if="!isReadOnly">
       <div class="buttonWrapper">
         <button class="goalBtn1" @click="memberSave()">저장</button>
         <button class="goalBtn1" @click="submit()">상신</button>
@@ -359,7 +359,7 @@ async function memberSave() {
         );
 
         alert('목표를 저장했습니다.')
-        // window.location.reload();
+        window.location.reload();
       } catch (error) {
         console.error('Error sending data:', error);
       }
@@ -416,7 +416,7 @@ async function submit() {
           metric: item.metric,
           weight: item.weight,
           plan: item.plan,
-          objection: item.objection
+          objection: null
         }))
       };
 

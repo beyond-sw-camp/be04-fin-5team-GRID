@@ -10,5 +10,5 @@ import lombok.*;
 public class ReviewGradeDTO {
     private int id;
     private String grade;
-    private int score;
+    private double score;
 }

@@ -34,7 +34,7 @@
         </tbody>
       </table>
     </div>
-    <div class="GoalButtonContainer">
+    <div class="GoalButtonContainer" v-if="!isReadOnly">
       <div class="buttonWrapper">
         <button class="goalBtn1" v-if="isMember" @click="memberSave()">저장</button>
         <button class="goalBtn1" v-if="isMember" @click="submit()">상신</button>
@@ -414,10 +414,10 @@ async function submit() {
           id: item.id || null,
           jobName: item.jobName,
           goal: item.goal,
-          metric: item.metric || null,
-          weight: item.weight || 0,
-          plan: item.plan || null,
-          objection: item.objection || null
+          metric: item.metric,
+          weight: item.weight,
+          plan: item.plan,
+          objection: null
         }))
       };
 
@@ -432,6 +432,7 @@ async function submit() {
         alert('목표를 상신했습니다.')
         window.location.reload();
       } catch (error) {
+        alert('목표를 상신할 수 없습니다.')
         console.error('Error sending data:', error);
       }
     }
@@ -466,7 +467,6 @@ async function leaderSave() {
 
         alert('목표를 저장했습니다.')
         window.location.reload();
-        console.log("변경완료")
       } catch (error) {
         alert('목표를 저장할 수 없습니다.')
         console.error('Error sending data:', error);

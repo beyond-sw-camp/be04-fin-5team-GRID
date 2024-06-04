@@ -36,7 +36,7 @@
         </tbody>
       </table>
     </div>
-    <div class="GoalButtonContainer">
+    <div class="GoalButtonContainer" v-if="!isReadOnly">
       <div class="buttonWrapper">
         <button class="performanceBtn" @click="memberSave()">저장</button>
         <button class="performanceBtn" @click="submit()">상신</button>
@@ -262,9 +262,9 @@ const getApprovalStatus = (status) => {
     case 'R':
       return '확인 중';
     case 'C':
-      return '확인 완료';
+      return '확인';
     case 'V':
-      return '확정 완료';
+      return '확정';
     default:
       return '기타';
   }
@@ -379,7 +379,7 @@ async function submit() {
           goal: item.goal,
           actionItem: item.actionItem,
           metric: item.metric,
-          detailPlan: item.detail,
+          detailPlan: item.detailPlan,
           weight: item.weight,
           performance: item.performance,
           selfId: item.selfId,

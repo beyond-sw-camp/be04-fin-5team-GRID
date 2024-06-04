@@ -36,7 +36,7 @@
         </tbody>
       </table>
     </div>
-    <div class="GoalButtonContainer">
+    <div class="GoalButtonContainer" v-if="!isReadOnly">
       <div class="buttonWrapper">
         <button class="performanceBtn" @click="memberSave()">저장</button>
         <button class="performanceBtn" @click="submit()">상신</button>
@@ -191,8 +191,8 @@ const fetchReviewAdd = async () => {
     const responseMid = await axios.get(`http://localhost:8080/performance-review/mid/${currentYear}/${user.value.id}`)
 
     // 승인된 중간 평가가 없으면 예외
-    if(!responseMid || responseMid.data.findReview.approvalStatus !== 'A') {
-      throw new Error('중간 평가가 승인되지 않았습니다.');
+    if(!responseMid || responseMid.data.findReview.approvalStatus !== 'V') {
+      throw new Error('중간 평가가 확정되지 않았습니다.');
     }
 
     console.log(responseReview);
@@ -266,9 +266,9 @@ const getApprovalStatus = (status) => {
     case 'R':
       return '확인 중';
     case 'C':
-      return '확인 완료';
+      return '확인';
     case 'V':
-      return '확정 완료';
+      return '확정';
     default:
       return '기타';
   }
@@ -346,7 +346,7 @@ async function memberSave() {
             sendData
         );
         alert('평가를 저장했습니다.')
-        // window.location.reload();
+        window.location.reload();
       } catch (error) {
         console.error('Error sending data:', error);
         alert('평가를 저장할 수 없습니다.')
@@ -379,7 +379,7 @@ async function submit() {
           goal: item.goal,
           actionItem: item.actionItem,
           metric: item.metric,
-          detailPlan: item.detail,
+          detailPlan: item.detailPlan,
           weight: item.weight,
           performance: item.performance,
           selfId: item.selfId,

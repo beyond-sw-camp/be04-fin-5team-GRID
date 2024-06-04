@@ -184,7 +184,8 @@ public class PerformanceReviewServiceImpl implements PerformanceReviewService {
         PerformanceReview performanceReview = performanceReviewRepository.findById(requestPerformanceReviewVO.getReviewId())
                 .orElseThrow(() -> new RuntimeException("해당 ID의 평가를 찾을 수 없습니다."));
 
-        if (performanceReview.getApprovalStatus().equals(String.valueOf(PerformanceReviewStatus.S))) {
+        if (performanceReview.getApprovalStatus().equals(String.valueOf(PerformanceReviewStatus.S))
+                || performanceReview.getApprovalStatus().equals(String.valueOf(PerformanceReviewStatus.R))) {
             // 변경된 평가 항목 수정
             List<PerformanceReviewItemDTO> performanceReviewItemDTOList =
                     requestPerformanceReviewVO.getPerformanceReviewItemList();
@@ -224,7 +225,8 @@ public class PerformanceReviewServiceImpl implements PerformanceReviewService {
                 .orElseThrow(() -> new RuntimeException("해당 ID의 평가를 찾을 수 없습니다."));
 
         if (performanceReview.getApprovalStatus().equals(String.valueOf(PerformanceReviewStatus.S))
-                || performanceReview.getApprovalStatus().equals(String.valueOf(PerformanceReviewStatus.R))) {
+                || performanceReview.getApprovalStatus().equals(String.valueOf(PerformanceReviewStatus.R))
+                || performanceReview.getApprovalStatus().equals(String.valueOf(PerformanceReviewStatus.C))) {
             // 변경된 평가 항목 수정
             List<PerformanceReviewItemDTO> performanceReviewItemDTOList =
                     requestPerformanceReviewVO.getPerformanceReviewItemList();
@@ -264,7 +266,9 @@ public class PerformanceReviewServiceImpl implements PerformanceReviewService {
         PerformanceReview performanceReview = performanceReviewRepository.findById(requestPerformanceReviewVO.getReviewId())
                 .orElseThrow(() -> new RuntimeException("해당 ID의 평가를 찾을 수 없습니다."));
 
-        if (performanceReview.getApprovalStatus().equals(String.valueOf(PerformanceReviewStatus.C))) {
+        if (performanceReview.getApprovalStatus().equals(String.valueOf(PerformanceReviewStatus.S))
+                || performanceReview.getApprovalStatus().equals(String.valueOf(PerformanceReviewStatus.R))
+                || performanceReview.getApprovalStatus().equals(String.valueOf(PerformanceReviewStatus.C))) {
             // 변경된 평가 항목 수정
             List<PerformanceReviewItemDTO> performanceReviewItemDTOList =
                     requestPerformanceReviewVO.getPerformanceReviewItemList();
