@@ -79,7 +79,6 @@
       <div class="modal-content">
         <span class="close" @click="closeModal">&times;</span>
         <div v-if="selectedReview">
-          <img :src="selectedReview.revieweeImage" alt="Reviewee Image" class="reviewee-image" />
           <h2>{{ selectedReview.revieweeName }}</h2>
           <h3>{{ selectedReview.revieweePosition.positionName }}</h3>
           <table class="table table-striped table-hover">

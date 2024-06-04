@@ -13,6 +13,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service(value = "commandDepartmentService")
 public class DepartmentServiceImpl implements DepartmentService {
@@ -166,5 +167,37 @@ public class DepartmentServiceImpl implements DepartmentService {
 
         departmentRepository.deleteById(id);
 
+    }
+
+    @Override
+    public List<DepartmentDTO> modifyDepartmentStatus(List<DepartmentDTO> departmentDTO) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        List<DepartmentDTO> departmentDTOList = departmentDTO.stream()
+                .map(modifyData -> {
+                    DepartmentDTO currentDepartmentInfo = findDepartmentById(modifyData.getId());
+
+                    String newDepartmentStatus = "Y".equals(modifyData.getDepartmentStatus()) ? "N" : "Y";
+
+                    String endTime = "Y".equals(newDepartmentStatus) ? null : dateFormat.format(new Date());
+
+                    Department department = Department.builder()
+                            .id(modifyData.getId())
+                            .departmentName(modifyData.getDepartmentName())
+                            .departmentStatus(newDepartmentStatus) // 변경된 상태 설정
+                            .startTime(currentDepartmentInfo.getStartTime())
+                            .endTime(endTime) // 변경된 endTime 설정
+                            .memberCnt(currentDepartmentInfo.getMemberCnt())
+                            .leaderId(modifyData.getLeaderId())
+                            .sequence(modifyData.getSequence())
+                            .departmentCode(modifyData.getDepartmentCode())
+                            .build();
+
+                    departmentRepository.save(department);
+                    return mapper.map(department, DepartmentDTO.class);
+                })
+                .collect(Collectors.toList());
+
+        return departmentDTOList;
     }
 }
