@@ -46,6 +46,7 @@
 
       allInfo.value = response.data.result;
 
+
       if(id === 5 || id === 6) {
         const vacationInfo = allInfo.value.find(info => info.typeId === 1);
         vacationNum.value = vacationInfo ? vacationInfo.vacationNum : 0;
@@ -53,6 +54,7 @@
         const vacationInfo = allInfo.value.find(info => info.typeId === id);
         vacationNum.value = vacationInfo ? vacationInfo.vacationNum : 0;
       }
+
 
     } catch (error) {
       console.error("Error:", error);
@@ -83,6 +85,19 @@
     }
   };
 
+  function calculateDaysBetweenDates(startDate, endDate) {
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+
+  // 시작 날짜와 종료 날짜의 차이를 밀리초 단위로 계산
+  const differenceInTime = end.getTime() - start.getTime();
+
+  // 밀리초를 일(day)로 변환
+  const differenceInDays = differenceInTime / (1000 * 3600 * 24);
+
+  return differenceInDays;
+}
+
   const registApproval = async () => {
     postData.requesterId = userId.value;
 
@@ -93,12 +108,15 @@
 
     await getUserVacationInfo(postData.infoId);
 
+    const daysBetween = calculateDaysBetweenDates(postData.s_date, postData.e_date);
+    console.log(daysBetween)
+
     try {
       const confirmed = window.confirm('휴가를 사용하시겠습니까?');
 
       if(confirmed) {
         if (postData.content !== '') {
-          if (vacationNum.value > 0) {
+          if (vacationNum.value >= daysBetween) {
             const response = await axios.post(`http://localhost:8080/approval/vacation`, postData, {
               headers: {
                 'Content-Type': "application/json"

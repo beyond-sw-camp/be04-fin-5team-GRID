@@ -19,7 +19,7 @@
             :src="profileUrl"
             alt="profile" class="profile" @click="toggleDropdown">
           <ul class="dropdown-menu" ref="dropdownMenu">
-            <li><a class="dropdown-item" href="#" @click="goToProfile">개인 정보</a></li>
+            <li><a class="dropdown-item" href="#" @click="goProfile">개인 정보</a></li>
             <li><a class="dropdown-item" href="#" @click="logout">로그 아웃</a></li>
           </ul>
         </div>
@@ -118,6 +118,12 @@ const goToProfile = async (employeeNumber) => {
     });
   }, 300); // 모달이 닫히는 애니메이션 시간을 고려하여 약간의 지연을 줌
 };
+
+const goProfile = () => {
+  if (user.value && user.value.employeeNumber) {
+    router.push(`/hr/profile/${user.value.employeeNumber}`);
+  }
+}
 
 const fetchTeams = async (departmentId) => {
   try {
