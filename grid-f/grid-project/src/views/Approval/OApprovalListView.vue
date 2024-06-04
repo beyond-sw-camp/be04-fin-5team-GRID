@@ -91,21 +91,56 @@
 </script>
 
 <template>
-  <div v-if="isLoading">로딩 중</div>
-  <div v-else>
-    <div>
-     이번 주 시간 외 근무 시간 합계:
+  <div class="oaAll">
+    <div class="oaHeader">
+      <nav style="--bs-breadcrumb-divider: '>'; margin-top: -35px; margin-bottom: -7px;" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="http://localhost:5173/work" style="text-decoration: none; color: grey; font-size: 17px;"><i class="bi bi-list-check"></i>&nbsp; 근무 목록</a></li>
+          <li class="breadcrumb-item active" aria-current="page"><span class="fw-bolder"><i class="bi bi-clock"></i>&nbsp; 시간 외 근무</span></li>
+        </ol>
+      </nav>
+      <h1 class="fw-bolder"><i class="bi bi-clock"></i>&nbsp; 시간 외 근무</h1>
     </div>
-    <b-progress :max="12" height="2rem" show-progress class="mb-2">
-      <b-progress-bar variant="info" :value="6">
-        <span>6시간 / 12시간</span>
-      </b-progress-bar>
-    </b-progress>
-    <div v-if="userRole === 'ROLE_ADMIN'">{{ state.overtimeInWeek }}</div>
-    <ApprovalList :approvalList="state.approvalList"/>
-  </div>
+    <div class="oaContent">
+      <div v-if="isLoading">로딩 중</div>
+      <div v-else>
+        <div v-if="userRole !== 'ROLE_ADMIN'">
+          <div>이번 주 시간 외 근무 시간 합계:</div>
+          <b-progress :max="12" height="2rem" show-progress class="mb-2">
+            <b-progress-bar variant="info" :value="state.overtimeInWeek">
+              <span>{{ state.overtimeInWeek }}시간 / 12시간</span>
+            </b-progress-bar>
+          </b-progress>
+        </div>
+      </div>
+      <ApprovalList :approvalList="state.approvalList"/>
+    </div>
+</div>
 </template>
 
 <style scoped>
+.oaAll {
+  display: grid;
+  grid-template-rows: 18% 74% 8%;
+  grid-template-columns: 10% 80% 10%;
+  height: 100%;
+}
 
+.oaHeader {
+  grid-column-start: 2;
+  align-content: center;
+  margin-top: 2%;
+}
+
+.oaContent {
+  grid-column-start: 2;
+  grid-row-start: 2;
+}
+
+.oaHeader h1 {
+  margin-left: 0.5%;
+  margin: 0;
+  font-size: 25px;
+  font-weight: 600;
+}
 </style>

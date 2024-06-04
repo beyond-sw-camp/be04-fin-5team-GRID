@@ -48,7 +48,7 @@
       state.approvalList = response.data.approvalEmpResultList;
       state.approvalList.type = "bt";
 
-      console.log(url)
+      console.log(state.approvalList);
 
     } catch (error) {
       console.error('Fetch error: ' + error.message);
@@ -70,9 +70,45 @@
 </script>
 
 <template>
-  <ApprovalList :approvalList="state.approvalList"/>
+  <div class="btAll">
+    <div class="btheader">
+      <nav style="--bs-breadcrumb-divider: '>'; margin-top: -35px; margin-bottom: -7px;" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="http://localhost:5173/work" style="text-decoration: none; color: grey; font-size: 17px;"><i class="bi bi-list-check"></i>&nbsp; 근무 목록</a></li>
+          <li class="breadcrumb-item active" aria-current="page"><span class="fw-bolder"><i class="bi bi-briefcase"></i>&nbsp; 출장</span></li>
+        </ol>
+      </nav>
+      <h1 class="fw-bolder"><i class="bi bi-briefcase"></i>&nbsp; 출장</h1>
+    </div>
+    <div class="btContent">
+      <ApprovalList :approvalList="state.approvalList"/>
+    </div>
+  </div>
 </template>
 
 <style>
+.btAll {
+  display: grid;
+  grid-template-rows: 18% 74% 8%;
+  grid-template-columns: 10% 80% 10%;
+  height: 100%;
+}
 
+.btheader {
+  grid-column-start: 2;
+  align-content: center;
+  margin-top: 2%;
+}
+
+.btContent {
+  grid-column-start: 2;
+  grid-row-start: 2;
+}
+
+.btheader h1 {
+  margin-left: 0.5%;
+  margin: 0;
+  font-size: 25px;
+  font-weight: 600;
+}
 </style>

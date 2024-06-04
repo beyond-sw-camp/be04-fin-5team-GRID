@@ -1,5 +1,7 @@
 package org.highfives.grid.approval.command.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.highfives.grid.approval.command.aggregate.YN;
 import org.highfives.grid.approval.command.service.ApprovalService;
 import org.highfives.grid.approval.command.vo.*;
@@ -9,10 +11,20 @@ import org.highfives.grid.approval.common.dto.RWApprovalDTO;
 import org.highfives.grid.approval.common.dto.VacationApprovalDTO;
 import org.highfives.grid.approval.common.vo.ResApprovalVO;
 import org.highfives.grid.approval.query.service.PdfService;
+import org.highfives.grid.user.command.service.ImgService;
+import org.highfives.grid.user.command.vo.ResImgUploadVO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Map;
 
 @RestController(value = "CommandApprovalController")
 @RequestMapping("/approval")
@@ -20,11 +32,13 @@ public class ApprovalController {
 
     private final ApprovalService approvalService;
     private final PdfService pdfService;
+    private final ImgService imgService;
 
     @Autowired
-    public ApprovalController(ApprovalService approvalService, PdfService pdfService) {
+    public ApprovalController(ApprovalService approvalService, PdfService pdfService, ImgService imgService) {
         this.approvalService = approvalService;
         this.pdfService = pdfService;
+        this.imgService = imgService;
     }
 
     @PostMapping("/bt")
@@ -62,16 +76,33 @@ public class ApprovalController {
     }
 
     @PostMapping("/rw")
-    public ResponseEntity<ResApprovalVO> addRWApproval(@RequestBody RWApprovalVO rwApprovalVO) {
+    public ResponseEntity<ResApprovalVO> addRWApproval(@RequestPart("file") MultipartFile file, @RequestPart("postData") String rwApprovalVO) {
 
-        RWApprovalDTO result = approvalService.addRWApproval(rwApprovalVO);
+        ObjectMapper objectMapper = new ObjectMapper();
+        ResApprovalVO response = null;
 
-        ResApprovalVO response = ResApprovalVO.builder()
-                .statusCode(201)
-                .message("단축 근무 결재 생성 성공")
-                .href("/approval/detail/3/" + result.getId())
-                .rwResult(result)
-                .build();
+        try {
+            RWApprovalVO rwApproval = objectMapper.readValue(rwApprovalVO, RWApprovalVO.class);
+
+            Map<String, String> uploadResult = imgService.imgS3Upload(file);
+
+            rwApproval.setOriginName(uploadResult.get("origin"));
+            rwApproval.setRenameName(uploadResult.get("new"));
+            rwApproval.setPath(uploadResult.get("path"));
+
+            RWApprovalDTO result = approvalService.addRWApproval(rwApproval);
+
+            response = ResApprovalVO.builder()
+                    .statusCode(201)
+                    .message("단축 근무 결재 생성 성공")
+                    .href("/approval/detail/3/" + result.getId())
+                    .rwResult(result)
+                    .build();
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -317,5 +348,22 @@ public class ApprovalController {
     public void exportToPDF(@PathVariable int typeId, @PathVariable int approvalId) {
 
         pdfService.exportToPDF(typeId, approvalId);
+    }
+
+    @GetMapping("/downloadPdf/{typeId}/{approvalId}")
+    public ResponseEntity<FileSystemResource> downloadPdf(@PathVariable int typeId, @PathVariable int approvalId) {
+        // PDF 파일의 경로
+        String filePath = "C:/Users/Playdata/Documents/be04-fin-5team-GRID/grid/" + typeId + approvalId + ".pdf";
+
+        File file = new File(filePath);
+        FileSystemResource resource = new FileSystemResource(file);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + file.getName());
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(resource);
     }
 }

@@ -5,11 +5,8 @@
         <img src="@/assets/logo.png" @click="main()" class="logoimage" style="cursor: pointer;">
       </div>
       <div class="icons">
-        <button class="icon-button">
-          <img src="@/assets/icon1.png" alt="Button 1" class="icon-image" />
-        </button>
         <button class="icon-button" type="button" data-bs-toggle="offcanvas" data-bs-target="#demo">
-          <img src="@/assets/icon2.png" alt="Button 2" class="icon-image" />
+          <img src="@/assets/people.png" alt="Button 2" class="icon-image" />
         </button>
         <div class="dropdown">
           <img
@@ -84,19 +81,21 @@ const profileUrl = computed(() => {
 const fetchDepartments = async () => {
   try {
     const response = await axios.get('http://localhost:8080/department/find-all');
-    departments.value = response.data.result.map(department => ({
-      id: department.id,
-      departmentName: department.departmentName,
-      departmentStatus: department.departmentStatus,
-      startTime: department.startTime,
-      endTime: department.endTime,
-      memberCnt: department.memberCnt,
-      leaderId: department.leaderId,
-      departmentCode: department.departmentCode,
-      sequence: department.sequence,
-      showTeams: false,  // 팀 리스트를 보여줄지 여부
-      teams: []  // 팀 데이터
-    }));
+    departments.value = response.data.result
+      .map(department => ({
+        id: department.id,
+        departmentName: department.departmentName,
+        departmentStatus: department.departmentStatus,
+        startTime: department.startTime,
+        endTime: department.endTime,
+        memberCnt: department.memberCnt,
+        leaderId: department.leaderId,
+        departmentCode: department.departmentCode,
+        sequence: department.sequence,
+        showTeams: false,  // 팀 리스트를 보여줄지 여부
+        teams: []  // 팀 데이터
+      }))
+      .sort((a, b) => a.sequence - b.sequence);  // sequence 순으로 정렬
   } catch (error) {
     console.error('부서 정보를 가져오는 데 실패했습니다:', error);
   }
@@ -112,11 +111,13 @@ const goToProfile = () => {
 const fetchTeams = async (departmentId) => {
   try {
     const response = await axios.get(`http://localhost:8080/team/sub-department/${departmentId}`);
-    return response.data.result.map(team => ({
-      ...team,
-      showEmployees: false, // 팀원 리스트를 보여줄지 여부
-      employees: [] // 팀원 데이터
-    }));
+    return response.data.result
+      .map(team => ({
+        ...team,
+        showEmployees: false, // 팀원 리스트를 보여줄지 여부
+        employees: [] // 팀원 데이터
+      }))
+      .sort((a, b) => a.sequence - b.sequence);  // sequence 순으로 정렬
   } catch (error) {
     console.error('팀 정보를 가져오는 데 실패했습니다:', error);
     return [];
@@ -126,7 +127,7 @@ const fetchTeams = async (departmentId) => {
 const fetchEmployees = async (teamId) => {
   try {
     const response = await axios.get(`http://localhost:8080/users/team-list/${teamId}`);
-    return response.data.result;
+    return response.data.result.sort((a, b) => a.sequence - b.sequence);  // sequence 순으로 정렬
   } catch (error) {
     console.error('직원 정보를 가져오는 데 실패했습니다:', error);
     return [];
@@ -168,7 +169,6 @@ const handleDragEnd = async () => {
     const updatedDepartments = departments.value.map((department, index) => ({
       id: department.id,
       departmentName: department.departmentName,
-      order: index + 1,
       departmentStatus: department.departmentStatus,
       startTime: department.startTime,
       endTime: department.endTime,
@@ -311,7 +311,7 @@ onMounted(fetchDepartments);
   height: 40px;
   border-radius: 50%;
   cursor: pointer;
-  margin-right: 50px;
+  margin-right: 20px;
   object-fit: cover;
 }
 
@@ -323,11 +323,12 @@ onMounted(fetchDepartments);
   cursor: pointer;
   display: flex;
   align-items: center;
+  margin-right: 20px;
 }
 
 .icon-image {
-  width: 24px;
-  height: 24px;
+  width: 25px;
+  height: 25px;
 }
 
 .list-group-item {

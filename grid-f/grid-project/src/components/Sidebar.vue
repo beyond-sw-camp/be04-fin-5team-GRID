@@ -104,7 +104,7 @@ const gotodepartmentInfo = () => {
 }
 
 const goToAddTeamReview = () => {
-  router.push('/addteamreview');
+  router.push('/team-review/add');
 }
 
 const navigateTo = (path) => {

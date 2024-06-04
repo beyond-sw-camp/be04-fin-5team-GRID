@@ -1,26 +1,20 @@
 <template>
-  <div class="content">
-    <div class="reviewAll">
+  <div class="reviewAll">
       <div class="reviewHeader">
         <img class="reviewIcon" src="@/assets/list-check.png" alt="list-check" />
-        <h3>평가 생성</h3>
+        <h1>평가 생성</h1>
       </div>
-      <div class="reviewContent">
         <div class="buttonContainer">
-          <button type="button" class="btn btn-danger me-2" @click="deleteSelectedReviews">
-            선택 항목 삭제
-          </button>
-          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addQuestionModal">
-            항목 추가
-          </button>
+          <button type="button" class="deleteBtn" @click="deleteSelectedReviews">선택 항목 삭제</button>
+          <button type="button" class="addBtn" data-bs-toggle="modal" data-bs-target="#addQuestionModal">항목 추가</button>
         </div>
         <div class="reviewBox">
-          <table >
+          <table>
             <thead>
               <tr>
-                <th>선택</th>
-                <th>항목</th>
-                <th>내용</th>
+                <th style="width: 5%;">선택</th>
+                <th style="width: 10%;">항목</th>
+                <th style="width: 85%;">내용</th>
               </tr>
             </thead>
             <tbody>
@@ -32,7 +26,6 @@
             </tbody>
           </table>
         </div>
-      </div>
 
       <!-- Modal Structure -->
       <div class="modal fade" id="addQuestionModal" tabindex="-1" aria-labelledby="addQuestionModalLabel" aria-hidden="true">
@@ -55,7 +48,6 @@
           </div>
         </div>
       </div>
-    </div>
   </div>
 </template>
 
@@ -113,7 +105,6 @@ const addReview = async () => {
     const modal = bootstrap.Modal.getInstance(modalElement);
     if (modal) {
       modal.hide();
-      // 강제로 모달 상태를 초기화
       modalElement.addEventListener('hidden.bs.modal', () => {
         document.body.classList.remove('modal-open');
         document.querySelectorAll('.modal-backdrop').forEach(backdrop => backdrop.remove());
@@ -134,38 +125,33 @@ const addReview = async () => {
   font-style: normal;
 }
 
-.main-layout {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-}
-
-.body-layout {
-  display: flex;
-  flex-grow: 1;
-}
-
-.content {
-  flex-grow: 1;
-}
-
 .reviewAll {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
+  display: grid;
+  grid-template-rows: 18% 13% 4% 53% 8%;
+  grid-template-columns: 10% 80% 10%;
+  height:100%;
+  padding: 0;
+  font-family: 'IBMPlexSansKR-Regular';
 }
+
 
 .reviewHeader {
-  display: flex;
+  grid-column-start: 2;
+  grid-row-start: 1;
+  display:grid;
+  grid-template-columns: 3% 97%;
   align-items: center;
-  font-size: 20px;
-  font-weight: 600;
-  margin-top: 1%;
-  color: #000000;
 }
 
 .reviewHeader img {
-  margin-right: 10px; /* 이미지와 텍스트 간의 간격 조절 */
+  width: 25px;
+}
+
+.reviewHeader h1 {
+  margin-left: 0.5%;
+  margin-bottom: 0;
+  font-size: 25px;
+  font-weight: 600;
 }
 
 .reviewContent {
@@ -173,19 +159,20 @@ const addReview = async () => {
 }
 
 .buttonContainer {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 10px;
-  gap: 10px; /* 버튼 간 간격 조절 */
+  grid-row-start: 3;
+  grid-column-start: 2;
+  align-items: center;
+  margin-bottom: 20px;
+  display: grid;
+  grid-template-columns:80% 9% 2% 9%;
 }
 
 .reviewBox {
+  grid-row-start: 4;
+  grid-column-start: 2;
   width: 100%;
-  padding: 10px;
-}
-
-.reviewIcon {
-  width: 30px; /* 아이콘 크기 조정 */
+  border-collapse: collapse;
+  height:10px;
 }
 
 .reviewContent table {
@@ -195,8 +182,8 @@ const addReview = async () => {
 
 .reviewContent th,
 .reviewContent td {
-  border-top: 1px solid #ddd; /* 테이블 상단에만 선 추가 */
-  border-bottom: 1px solid #ddd; /* 테이블 하단에만 선 추가 */
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
   padding: 8px;
   text-align: left;
 }
@@ -246,4 +233,47 @@ tr:hover {
   background-color: #f1f1f1;
 }
 
+/* 버튼 스타일 */
+.deleteBtn {
+  width: 100%;
+    background-color: #088A85;
+    color: white;
+    padding: 5px 5px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    font-style: bold;
+    grid-column-start: 2;
+}
+
+.addBtn {
+  width: 100%;
+    background-color: #088A85;
+    color: white;
+    padding: 5px 5px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    font-style: bold;
+    grid-column-start: 4;
+}
+
+.deleteBtn:hover, .addBtn:hover {
+  background-color: #065f5b;
+}
+
+.btn-close {
+  background-color: #888;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.btn-close:hover {
+  background-color: #555;
+}
 </style>

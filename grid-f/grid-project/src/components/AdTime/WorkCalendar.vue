@@ -300,7 +300,7 @@ onMounted(async () => {
 #calendar .fc-daygrid-day-events {
   max-height: 100px; /* 날짜 셀의 고정 높이 */
   text-align: left;
-  //overflow: auto;
+  overflow: auto;
   text-decoration: none;
 }
 
@@ -315,7 +315,6 @@ onMounted(async () => {
   /* 기본 커서로 변경 */
   cursor: default;
 
-  //background-color: #3fb9b8;
   color: #ffffff;
 }
 
@@ -327,7 +326,7 @@ onMounted(async () => {
 #calendar .fc-daygrid-day-frame {
   display: flex;
   flex-direction: column;
-  height: 100px; /* 날짜 셀의 고정 높이 설정 */
+  height: 80px; /* 날짜 셀의 고정 높이 설정 */
   overflow: hidden;
 }
 

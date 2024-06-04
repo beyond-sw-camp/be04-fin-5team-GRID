@@ -340,7 +340,7 @@ const closeModal = (modalId) => {
 
 const allUsers = async () => {
     try {
-        const response = await axios.get('/api/users/list');
+        const response = await axios.get('/api/users/list/all');
         users.value = response.data.result;
         console.log(users.value);
     } catch (error) {
@@ -494,15 +494,6 @@ onBeforeMount(() => {
         grid-template-columns: 20% 5% 20% 5% 20% 30%;
         align-items: center;
         margin-bottom: 5%;
-    }
-
-    .vacationsTitle {
-        margin-left: 5%;
-        display: grid;
-        grid-template-columns: 85% 10% 5%;
-        align-items: center;
-        font-size: 12px;
-        height: 10vh;
     }
 
     .plusBtn {

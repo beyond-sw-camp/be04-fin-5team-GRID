@@ -32,12 +32,33 @@
         </tbody>
       </table>
     </div>
-    <div class="pagination">
-      <button @click="prevPage" :disabled="currentPage === 1">Previous</button>
-      <button v-for="page in totalPages" :key="page" @click="goToPage(page)"
-              :class="{ active: page === currentPage }">{{ page }}</button>
-      <button @click="nextPage" :disabled="currentPage === totalPages">Next</button>
-    </div>
+    <nav class="pg" aria-label="Page navigation example" >
+            <ul class="pagination">
+                <li class="page-item" :class="{ disabled: currentPage === 1 }">
+                    <a class="page-link" href="#" aria-label="First" @click.prevent="goToFirstPage">
+                        <span aria-hidden="true">&laquo;&laquo;</span>
+                    </a>
+                </li>
+                <li class="page-item" :class="{ disabled: currentPage === 1 }">
+                    <a class="page-link" href="#" aria-label="Previous" @click.prevent="prevPage">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <li v-for="page in filteredPages" :key="page" class="page-item" :class="{ active: page === currentPage }">
+                    <a class="page-link" @click.prevent="goToPage(page)">{{ page }}</a>
+                </li>
+                <li class="page-item" :class="{ disabled: currentPage === totalPages }">
+                    <a class="page-link" aria-label="Next" @click.prevent="nextPage">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+                <li class="page-item" :class="{ disabled: currentPage === totalPages }">
+                    <a class="page-link" href="#" aria-label="Last" @click.prevent="goToLastPage">
+                        <span aria-hidden="true">&raquo;&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
   </div>
 </template>
 
@@ -106,20 +127,42 @@ const totalPages = computed(() => {
   return Math.ceil(reviewList.value.length / itemsPerPage);
 });
 
+const filteredPages = computed(() => {
+    const maxPages = 5; // 페이지당 최대 표시할 페이지 수
+    const startPage = Math.max(1, currentPage.value - Math.floor(maxPages / 2));
+    const endPage = Math.min(totalPages.value, startPage + maxPages - 1);
+
+    const pages = [];
+    for (let i = startPage; i <= endPage; i++) {
+        pages.push(i);
+    }
+    return pages;
+});
+
 const prevPage = () => {
-  if (currentPage.value > 1) {
-    currentPage.value--;
-  }
+    if (currentPage.value > 1) {
+        currentPage.value--;
+    }
 };
 
 const nextPage = () => {
-  if (currentPage.value < totalPages.value) {
-    currentPage.value++;
-  }
+    if (currentPage.value < totalPages.value) {
+        currentPage.value++;
+    }
 };
 
 const goToPage = (page) => {
-  currentPage.value = page;
+    currentPage.value = page;
+};
+
+// 처음 페이지로 이동
+const goToFirstPage = () => {
+    currentPage.value = 1;
+};
+
+// 마지막 페이지로 이동
+const goToLastPage = () => {
+    currentPage.value = totalPages.value;
 };
 
 const getApprovalStatus = (status) => {
@@ -232,19 +275,18 @@ table {
   border-collapse: collapse;
 }
 
-th,
-td {
-  //border: 1px solid #dddddd;
+th,td {
+  border: 1px solid #dddddd;
   text-align: left;
   padding: 6px;
   vertical-align: middle;
 }
 
 th {
-  //background-color: #f2f2f2;
+  background-color: #f2f2f2;
 }
 
-.pagination {
+/* .pagination {
   grid-row-start: 6;
   grid-column-start: 2;
   grid-column-end: 3;
@@ -278,5 +320,29 @@ th {
 .pagination span {
   display: flex;
   align-items: center;
-}
+} */
+
+.pg {
+        grid-row-start: 4;
+        grid-column-start: 2;
+        grid-column-end: 3;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 10px;
+    }
+
+    .pagination .page-item.active .page-link {
+    background-color: #088A85; /* 원하는 배경색 */
+    border-color: #088A85; /* 원하는 테두리 색 */
+    color: white; /* 원하는 텍스트 색 */
+    }
+
+    .pagination .page-item .page-link {
+        color: #088A85; /* 기본 텍스트 색 */
+    }
+
+    .pagination .page-item.disabled .page-link {
+        color: #088A85; /* 비활성화된 페이지 색 */
+    }
 </style>

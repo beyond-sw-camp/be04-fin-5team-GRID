@@ -65,9 +65,13 @@
       if (response.status !== 200) {
         throw new Error("response is not ok");
       }
+
       state.reqApprovalList = response.data.approvalEmpResultList;
       state.sReqApprovalList = response.data.approvalEmpResultList.slice(0, 5);
+
       state.reqApprovalList.type = typeId;
+      state.sReqApprovalList.type = typeId;
+      
     } catch (error) {
       console.error('Fetch error: ' + error.message);
     }
@@ -78,8 +82,8 @@
     if (token) {
       const decodedToken = parseJwt(token);
 
-      userRole.value = decodedToken.auth || '';
       userId.value = decodedToken.id || '';
+      userRole.value = decodedToken.auth || '';
     }
 
     await fetchApprovalList(1, 0, userId.value);
@@ -90,46 +94,80 @@
 </script>
 
 <template>
-  <div>결재 목록</div>
-  <div v-if="isLoading">
-    로딩 중
-  </div>
-  <div v-else>
-    <div v-if="userRole === 'ROLE_ADMIN'">
-      <!-- 관리자 -->
-      <div>
-        <b-card no-body>
-          <b-tabs card>
-            <b-tab title="출장" @click="fetchApprovalList(1, 0, userId.value)" active>
-              <b-card-text><ApprovalList :approvalList="state.approvalList"/></b-card-text>
-            </b-tab>
-            <b-tab title="시간 외 근무" @click="fetchApprovalList(2, 0, userId.value)">
-              <ApprovalList :approvalList="state.approvalList"/>
-            </b-tab>
-            <b-tab title="단축 근무" @click="fetchApprovalList(3, 0, userId.value)">
-              <ApprovalList :approvalList="state.approvalList"/>
-            </b-tab>
-            <b-tab title="휴가" @click="fetchApprovalList(4, 0, userId.value)">
-              <ApprovalList :approvalList="state.approvalList"/>
-            </b-tab>
-          </b-tabs>
-        </b-card>
+  <div class="approvalAll"> 
+    <div class="approvalHeader">
+      <div><h1 class="fw-bolder "><i class="bi bi-collection"></i>&nbsp; 결재 목록</h1></div>
+        <div v-if="isLoading">
+          로딩 중
+        </div>
+      <div v-else></div>
+    </div>
+    <div class="approvalContent">
+        <div v-if="userRole === 'ROLE_ADMIN'">
+          <!-- 관리자 -->
+          <div>
+            <b-card no-body>
+              <b-tabs card>
+                <b-tab title="출장" @click="fetchApprovalList(1, 0, userId)" active>
+                  <b-card-text><ApprovalList :approvalList="state.approvalList"/></b-card-text>
+                </b-tab>
+                <b-tab title="시간 외 근무" @click="fetchApprovalList(2, 0, userId)">
+                  <ApprovalList :approvalList="state.approvalList"/>
+                </b-tab>
+                <b-tab title="단축 근무" @click="fetchApprovalList(3, 0, userId)">
+                  <ApprovalList :approvalList="state.approvalList"/>
+                </b-tab>
+                <b-tab title="휴가" @click="fetchApprovalList(4, 0, userId)">
+                  <ApprovalList :approvalList="state.approvalList"/>
+                </b-tab>
+              </b-tabs>
+            </b-card>
+          </div>
+        </div>
+        <div v-else>
+          <b-card title="내가 작성한 문서">
+            <div class="text-end">
+              <h6 class="text-muted" style="margin-bottom: 10px; margin-top: -30px;" @click="navigateTo('/my')">상세 <i class="bi bi-chevron-right"></i></h6>
+            </div>
+            <br>
+            <ApprovalList :approvalList="state.sApprovalList" :short="1"/>
+          </b-card>
+            <br>
+          <b-card title="결재 필요 문서">
+            <div class="text-end">
+              <h6 class="text-muted" style="margin-bottom: 10px; margin-top: -30px;" @click="navigateTo('/required')">상세 <i class="bi bi-chevron-right"></i></h6>
+            </div>
+            <br>
+            <ApprovalList :approvalList="state.sReqApprovalList" :short="1"/>
+          </b-card>
+        </div>
       </div>
-    </div>
-    <div v-else>
-      <b-card title="내가 작성한 문서">
-        <br>
-        <ApprovalList :approvalList="state.sApprovalList" :short="1"/>
-      </b-card>
-      <br>
-      <b-card title="결재 필요 문서">
-        <div @click="navigateTo('/bt')">상세</div>
-        <br>
-        <ApprovalList :approvalList="state.sReqApprovalList" :short="1"/>
-      </b-card>
-    </div>
-  </div>
+</div>
 </template>
 
 <style scoped>
+.approvalAll {
+  display: grid;
+  grid-template-rows: 18% 75% 7%;
+  grid-template-columns: 10% 80% 10%;
+  height: 100%;
+}
+
+.approvalHeader {
+  grid-column-start: 2;
+  align-content: center;
+  margin-top: 2%;
+}
+
+.approvalHeader h1 {
+  margin-left: 0.5%;
+  margin: 0;
+  font-size: 25px;
+  font-weight: 600;
+}
+
+.approvalContent {
+  grid-column-start: 2;
+  grid-row-start: 2;
+}
 </style>
