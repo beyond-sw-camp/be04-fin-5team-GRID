@@ -32,23 +32,28 @@
 
   const registApproval = async() => {
 
-    alert('결재를 제출하시겠습니까?');
     postData.requesterId = userId.value;
 
     try {
-      const response = await axios.post(`http://localhost:8080/approval/bt`, postData, {
-        headers: {
-          'Content-Type': "application/json"
+      const confirmed = window.confirm('결재를 제출하시겠습니까?');
+
+      if(confirmed) {
+        if (postData.content !== '') {
+          const response = await axios.post(`http://localhost:8080/approval/bt`, postData, {
+            headers: {
+              'Content-Type': "application/json"
+            }
+          })
+          if (response.status !== 201) {
+            throw new Error("response is not ok");
+          } else {
+            alert('결재가 제출되었습니다.')
+            router.push(response.data.href);
+          }
+        } else {
+          alert('내용을 입력해주세요');
         }
-      })
-
-      if (response.status !== 201) {
-        throw new Error("response is not ok");
-      } else {
-        alert('결재가 제출되었습니다.')
-        router.push(response.data.href);
       }
-
     } catch (error) {
       console.error('Fail to post: ', error.message);
     }
@@ -87,7 +92,7 @@ onMounted(async () => {
             label-cols-sm="3"
             label-align-sm="right"
         >
-          <b-form-input type="date" :state="false" id="start" v-model="postData.startTime"></b-form-input>
+          <b-form-input type="date" id="start" v-model="postData.startTime"></b-form-input>
         </b-form-group>
 
         <b-form-group
