@@ -1,7 +1,7 @@
 <template>
   <div class="adTimeAddController">
     <div class="adList">
-    <button @click="goToAdTimeList()" class="btn btn-primary adBtn">출퇴근</button>
+      <button @click="goToAdTimeList()" class="btn btn-primary adBtn">출퇴근</button>
     </div>
     <div class="adTimeBox">
       <div class="card-deck adCard">
@@ -21,9 +21,9 @@
         </div>
       </div>
     </div>
-<!--    <div class="weekCalender" id="app">-->
-<!--      <div id="calendar"></div>-->
-<!--    </div>-->
+    <!--    <div class="weekCalender" id="app">-->
+    <!--      <div id="calendar"></div>-->
+    <!--    </div>-->
   </div>
 
 
@@ -293,6 +293,7 @@ const addArrivalTime = async () => {
           employeeId: userId.value   // 로그인한 사람
         })
         .then(response => {
+          alert('출근 시간이 체크 되었습니다.')
           window.location.reload();
           console.log('출근 시간이 기록되었습니다.');
         })
@@ -319,7 +320,7 @@ const addDepartureTime = async () => {
           employeeId: userId.value   // 로그인한 사람
         })
         .then(response => {
-
+          alert('퇴근 시간이 체크 되었습니다.')
           window.location.reload();
           console.log('퇴근 시간이 기록되었습니다.');
         })
