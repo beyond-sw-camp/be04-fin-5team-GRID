@@ -1,10 +1,9 @@
 <template>
   <div class="container">
-  
-      <div class="header-title">
-        <img class="reviewIcon" src="@/assets/list-check.png" alt="list-check" />
-        <h1>내 평가 목록</h1>
-      </div>
+    <div class="header-title">
+      <img class="reviewIcon" src="@/assets/list-check.png" alt="list-check" />
+      <h1>내 평가 목록</h1>
+    </div>
 
     <div class="search-and-add">
       <div class="search-group">
@@ -274,6 +273,14 @@ const submitReview = async () => {
   } catch (error) {
     console.error('Error submitting review:', error);
   }
+};
+
+const search = () => {
+  if (!searchQuery.value.trim()) {
+    alert('검색어를 입력해주세요.');
+    return;
+  }
+  currentPage.value = 1;
 };
 </script>
 

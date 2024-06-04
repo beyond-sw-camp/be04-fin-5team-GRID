@@ -121,4 +121,20 @@ public class DepartmentController {
         return ResponseEntity.status(HttpStatus.OK).body(responseDepartmentVO);
     }
 
+
+    @PutMapping("/department-leader")
+    public ResponseEntity<ResponseDepartmentVO> modifyDepartmentLeader(@RequestBody DepartmentDTO departmentDTO) {
+
+        DepartmentDTO departmentLeader = departmentService.modifyDepartmentLeader(departmentDTO);
+
+        ResponseDepartmentVO responseDepartmentVO = ResponseDepartmentVO.builder()
+                .message("success")
+                .href("/{id}")
+                .statusCode(200)
+                .result(departmentLeader)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(responseDepartmentVO);
+    }
+
 }

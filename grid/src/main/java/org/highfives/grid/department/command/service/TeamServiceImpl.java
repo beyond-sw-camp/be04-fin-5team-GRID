@@ -94,4 +94,25 @@ public class TeamServiceImpl implements TeamService{
         teamRepository.deleteById(id);
 
     }
+
+    @Override
+    public TeamDTO modifyTeamLeader(TeamDTO teamDTO) {
+        Team currentTeamData = teamRepository.findById(teamDTO.getId()).orElseThrow(() -> new IllegalArgumentException("값이 없습니다."));
+
+            Team team = Team.builder()
+                    .id(teamDTO.getId())
+                    .teamName(currentTeamData.getTeamName())
+                    .teamStatus(currentTeamData.getTeamStatus())
+                    .startTime(currentTeamData.getStartTime())
+                    .endTime(currentTeamData.getEndTime())
+                    .leaderId(teamDTO.getLeaderId())
+                    .departmentId(currentTeamData.getDepartmentId())
+                    .sequence(currentTeamData.getSequence())
+                    .build();
+
+            teamRepository.save(team);
+
+            return mapper.map(team, TeamDTO.class);
+
+    }
 }
