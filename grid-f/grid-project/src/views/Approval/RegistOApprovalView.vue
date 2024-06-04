@@ -49,7 +49,6 @@
       const confirmed = window.confirm('결재를 제출하시겠습니까?');
 
       if(confirmed) {
-        console.log(postData.startTime)
       if (postData.content !== "" && postData.startTime !== " :00" && postData.endTime !== " :00") {
           if (diff < 12) {
             const response = await axios.post("http://localhost:8080/approval/overtime", postData, {
@@ -57,10 +56,13 @@
                 'Content-Type': "application/json"
               }
             })
-            if (response.status === 201) {
+            if (!response.success) {
+              alert(response.data.message)
+            } else if (response.status === 201) {
               alert('결재가 제출되었습니다.');
               router.push(response.data.href);
-            } else {
+            }
+            else {
               throw new Error("response is not ok");
             }
           } else {

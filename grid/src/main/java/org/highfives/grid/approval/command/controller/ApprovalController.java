@@ -60,9 +60,18 @@ public class ApprovalController {
     public ResponseEntity<ResApprovalVO> addOvertimeApproval(@RequestBody OvertimeApprovalVO overtimeApprovalVO) {
 
         OvertimeApprovalDTO result = approvalService.addOvertimeApproval(overtimeApprovalVO);
-        System.out.println(result);
+
+        if (result == null) {
+            ResApprovalVO response = ResApprovalVO.builder()
+                    .success(false)
+                    .message("주별 시간 외 근무 시간의 합계가 12시간을 초과했습니다.")
+                    .build();
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        }
 
         ResApprovalVO response = ResApprovalVO.builder()
+                .success(true)
                 .statusCode(201)
                 .message("시간 외 근무 결재 생성 성공")
                 .href("/approval/detail/2/" + result.getId())
@@ -350,7 +359,7 @@ public class ApprovalController {
     @GetMapping("/downloadPdf/{typeId}/{approvalId}")
     public ResponseEntity<FileSystemResource> downloadPdf(@PathVariable int typeId, @PathVariable int approvalId) {
         // PDF 파일의 경로
-        String filePath = "C:/Users/Playdata/Desktop/GRID/grid/" + typeId + approvalId + ".pdf";
+        String filePath = "C:/Users/Playdata/Documents/be04-fin-5team-GRID/grid/" + typeId + approvalId + ".pdf";
 
         File file = new File(filePath);
         FileSystemResource resource = new FileSystemResource(file);

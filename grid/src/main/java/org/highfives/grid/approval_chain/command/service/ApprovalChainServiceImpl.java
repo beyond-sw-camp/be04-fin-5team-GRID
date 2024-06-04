@@ -360,8 +360,6 @@ public class ApprovalChainServiceImpl implements ApprovalChainService{
             gap = 1;
         }
 
-        System.out.println(gap);
-
         approvalChain.setApprovalStatus(chainStatusVO.getChainStatus());
         approvalChain.setApprovalTime(LocalDateTime.now().format(dateFormat));
 
