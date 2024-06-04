@@ -1,5 +1,5 @@
 <script setup>
-  import {onMounted, reactive, ref} from "vue";
+import {onMounted, reactive, ref, watch} from "vue";
   import {useRoute} from "vue-router";
   import axios from "axios";
   import router from "@/router/router.js";
@@ -57,14 +57,21 @@
     }
   }
 
-onMounted(async () => {
-  const token = localStorage.getItem('access');
-  if (token) {
-    const decodedToken = parseJwt(token);
+  watch(
+      () => [postData.startTime],
+      () => {
+        postData.endTime = '';
+      }
+  );
 
-    userId.value = decodedToken.id || '';
-  }
-})
+  onMounted(async () => {
+    const token = localStorage.getItem('access');
+    if (token) {
+      const decodedToken = parseJwt(token);
+
+      userId.value = decodedToken.id || '';
+    }
+  })
 </script>
 
 <template>

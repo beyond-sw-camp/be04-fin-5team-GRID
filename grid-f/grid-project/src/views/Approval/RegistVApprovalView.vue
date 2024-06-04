@@ -154,7 +154,11 @@
 
   watch(
       () => [postData.s_date, postData.s_time],
-      updateDateTime
+      () => {
+        updateDateTime();
+        postData.e_date = '';
+        postData.e_time = '';
+      }
   );
 
   watch(

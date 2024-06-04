@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, reactive, ref } from "vue";
+import {computed, onMounted, reactive, ref, watch} from "vue";
 import axios from "axios";
 import router from "@/router/router.js";
 import { useStore } from "vuex";
@@ -99,6 +99,13 @@ const registApproval = async () => {
     console.error("Fail to post: ", error.message);
   }
 };
+
+watch(
+    () => [postData.startTime],
+    () => {
+      postData.endTime = '';
+    }
+);
 
 onMounted(async () => {
   const token = localStorage.getItem("access");

@@ -34,6 +34,9 @@
   const updateDateTime = () => {
     postData.startTime = `${postData.s_date} ${postData.s_time}:00`;
     postData.endTime = `${postData.e_date} ${postData.e_time}:00`;
+
+    console.log(postData.startTime, postData.endTime)
+    console.log(postData.endTime)
   }
 
   const registApproval = async() => {
@@ -79,7 +82,11 @@
 
   watch(
       () => [postData.s_date, postData.s_time],
-      updateDateTime
+      () => {
+        updateDateTime();
+        postData.e_date = '';
+        postData.e_time = '';
+      }
   );
 
   watch(
