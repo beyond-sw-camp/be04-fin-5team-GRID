@@ -13,13 +13,17 @@
     short: props.short
   })
 
+  let pathList = [
+    'bt', 'overtime', 'rw', 'vacation'
+  ]
+
   const fields = [
     { key: 'index', label: '번호', sortable: false },
     { key: 'content', label: '내용', sortable: false },
     { key: 'employeeNumber', label: '사번', sortable: true },
     { key: 'employeeName', label: '작성자', sortable: false },
     { key: 'writeTime', label: '작성일자', sortable: true },
-    { key: 'approvalStatus', label: '결재 상태', sortable: false }
+    { key: 'approvalStatuscancelYncancelDocId', label: '결재 상태', sortable: false }
   ]
 
   const approvalFields = [
@@ -54,14 +58,8 @@
 
   const registStatus = async (status, approvalId) => {
 
-    putStatusData.chainStatus = status;
-    putStatusData.typeId = state.type;
-    putStatusData.approvalId = approvalId;
-
-    console.log(putStatusData);
-
     try {
-      const response = await axios.put(`http://localhost:8080/approval-chain/status`, putStatusData, {
+      const response = await axios.put("http://localhost:8080/approval/" + pathList[props.approvalList.type - 1] + `-status/${approvalId}`, {
         headers: {
           'Content-Type': "application/json"
         }
@@ -70,13 +68,11 @@
         throw new Error("response is not ok");
 
       }
-
-      console.log(response)
-
     } catch (error) {
       console.error('Fail to post: ', error.message);
     }
   }
+
   const approvalDetail = (typeId, approvalId, employeeId, approvalStatus) => {
     if (approvalStatus === 'N' && userRole.value !== 'ROLE_ADMIN' && userId.value !== employeeId) {
       registStatus('V', approvalId);
@@ -140,7 +136,6 @@
         </template>
       </b-table>
     </template>
-
     <template v-else-if="props.approvalList.type === 'rw'">
       <b-table id="table" :fields="approvalFields" :items="props.approvalList" hover small
                :per-page=10 :current-page="currentPage">
@@ -170,11 +165,13 @@
         <template #cell(writeTime)="data">
           <span>{{ data.value.substring(0, 10) }}</span>
         </template>
-        <template #cell(approvalStatus)="data">
-          <b-badge variant="success" v-if="data.value === 'A'">승인</b-badge>
-          <b-badge variant="danger" v-if="data.value === 'D'">반려</b-badge>
-          <b-badge variant="warning" v-if="data.value === 'V'">대기</b-badge>
-          <b-badge variant="secondary" v-if="data.value === 'N'">미열람</b-badge>
+        <template #cell(approvalStatuscancelYncancelDocId)="data">
+          <b-badge variant="dark" v-if="data.item.cancelYn === 'Y'">취소</b-badge>
+          <b-badge variant="success" v-else-if="data.item.approvalStatus === 'A'">승인</b-badge>
+          <b-badge variant="danger" v-else-if="data.item.approvalStatus === 'D'">반려</b-badge>
+          <b-badge variant="warning" v-else-if="data.item.approvalStatus === 'V'">대기</b-badge>
+          <b-badge variant="secondary" v-else-if="data.item.approvalStatus === 'N'">미열람</b-badge>
+          <span>&nbsp;</span><b-badge variant="light" v-if="data.item.cancelDocId > 0">취소결재</b-badge>
         </template>
         <template #cell()="data">
           <span>{{ data.value }}</span>
@@ -189,16 +186,18 @@
           {{ data.index + 1 }}
         </template>
         <template #cell(content)="data">
-          <span @click="approvalDetail(props.approvalList.type, data.item.id, data.item.requesterId, data.item.approvalStatus)">{{ data.value }}</span>
+          <span @click="approvalDetail(props.approvalList.type, data.item.id, data.item.employeeId, data.item.approvalStatus)">{{ data.value }}</span>
         </template>
         <template #cell(writeTime)="data">
           <span>{{ data.value.substring(0, 10) }}</span>
         </template>
-        <template #cell(approvalStatus)="data">
-          <b-badge variant="success" v-if="data.value === 'A'">승인</b-badge>
-          <b-badge variant="danger" v-if="data.value === 'D'">반려</b-badge>
-          <b-badge variant="warning" v-if="data.value === 'V'">대기</b-badge>
-          <b-badge variant="secondary" v-if="data.value === 'N'">미열람</b-badge>
+        <template #cell(approvalStatuscancelYncancelDocId)="data">
+          <b-badge variant="dark" v-if="data.item.cancelYn === 'Y'">취소</b-badge>
+          <b-badge variant="success" v-else-if="data.item.approvalStatus === 'A'">승인</b-badge>
+          <b-badge variant="danger" v-else-if="data.item.approvalStatus === 'D'">반려</b-badge>
+          <b-badge variant="warning" v-else-if="data.item.approvalStatus === 'V'">대기</b-badge>
+          <b-badge variant="secondary" v-else-if="data.item.approvalStatus === 'N'">미열람</b-badge>
+          <span>&nbsp;</span><b-badge variant="light" v-if="data.item.cancelDocId !== 0">취소결재</b-badge>
         </template>
         <template #cell()="data">
           <span>{{ data.value }}</span>

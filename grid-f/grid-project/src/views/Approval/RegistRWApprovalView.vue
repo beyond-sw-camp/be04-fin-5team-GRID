@@ -1,96 +1,110 @@
 <script setup>
-  import {computed, onMounted, reactive, ref} from "vue";
-  import {useRoute} from "vue-router";
-  import axios from "axios";
-  import router from "@/router/router.js";
-  import {useStore} from "vuex";
+import { computed, onMounted, reactive, ref } from "vue";
+import { useRoute } from "vue-router";
+import axios from "axios";
+import router from "@/router/router.js";
+import { useStore } from "vuex";
 
-  const route = useRoute();
-  const store = useStore();
+const route = useRoute();
+const store = useStore();
 
-  const user = computed(() => store.state.user);
+const user = computed(() => store.state.user);
+const userId = ref();
 
-  const userId = ref();
+let fileInput = null;
 
-  const fileInput = ref(null);
+const postData = reactive({
+  startTime: "",
+  endTime: "",
+  content: "",
+  requesterId: 0
+});
 
-  const postData = reactive({
-    startTime: "",
-    endTime: "",
-    file: null,
-    content: "",
-    requesterId: 0,
-    originName: '',
-    renameName: '',
-    path: ''
-  })
+const handleFileChange = (event) => {
+  const file = event.target.files[0];
+  fileInput = file;
 
-  const handleFileChange = () => {
-    const file = fileInput.value;
-
-    if (file) {
-      console.log('Selected file:', file);
-    } else {
-      console.error('No file selected');
-    }
+  if (file) {
+    console.log("Selected file:", file);
+  } else {
+    console.error("No file selected");
   }
+};
 
-  function parseJwt(token) {
-    try {
-      const base64Url = token.split('.')[1];
-      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-      const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
-        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-      }).join(''));
-      return JSON.parse(jsonPayload);
-    } catch (error) {
-      console.error('Invalid token', error);
-      return null;
-    }
+function parseJwt(token) {
+  try {
+    const base64Url = token.split(".")[1];
+    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+    const jsonPayload = decodeURIComponent(
+        atob(base64)
+            .split("")
+            .map(function (c) {
+              return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+            })
+            .join("")
+    );
+    return JSON.parse(jsonPayload);
+  } catch (error) {
+    console.error("Invalid token", error);
+    return null;
   }
+}
 
-  const registApproval = async () => {
+const registApproval = async () => {
 
-    alert('결재를 제출하시겠습니까?');
+  postData.requesterId = userId.value;
 
-    postData.requesterId = userId.value;
+  console.log(user.value.gender)
 
-    const formData = new FormData();
+  const formData = new FormData();
 
-    formData.append('postData', JSON.stringify(postData));
-    formData.append('file', fileInput.value);
+  formData.append("file", fileInput); // fileInput 대신 postData.file 사용
+  formData.append("postData", JSON.stringify(postData));
 
-    try {
-      if (user.value.gender === 'M') {
-        const response = await axios.post(`http://localhost:8080/approval/rw`, formData, {
-          headers: {
-            'Content-Type': "multipart/form-data"
+  try {
+    const confirmed = window.confirm("결재를 제출하시겠습니까?");
+    if (confirmed) {
+      if (postData.content !== "") {
+        console.log(formData);
+        if (user.value.gender === "F") {
+          const response = await axios.post(
+              `http://localhost:8080/approval/rw`,
+              formData,
+              {
+                headers: {
+                  "Content-Type": "multipart/form-data",
+                },
+              }
+          );
+
+          if (response.status !== 201) {
+            throw new Error("response is not ok");
+          } else {
+            alert("결재가 제출되었습니다.");
+            router.push(response.data.href);
           }
-        })
-        if (response.status !== 201) {
-          throw new Error("response is not ok");
+        } else if (user.value.gender === "M") {
+          alert("남직원은 임신 단축 근무를 신청할 수 없습니다.");
         } else {
-          alert('결재가 제출되었습니다.')
-          router.push(response.data.href);
+          alert("단축 근무 기간입니다.");
         }
-      } else if (user.value.gender === 'M'){
-        alert('남직원은 임신 단축 근무를 신청할 수 없습니다.')
       } else {
-        alert('단축 근무 기간입니다.')
+        alert("내용을 입력해주세요");
       }
-    } catch (error) {
-      console.error('Fail to post: ', error.message);
     }
+  } catch (error) {
+    console.error("Fail to post: ", error.message);
   }
+};
 
-  onMounted(async () => {
-    const token = localStorage.getItem('access');
-    if (token) {
-      const decodedToken = parseJwt(token);
+onMounted(async () => {
+  const token = localStorage.getItem("access");
+  if (token) {
+    const decodedToken = parseJwt(token);
 
-      userId.value = decodedToken.id || '';
-    }
-  })
+    userId.value = decodedToken.id || "";
+  }
+});
 </script>
 
 <template>
@@ -119,7 +133,7 @@
             label-cols-sm="3"
             label-align-sm="right"
         >
-          <b-form-input type="date" :state="false" id="start" v-model="postData.startTime"></b-form-input>
+          <b-form-input type="date" id="start" v-model="postData.startTime"></b-form-input>
         </b-form-group>
 
         <b-form-group

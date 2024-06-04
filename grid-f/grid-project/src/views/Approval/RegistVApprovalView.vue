@@ -97,22 +97,25 @@
       const confirmed = window.confirm('휴가를 사용하시겠습니까?');
 
       if(confirmed) {
-        if(vacationNum.value > 0) {
-          const response = await axios.post(`http://localhost:8080/approval/vacation`, postData, {
-            headers: {
-              'Content-Type': "application/json"
+        if (postData.content !== '') {
+          if (vacationNum.value > 0) {
+            const response = await axios.post(`http://localhost:8080/approval/vacation`, postData, {
+              headers: {
+                'Content-Type': "application/json"
+              }
+            })
+            if (response.status !== 201) {
+              throw new Error("response is not ok");
+            } else {
+              alert('결재가 제출되었습니다.')
+              router.push(response.data.href);
             }
-          })
-
-          if (response.status !== 201) {
-            throw new Error("response is not ok");
           } else {
-            alert('결재가 제출되었습니다.')
-            router.push(response.data.href);
+            alert('휴가가 부족합니다.');
+            return;
           }
         } else {
-          alert('휴가가 부족합니다.');
-          return;
+          alert('내용을 입력해주세요');
         }
       }
     } catch (error) {
@@ -185,8 +188,8 @@
               label-cols-sm="3"
               label-align-sm="right"
           >
-            <b-form-input type="date" :state="false" id="start" v-model="postData.s_date"></b-form-input>
-            <b-form-input type="time" id="start" v-model="postData.s_time" :disabled="state.isTimeDisabled"></b-form-input>
+            <b-form-input type="date" v-model="postData.s_date"></b-form-input>
+            <b-form-input type="time" v-model="postData.s_time" :disabled="state.isTimeDisabled"></b-form-input>
           </b-form-group>
 
           <b-form-group
@@ -194,8 +197,8 @@
               label-cols-sm="3"
               label-align-sm="right"
           >
-            <b-form-input type="date" id="end" v-model="postData.e_date" :min="postData.s_date" :disabled="state.isEndDateDisabled"></b-form-input>
-            <b-form-input type="time" id="start" v-model="postData.e_time" :disabled="state.isEndDateDisabled || state.isTimeDisabled"></b-form-input>
+            <b-form-input type="date" v-model="postData.e_date" :min="postData.s_date" :disabled="state.isEndDateDisabled"></b-form-input>
+            <b-form-input type="time" v-model="postData.e_time" :disabled="state.isEndDateDisabled || state.isTimeDisabled"></b-form-input>
           </b-form-group>
 
           <b-form-group

@@ -138,6 +138,27 @@ public class ApprovalServiceImpl implements ApprovalService {
             }
         }
 
+        todayCount = ChronoUnit.MINUTES.between(startDate, endDate)/60.0;
+
+        if (count + todayCount < 12) {
+            OvertimeApproval overtimeApproval = OvertimeApproval.builder()
+                    .startTime(overtimeApprovalVO.getStartTime())
+                    .endTime(overtimeApprovalVO.getEndTime())
+                    .content(overtimeApprovalVO.getContent())
+                    .writeTime(LocalDateTime.now().format(dateFormat))
+                    .requesterId(overtimeApprovalVO.getRequesterId())
+                    .build();
+
+            oApprovalRepository.save(overtimeApproval);
+
+            ReqAddApprovalChainVO request = new ReqAddApprovalChainVO(2, overtimeApproval.getId(), overtimeApproval.getRequesterId());
+            approvalChainService.addOApprovalChain(request);
+
+            return mapper.map(overtimeApproval, OvertimeApprovalDTO.class);
+        }
+
+        return null;
+
 //        int startDay = startDate.toLocalDate().getDayOfWeek().getValue();
 //        int endDay = endDate.toLocalDate().getDayOfWeek().getValue();
 //
@@ -152,8 +173,6 @@ public class ApprovalServiceImpl implements ApprovalService {
 //            22시부터 24시 사이
 //            나머지
 //        }
-
-        return null;
     }
 
     @Override

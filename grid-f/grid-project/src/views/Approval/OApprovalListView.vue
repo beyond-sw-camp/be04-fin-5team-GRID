@@ -91,29 +91,22 @@
 </script>
 
 <template>
-  <div class="oaAll">
-    <div class="oaHeader">
-      <nav style="--bs-breadcrumb-divider: '>'; margin-top: -35px; margin-bottom: -7px;" aria-label="breadcrumb">
-        <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="http://localhost:5173/work" style="text-decoration: none; color: grey; font-size: 17px;"><i class="bi bi-list-check"></i>&nbsp; 근무 목록</a></li>
-          <li class="breadcrumb-item active" aria-current="page"><span class="fw-bolder"><i class="bi bi-clock"></i>&nbsp; 시간 외 근무</span></li>
-        </ol>
-      </nav>
-      <h1 class="fw-bolder"><i class="bi bi-clock"></i>&nbsp; 시간 외 근무</h1>
-    </div>
-    <div class="oaContent">
-      <div v-if="isLoading">로딩 중</div>
-      <div v-else>
-        <div v-if="userRole !== 'ROLE_ADMIN'">
-          <div>이번 주 시간 외 근무 시간 합계:</div>
-          <b-progress :max="12" height="2rem" show-progress class="mb-2">
-            <b-progress-bar variant="info" :value="state.overtimeInWeek">
-              <span>{{ state.overtimeInWeek }}시간 / 12시간</span>
-            </b-progress-bar>
-          </b-progress>
-        </div>
-      </div>
-      <ApprovalList :approvalList="state.approvalList"/>
+  <nav style="--bs-breadcrumb-divider: '>'; margin-top: -35px; margin-bottom: -7px;" aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="http://localhost:5173/work" style="text-decoration: none; color: grey; font-size: 17px;"><i class="bi bi-list-check"></i>&nbsp; 근무 목록</a></li>
+      <li class="breadcrumb-item active" aria-current="page"><span class="fw-bolder"><i class="bi bi-clock"></i>&nbsp; 시간 외 근무</span></li>
+    </ol>
+  </nav>
+  <h3 class="fw-bolder pb-5"><i class="bi bi-clock"></i>&nbsp; 시간 외 근무</h3>
+  <div v-if="isLoading">로딩 중</div>
+  <div v-else>
+    <div v-if="userRole !== 'ROLE_ADMIN'">
+      <div class="mb-3">이번 주 시간 외 근무 시간 합계: </div>
+      <b-progress :max="12" height="2rem" show-progress class="mb-5">
+        <b-progress-bar variant="info" :value="state.overtimeInWeek">
+          <span>{{ state.overtimeInWeek }}시간 / 12시간</span>
+        </b-progress-bar>
+      </b-progress>
     </div>
 </div>
 </template>
