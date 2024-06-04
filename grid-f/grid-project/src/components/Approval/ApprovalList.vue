@@ -89,7 +89,6 @@
       userId.value = decodedToken.id || '';
     }
 
-    console.log(props.approvalList);
     isLoading.value = false;
   })
 </script>
@@ -137,7 +136,6 @@
         </template>
       </b-table>
     </template>
-
     <template v-else-if="props.approvalList.type === 'rw'">
       <b-table id="table" :fields="approvalFields" :items="props.approvalList" hover small
                :per-page=10 :current-page="currentPage">
@@ -173,7 +171,7 @@
           <b-badge variant="danger" v-else-if="data.item.approvalStatus === 'D'">반려</b-badge>
           <b-badge variant="warning" v-else-if="data.item.approvalStatus === 'V'">대기</b-badge>
           <b-badge variant="secondary" v-else-if="data.item.approvalStatus === 'N'">미열람</b-badge>
-          <b-badge variant="light" v-if="data.item.cancelDocId !== 0">취소결재</b-badge>
+          <span>&nbsp;</span><b-badge variant="light" v-if="data.item.cancelDocId > 0">취소결재</b-badge>
         </template>
         <template #cell()="data">
           <span>{{ data.value }}</span>
@@ -199,7 +197,7 @@
           <b-badge variant="danger" v-else-if="data.item.approvalStatus === 'D'">반려</b-badge>
           <b-badge variant="warning" v-else-if="data.item.approvalStatus === 'V'">대기</b-badge>
           <b-badge variant="secondary" v-else-if="data.item.approvalStatus === 'N'">미열람</b-badge>
-          <b-badge variant="light" v-if="data.item.cancelDocId !== 0">취소결재</b-badge>
+          <span>&nbsp;</span><b-badge variant="light" v-if="data.item.cancelDocId !== 0">취소결재</b-badge>
         </template>
         <template #cell()="data">
           <span>{{ data.value }}</span>
