@@ -115,7 +115,8 @@
       const confirmed = window.confirm('휴가를 사용하시겠습니까?');
 
       if(confirmed) {
-        if (postData.content !== '') {
+        console.log(postData.startTime, postData.endTime);
+        if (postData.content !== '' && postData.startTime !== ' 00:00:00' && postData.endTime !== ' 00:00:00' && postData.infoId !== 0) {
           if (vacationNum.value >= daysBetween) {
             const response = await axios.post(`http://localhost:8080/approval/vacation`, postData, {
               headers: {
@@ -133,7 +134,7 @@
             return;
           }
         } else {
-          alert('내용을 입력해주세요');
+          alert('모든 필드를 입력해주세요.');
         }
       }
     } catch (error) {

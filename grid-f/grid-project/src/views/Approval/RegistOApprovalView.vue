@@ -1,8 +1,8 @@
 <script setup>
-import {onMounted, reactive, ref, watch} from "vue";
+  import {onMounted, reactive, ref, watch} from "vue";
   import {useRoute} from "vue-router";
   import axios from "axios";
-import router from "@/router/router.js";
+  import router from "@/router/router.js";
 
   const route = useRoute();
 
@@ -49,7 +49,8 @@ import router from "@/router/router.js";
       const confirmed = window.confirm('결재를 제출하시겠습니까?');
 
       if(confirmed) {
-        if (postData.content !== '') {
+        console.log(postData.startTime)
+      if (postData.content !== "" && postData.startTime !== " :00" && postData.endTime !== " :00") {
           if (diff < 12) {
             const response = await axios.post("http://localhost:8080/approval/overtime", postData, {
               headers: {
@@ -66,7 +67,7 @@ import router from "@/router/router.js";
             alert('시간 외 근무 시간은 12시간을 초과할 수 없습니다.');
           }
         } else {
-          alert('내용을 입력해주세요');
+          alert('모든 필드를 입력해주세요.');
         }
       }
     } catch (error) {

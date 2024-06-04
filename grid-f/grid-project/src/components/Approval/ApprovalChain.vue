@@ -129,7 +129,7 @@
         console.error('Fail to post: ', error.message);
       }
     } else {
-      alert('댓글 작성 불가')
+      alert('댓글 작성이 불가합니다.');
     }
 
     window.location.reload();
@@ -161,7 +161,6 @@
         })
         if (response.status !== 200) {
           throw new Error("response is not ok");
-
         }
       }
     } catch (error) {
@@ -182,6 +181,7 @@
         if (response.status !== 201) {
           throw new Error("response is not ok");
         }
+        alert('결재가 취소되었습니다.');
       }
     } catch (error) {
       console.error('Fail to post: ', error.message);

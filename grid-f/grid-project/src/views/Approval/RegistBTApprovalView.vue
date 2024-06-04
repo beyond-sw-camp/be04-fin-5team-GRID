@@ -4,8 +4,6 @@
   import axios from "axios";
   import router from "@/router/router.js";
 
-  const route = useRoute();
-
   const userId = ref();
 
   const postData = reactive({
@@ -38,7 +36,7 @@
       const confirmed = window.confirm('결재를 제출하시겠습니까?');
 
       if(confirmed) {
-        if (postData.content !== '') {
+        if (postData.content !== '' && postData.startTime !== '' && postData.endTime !== '' && postData.destination !== '') {
           const response = await axios.post(`http://localhost:8080/approval/bt`, postData, {
             headers: {
               'Content-Type': "application/json"
@@ -51,7 +49,7 @@
             router.push(response.data.href);
           }
         } else {
-          alert('내용을 입력해주세요');
+          alert('모든 필드를 입력해주세요.');
         }
       }
     } catch (error) {

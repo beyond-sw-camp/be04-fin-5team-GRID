@@ -1,15 +1,15 @@
 <script setup>
 import { computed, onMounted, reactive, ref } from "vue";
-import { useRoute } from "vue-router";
 import axios from "axios";
 import router from "@/router/router.js";
 import { useStore } from "vuex";
 
-const route = useRoute();
 const store = useStore();
 
 const user = computed(() => store.state.user);
 const userId = ref();
+
+const fileCheck = ref(true);
 
 let fileInput = null;
 
@@ -25,9 +25,12 @@ const handleFileChange = (event) => {
   fileInput = file;
 
   if (file) {
-    console.log("Selected file:", file);
+    fileCheck.value = true;
+    console.log("Selected file:", file, fileCheck.value);
+    
   } else {
-    console.error("No file selected");
+    fileCheck.value = false;
+    console.error("No file selected", fileCheck.value, file);
   }
 };
 
@@ -58,13 +61,13 @@ const registApproval = async () => {
 
   const formData = new FormData();
 
-  formData.append("file", fileInput); // fileInput 대신 postData.file 사용
-  formData.append("postData", JSON.stringify(postData));
+  formData.append("file", fileInput);
+  formData.append("postData", new Blob([JSON.stringify(postData)], {type: 'application/json; charset=UTF-8'}));
 
   try {
     const confirmed = window.confirm("결재를 제출하시겠습니까?");
     if (confirmed) {
-      if (postData.content !== "") {
+      if (postData.content !== "" && postData.startTime !== "" && postData.endTime !== "" && fileCheck.value) {
         console.log(formData);
         if (user.value.gender === "F") {
           const response = await axios.post(
@@ -89,7 +92,7 @@ const registApproval = async () => {
           alert("단축 근무 기간입니다.");
         }
       } else {
-        alert("내용을 입력해주세요");
+        alert("모든 필드를 입력해주세요.");
       }
     }
   } catch (error) {
@@ -151,7 +154,7 @@ onMounted(async () => {
             label-cols-sm="3"
             label-align-sm="right"
         >
-          <input type="file" @change="handleFileChange" ref="fileInput" class="form-control" />
+          <input type="file" @change="handleFileChange" class="form-control" />
         </b-form-group>
 
         <b-form-group

@@ -350,7 +350,7 @@ public class ApprovalController {
     @GetMapping("/downloadPdf/{typeId}/{approvalId}")
     public ResponseEntity<FileSystemResource> downloadPdf(@PathVariable int typeId, @PathVariable int approvalId) {
         // PDF 파일의 경로
-        String filePath = "C:/Users/Playdata/Documents/be04-fin-5team-GRID/grid/" + typeId + approvalId + ".pdf";
+        String filePath = "C:/Users/Playdata/Desktop/GRID/grid/" + typeId + approvalId + ".pdf";
 
         File file = new File(filePath);
         FileSystemResource resource = new FileSystemResource(file);
