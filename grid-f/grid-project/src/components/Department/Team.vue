@@ -9,10 +9,13 @@
 
     <div class="search">
       <div class="search-group">
-        <input type="text" class="searchBox" v-model="searchQuery" placeholder="이름 검색" />
+        <input type="text" class="searchBox" v-model="searchQuery" placeholder="팀명 검색" />
         <button @click="search" class="searchBtn">검색</button>
       </div>
-      <button @click="showModal('addNewTeamModal')" class="addTeamBtn" v-if="userRole === 'ROLE_ADMIN'">팀 추가</button>
+      <div>
+        <button @click="showModal('addNewTeamModal')" class="addTeamBtn" v-if="userRole === 'ROLE_ADMIN'">팀 추가</button>
+        <button @click="showModal('updateLeaderModal')" class="updateLeaderBtn" v-if="userRole === 'ROLE_ADMIN'">팀장 수정</button>
+      </div>
     </div>
 
     <table class="teamTable">
@@ -92,7 +95,7 @@
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="selectLeaderModalLabel">책임자 선택</h5>
+            <h5 class="modal-title" id="selectLeaderModalLabel">팀장 선택</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
@@ -114,8 +117,68 @@
         </div>
       </div>
     </div>
+
+    <!-- 책임자 수정 Modal -->
+    <div class="modal fade" id="updateLeaderModal" tabindex="-1" aria-labelledby="updateLeaderModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="updateLeaderModalLabel">팀장 수정</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form @submit.prevent="updateLeader">
+              <div class="mb-3">
+                <label for="selectTeam" class="form-label">팀 선택</label>
+                <select class="form-select" v-model="selectedTeamId" id="selectTeam" required>
+                  <option v-for="team in teams" :key="team.id" :value="team.id">{{ team.teamName }}</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="leaderName" class="form-label">팀장 명</label>
+                <div class="input-group">
+                  <input type="text" class="form-control" id="newLeaderName" v-model="newLeaderName" readonly>
+                  <button type="button" class="btn btn-secondary" @click="showModal('selectLeaderModalForUpdate')">조회</button>
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary">수정</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 책임자 선택 Modal for Update -->
+    <div class="modal fade" id="selectLeaderModalForUpdate" tabindex="-1" aria-labelledby="selectLeaderModalForUpdateLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="selectLeaderModalForUpdateLabel">팀장 선택</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>팀장 명</th>
+                  <th>선택</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="leader in leaders" :key="leader.id">
+                  <td>{{ leader.name }}</td>
+                  <td><button type="button" class="btn btn-primary" @click="selectLeaderForUpdate(leader)">선택</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </template>
+
 
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue';
@@ -144,8 +207,10 @@ const newTeam = ref({
   leaderId: null,
   leaderName: ''
 });
+const selectedTeamId = ref(null);
+const newLeaderName = ref('');
+const newLeaderId = ref(null);
 
-// API에서 팀 정보를 가져오는 함수
 const fetchTeams = async () => {
   try {
     const response = await axios.get(`http://localhost:8080/team/sub-department/${departmentId.value}`);
@@ -189,7 +254,7 @@ const fetchLeaders = async () => {
     const response = await axios.get('http://localhost:8080/users/list');
     leaders.value = response.data.result;
   } catch (error) {
-    console.error('책임자 정보를 가져오는 중 오류 발생:', error);
+    console.error('직원 정보를 가져오는 중 오류 발생:', error);
   }
 };
 
@@ -256,7 +321,8 @@ const goToPage = (page) => {
 };
 
 const search = () => {
-  teams.value = allTeams.value.filter(team => team.leaderName.includes(searchQuery.value));
+  
+  teams.value = allTeams.value.filter(team => team.teamName.includes(searchQuery.value));
   currentPage.value = 1;
 };
 
@@ -277,7 +343,7 @@ const showModal = (modalId) => {
 
 const addNewTeam = async () => {
   if (!newTeam.value.leaderId) {
-    alert('책임자를 선택해야 합니다.');
+    alert('팀장을 선택해야 합니다.');
     return;
   }
   try {
@@ -309,8 +375,37 @@ const selectLeader = (leader) => {
   const modal = bootstrap.Modal.getInstance(document.getElementById('selectLeaderModal'));
   modal.hide();
 };
-</script>
 
+const updateLeader = async () => {
+  if (!newLeaderId.value || !selectedTeamId.value) {
+    alert('팀장과 팀을 선택해야 합니다.');
+    return;
+  }
+  try {
+    await axios.put(`http://localhost:8080/team/team-leader`, {
+      id: selectedTeamId.value,
+      leaderId: newLeaderId.value
+    });
+
+    await fetchTeams();
+
+    const modal = bootstrap.Modal.getInstance(document.getElementById('updateLeaderModal'));
+    modal.hide();
+    newLeaderName.value = '';
+    newLeaderId.value = null;
+    selectedTeamId.value = null;
+  } catch (error) {
+    console.error('팀장 수정 중 오류 발생:', error);
+  }
+};
+
+const selectLeaderForUpdate = (leader) => {
+  newLeaderId.value = leader.id;
+  newLeaderName.value = leader.name;
+  const modal = bootstrap.Modal.getInstance(document.getElementById('selectLeaderModalForUpdate'));
+  modal.hide();
+};
+</script>
 <style scoped>
 @font-face {
   font-family: 'IBMPlexSansKR-Regular';
@@ -413,6 +508,21 @@ const selectLeader = (leader) => {
   background-color: #065f5b;
 }
 
+.updateLeaderBtn {
+  background-color: #088A85;
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  margin-left: 10px;
+}
+
+.updateLeaderBtn:hover {
+  background-color: #065f5b;
+}
+
 /* 테이블 스타일 */
 .teamTable {
   width: 100%;
@@ -490,3 +600,4 @@ tr:hover {
   background-color: #065f5b;
 }
 </style>
+

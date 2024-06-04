@@ -9,4 +9,5 @@ public interface TeamService {
 
     void deleteTeam(int id);
 
+    TeamDTO modifyTeamLeader(TeamDTO teamDTO);
 }

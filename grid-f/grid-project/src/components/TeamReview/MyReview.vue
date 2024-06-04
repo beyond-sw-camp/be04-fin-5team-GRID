@@ -1,13 +1,13 @@
 <template>
   <div class="container">
-      <div class="header-title">
-        <img class="reviewIcon" src="@/assets/list-check.png" alt="list-check" />
-        <h1>본인 평가 목록</h1>
-      </div>
+    <div class="header-title">
+      <img class="reviewIcon" src="@/assets/list-check.png" alt="list-check" />
+      <h1>본인 평가 목록</h1>
+    </div>
 
     <div class="search-and-add">
       <div class="search-group">
-        <input type="text" v-model="searchQuery" placeholder="Title" class="searchBox"/>
+        <input type="text" v-model="searchQuery" placeholder="Title" class="searchBox" />
         <button @click="search" class="searchBtn">검색</button>
       </div>
     </div>
@@ -31,44 +31,33 @@
       </tbody>
     </table>
 
-    <!-- <div class="pagination">
-      <button @click="prevPage" :disabled="currentPage === 1">&laquo;</button>
-      <button 
-        v-for="page in totalPages" 
-        :key="page" 
-        @click="changePage(page)" 
-        :class="{ active: page === currentPage }"
-      >{{ page }}</button>
-      <button @click="nextPage" :disabled="currentPage === totalPages">&raquo;</button>
-    </div> -->
-
     <nav class="pg" aria-label="Page navigation example">
-            <ul class="pagination">
-                <li class="page-item" :class="{ disabled: currentPage === 1 }">
-                    <a class="page-link" href="#" aria-label="First" @click.prevent="goToFirstPage">
-                        <span aria-hidden="true">&laquo;&laquo;</span>
-                    </a>
-                </li>
-                <li class="page-item" :class="{ disabled: currentPage === 1 }">
-                    <a class="page-link" href="#" aria-label="Previous" @click.prevent="prevPage">
-                        <span aria-hidden="true">&laquo;</span>
-                    </a>
-                </li>
-                <li v-for="page in filteredPages" :key="page" class="page-item" :class="{ active: page === currentPage }">
-                    <a class="page-link" @click.prevent="goToPage(page)">{{ page }}</a>
-                </li>
-                <li class="page-item" :class="{ disabled: currentPage === totalPages }">
-                    <a class="page-link" aria-label="Next" @click.prevent="nextPage">
-                        <span aria-hidden="true">&raquo;</span>
-                    </a>
-                </li>
-                <li class="page-item" :class="{ disabled: currentPage === totalPages }">
-                    <a class="page-link" href="#" aria-label="Last" @click.prevent="goToLastPage">
-                        <span aria-hidden="true">&raquo;&raquo;</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
+      <ul class="pagination">
+        <li class="page-item" :class="{ disabled: currentPage === 1 }">
+          <a class="page-link" href="#" aria-label="First" @click.prevent="goToFirstPage">
+            <span aria-hidden="true">&laquo;&laquo;</span>
+          </a>
+        </li>
+        <li class="page-item" :class="{ disabled: currentPage === 1 }">
+          <a class="page-link" href="#" aria-label="Previous" @click.prevent="prevPage">
+            <span aria-hidden="true">&laquo;</span>
+          </a>
+        </li>
+        <li v-for="page in filteredPages" :key="page" class="page-item" :class="{ active: page === currentPage }">
+          <a class="page-link" @click.prevent="goToPage(page)">{{ page }}</a>
+        </li>
+        <li class="page-item" :class="{ disabled: currentPage === totalPages }">
+          <a class="page-link" aria-label="Next" @click.prevent="nextPage">
+            <span aria-hidden="true">&raquo;</span>
+          </a>
+        </li>
+        <li class="page-item" :class="{ disabled: currentPage === totalPages }">
+          <a class="page-link" href="#" aria-label="Last" @click.prevent="goToLastPage">
+            <span aria-hidden="true">&raquo;&raquo;</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
 
     <!-- Modal Structure -->
     <div v-if="isModalOpen" class="modal">
@@ -192,15 +181,15 @@ const changePage = (page) => {
 };
 
 const filteredPages = computed(() => {
-    const maxPages = 5; // 페이지당 최대 표시할 페이지 수
-    const startPage = Math.max(1, currentPage.value - Math.floor(maxPages / 2));
-    const endPage = Math.min(totalPages.value, startPage + maxPages - 1);
+  const maxPages = 5; // 페이지당 최대 표시할 페이지 수
+  const startPage = Math.max(1, currentPage.value - Math.floor(maxPages / 2));
+  const endPage = Math.min(totalPages.value, startPage + maxPages - 1);
 
-    const pages = [];
-    for (let i = startPage; i <= endPage; i++) {
-        pages.push(i);
-    }
-    return pages;
+  const pages = [];
+  for (let i = startPage; i <= endPage; i++) {
+    pages.push(i);
+  }
+  return pages;
 });
 
 const prevPage = () => {
@@ -212,17 +201,17 @@ const nextPage = () => {
 };
 
 const goToPage = (page) => {
-    currentPage.value = page;
+  currentPage.value = page;
 };
 
 // 처음 페이지로 이동
 const goToFirstPage = () => {
-    currentPage.value = 1;
+  currentPage.value = 1;
 };
 
 // 마지막 페이지로 이동
 const goToLastPage = () => {
-    currentPage.value = totalPages.value;
+  currentPage.value = totalPages.value;
 };
 
 const openModal = async (id, revieweeId) => {
@@ -235,6 +224,15 @@ const closeModal = () => {
   selectedReview.value = null;
   reviewItems.value = [];
   reviewContents.value = {};
+};
+
+const search = () => {
+  if (!searchQuery.value.trim()) {
+    alert('검색어를 입력해주세요.');
+    return;
+  }
+  currentPage.value = 1;
+  // No need to explicitly trigger the filteredReviews computation, as it will reactively update based on searchQuery
 };
 </script>
 
@@ -254,11 +252,10 @@ const closeModal = () => {
   font-family: 'IBMPlexSansKR-Regular';
 }
 
-
 .header-title {
   grid-column-start: 2;
   grid-row-start: 1;
-  display:grid;
+  display: grid;
   grid-template-columns: 3% 97%;
   align-items: center;
 }
@@ -318,11 +315,12 @@ const closeModal = () => {
   width: 100%;
   border-collapse: collapse;
   table-layout: fixed;
-  height:10px;
+  height: 10px;
   margin-top: 20px;
 }
 
-th, td {
+th,
+td {
   padding: 8px;
   text-align: left;
   border-top: 1px solid #ddd;
@@ -343,28 +341,28 @@ tr:hover {
 }
 
 .pg {
-        grid-row-start: 5;
-        grid-column-start: 2;
-        grid-column-end: 3;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-top: 10px;
-    }
+  grid-row-start: 5;
+  grid-column-start: 2;
+  grid-column-end: 3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+}
 
-    .pagination .page-item.active .page-link {
-    background-color: #088A85; /* 원하는 배경색 */
-    border-color: #088A85; /* 원하는 테두리 색 */
-    color: white; /* 원하는 텍스트 색 */
-    }
+.pagination .page-item.active .page-link {
+  background-color: #088a85; /* 원하는 배경색 */
+  border-color: #088a85; /* 원하는 테두리 색 */
+  color: white; /* 원하는 텍스트 색 */
+}
 
-    .pagination .page-item .page-link {
-        color: #088A85; /* 기본 텍스트 색 */
-    }
+.pagination .page-item .page-link {
+  color: #088a85; /* 기본 텍스트 색 */
+}
 
-    .pagination .page-item.disabled .page-link {
-        color: #088A85; /* 비활성화된 페이지 색 */
-    }
+.pagination .page-item.disabled .page-link {
+  color: #088a85; /* 비활성화된 페이지 색 */
+}
 
 .modal {
   display: flex;
@@ -410,7 +408,7 @@ tr:hover {
 
 .view-details-btn {
   padding: 5px 10px;
-  background-color: #088A85;
+  background-color: #088a85;
   color: white;
   border: none;
   border-radius: 4px;
