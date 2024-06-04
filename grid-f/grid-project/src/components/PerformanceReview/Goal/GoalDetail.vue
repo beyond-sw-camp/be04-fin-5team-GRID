@@ -36,11 +36,11 @@
     </div>
     <div class="GoalButtonContainer">
       <div class="buttonWrapper">
-          <button class="goalBtn1" v-if="isMember" @click="memberSave()">저장</button>
-          <button class="goalBtn1" v-if="isMember" @click="submit()">상신</button>
-          <button class="goalBtn1" v-if="!isMember" @click="leaderSave()">저장</button>
-          <button class="goalBtn1" v-if="!isMember" @click="approval()">승인</button>
-          <button class="goalBtn1" v-if="!isMember" @click="denied()">반려</button>
+        <button class="goalBtn1" v-if="isMember" @click="memberSave()">저장</button>
+        <button class="goalBtn1" v-if="isMember" @click="submit()">상신</button>
+        <button class="goalBtn1" v-if="!isMember" @click="leaderSave()">저장</button>
+        <button class="goalBtn1" v-if="!isMember" @click="approval()">승인</button>
+        <button class="goalBtn1" v-if="!isMember" @click="denied()">반려</button>
       </div>
     </div>
     <div class="GoalAddTableContainer">
@@ -218,17 +218,24 @@ const fetchGoalDetail = async () => {
 const getApprovalStatus = (status) => {
   switch (status) {
     case 'IP':
-      isReadOnly.value = false;
+      if (isMember.value) {
+        isReadOnly.value = false;
+      }
       return '작성 중';
     case 'S':
+      if (!isMember.value) {
+        isReadOnly.value = false;
+      }
       return '상신';
     case 'R':
-      isReadOnly.value = false;
+      if (!isMember.value) {
+        isReadOnly.value = false;
+      }
       return '확인 중';
     case 'A':
       return '승인';
     case 'D':
-      if (isMember) {
+      if (isMember.value) {
         isReadOnly.value = false;
       }
       return '반려';
@@ -316,8 +323,23 @@ async function validateWeightInput(item) {
 
 // 팀원 저장(in-progress)
 async function memberSave() {
-  if (goalDetail.value.status === '작성 중') {
+  if (goalDetail.value.status === '작성 중' || goalDetail.value.status === '반려') {
     if (confirm("목표를 저장하시겠습니까?")) {
+
+      //목표 항목 빈 배열x
+      if (goalItemList.value === null || goalItemList.value.length === 0) {
+        alert('목표 항목을 입력해주세요');
+        return;
+      }
+
+      // 업무명, 목표 입력 확인
+      for (const item of goalItemList.value) {
+        if (!item.jobName || !item.goal) {
+          alert('업무명과 목표는 필수로 작성해주세요');
+          return;
+        }
+      }
+
       const sendData = {
         id: goalDetail.value.id,
         goalItemList: goalItemList.value.map(item => ({
@@ -337,6 +359,7 @@ async function memberSave() {
             sendData
         );
 
+        alert('목표를 저장했습니다.')
         window.location.reload();
       } catch (error) {
         console.error('Error sending data:', error);
@@ -349,8 +372,42 @@ async function memberSave() {
 
 // 팀원 상신(submit)
 async function submit() {
-  if (goalDetail.value.status === '작성 중') {
+  if (goalDetail.value.status === '작성 중' || goalDetail.value.status === '반려') {
     if (confirm("목표를 상신하시겠습니까?")) {
+
+      //목표 항목 빈 배열x
+      if (goalItemList.value === null || goalItemList.value.length === 0) {
+        alert('목표 항목을 입력해주세요');
+        return;
+      }
+
+      // 필수 값이 입력되지 않은 경우(반려의견 제외)
+      for (const item of goalItemList.value) {
+        if (!item.jobName || !item.goal || !item.metric || item.weight === undefined || item.weight === 0
+            || item.weight === null || !item.plan) {
+          alert('상신 시 모든 필수 값을 입력해야 합니다.');
+          return;
+        }
+      }
+
+      // 가중치 100인지 확인
+      let sumWeight = 0;
+      for (const item of goalItemList.value) {
+        sumWeight += item.weight;
+      }
+
+      // 100보다 작을 때
+      if(sumWeight < 100) {
+        alert('가중치의 합계가 100보다 작습니다.');
+        return;
+      }
+
+      // 100보다 작을 때
+      if(sumWeight > 100) {
+        alert('가중치의 합계가 100보다 큽니다.');
+        return;
+      }
+
       const sendData = {
         id: goalDetail.value.id,
         goalItemList: goalItemList.value.map(item => ({
@@ -372,6 +429,7 @@ async function submit() {
             sendData
         );
 
+        alert('목표를 상신했습니다.')
         window.location.reload();
       } catch (error) {
         console.error('Error sending data:', error);
@@ -386,15 +444,16 @@ async function submit() {
 async function leaderSave() {
   if (goalDetail.value.status === '상신' || goalDetail.value.status === '확인 중') {
     if (confirm("목표를 저장하시겠습니까?")) {
+
       const sendData = {
         id: goalDetail.value.id,
         goalItemList: goalItemList.value.map(item => ({
-          id: item.id || null,
+          id: item.id,
           jobName: item.jobName,
           goal: item.goal,
-          metric: item.metric || null,
-          weight: item.weight || 0,
-          plan: item.plan || null,
+          metric: item.metric,
+          weight: item.weight,
+          plan: item.plan,
           objection: item.objection || null
         }))
       };
@@ -404,11 +463,12 @@ async function leaderSave() {
             `http://localhost:8080/review-goal/read`,
             sendData
         );
-        console.log("확인: ", response);
 
+        alert('목표를 저장했습니다.')
         window.location.reload();
         console.log("변경완료")
       } catch (error) {
+        alert('목표를 저장할 수 없습니다.')
         console.error('Error sending data:', error);
       }
     }
@@ -421,15 +481,24 @@ async function leaderSave() {
 async function approval() {
   if (goalDetail.value.status === '상신' || goalDetail.value.status === '확인 중') {
     if (confirm("목표를 승인하시겠습니까?")) {
+
+      // 반려의견이 있을 시
+      for (const item of goalItemList.value) {
+        if (item.objection) {
+          alert('반려의견이 있을 경우 승인할 수 없습니다.');
+          return;
+        }
+      }
+
       const sendData = {
         id: goalDetail.value.id,
         goalItemList: goalItemList.value.map(item => ({
-          id: item.id || null,
+          id: item.id,
           jobName: item.jobName,
           goal: item.goal,
-          metric: item.metric || null,
-          weight: item.weight || 0,
-          plan: item.plan || null,
+          metric: item.metric,
+          weight: item.weight,
+          plan: item.plan,
           objection: item.objection || null
         }))
       };
@@ -441,15 +510,14 @@ async function approval() {
         );
         console.log("확인: ", response);
 
+        alert('목표를 승인했습니다.')
         if (response.data.href) {
-          console.log("실행")
           const href = response.data.href;
-          console.log(href)
           router.push(`/${href}`);
         }
-        console.log("변경완료")
       } catch (error) {
         console.error('Error sending data:', error);
+        alert('목표를 승인할 수 없습니다.');
         window.location.reload();
       }
     }
@@ -463,15 +531,33 @@ async function approval() {
 async function denied() {
   if (goalDetail.value.status === '상신' || goalDetail.value.status === '확인 중') {
     if (confirm("목표를 반려하시겠습니까?")) {
+
+      // 반려의견이 하나도 없을 시
+      let hasNoObjection = true;
+
+      console.log('반려:',goalItemList.value);
+      for (const item of goalItemList.value) {
+        console.log(item.objection);
+        if (item.objection) {
+          hasNoObjection = false;
+          break;
+        }
+      }
+
+      if (hasNoObjection) {
+        alert('반려 시 반려의견을 작성해주세요');
+        return;
+      }
+
       const sendData = {
         id: goalDetail.value.id,
         goalItemList: goalItemList.value.map(item => ({
-          id: item.id || null,
+          id: item.id,
           jobName: item.jobName,
           goal: item.goal,
-          metric: item.metric || null,
-          weight: item.weight || 0,
-          plan: item.plan || null,
+          metric: item.metric,
+          weight: item.weight,
+          plan: item.plan,
           objection: item.objection || null
         }))
       };
@@ -485,6 +571,7 @@ async function denied() {
         );
         console.log("확인: ", response);
 
+        alert('목표를 반려했습니다.')
         if (response.data.href) {
           const href = response.data.href;
           router.push(`/${href}`);
@@ -492,6 +579,7 @@ async function denied() {
 
       } catch (error) {
         console.error('Error sending data:', error);
+        alert('목표를 반려할 수 없습니다.')
         window.location.reload();
       }
     }
@@ -630,7 +718,7 @@ th {
   margin-left: 2%;
   width: 100%;
   background-color: #088A85;
-  color:  white;
+  color: white;
   padding: 5px 5px;
   border: 1px;
   border-radius: 4px;

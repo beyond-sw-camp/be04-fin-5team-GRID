@@ -272,6 +272,7 @@ onMounted(async () => {
 #calendar {
   width: 100%;
   height: 100%;
+  overflow-y: auto; /* 스크롤바 추가 */
 }
 
 /*.fc-toolbar {
@@ -299,6 +300,7 @@ onMounted(async () => {
 #calendar .fc-daygrid-day-events {
   max-height: 100px; /* 날짜 셀의 고정 높이 */
   text-align: left;
+  overflow: auto;
   text-decoration: none;
 }
 
@@ -335,7 +337,7 @@ onMounted(async () => {
 #calendar .fc-daygrid-day-events {
   flex: 1 1 auto;
   max-height: 60px; /* 이벤트 영역의 최대 높이 설정 */
-  overflow: hidden; /* 넘치는 내용 숨기기 */
+  overflow: auto; /* 넘치는 내용 숨기기 */
 }
 
 /* 날짜 셀의 하이퍼링크를 일반 텍스트로 표시 */

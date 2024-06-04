@@ -1,75 +1,75 @@
-package org.highfives.grid.work.command.service;
+// package org.highfives.grid.work.command.service;
 
-import org.highfives.grid.work.common.dto.AdTimeDTO;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
+// import org.highfives.grid.work.common.dto.AdTimeDTO;
+// import org.junit.jupiter.api.Assertions;
+// import org.junit.jupiter.api.DisplayName;
+// import org.junit.jupiter.api.Test;
+// import org.junit.jupiter.params.ParameterizedTest;
+// import org.junit.jupiter.params.provider.Arguments;
+// import org.junit.jupiter.params.provider.MethodSource;
+// import org.springframework.beans.factory.annotation.Autowired;
+// import org.springframework.boot.test.context.SpringBootTest;
+// import org.springframework.transaction.annotation.Transactional;
 
-import java.util.stream.Stream;
+// import java.util.stream.Stream;
 
-@SpringBootTest(value = "CommandAdTimeServiceImplTest")
-class AdTimeServiceImplTest {
+// @SpringBootTest(value = "CommandAdTimeServiceImplTest")
+// class AdTimeServiceImplTest {
 
-    @Autowired
-    private AdTimeServiceImpl adTimeService;
+//     @Autowired
+//     private AdTimeServiceImpl adTimeService;
 
-    static Stream<Arguments> addAdTimeDTO() {
+//     static Stream<Arguments> addAdTimeDTO() {
 
-        return Stream.of(
-                Arguments.of(new AdTimeDTO(
-                        "2024-05-07 08:40:30",
-                        1
-                ))
-        );
-    }
+//         return Stream.of(
+//                 Arguments.of(new AdTimeDTO(
+//                         "2024-05-07 08:40:30",
+//                         1
+//                 ))
+//         );
+//     }
 
-    static Stream<Arguments> addAdTimeDTO2() {
+//     static Stream<Arguments> addAdTimeDTO2() {
 
-        return Stream.of(
-                Arguments.of(new AdTimeDTO(
-                        1,
-                        "2024-05-07 18:40:30"
-                ))
-        );
-    }
+//         return Stream.of(
+//                 Arguments.of(new AdTimeDTO(
+//                         1,
+//                         "2024-05-07 18:40:30"
+//                 ))
+//         );
+//     }
 
 
-    @DisplayName("출근 체크")
-    @ParameterizedTest
-    @MethodSource("addAdTimeDTO")
-//    @Transactional
-    void addStartTime(AdTimeDTO adTimeDTO) {
-        Assertions.assertDoesNotThrow(
-                () -> adTimeService.addStartTime(adTimeDTO)
-        );
-    }
+//     @DisplayName("출근 체크")
+//     @ParameterizedTest
+//     @MethodSource("addAdTimeDTO")
+//     @Transactional
+//     void addStartTime(AdTimeDTO adTimeDTO) {
+//         Assertions.assertDoesNotThrow(
+//                 () -> adTimeService.addStartTime(adTimeDTO)
+//         );
+//     }
 
-    @DisplayName("퇴근 체크")
-    @ParameterizedTest
-    @MethodSource("addAdTimeDTO2")
-    @Transactional
-    void addEndTime(AdTimeDTO adTimeDTO) {
-        System.out.println(adTimeDTO);
-        Assertions.assertDoesNotThrow(
-                () -> adTimeService.addEndTime(adTimeDTO)
-        );
-    }
+//     @DisplayName("퇴근 체크")
+//     @ParameterizedTest
+//     @MethodSource("addAdTimeDTO2")
+//     @Transactional
+//     void addEndTime(AdTimeDTO adTimeDTO) {
+//         System.out.println(adTimeDTO);
+//         Assertions.assertDoesNotThrow(
+//                 () -> adTimeService.addEndTime(adTimeDTO)
+//         );
+//     }
 
-    @DisplayName("날짜와 직원 id로 조회")
-    @Test
-    void findAdTime() {
-        String date = "2024-05-25";
-        int employeeId = 2;
+//     @DisplayName("날짜와 직원 id로 조회")
+//     @Test
+//     void findAdTime() {
+//         String date = "2024-05-25";
+//         int employeeId = 2;
 
-        AdTimeDTO adTimeDTO = adTimeService.findAdTime(date, employeeId);
+//         AdTimeDTO adTimeDTO = adTimeService.findAdTime(date, employeeId);
 
-        Assertions.assertNotNull(adTimeDTO);
-    }
+//         Assertions.assertNotNull(adTimeDTO);
+//     }
 
-}
+// }

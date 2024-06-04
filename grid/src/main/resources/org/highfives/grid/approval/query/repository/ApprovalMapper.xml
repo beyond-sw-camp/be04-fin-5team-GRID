@@ -358,7 +358,9 @@
                 c.employee_name,
                 c.employee_number,
                 b.write_time,
-                b.approval_status
+                b.approval_status,
+                b.cancel_yn,
+                b.cancel_document_id
         FROM
         <if test="typeId == 1">
             bt_approval_chain a

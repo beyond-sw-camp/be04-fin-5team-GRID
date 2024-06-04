@@ -101,7 +101,7 @@
         JOIN (SELECT * FROM employee WHERE duties_id = 3) as approver
         ON A.approver_id = approver.id
         WHERE A.approver_id = #{employeeId}
-        AND A.approval_status IN ('S', 'R', 'C')
+        AND A.approval_status IN ('S', 'R', 'C', 'V')
     </select>
 
     <!--  평가 상세 조회  -->

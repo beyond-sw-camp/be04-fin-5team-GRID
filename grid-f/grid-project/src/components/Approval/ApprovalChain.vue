@@ -17,10 +17,15 @@
 
   const state = reactive({
     approvalChainList: [],
-    chain: Object,
+    chain: null,
     show: false,
-    registCheck: false
+    comment: false,
+    status: props.approvalStatus
   })
+
+  let pathList = [
+    'bt', 'overtime', 'rw', 'vacation'
+  ]
 
   const putCommentData = reactive({
     chainId: 0,
@@ -33,10 +38,6 @@
     chainId: 0,
     chainStatus: '',
   })
-
-  let pathList = [
-    'bt', 'overtime', 'rw', 'vacation'
-  ]
 
   function parseJwt(token) {
     try {
@@ -62,6 +63,8 @@
 
       state.approvalChainList = response.data.chainResultList;
 
+      console.log(state.approvalChainList);
+
     } catch {
       console.error('Fetch error: ' + error.message);
     }
@@ -69,61 +72,67 @@
 
   const setChain = async () => {
     for (const chain of state.approvalChainList) {
-      if (chain['comment'] !== null) state.comment = true;
       if (chain['employeeId'] === userId.value) {
         state.chain = chain;
 
         putCommentData.chainId = chain['id'];
         putStatusData.chainId = chain['chainId'];
+
+        if (chain['comment'] !== null) state.comment = true;
       }
     }
   }
 
   // 승인/반려 버튼 표시 여부 판단
   const statusCheck = async () => {
-    if (state.approvalChainList[0]['employeeId'] === userId.value && state.approvalChainList[0].chainStatus === 'W') {
-      state.show = true;
-    }
-
-    if (props.typeId === '1'){
-      if (state.approvalChainList[1]['employeeId'] === userId.value && state.approvalChainList[1].chainStatus === 'W'
-          && state.approvalChainList[0].chainStatus !== 'W' && props.approvalStatus === 'W' ) {
+    if (state.chain !== null) {
+      if (state.chain['employeeId'] === state.approvalChainList[0]['employeeId'] && state.chain['chainStatus'] === 'W') {
         state.show = true;
       }
+
+      if (props.typeId === '1'){
+        if (state.chain['employeeId'] === state.approvalChainList[1]['employeeId'] && state.chain['chainStatus'] === 'W'
+            && state.approvalChainList[0].chainStatus !== 'W' && (props.approvalStatus === 'W' || props.approvalStatus === 'V') ) {
+
+          state.show = true;
+        }
+      }
     }
+
   }
 
   const registCheck = async () => {
-    console.log(state.chain);
     if (state.chain['comment'] === null){
       console.log("댓글 입력 가능");
       state.registCheck = true;
     }
-    console.log("그럼 여기?");
   }
 
   const registComment = async () => {
     if (state.registCheck) {
-      console.log(state.registCheck)
-      alert('댓글을 작성하시겠습니까?');
-
       try {
-        const response = await axios.put(`http://localhost:8080/approval-chain/${pathList[props.typeId - 1]}`, putCommentData, {
-          headers: {
-            'Content-Type': "application/json"
+        const confirmed = window.confirm('댓글을 작성하시겠습니까?');
+
+        if(confirmed) {
+          const response = await axios.put(`http://localhost:8080/approval-chain/${pathList[props.typeId - 1]}`, putCommentData, {
+            headers: {
+              'Content-Type': "application/json"
+            }
+          })
+
+          console.log(`http://localhost:8080/approval-chain/${pathList[props.typeId - 1]}`)
+          if (response.status !== 200) {
+            throw new Error("response is not ok");
           }
-        })
-        if (response.status !== 200) {
-          throw new Error("response is not ok");
-
         }
-
       } catch (error) {
         console.error('Fail to post: ', error.message);
       }
     } else {
-      alert('댓글은 한 번만 작성 가능합니다.')
+      alert('댓글 작성 불가')
     }
+
+    window.location.reload();
   }
 
   const registStatus = async (status) => {
@@ -132,69 +141,72 @@
 
     if (status === 'A') {
       msg = "승인";
-    }
-    if (status === 'D') {
+    } else {
       msg = "반려";
     }
-
-    alert(msg + '하시겠습니까?')
 
     putStatusData.chainStatus = status;
     putStatusData.typeId = props.typeId;
     putStatusData.approvalId = props.approvalId;
-
-    console.log(putStatusData);
+    putStatusData.chainId = state.chain['chainId'];
 
     try {
-      const response = await axios.put(`http://localhost:8080/approval-chain/status`, putStatusData, {
-        headers: {
-          'Content-Type': "application/json"
+      const confirmed = window.confirm(msg + '하시겠습니까?');
+
+      if(confirmed) {
+        const response = await axios.put(`http://localhost:8080/approval-chain/status`, putStatusData, {
+          headers: {
+            'Content-Type': "application/json"
+          }
+        })
+        if (response.status !== 200) {
+          throw new Error("response is not ok");
+
         }
-      })
-      if (response.status !== 200) {
-        throw new Error("response is not ok");
-
       }
-
-      console.log(response)
-
     } catch (error) {
       console.error('Fail to post: ', error.message);
     }
+
+    window.location.reload();
   }
 
   const cancelApproval = async () => {
 
-    alert('결재를 취소하시겠습니까?');
-
     try {
-      const response = await axios.post(`http://localhost:8080/approval/bt/${props.approvalId}`);
+      const confirmed = window.confirm('결재를 취소하시겠습니까?');
 
-      if (response.status !== 201) {
-        throw new Error("response is not ok");
+      if(confirmed) {
+        const response = await axios.post(`http://localhost:8080/approval/${pathList[props.typeId - 1]}/${props.approvalId}`);
+
+        if (response.status !== 201) {
+          throw new Error("response is not ok");
+        }
       }
-
     } catch (error) {
       console.error('Fail to post: ', error.message);
     }
+
+    window.location.reload();
   }
 
   const printApproval = async () => {
 
-    alert('문서를 다운로드 하시겠습니까?');
-
     try {
-      const response = await axios.post(`http://localhost:8080/approval/pdf/${props.typeId}/${props.approvalId}`);
+      const confirmed = window.confirm('pdf 파일을 다운로드 하시겠습니까?');
 
-      var url = `http://localhost:8080/approval/downloadPdf/${props.typeId}/${props.approvalId}`;
+      if(confirmed) {
+        const response = await axios.post(`http://localhost:8080/approval/pdf/${props.typeId}/${props.approvalId}`);
 
-      // 새 창 열기
-      window.open(url, "_blank");
+        var url = `http://localhost:8080/approval/downloadPdf/${props.typeId}/${props.approvalId}`;
 
-      if (response.status !== 201) {
-        throw new Error("response is not ok");
+        // 새 창 열기
+        window.open(url, "_blank");
+
+        if (response.status !== 201) {
+          throw new Error("response is not ok");
+        }
       }
-
     } catch (error) {
       console.error('Fail to post: ', error.message);
     }
@@ -211,87 +223,89 @@
     }
 
     await fetchApprovalChain(props.typeId, props.approvalId);
-    await registCheck();
-    await statusCheck();
     await setChain();
+
+    console.log(state.approvalChainList)
+
+    if (state.chain !== null) {
+      await statusCheck();
+      await registCheck();
+    }
 
     isLoading.value = false;
   })
 </script>
-
-<template>
-  <div class="lineAll">
-    <h3 class="fw-bolder mb-3"><i class="bi bi-link-45deg"></i>&nbsp; 결재 라인</h3>
-    <b-card class="container shadow">
-      <div class="list-group-item list-group-item-action d-flex" aria-current="true">
-        <div class=" mb-3 pt-2 d-flex gap-2 w-100 justify-content-between">
-          <h6 class="opacity-50"></h6>
-          <h6 class="mb-0 opacity-75 fw-bolder">이름</h6>
-          <h6 class="mb-0 opacity-75 fw-bolder">&nbsp;&nbsp;&nbsp; 단계</h6>
-          <h6 class="mb-0 opacity-75 fw-bolder">상태&nbsp;</h6>
-        </div>
-      </div>
-      <div v-for="chain in state.approvalChainList" :key="chain.id">
-        <div href="#" class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
-          <img :src="chain.user['profilePath']" alt="profile" width="50" height="50" class="rounded-circle flex-shrink-0">
-          <div class="d-flex gap-2 w-100 justify-content-between">
-            <div class="mt-1">
-              <h5 class="fw-bolder mb-0">&nbsp;&nbsp;&nbsp;&nbsp;{{ chain.user['name'] }}</h5>
-              <p class="mb-0 opacity-75">&nbsp;&nbsp;&nbsp;&nbsp;{{ chain.user['team'].teamName }} / {{ chain.user['duties'].dutiesName }}</p>
-            </div>
-            <h6 class="mt-3">{{ chain.stage }}단계</h6>
-            <div>
-              <b-badge class="mt-3" variant="success" v-if="chain.chainStatus === 'A'">승인</b-badge>
-              <b-badge class="mt-3" variant="danger" v-if="chain.chainStatus === 'D'">반려</b-badge>
-              <b-badge class="mt-3" variant="warning" v-if="chain.chainStatus === 'W'">대기</b-badge>
-            </div>
-          </div>
-        </div>
-      </div>
-    </b-card>
-    <b-card class="shadow mt-3">
-      <h5 class="fw-bolder">댓글</h5>
-      <div v-for="chain in state.approvalChainList" :key="chain.id">
-        <template v-if="chain.comment !== null">
-          <div class="d-flex text-body-secondary pt-3">
-            <h4 class="mt-2" ><i class="bi bi-person flex-shrink-0 me-2 rounded"></i></h4>
-            <div class="pb-3 small lh-sm border-bottom w-100">
-              <div class="d-flex justify-content-between">
-                <strong class="text-gray-dark fs-6 mb-1">&nbsp;&nbsp;&nbsp;{{ chain.user['name'] }}</strong>
-                <div v-if="chain.approvalTime !== null">&nbsp;{{ chain.approvalTime.substring(0, 10) }}</div>
-              </div>
-              <span class="d-block fs-6">&nbsp; {{ chain.comment }}</span>
-            </div>
-          </div>
-        </template>
-      </div>
-      <div style="margin-top: 30px;">
-        <b-input-group>
-          <b-form-input v-model="putCommentData.comment"></b-form-input>
-          <b-input-group-append>
-            <b-button variant="outline-success" @click="registComment">등록</b-button>
-          </b-input-group-append>
-        </b-input-group>
-      </div>
-    </b-card>
-    <div class="buttons">
-      <div class="cancel" v-if="props.requesterId === userId">
-        <!-- 중복 취소 불가하는 코드 추가 -->
-        <b-button @click="cancelApproval">취소</b-button>
-      </div>
-      <div class="print" v-if="props.requesterId === userId || userRole === 'ROLE_ADMIN'">
-        <b-button @click="printApproval">출력</b-button>
-      </div>
-      <div class="approvalBtn" v-if="state.show">
-        <b-button  variant="success" @click="registStatus('A')">승인</b-button>
-      </div>
-      <div class="danger" v-if="state.show">
-        <b-button  variant="danger" @click="registStatus('D')">반려</b-button>
-      </div> 
+  <template>
+    <div v-if="isLoading">
+      로딩 중
     </div>
-    
-  </div>
-</template>
+    <div v-else>
+      <h3 class="fw-bolder mb-3"><i class="bi bi-link-45deg"></i>&nbsp; 결재 라인</h3>
+      <b-card class="container shadow">
+        <div class="list-group-item list-group-item-action d-flex" aria-current="true">
+          <div class=" mb-3 pt-2 d-flex gap-2 w-100 justify-content-between">
+            <h6 class="opacity-50"></h6>
+            <h6 class="mb-0 opacity-75 fw-bolder">이름</h6>
+            <h6 class="mb-0 opacity-75 fw-bolder">&nbsp;&nbsp;&nbsp; 단계</h6>
+            <h6 class="mb-0 opacity-75 fw-bolder">상태&nbsp;</h6>
+          </div>
+        </div>
+        <div v-for="chain in state.approvalChainList" :key="chain.id">
+          <div href="#" class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
+            <img :src="chain.user['profilePath']" alt="profile" width="50" height="50" class="rounded-circle flex-shrink-0">
+            <div class="d-flex gap-2 w-100 justify-content-between">
+              <div class="mt-1">
+                <h5 class="fw-bolder mb-0">&nbsp;&nbsp;&nbsp;&nbsp;{{ chain.user['name'] }}</h5>
+                <p class="mb-0 opacity-75">&nbsp;&nbsp;&nbsp;&nbsp;{{ chain.user['team'].teamName }} / {{ chain.user['duties'].dutiesName }}</p>
+              </div>
+              <h6 class="mt-3">{{ chain.stage }}단계</h6>
+              <div>
+                <b-badge class="mt-3" variant="success" v-if="chain.chainStatus === 'A'">승인</b-badge>
+                <b-badge class="mt-3" variant="danger" v-if="chain.chainStatus === 'D'">반려</b-badge>
+                <b-badge class="mt-3" variant="warning" v-if="chain.chainStatus === 'W'">대기</b-badge>
+              </div>
+            </div>
+          </div>
+        </div>
+      </b-card>
+      <b-card class="shadow mt-3">
+        <h5 class="fw-bolder">댓글</h5>
+        <div v-for="chain in state.approvalChainList" :key="chain.id">
+          <template v-if="chain.comment !== null">
+            <div class="d-flex text-body-secondary pt-3">
+              <h4 class="mt-2" ><i class="bi bi-person flex-shrink-0 me-2 rounded"></i></h4>
+              <div class="pb-3 small lh-sm border-bottom w-100">
+                <div class="d-flex justify-content-between">
+                  <strong class="text-gray-dark fs-6 mb-1">&nbsp;&nbsp;&nbsp;{{ chain.user['name'] }}</strong>
+                  <div v-if="chain.approvalTime !== null">&nbsp;{{ chain.approvalTime.substring(0, 10) }}</div>
+                </div>
+                <span class="d-block fs-6">&nbsp; {{ chain.comment }}</span>
+              </div>
+            </div>
+          </template>
+        </div>
+        <div style="margin-top: 30px;">
+          <b-input-group>
+            <b-form-input v-model="putCommentData.comment"></b-form-input>
+            <b-input-group-append>
+              <b-button variant="outline-success" @click="registComment">등록</b-button>
+            </b-input-group-append>
+          </b-input-group>
+        </div>
+      </b-card>
+      <div>
+          <!-- 중복 취소 불가하는 코드 추가 -->
+          <div class="d-flex justify-content-center mt-3">
+            <b-button v-if="props.requesterId === userId" @click="cancelApproval" class="mx-2">취소</b-button>
+            <b-button v-if="props.requesterId === userId || userRole === 'ROLE_ADMIN'" @click="printApproval" class="mx-2">출력</b-button>
+          </div>
+          <div v-if="state.show" class="d-flex justify-content-center mt-3">
+            <b-button variant="success" @click="registStatus('A')" class="mx-2">승인</b-button>
+            <b-button variant="danger" @click="registStatus('D')" class="mx-2">반려</b-button>
+          </div>
+      </div>
+    </div>
+  </template>
 
 <style scoped>
 .lineAll h3{

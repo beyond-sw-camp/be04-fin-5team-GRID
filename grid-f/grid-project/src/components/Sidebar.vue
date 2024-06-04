@@ -13,7 +13,8 @@
         <li>
           <span @click="toggleMenu('workManagement')">근태 관리</span>
           <ul v-show="activeMenus.workManagement">
-            <li @click="toWorkCalender()">근무 관리</li>
+<!--            <li @click="toWorkCalender()">근무 관리</li>-->
+            <li @click="toAdTime()">출퇴근 조회</li>
             <li @click="navigateTo('/work')">근무 정보</li>
             <li @click="toVacationManage()" v-if="userRole === 'ROLE_ADMIN'">휴가 종류</li>
             <li @click="toVacationPolicy()" v-if="userRole === 'ROLE_ADMIN'">휴가 정책</li>
@@ -48,8 +49,8 @@
           <ul v-show="activeMenus.departmentEvaluation">
             <li @click="goToTeamMyReview">본인 평가 목록</li>
             <li @click="goToTeamReviewList">동료 평가 작성</li>
-            <li @click="goToAddTeamReview">평가 생성</li>
-            <li @click="goToTeamReviewHistory">전체 평가 내역</li>
+            <li @click="goToAddTeamReview" v-if="userRole === 'ROLE_ADMIN'">평가 생성</li>
+            <li @click="goToTeamReviewHistory" v-if="userRole === 'ROLE_ADMIN'">전체 평가 내역</li>
           </ul>
         </li>
         <li>
@@ -218,6 +219,10 @@ function toTotalPerformanceReview() {
 
 function toWorkCalender() {
   router.push('/work-calendar');
+}
+
+function toAdTime() {
+  router.push('/ad-time');
 }
 
 
