@@ -64,6 +64,7 @@
       }
 
       state.sReqApprovalList = response.data.approvalEmpResultList.slice(0, 5);
+      console.log(state.sReqApprovalList);
       state.sReqApprovalList.type = 1;
 
     } catch (error) {
@@ -80,7 +81,7 @@
       userRole.value = decodedToken.auth || '';
     }
 
-    if (userRole.value === 'ROLE_ADMIN') {
+    if (userRole.value !== 'ROLE_ADMIN') {
       await fetchReqApprovalList(0, 5, userId.value);
     }
 

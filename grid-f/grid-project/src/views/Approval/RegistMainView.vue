@@ -32,7 +32,7 @@
           <div class="feature-icon d-inline-flex align-items-center justify-content-center text-bg bg-gradient fs-2 mb-3 px-1">
             <i class="bi bi-clock"></i>
           </div>
-        `<h3>시간 외 근무</h3>
+        `<h3 class="fs-1 text-body-emphasis py-3">시간 외 근무</h3>
           <p>시간 외 근무는 평일 오후 7시부터 익일 오전 6시까지, 주말 모든 시간 가능합니다. 주별 시간 외 근무 합계는 12시간을 넘을 수 없으며, 이를 준수하지 않을 경우 결재 제출이 불가하니 유의하시기 바랍니다.</p>
           <br><button class="btn btn-primary btn-sm" @click="navigateTO('overtime')">작성하기</button>
         </b-card>
@@ -116,6 +116,5 @@
     border-radius: 4px;
     cursor: pointer;
     font-size: 12px;
-    font-style: bold;
 }
 </style>
