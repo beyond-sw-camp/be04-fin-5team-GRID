@@ -110,7 +110,7 @@ const fetchReviewDetail = async () => {
     const route = router.currentRoute.value;
     const id = route.params.id;
 
-    // 종합평가 먼저 조회해서 넣고
+    // 종합평가 먼저 조회해서 넣기
     const responseTotalReview = await axios.get(`http://localhost:8080/total-performance-review/${id}`)
     console.log(responseTotalReview.data.findTotal);
 
@@ -140,6 +140,7 @@ const fetchReviewDetail = async () => {
 
   } catch (error) {
     console.error('에러 발생:', error);
+    alert("종합 평가를 조회할 수 없습니다.")
   }
 };
 

@@ -108,10 +108,32 @@
         </b-progress-bar>
       </b-progress>
     </div>
-    <ApprovalList :approvalList="state.approvalList"/>
-  </div>
+</div>
 </template>
 
 <style scoped>
+.oaAll {
+  display: grid;
+  grid-template-rows: 18% 74% 8%;
+  grid-template-columns: 10% 80% 10%;
+  height: 100%;
+}
 
+.oaHeader {
+  grid-column-start: 2;
+  align-content: center;
+  margin-top: 2%;
+}
+
+.oaContent {
+  grid-column-start: 2;
+  grid-row-start: 2;
+}
+
+.oaHeader h1 {
+  margin-left: 0.5%;
+  margin: 0;
+  font-size: 25px;
+  font-weight: 600;
+}
 </style>

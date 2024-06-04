@@ -30,6 +30,7 @@
         FROM AD_TIME A
         JOIN EMPLOYEE B ON A.EMPLOYEE_ID = B.ID
         WHERE EMPLOYEE_ID = #{employeeId}
+        ORDER BY A.START_TIME DESC
         ]]>
     </select>
 
@@ -60,6 +61,7 @@
         END AS ATTENDANCE_STATUS
         FROM AD_TIME A
         JOIN EMPLOYEE B ON A.EMPLOYEE_ID = B.ID
+        ORDER BY A.START_TIME DESC
         ]]>
     </select>
     <select id="selectAdTimeByStartTime" resultMap="adTimeResultMap" parameterType="String">

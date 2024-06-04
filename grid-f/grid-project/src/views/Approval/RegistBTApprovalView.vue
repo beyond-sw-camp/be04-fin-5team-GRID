@@ -70,14 +70,17 @@ onMounted(async () => {
 </script>
 
 <template>
-  <nav style="--bs-breadcrumb-divider: '>'; margin-top: -35px; margin-bottom: -7px;" aria-label="breadcrumb">
-    <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a href="http://localhost:5173/regist/main" style="text-decoration: none; color: grey; font-size: 17px;"><i class="bi bi-pencil-square"></i>&nbsp; 결재 작성</a></li>
-      <li class="breadcrumb-item active" aria-current="page"><span class="fw-bolder"><i class="bi bi-briefcase"></i>&nbsp; 출장</span></li>
-    </ol>
-  </nav>
-  <div><h3 class="fw-bolder mb-5"><i class="bi bi-briefcase"></i>&nbsp; 출장 신청</h3></div>
-  <div>
+  <div class="registBTAll">
+    <div class="registBTHeader">
+      <nav style="--bs-breadcrumb-divider: '>'; margin-top: -35px; margin-bottom: -7px;" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="http://localhost:5173/regist/main" style="text-decoration: none; color: grey; font-size: 17px;"><i class="bi bi-pencil-square"></i>&nbsp; 결재 작성</a></li>
+          <li class="breadcrumb-item active" aria-current="page"><span class="fw-bolder"><i class="bi bi-briefcase"></i>&nbsp; 출장</span></li>
+        </ol>
+      </nav>
+      <div><h1 class="fw-bolder"><i class="bi bi-briefcase"></i>&nbsp; 출장 신청</h1></div>
+    </div> 
+  <div class="registBTContent">
     <b-card class="mt-3" bg-variant="light">
       <b-form-group
           label-cols-lg="3"
@@ -130,9 +133,58 @@ onMounted(async () => {
       </b-form-group>
     </b-card>
   </div>
-  <b-button block variant="primary" @click="registApproval()">제출</b-button>
+  <div class="btnArea">
+    <b-button class="btn" block variant="primary" @click="registApproval()">제출</b-button>
+  </div>
+  </div>
+  
+  
 </template>
 
 <style scoped>
+.registBTAll {
+  display: grid;
+  grid-template-rows: 18% 50% 5% 27%;
+  grid-template-columns: 10% 80% 10%;
+  height: 100%;
+}
 
+.registBTHeader {
+  grid-column-start: 2;
+  align-content: center;
+  margin-top: 2%;
+}
+
+.registBTContent {
+  grid-column-start: 2;
+  grid-row-start: 2;
+}
+
+.registBTHeader h1 {
+  margin-left: 0.5%;
+  margin: 0;
+  font-size: 25px;
+  font-weight: 600;
+}
+
+.btnArea {
+  grid-column-start: 2;
+  grid-row-start: 3;
+  align-content: center;
+  display: grid;
+  grid-template-columns: 45% 10% 45%;
+}
+
+.btn {
+  grid-column-start: 2;
+  width: 100%;
+  background-color: #088A85;
+  color: white;
+  padding: 5px 5px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  font-style: bold;
+}
 </style>

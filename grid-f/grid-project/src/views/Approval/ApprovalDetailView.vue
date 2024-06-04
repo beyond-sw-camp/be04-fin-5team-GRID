@@ -37,6 +37,7 @@
 </script>
 
 <template>
+  <div class="all">
   <div class="detail">
     <div>
       <h3 class="fw-bolder mb-3"><i class="bi bi-file-earmark-text"></i>&nbsp; 결재 문서</h3>
@@ -47,7 +48,7 @@
           <div class="text-warning" v-else-if="state.approval['cancelYn'] === 'Y'"> <h5 >취소</h5></div>
           <div class="text-muted" v-else> <h5 >결재 대기</h5></div>
         </div>
-        <div>
+        <div class="title">
           <h1 v-if="typeId === '1'">출장 신청서</h1>
           <h1 v-if="typeId === '2'">시간 외 근무 신청서</h1>
           <h1 v-if="typeId === '3'">단축 근무 신청서</h1>
@@ -76,12 +77,36 @@
     </div>
     <ApprovalChain :typeId="typeId" :approvalId="approvalId" :approvalStatus="state.approval['approvalStatus']" :requesterId="state.approval['employeeId']" :cancelStatus="state.approval['cancelYN']"/>
   </div>
+</div>
 </template>
 
 <style scoped>
+.all {
+  display:grid;
+  grid-template-columns: 10% 80% 10%;
+  grid-template-rows: 18% 80% 2%;
+  
+}
+
+.all h3 {
+  margin-left: 0.5%;
+  margin-bottom: 0;
+  font-size: 25px;
+  font-weight: 600;
+}
+
 .detail {
+  grid-column-start: 2;
+  grid-row-start: 2;
   display: grid;
   grid-template-columns: 3.5fr 2fr;
   gap: 20px;
+}
+
+.title h1 {
+  margin-left: 0.5%;
+  margin-bottom: 0;
+  font-size: 23px;
+  font-weight: 600;
 }
 </style>

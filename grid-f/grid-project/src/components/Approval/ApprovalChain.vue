@@ -235,7 +235,6 @@
     isLoading.value = false;
   })
 </script>
-
   <template>
     <div v-if="isLoading">
       로딩 중
@@ -309,5 +308,32 @@
   </template>
 
 <style scoped>
+.lineAll h3{
+  margin-left: 0.5%;
+  margin-bottom: 0;
+  font-size: 25px;
+  font-weight: 600;
+}
 
+.buttons {
+  display:grid;
+  grid-template-columns: 10% 18% 2% 18% 2% 18% 2% 18% 2% 10%;
+  margin-top: 20px;
+}
+
+.cancel {
+  grid-column-start: 2;
+}
+
+.print {
+  grid-column-start: 4;
+}
+
+.approvalBtn {
+  grid-column-start: 6;
+}
+
+.danger {
+  grid-column-start: 8;
+}
 </style>

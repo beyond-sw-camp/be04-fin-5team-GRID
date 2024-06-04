@@ -23,7 +23,7 @@ const router = useRouter();
 <style scoped>
 .calenderContainer {
   display: grid;
-  grid-template-rows: 18% 4% 65% 13%;
+  grid-template-rows: 18% 65.5% 4.5% 12%;
   grid-template-columns: 10% 80% 10%;
   height: 100%;
 }
@@ -51,7 +51,7 @@ const router = useRouter();
 }
 
 .content {
-  grid-row-start: 3;
+  grid-row-start: 2;
   grid-row-end: 4;
   grid-column-start: 2;
   grid-column-end: 3;

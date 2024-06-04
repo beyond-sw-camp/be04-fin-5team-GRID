@@ -21,18 +21,20 @@
           <th style="width: 20%;">시작일</th>
           <th style="width: 20%;">종료일</th>
           <th style="width: 10%;">책임자</th>
-          <th style="width: 10%;">상위 부서</th>
+          <th style="width: 10%;"></th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(department, index) in paginatedDepartments" :key="department.departmentCode">
+        <tr v-for="(department, index) in paginatedDepartments" :key="department.sequence">
           <td><input type="checkbox"></td>
           <td>{{ department.departmentCode }}</td>
-          <td><a @click.prevent="goToDepartmentTeams(department.id)" href="#">{{ department.departmentName }}</a></td>
+          <td>{{ department.departmentName }}</td>
           <td>{{ formatDate(department.startTime) }}</td>
           <td>{{ formatDate(department.endTime) }}</td>
           <td>{{ department.leaderName }}</td>
-          <td>{{ department.highDepartment }}</td>
+          <td>
+            <button class="view-details-btn" @click="goToDepartmentTeams(department.id)">자세히 보기</button>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -40,7 +42,7 @@
       <a href="#" @click.prevent="changePage(page)" :class="{ active: page === currentPage }" v-for="page in totalPages" :key="page">{{ page }}</a>
     </div>
 
-    <!-- Add New Department Modal -->
+    <!-- 부서 추가 Modal -->
     <div class="modal fade" id="addNewModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -59,17 +61,10 @@
                 <input type="text" class="form-control" id="departmentCode" v-model="newDepartment.departmentCode" required>
               </div>
               <div class="mb-3">
-                <label for="leaderId" class="form-label">책임자</label>
+                <label for="leaderName" class="form-label">책임자</label>
                 <div class="input-group">
-                  <input type="text" class="form-control" id="leaderId" v-model="newDepartment.leaderId" readonly>
+                  <input type="text" class="form-control" id="leaderName" v-model="newDepartment.leaderName" readonly>
                   <button type="button" class="btn btn-secondary" @click="showModal('selectLeaderModal')">조회</button>
-                </div>
-              </div>
-              <div class="mb-3">
-                <label for="highDepartment" class="form-label">상위 부서</label>
-                <div class="input-group">
-                  <input type="text" class="form-control" id="highDepartment" v-model="newDepartment.highDepartment" readonly>
-                  <button type="button" class="btn btn-secondary" @click="showModal('selectDepartmentModal')">조회</button>
                 </div>
               </div>
               <button type="submit" class="btn btn-primary">등록</button>
@@ -79,7 +74,7 @@
       </div>
     </div>
 
-    <!-- Select Leader Modal -->
+    <!-- 책임자 선택 모달 -->
     <div class="modal fade" id="selectLeaderModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -91,46 +86,16 @@
             <table>
               <thead>
                 <tr>
-                  <th>책임자 ID</th>
+                  <th>책임자 사원번호</th>
                   <th>책임자 이름</th>
                   <th>선택</th>
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="(leader, index) in leaders" :key="leader.leaderId">
-                  <td>{{ leader.leaderId }}</td>
-                  <td>{{ leader.leaderName }}</td>
+                <tr v-for="leader in leaders" :key="leader.id">
+                  <td>{{ leader.employeeNumber }}</td>
+                  <td>{{ leader.name }}</td>
                   <td><button type="button" class="btn btn-primary" @click="selectLeader(leader)">선택</button></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Select High Department Modal -->
-    <div class="modal fade" id="selectDepartmentModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">상위 부서 선택</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <table>
-              <thead>
-                <tr>
-                  <th>부서코드</th>
-                  <th>부서명</th>
-                  <th>선택</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="(department, index) in departments" :key="department.departmentCode">
-                  <td>{{ department.departmentCode }}</td>
-                  <td>{{ department.departmentName }}</td>
-                  <td><button type="button" class="btn btn-primary" @click="selectDepartment(department)">선택</button></td>
                 </tr>
               </tbody>
             </table>
@@ -152,19 +117,19 @@ const leaders = ref([]);
 const currentPage = ref(1);
 const itemsPerPage = 10;
 const searchQuery = ref('');
+
 const newDepartment = ref({
   departmentName: '',
   departmentCode: '',
   startTime: '',
   endTime: '',
   leaderId: '',
-  highDepartment: ''
+  leaderName: ''
 });
 
-// Fetch leader names
 const fetchLeaders = async () => {
   try {
-    const response = await axios.get(`http://localhost:8080/users/${id}`);
+    const response = await axios.get(`http://localhost:8080/users/list`);
     leaders.value = response.data.result;
   } catch (error) {
     console.error('책임자 정보를 불러오는 중 에러 발생:', error);
@@ -176,11 +141,10 @@ const fetchDepartments = async () => {
   try {
     const response = await axios.get('http://localhost:8080/department/find-all');
     const departmentsData = response.data.result;
-    console.log(departmentsData)
     for (const department of departmentsData) {
       department.leaderName = await fetchLeaderName(department.leaderId);
     }
-    departments.value = departmentsData;
+    departments.value = departmentsData.sort((a, b) => a.sequence - b.sequence); // sequence 순으로 정렬
   } catch (error) {
     console.error('에러 발생:', error);
   }
@@ -240,7 +204,7 @@ const addNewDepartment = async () => {
       startTime: '',
       endTime: '',
       leaderId: '',
-      highDepartment: ''
+      leaderName: ''
     };
   } catch (error) {
     console.error('에러 발생:', error);
@@ -248,14 +212,9 @@ const addNewDepartment = async () => {
 };
 
 const selectLeader = (leader) => {
-  newDepartment.value.leaderId = leader.leaderId;
+  newDepartment.value.leaderId = leader.id;
+  newDepartment.value.leaderName = leader.name;
   const modal = bootstrap.Modal.getInstance(document.getElementById('selectLeaderModal'));
-  modal.hide();
-};
-
-const selectDepartment = (department) => {
-  newDepartment.value.highDepartment = department.departmentName;
-  const modal = bootstrap.Modal.getInstance(document.getElementById('selectDepartmentModal'));
   modal.hide();
 };
 
@@ -275,7 +234,6 @@ const goToDepartmentTeams = (id) => {
   font-weight: normal;
   font-style: normal;
 }
-
 
 .container {
   display: grid;
@@ -322,10 +280,6 @@ const goToDepartmentTeams = (id) => {
 }
 
 .header {
-}
-
-.header-title {
-
   grid-column-start: 2;
   display: grid;
   grid-template-columns: 90% 4.5% 1% 4.5%;
@@ -336,7 +290,6 @@ const goToDepartmentTeams = (id) => {
   align-items: center;
   display: grid; 
   grid-template-columns: 3% 97%;
-
 }
 
 .header-title h1 {
@@ -358,7 +311,7 @@ const goToDepartmentTeams = (id) => {
 }
 
 .modifybtn {
-  grid-column-start:4 ;
+  grid-column-start: 4;
   padding: 5px 5px;
   background-color: #088A85;
   border: none;
@@ -369,14 +322,14 @@ const goToDepartmentTeams = (id) => {
 }
 
 .search-bar {
-  grid-row-start:2;
+  grid-row-start: 2;
   grid-column-start: 2;
   display: grid;
   grid-template-columns: 90% 10%;
 }
 
 .search-bar input {
-  grid-column-start:2 ;
+  grid-column-start: 2;
   width: 100%;
   border: 1px solid #ddd;
   padding: 5px;
@@ -410,7 +363,7 @@ tr:hover {
 }
 
 .pagination {
-  grid-row-start:6;
+  grid-row-start: 6;
   grid-column-start: 2;
   display: flex;
   justify-content: center;
@@ -438,5 +391,19 @@ tr:hover {
 
 .modal-header {
   margin-top: 10px;
+}
+
+.view-details-btn {
+  padding: 5px 10px;
+  background-color: #088A85;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.view-details-btn:hover {
+  background-color: #065f5b;
 }
 </style>
