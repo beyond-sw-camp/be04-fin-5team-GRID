@@ -48,7 +48,7 @@ public class UserServiceImpl implements UserService{
 
         UserDTO submitInfo = inputSubData(givenInfo);
         submitInfo.setPwd(encodePwd(submitInfo.getPwd()));
-        
+
         Employee addInfo = dTOtoEntity(submitInfo);
         userRepository.save(addInfo);
 
