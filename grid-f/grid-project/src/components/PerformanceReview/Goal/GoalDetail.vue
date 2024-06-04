@@ -390,6 +390,24 @@ async function submit() {
         }
       }
 
+      // 가중치 100인지 확인
+      let sumWeight = 0;
+      for (const item of goalItemList.value) {
+        sumWeight += item.weight;
+      }
+
+      // 100보다 작을 때
+      if(sumWeight < 100) {
+        alert('가중치의 합계가 100보다 작습니다.');
+        return;
+      }
+
+      // 100보다 작을 때
+      if(sumWeight > 100) {
+        alert('가중치의 합계가 100보다 큽니다.');
+        return;
+      }
+
       const sendData = {
         id: goalDetail.value.id,
         goalItemList: goalItemList.value.map(item => ({
@@ -411,6 +429,7 @@ async function submit() {
             sendData
         );
 
+        alert('목표를 상신했습니다.')
         window.location.reload();
       } catch (error) {
         console.error('Error sending data:', error);
