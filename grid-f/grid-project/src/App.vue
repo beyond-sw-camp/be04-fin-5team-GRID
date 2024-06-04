@@ -68,9 +68,7 @@ onMounted(async () => {
     <div class="main-content" :class="mainContentClass">
       <RouterView/>
     </div>
-    <div class="footer" v-if="showLayout">
-      <Footer/>
-    </div>
+    
   </div>
 
 </template>

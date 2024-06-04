@@ -4,10 +4,16 @@
       <div class="logo">
         <img src="@/assets/logo.png" @click="main()" class="logoimage" style="cursor: pointer;">
       </div>
+      
       <div class="icons">
+        <div class="tokenArea">
+          <span class="token-timer">{{ timeLeft }}</span>
+          <button class="newToken" type="button" @click="addTokenTime()">연장하기</button>
+        </div>
         <button class="icon-button" type="button" data-bs-toggle="offcanvas" data-bs-target="#demo">
           <img src="@/assets/people.png" alt="Button 2" class="icon-image" />
         </button>
+        
         <div class="dropdown">
           <img
             :src="profileUrl"
@@ -70,6 +76,8 @@ const departments = ref([]);
 const router = useRouter();
 const store = useStore();
 const dropdownMenu = ref(null);
+const timeLeft = ref('');
+const isTokenChecking = ref(false);
 const userId = ref('');
 const userRole = ref('');
 
@@ -245,6 +253,82 @@ const handleTeamDragEnd = async (event) => {
   }
 };
 
+const addTokenTime = async () => {
+  try {
+      const confirmed = window.confirm('접속시간을 연장하시겠습니까?');
+      if (confirmed) {
+        const response = await axios.post("/api/tokens/re-auth");
+        localStorage.setItem('access', response.data.access); // 새로운 access 토큰 저장
+        alert('접속시간이 연장되었습니다!');
+        window.location.reload();  
+      } 
+    } catch (error) {
+        console.error("Error:", error);
+        alert("토큰 갱신에 실패했습니다.");
+    }
+};
+
+const getNewToken = async () => {
+    try {
+      const confirmed = window.confirm('접속시간을 연장하시겠습니까?');
+      if (confirmed) {
+        const response = await axios.post("/api/tokens/re-auth");
+        localStorage.setItem('access', response.data.access); // 새로운 access 토큰 저장
+        alert('접속시간이 연장되었습니다!');
+        window.location.reload();  
+      } else {
+        alert("접속시간 연장을 취소했습니다. 로그아웃합니다.");
+        await axios.post('http://localhost:8080/logout', {}, { withCredentials: true });
+        localStorage.removeItem('access');
+        localStorage.removeItem('email');
+        store.dispatch('resetState');
+        router.push('/');
+      }
+        
+    } catch (error) {
+        console.error("Error:", error);
+        alert("토큰 갱신에 실패했습니다.");
+    }
+};
+
+
+
+function isTokenExpired(token) {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    const exp = payload.exp * 1000; // Expiration time in milliseconds
+    return Date.now() > exp;
+}
+
+function calculateTimeLeft(token) {
+  const payload = JSON.parse(atob(token.split('.')[1]));
+  const exp = payload.exp * 1000; // Expiration time in milliseconds
+  const timeLeft = exp - Date.now();
+  if (timeLeft > 0) {
+    const minutes = Math.floor(timeLeft / 60000);
+    const seconds = Math.floor((timeLeft % 60000) / 1000);
+    return `${minutes}분 ${seconds}초`;
+  }
+  return '토큰이 만료되었습니다.';
+}
+
+function checkToken() {
+    const token = localStorage.getItem('access'); // access 토큰을 저장한 위치에 따라 변경
+    if (token) {
+        timeLeft.value = calculateTimeLeft(token);
+        if (isTokenExpired(token) && !isTokenChecking.value) {
+            isTokenChecking.value = true;
+            getNewToken().finally(() => {
+                isTokenChecking.value = false;
+            });
+        }
+    } else {
+        timeLeft.value = '로그인 해주세요.';
+    }
+}
+
+// 주기적으로 토큰 상태를 확인
+setInterval(checkToken, 100); 
+
 function parseJwt(token) {
   try {
     const base64Url = token.split('.')[1];
@@ -296,6 +380,7 @@ const logout = async () => {
   try {
     await axios.post('http://localhost:8080/logout', {}, { withCredentials: true });
     localStorage.removeItem('access');
+    localStorage.removeItem('email');
     store.dispatch('resetState');
     alert('로그아웃 되었습니다');
     router.push('/');
@@ -404,4 +489,23 @@ onMounted(fetchDepartments);
   background-color: #f1f1f1;
 }
 
+.token-timer {
+  color: black;
+  font-weight: 600;
+  margin-right: 10px;
+  margin-left: 10px;
+}
+
+.tokenArea {
+  align-items: center;
+  justify-content: center;
+  margin-right:20px;
+  padding: 5px;
+  border: 1px solid black;
+}
+
+.tokenArea button {
+  background-color: #77B0AA;
+  color: black;
+}
 </style>

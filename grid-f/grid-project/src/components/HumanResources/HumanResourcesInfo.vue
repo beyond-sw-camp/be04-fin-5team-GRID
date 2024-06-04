@@ -343,6 +343,7 @@ hr {
 #admin-info-content6 {
     grid-row-start: 7;
     min-height: 47.76px;
+    margin-bottom: 20px;
 }
 .hr-info-content {
     display: grid;
