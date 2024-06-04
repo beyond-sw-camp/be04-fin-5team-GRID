@@ -56,10 +56,13 @@ import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap';
+import router from '@/router/router';
 
 const reviews = ref([]);
 const selectedReviews = ref([]);
 const newReviewText = ref('');
+const userRole = ref('');
+const userId = ref('');
 
 const fetchReviews = async () => {
   try {
@@ -71,8 +74,34 @@ const fetchReviews = async () => {
   }
 };
 
+function parseJwt(token) {
+    try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        return JSON.parse(jsonPayload);
+    } catch (error) {
+        console.error('Invalid token', error);
+        return null;
+    }
+}
+
 onMounted(() => {
-  fetchReviews();
+  const token = localStorage.getItem('access');
+  if (token) {
+    const decodedToken = parseJwt(token);
+    userRole.value = decodedToken?.auth || '';
+    userId.value = decodedToken?.id || '';
+  }
+
+  if (userRole.value !== 'admin') {
+    alert('접근 권한이 없습니다.');
+    router.go(-1);
+  } else {
+    fetchReviews();
+  }
 });
 
 const deleteSelectedReviews = async () => {
@@ -117,6 +146,7 @@ const addReview = async () => {
   }
 };
 </script>
+
 
 <style scoped>
 @font-face {

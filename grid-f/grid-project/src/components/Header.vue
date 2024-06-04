@@ -27,13 +27,13 @@
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
       </div>
       <div class="offcanvas-body" style="position: relative;">
-        <draggable v-model="departments" @end="handleDragEnd" tag="ul" class="list-group" :itemKey="item => item.id">
+        <draggable v-model="departments" @end="handleDragEnd" tag="ul" class="list-group" :itemKey="item => item.id" :disabled="userRole === 'ROLE_USER'">
           <template #item="{ element, index }">
             <li class="list-group-item" :data-id="element.id">
               <div @click="toggleTeams(element.id)" style="cursor: pointer;">
                 {{ element.departmentName }}
               </div>
-              <draggable v-if="element.showTeams" v-model="element.teams" :group="{ name: 'teams', pull: true, put: true }" @end="handleTeamDragEnd($event)" class="list-group" :itemKey="item => item.id">
+              <draggable v-if="element.showTeams" v-model="element.teams" :group="{ name: 'teams', pull: true, put: true }" @end="handleTeamDragEnd($event)" class="list-group" :itemKey="item => item.id" :disabled="userRole === 'ROLE_USER'">
                 <template #item="{ element: team }">
                   <li class="list-group-item">
                     <div @click="toggleEmployees(team.id)" style="cursor: pointer;">
@@ -63,20 +63,21 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import { Dropdown } from 'bootstrap';
 import draggable from 'vuedraggable';
 import { useRouter } from 'vue-router';
-import { useStore} from 'vuex';
+import { useStore } from 'vuex';
 import defaultProfileImage from '@/assets/defaultProfile.jpg';
 
 const departments = ref([]);
 const router = useRouter();
 const store = useStore();
 const dropdownMenu = ref(null);
+const userId = ref('');
+const userRole = ref('');
 
 const user = computed(() => store.state.user);
 
 const profileUrl = computed(() => {
   return user.value?.profilePath ? user.value.profilePath : defaultProfileImage;
 });
-
 
 const fetchDepartments = async () => {
   try {
@@ -101,12 +102,14 @@ const fetchDepartments = async () => {
   }
 };
 
-
-const goToProfile = () => {
-  if (user.value && user.value.employeeNumber) {
-    router.push(`/hr/profile/${user.value.employeeNumber}`);
-  }
-}
+const goToProfile = async (employeeNumber) => {
+  closeOffCanvas();
+  setTimeout(() => {
+    router.push(`/hr/profile/${employeeNumber}`).then(() => {
+      window.location.reload();
+    });
+  }, 300); // 모달이 닫히는 애니메이션 시간을 고려하여 약간의 지연을 줌
+};
 
 const fetchTeams = async (departmentId) => {
   try {
@@ -189,7 +192,6 @@ const handleDragEnd = async () => {
   }
 };
 
-
 const toggleDropdown = () => {
   if (dropdownMenu.value.style.display === 'block') {
     dropdownMenu.value.style.display = 'none';
@@ -208,7 +210,7 @@ const handleTeamDragEnd = async (event) => {
     let team;
     for (const department of departments.value) {
       const foundTeam = department.teams.find(t => t.id === teamId);
-      if (foundTeam) {
+      if (foundFound) {
         team = foundTeam;
         break;
       }
@@ -243,13 +245,51 @@ const handleTeamDragEnd = async (event) => {
   }
 };
 
+function parseJwt(token) {
+  try {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+    return JSON.parse(jsonPayload);
+  } catch (error) {
+    console.error('Invalid token', error);
+    return null;
+  }
+}
+
+const closeOffCanvas = () => {
+  const offCanvasElement = document.getElementById('demo');
+  const offCanvas = bootstrap.Offcanvas.getInstance(offCanvasElement);
+  if (offCanvas) {
+    offCanvas.hide();
+  }
+  // 강제로 backdrop 제거
+  removeBackdrop();
+};
+
+const removeBackdrop = () => {
+  document.querySelectorAll('.offcanvas-backdrop, .modal-backdrop').forEach(backdrop => backdrop.remove());
+};
+
 onMounted(() => {
+  const token = localStorage.getItem('access');
+  if (token) {
+    const decodedToken = parseJwt(token);
+    userRole.value = decodedToken?.auth || '';
+    userId.value = decodedToken?.id || '';
+  }
   fetchDepartments();
   // Bootstrap 드롭다운 초기화
   const dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'));
   dropdownElementList.map(function (dropdownToggleEl) {
     return new Dropdown(dropdownToggleEl);
   });
+
+  // 오프캔버스가 닫힐 때 backdrop을 제거하는 이벤트 리스너 추가
+  const offCanvasElement = document.getElementById('demo');
+  offCanvasElement.addEventListener('hide.bs.offcanvas', removeBackdrop);
 });
 
 const logout = async () => {
@@ -268,10 +308,10 @@ function main() {
   router.push('/main');
 }
 
-
-
 onMounted(fetchDepartments);
 </script>
+
+
 
 <style scoped>
 @font-face {

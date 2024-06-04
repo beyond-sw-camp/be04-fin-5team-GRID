@@ -5,8 +5,8 @@
         <img src="@/assets/department_icon.png" alt="department_icon" class="department-pic">
         <h1>부서 정보</h1>
       </div>
-      <button class="addbtn" @click="showModal('addNewModal')">추가하기</button>
-      <button class="modifybtn" @click="modifyDepartmentsStatus">수정하기</button>
+      <button v-if="userRole === 'ROLE_ADMIN'" class="addbtn" @click="showModal('addNewModal')">추가하기</button>
+      <button v-if="userRole === 'ROLE_ADMIN'" class="modifybtn" @click="modifyDepartmentsStatus">수정하기</button>
     </div>
     <div class="search">
       <input type="text" class="searchBox" placeholder="부서명 검색" v-model="searchQuery">
@@ -27,7 +27,7 @@
       <tbody>
         <tr v-for="(department, index) in paginatedDepartments" :key="department.sequence">
           <td>
-            <input type="checkbox" @change="toggleDepartmentSelection(department)" :checked="isDepartmentSelected(department)">
+            <input v-if="userRole === 'ROLE_ADMIN'" type="checkbox" @change="toggleDepartmentSelection(department)" :checked="isDepartmentSelected(department)">
           </td>
           <td>{{ department.departmentCode }}</td>
           <td>{{ department.departmentName }}</td>
@@ -120,6 +120,8 @@ const currentPage = ref(1);
 const itemsPerPage = 10;
 const searchQuery = ref('');
 const selectedDepartments = ref([]);
+const userId = ref('');
+const userRole = ref('');
 
 const newDepartment = ref({
   departmentName: '',
@@ -163,8 +165,27 @@ const fetchLeaderName = async (leaderId) => {
     return 'Unknown';
   }
 };
+function parseJwt(token) {
+    try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        return JSON.parse(jsonPayload);
+    } catch (error) {
+        console.error('Invalid token', error);
+        return null;
+    }
+}
 
 onMounted(() => {
+  const token = localStorage.getItem('access');
+    if (token) {
+        const decodedToken = parseJwt(token);
+        userRole.value = decodedToken?.auth || '';
+        userId.value = decodedToken?.id || '';
+    }
   fetchDepartments();
   fetchLeaders();
 });
@@ -279,6 +300,8 @@ const clearSelection = () => {
     checkbox.checked = false;
   });
 };
+
+
 </script>
 
 <style scoped>

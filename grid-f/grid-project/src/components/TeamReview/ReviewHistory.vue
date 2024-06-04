@@ -130,11 +130,12 @@ import { ref, computed, onMounted } from 'vue';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap';
+import router from '@/router/router';
 
 const searchQuery = ref('');
 const reviews = ref([]);
 const currentPage = ref(1);
-const itemsPerPage = 10;
+const itemsPerPage = 7;
 
 // New state for Add New modal
 const isAddNewModalOpen = ref(false);
@@ -143,6 +144,7 @@ const newReviewContent = ref('');
 const newReviewYear = ref(new Date().getFullYear());
 const newReviewQuarter = ref(1);
 const newRevieweeId = ref('');
+const userRole = ref('');
 
 const showModal = (modalId) => {
   const modal = new bootstrap.Modal(document.getElementById(modalId));
@@ -179,9 +181,34 @@ const fetchEmployees = async () => {
   }
 };
 
+function parseJwt(token) {
+    try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        return JSON.parse(jsonPayload);
+    } catch (error) {
+        console.error('Invalid token', error);
+        return null;
+    }
+}
+
 onMounted(() => {
-  fetchReviews();
-  fetchEmployees();
+  const token = localStorage.getItem('access');
+  if (token) {
+    const decodedToken = parseJwt(token);
+    userRole.value = decodedToken?.auth || '';
+  }
+
+  if (userRole.value !== 'admin') {
+    alert('접근 권한이 없습니다.');
+    router.go(-1);
+  } else {
+    fetchReviews();
+    fetchEmployees();
+  }
 });
 
 const filteredReviews = computed(() => {

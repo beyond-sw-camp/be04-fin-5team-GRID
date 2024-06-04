@@ -12,7 +12,7 @@
         <input type="text" class="searchBox" v-model="searchQuery" placeholder="이름 검색" />
         <button @click="search" class="searchBtn">검색</button>
       </div>
-      <button @click="showModal('addNewTeamModal')" class="addTeamBtn">팀 추가</button>
+      <button @click="showModal('addNewTeamModal')" class="addTeamBtn" v-if="userRole === 'ROLE_ADMIN'">팀 추가</button>
     </div>
 
     <table class="teamTable">
@@ -127,6 +127,8 @@ import 'bootstrap';
 const route = useRoute();
 const departmentId = ref(route.params.id);
 const departmentName = ref('');
+const userRole = ref('');
+const userId = ref('');
 
 const searchQuery = ref('');
 const currentPage = ref(1);
@@ -199,11 +201,32 @@ watch(departmentId, (newId) => {
   }
 });
 
+function parseJwt(token) {
+    try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        return JSON.parse(jsonPayload);
+    } catch (error) {
+        console.error('Invalid token', error);
+        return null;
+    }
+}
+
 onMounted(() => {
   fetchDepartmentName(); // 부서 이름 가져오기
   fetchTeams();
   fetchDepartments();
   fetchLeaders();
+
+  const token = localStorage.getItem('access');
+    if (token) {
+        const decodedToken = parseJwt(token);
+        userRole.value = decodedToken?.auth || '';
+        userId.value = decodedToken?.id || '';
+    }
 });
 
 const filteredTeams = computed(() => {
