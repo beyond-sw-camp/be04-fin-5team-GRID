@@ -434,7 +434,7 @@ public class VacationServiceImpl implements VacationService {
         } else if (typeId == 6) {
             vacationInfo.setVacationNum(vacationInfo.getVacationNum() + 0.25);
         } else
-            vacationInfo.setVacationNum(vacationInfo.getVacationNum() + 1);
+            vacationInfo.setVacationNum(vacationInfo.getVacationNum() + days);
 
         VacationHistory inputVacationHistory = VacationHistory.builder()
                 .changeTime(today.toString())
@@ -465,7 +465,7 @@ public class VacationServiceImpl implements VacationService {
         } else if (typeId == 6) {
             vacationInfo.setVacationNum(vacationInfo.getVacationNum() - 0.25);
         } else
-            vacationInfo.setVacationNum(vacationInfo.getVacationNum() - 1);
+            vacationInfo.setVacationNum(vacationInfo.getVacationNum() - days);
 
         VacationHistory inputVacationHistory = VacationHistory.builder()
                 .changeTime(today.toString())
