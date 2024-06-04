@@ -34,7 +34,7 @@ import AdTime from '@/components/AdTime/AdTimeAdd.vue'
 <style scoped>
 .mainContainer {
   display: grid;
-  grid-template-rows: 18% 40% min-content 13%;
+  grid-template-rows: 18% 30% min-content 13%;
   grid-template-columns: 10% 80% 10%;
   height: 100%;
 }

@@ -3,6 +3,7 @@ package org.highfives.grid.approval.query.service;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Font;
+import com.lowagie.text.Image;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.PdfPCell;
@@ -20,7 +21,9 @@ import org.highfives.grid.approval.common.dto.BTApprovalDTO;
 import org.highfives.grid.approval.common.dto.OvertimeApprovalDTO;
 import org.highfives.grid.approval.common.dto.RWApprovalDTO;
 import org.highfives.grid.approval.common.dto.VacationApprovalDTO;
+import org.highfives.grid.approval_chain.query.service.ApprovalChainService;
 import org.highfives.grid.user.query.dto.UserDTO;
+import org.highfives.grid.user.query.repository.ImgMapper;
 import org.highfives.grid.user.query.service.UserService;
 import org.highfives.grid.vacation.query.service.VacationService;
 import org.highfives.grid.vacation.query.vo.ResOneVacationTypeVO;
@@ -47,12 +50,14 @@ public class PdfServiceImpl implements PdfService {
     private final VApprovalRepository vApprovalRepository;
     private final UserService userService;
     private final VacationService vacationService;
+    private final ImgMapper imgMapper;
+    private final ApprovalChainService approvalChainService;
 
     DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     String date = LocalDateTime.now().format(dateFormat);
 
     @Autowired
-    public PdfServiceImpl(ModelMapper mapper, BTApprovalRepository btApprovalRepository, OApprovalRepository oApprovalRepository, RWApprovalRepository rwApprovalRepository, VApprovalRepository vApprovalRepository, UserService userService, VacationService vacationService) {
+    public PdfServiceImpl(ModelMapper mapper, BTApprovalRepository btApprovalRepository, OApprovalRepository oApprovalRepository, RWApprovalRepository rwApprovalRepository, VApprovalRepository vApprovalRepository, UserService userService, VacationService vacationService, ImgMapper imgMapper, ApprovalChainService approvalChainService) {
         this.mapper = mapper;
         this.btApprovalRepository = btApprovalRepository;
         this.oApprovalRepository = oApprovalRepository;
@@ -60,6 +65,8 @@ public class PdfServiceImpl implements PdfService {
         this.vApprovalRepository = vApprovalRepository;
         this.userService = userService;
         this.vacationService = vacationService;
+        this.imgMapper = imgMapper;
+        this.approvalChainService = approvalChainService;
     }
 
     @Override
@@ -97,9 +104,18 @@ public class PdfServiceImpl implements PdfService {
 
         String filePath = "1" + btApproval.getId() + ".pdf";
 
+        String d_imgPath = imgMapper.getSealImg(approvalChainService.findLeaderByEmployeeId(user.getId(), 1));
+        String t_imgPath = imgMapper.getSealImg(approvalChainService.findLeaderByEmployeeId(user.getId(), 2));
+
         try {
             PdfWriter.getInstance(document, new FileOutputStream(filePath));
             document.open();
+
+            Image d_img = com.lowagie.text.Image.getInstance(d_imgPath);
+            Image t_img = com.lowagie.text.Image.getInstance(t_imgPath);
+
+            d_img.scaleToFit(60, 100);
+            t_img.scaleToFit(60, 100);
 
             String fontPath = "src/main/resources/fonts/Sejong hospital Light.ttf";
             BaseFont bf = BaseFont.createFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
@@ -137,7 +153,7 @@ public class PdfServiceImpl implements PdfService {
                 header.setVerticalAlignment(PdfPCell.ALIGN_MIDDLE);
             }
 
-            headers.get(5).setFixedHeight(240f);
+            headers.get(5).setFixedHeight(200f);
             headers.get(6).setFixedHeight(20f);
             headers.get(7).setFixedHeight(20f);
 
@@ -164,8 +180,17 @@ public class PdfServiceImpl implements PdfService {
             sigTable.addCell(mergedCell2);
             sigTable.addCell(headers.get(6));
             sigTable.addCell(headers.get(7));
-            sigTable.addCell(new PdfPCell(new Paragraph("signature")));
-            sigTable.addCell(new PdfPCell(new Paragraph("signature")));
+
+            PdfPCell d_leader = new PdfPCell(d_img);
+            PdfPCell t_leader = new PdfPCell(t_img);
+
+            t_leader.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
+            t_leader.setVerticalAlignment(PdfPCell.ALIGN_MIDDLE);
+            d_leader.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
+            d_leader.setVerticalAlignment(PdfPCell.ALIGN_MIDDLE);
+
+            sigTable.addCell(t_leader);
+            sigTable.addCell(d_leader);
 
             sigTable.setTotalWidth(160);
             sigTable.setLockedWidth(true);
@@ -202,9 +227,14 @@ public class PdfServiceImpl implements PdfService {
 
         String filePath = "2" + overtimeApproval.getId() + ".pdf";
 
+        String imagePath = imgMapper.getSealImg(approvalChainService.findLeaderByEmployeeId(user.getId(), 3));
+
         try {
             PdfWriter.getInstance(document, new FileOutputStream(filePath));
             document.open();
+
+            Image img = com.lowagie.text.Image.getInstance(imagePath);
+            img.scaleToFit(60, 100);
 
             String fontPath = "src/main/resources/fonts/Sejong hospital Light.ttf";
             BaseFont bf = BaseFont.createFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
@@ -239,7 +269,7 @@ public class PdfServiceImpl implements PdfService {
                 header.setVerticalAlignment(PdfPCell.ALIGN_MIDDLE);
             }
 
-            headers.get(4).setFixedHeight(240f);
+            headers.get(4).setFixedHeight(200f);
             headers.get(5).setFixedHeight(20f);
 
             table.setWidths(new float[]{2f, 5f});
@@ -264,7 +294,13 @@ public class PdfServiceImpl implements PdfService {
 
             sigTable.addCell(mergedCell2);
             sigTable.addCell(headers.get(5));
-            sigTable.addCell(new PdfPCell(new Paragraph("signature")));
+
+            PdfPCell t_leader = new PdfPCell(img);
+
+            t_leader.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
+            t_leader.setVerticalAlignment(PdfPCell.ALIGN_MIDDLE);
+
+            sigTable.addCell(t_leader);
 
             sigTable.setTotalWidth(80);
             sigTable.setLockedWidth(true);
@@ -301,9 +337,14 @@ public class PdfServiceImpl implements PdfService {
 
         String filePath = "3" + rwApproval.getId() + ".pdf";
 
+        String imagePath = imgMapper.getSealImg(approvalChainService.findLeaderByEmployeeId(user.getId(), 4));
+
         try {
             PdfWriter.getInstance(document, new FileOutputStream(filePath));
             document.open();
+
+            Image img = com.lowagie.text.Image.getInstance(imagePath);
+            img.scaleToFit(60, 100);
 
             String fontPath = "src/main/resources/fonts/Sejong hospital Light.ttf";
             BaseFont bf = BaseFont.createFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
@@ -363,7 +404,13 @@ public class PdfServiceImpl implements PdfService {
 
             sigTable.addCell(mergedCell2);
             sigTable.addCell(headers.get(5));
-            sigTable.addCell(new PdfPCell(new Paragraph("signature")));
+
+            PdfPCell t_leader = new PdfPCell(img);
+
+            t_leader.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
+            t_leader.setVerticalAlignment(PdfPCell.ALIGN_MIDDLE);
+
+            sigTable.addCell(t_leader);
 
             sigTable.setTotalWidth(80);
             sigTable.setLockedWidth(true);
@@ -399,10 +446,14 @@ public class PdfServiceImpl implements PdfService {
         UserDTO user = userService.findUserById(vacationApproval.getRequesterId());
 
         String filePath = "4" + vacationApproval.getId() + ".pdf";
+        String imagePath = imgMapper.getSealImg(approvalChainService.findLeaderByEmployeeId(user.getId(), 5));
 
         try {
             PdfWriter.getInstance(document, new FileOutputStream(filePath));
             document.open();
+
+            Image img = com.lowagie.text.Image.getInstance(imagePath);
+            img.scaleToFit(60, 100);
 
             String fontPath = "src/main/resources/fonts/Sejong hospital Light.ttf";
             BaseFont bf = BaseFont.createFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
@@ -464,7 +515,13 @@ public class PdfServiceImpl implements PdfService {
 
             sigTable.addCell(mergedCell2);
             sigTable.addCell(headers.get(6));
-            sigTable.addCell(new PdfPCell(new Paragraph("signature")));
+
+            PdfPCell t_leader = new PdfPCell(img);
+
+            t_leader.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
+            t_leader.setVerticalAlignment(PdfPCell.ALIGN_MIDDLE);
+
+            sigTable.addCell(t_leader);
 
             sigTable.setTotalWidth(80);
             sigTable.setLockedWidth(true);

@@ -36,19 +36,8 @@ import router from "@/router/router.js";
     postData.endTime = `${postData.e_date} ${postData.e_time}:00`;
   }
 
-  function  isStartDateValid() {
-    return this.postData.s_date !== "" ? true : false;
-  }
-  function isEndDateValid() {
-    return this.postData.e_date !== "" ? true : false;
-  }
-  function isContentValid() {
-    return this.postData.content.trim() !== "" ? true : false;
-  }
-
   const registApproval = async() => {
 
-    alert('결재를 제출하시겠습니까?');
     postData.requesterId = userId.value;
 
     const startTIme = new Date(postData.startTime);
@@ -57,27 +46,31 @@ import router from "@/router/router.js";
     const diff = (endTime.getTime() - startTIme.getTime()) / (1000 * 60 * 60);
 
     try {
-      if (diff < 12) {
-        const response = await axios.post(`http://localhost:8080/approval/overtime`, postData, {
-          headers: {
-            'Content-Type': "application/json"
+      const confirmed = window.confirm('결재를 제출하시겠습니까?');
+
+      if(confirmed) {
+        if (postData.content !== '') {
+          if (diff < 12) {
+            const response = await axios.post("http://localhost:8080/approval/overtime", postData, {
+              headers: {
+                'Content-Type': "application/json"
+              }
+            })
+            if (response.status === 201) {
+              alert('결재가 제출되었습니다.');
+              router.push(response.data.href);
+            } else {
+              throw new Error("response is not ok");
+            }
+          } else {
+            alert('시간 외 근무 시간은 12시간을 초과할 수 없습니다.');
           }
-        })
-        if (response.status === 201) {
-            alert('결재가 제출되었습니다.');
-            router.push(response.data.href);
         } else {
-            throw new Error("response is not ok");
+          alert('내용을 입력해주세요');
         }
-      } else {
-          alert('시간 외 근무 시간은 12시간을 초과할 수 없습니다.');
       }
     } catch (error) {
-      if (error.response.status === 400) {
-        alert('주별 시간 외 근무 시간의 합계가 12시간을 초과했숩니다.');
-      } else {
         console.error('Fail to post: ', error.message);
-      }
     }
   }
 
@@ -128,8 +121,8 @@ import router from "@/router/router.js";
             label-cols-sm="3"
             label-align-sm="right"
         >
-          <b-form-input type="date" sid="start" v-model="postData.s_date"></b-form-input>
-          <b-form-input type="time" id="start" v-model="postData.s_time"></b-form-input>
+          <b-form-input type="date" v-model="postData.s_date"></b-form-input>
+          <b-form-input type="time" v-model="postData.s_time"></b-form-input>
         </b-form-group>
 
         <b-form-group
@@ -138,8 +131,8 @@ import router from "@/router/router.js";
             label-cols-sm="3"
             label-align-sm="right"
         >
-          <b-form-input type="date" id="end" v-model="postData.e_date" :min="postData.s_date"></b-form-input>
-          <b-form-input type="time" id="start" v-model="postData.e_time"></b-form-input>
+          <b-form-input type="date" v-model="postData.e_date" :min="postData.s_date"></b-form-input>
+          <b-form-input type="time" v-model="postData.e_time"></b-form-input>
         </b-form-group>
 
         <b-form-group
