@@ -16,4 +16,6 @@ public interface DepartmentService {
     List<DepartmentDTO> modifyAllDepartment(List<DepartmentDTO> departmentDTO);
 
     List<DepartmentDTO> modifyDepartmentStatus(List<DepartmentDTO> departmentDTO);
+
+    DepartmentDTO modifyDepartmentLeader(DepartmentDTO departmentDTO);
 }

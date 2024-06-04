@@ -1,10 +1,10 @@
 <template>
   <div class="container">
-      <div class="header-title">
-        <img class="reviewIcon" src="@/assets/list-check.png" alt="list-check" />
-        <h1>전체 평가 목록</h1>
-        <button href="#" class="addNewBtn" @click="showModal('addReview')">생성</button>
-      </div>
+    <div class="header-title">
+      <img class="reviewIcon" src="@/assets/list-check.png" alt="list-check" />
+      <h1>전체 평가 목록</h1>
+      <button href="#" class="addNewBtn" @click="showModal('addReview')">생성</button>
+    </div>
     <div class="search-and-add">
       <div class="search-group">
         <input type="text" v-model="searchQuery" placeholder="Title" class="searchBox"/>
@@ -36,92 +36,86 @@
       </tbody>
     </table>
 
-    <!-- <div class="pagination">
-      <button @click="prevPage" :disabled="currentPage === 1">&laquo;</button>
-      <button v-for="page in totalPages" :key="page" @click="changePage(page)" :class="{ active: page === currentPage }">{{ page }}</button>
-      <button @click="nextPage" :disabled="currentPage === totalPages">&raquo;</button>
-    </div> -->
-
     <nav class="pg" aria-label="Page navigation example" v-if="totalPages > 1">
-            <ul class="pagination">
-                <li class="page-item" :class="{ disabled: currentPage === 1 }">
-                    <a class="page-link" href="#" aria-label="First" @click.prevent="goToFirstPage">
-                        <span aria-hidden="true">&laquo;&laquo;</span>
-                    </a>
-                </li>
-                <li class="page-item" :class="{ disabled: currentPage === 1 }">
-                    <a class="page-link" href="#" aria-label="Previous" @click.prevent="prevPage">
-                        <span aria-hidden="true">&laquo;</span>
-                    </a>
-                </li>
-                <li v-for="page in filteredPages" :key="page" class="page-item" :class="{ active: page === currentPage }">
-                    <a class="page-link" @click.prevent="goToPage(page)">{{ page }}</a>
-                </li>
-                <li class="page-item" :class="{ disabled: currentPage === totalPages }">
-                    <a class="page-link" aria-label="Next" @click.prevent="nextPage">
-                        <span aria-hidden="true">&raquo;</span>
-                    </a>
-                </li>
-                <li class="page-item" :class="{ disabled: currentPage === totalPages }">
-                    <a class="page-link" href="#" aria-label="Last" @click.prevent="goToLastPage">
-                        <span aria-hidden="true">&raquo;&raquo;</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
+      <ul class="pagination">
+        <li class="page-item" :class="{ disabled: currentPage === 1 }">
+          <a class="page-link" href="#" aria-label="First" @click.prevent="goToFirstPage">
+            <span aria-hidden="true">&laquo;&laquo;</span>
+          </a>
+        </li>
+        <li class="page-item" :class="{ disabled: currentPage === 1 }">
+          <a class="page-link" href="#" aria-label="Previous" @click.prevent="prevPage">
+            <span aria-hidden="true">&laquo;</span>
+          </a>
+        </li>
+        <li v-for="page in filteredPages" :key="page" class="page-item" :class="{ active: page === currentPage }">
+          <a class="page-link" @click.prevent="goToPage(page)">{{ page }}</a>
+        </li>
+        <li class="page-item" :class="{ disabled: currentPage === totalPages }">
+          <a class="page-link" aria-label="Next" @click.prevent="nextPage">
+            <span aria-hidden="true">&raquo;</span>
+          </a>
+        </li>
+        <li class="page-item" :class="{ disabled: currentPage === totalPages }">
+          <a class="page-link" href="#" aria-label="Last" @click.prevent="goToLastPage">
+            <span aria-hidden="true">&raquo;&raquo;</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
 
     <!-- Add New Modal -->
     <div class="modal fade" id="addReview" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">동료평가 생성</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="closeModal('addReview')"></button>
-            </div>
-            <div class="modal-body">
-                <form class="needs-validation" @submit.prevent="validateAndRegistContent" novalidate>
-                    <div class="mb-3">
-                        <label for="newReviewContent" class="form-label">평가명</label>
-                        <input class="form-control" type="text" id="newReviewContent" v-model="newReviewContent" required />
-                        <div class="invalid-feedback">
-                            평가명을 입력해주세요.
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="vacationNum" class="form-label">연도</label>
-                        <input class="form-control" type="number" id="newReviewYear" v-model="newReviewYear" required />
-                        <div class="invalid-feedback">
-                            연도를 입력해주세요.
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="employeeNum" class="form-label">분기</label>
-                        <select class="form-select" id="newReviewQuarter" v-model="newReviewQuarter" required>
-                          <option value="" disabled selected>분기를 선택해주세요.</option>
-                          <option value="1">1분기</option>
-                          <option value="2">2분기</option>
-                        </select>
-                        <div class="invalid-feedback">
-                            분기를 선택해주세요.
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="dayOfUsing" class="form-label">평가 대상자</label>
-                        <select class="form-select" d="newRevieweeId" v-model="newRevieweeId" required>
-                          <option value="" disabled selected>평가 대상자를 선택해주세요.</option>
-                          <option v-for="employee in employees" :key="employee.id" :value="employee.id">
-                            {{ employee.name }}
-                          </option>
-                        </select>
-                    </div>
-                    <div class="button-container">
-                        <button type="submit" class="btn btn-primary">생성</button>
-                    </div>
-                </form>
-            </div>
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">동료평가 생성</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="closeModal('addReview')"></button>
+          </div>
+          <div class="modal-body">
+            <form class="needs-validation" @submit.prevent="validateAndRegistContent" novalidate>
+              <div class="mb-3">
+                <label for="newReviewContent" class="form-label">평가명</label>
+                <input class="form-control" type="text" id="newReviewContent" v-model="newReviewContent" required />
+                <div class="invalid-feedback">
+                  평가명을 입력해주세요.
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="vacationNum" class="form-label">연도</label>
+                <input class="form-control" type="number" id="newReviewYear" v-model="newReviewYear" required />
+                <div class="invalid-feedback">
+                  연도를 입력해주세요.
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="employeeNum" class="form-label">분기</label>
+                <select class="form-select" id="newReviewQuarter" v-model="newReviewQuarter" required>
+                  <option value="" disabled selected>분기를 선택해주세요.</option>
+                  <option value="1">1분기</option>
+                  <option value="2">2분기</option>
+                </select>
+                <div class="invalid-feedback">
+                  분기를 선택해주세요.
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="dayOfUsing" class="form-label">평가 대상자</label>
+                <select class="form-select" id="newRevieweeId" v-model="newRevieweeId" required>
+                  <option value="" disabled selected>평가 대상자를 선택해주세요.</option>
+                  <option v-for="employee in employees" :key="employee.id" :value="employee.id">
+                    {{ employee.name }}
+                  </option>
+                </select>
+              </div>
+              <div class="button-container">
+                <button type="submit" class="btn btn-primary">생성</button>
+              </div>
+            </form>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
   </div>
 </template>
 
@@ -134,6 +128,7 @@ import router from '@/router/router';
 
 const searchQuery = ref('');
 const reviews = ref([]);
+const filteredReviews = ref([]);
 const currentPage = ref(1);
 const itemsPerPage = 7;
 
@@ -167,6 +162,7 @@ const fetchReviews = async () => {
       review.departmentName = departmentResponse.data.result.departmentName;
     }));
     reviews.value = reviewList;
+    filteredReviews.value = reviewList; // 초기에는 모든 리뷰를 표시
   } catch (error) {
     console.error('평가 내역을 가져오는 중 오류 발생:', error);
   }
@@ -182,17 +178,17 @@ const fetchEmployees = async () => {
 };
 
 function parseJwt(token) {
-    try {
-        const base64Url = token.split('.')[1];
-        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
-            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-        }).join(''));
-        return JSON.parse(jsonPayload);
-    } catch (error) {
-        console.error('Invalid token', error);
-        return null;
-    }
+  try {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+    return JSON.parse(jsonPayload);
+  } catch (error) {
+    console.error('Invalid token', error);
+    return null;
+  }
 }
 
 onMounted(() => {
@@ -202,19 +198,13 @@ onMounted(() => {
     userRole.value = decodedToken?.auth || '';
   }
 
-  if (userRole.value !== 'admin') {
+  if (userRole.value !== 'ROLE_ADMIN') {
     alert('접근 권한이 없습니다.');
     router.go(-1);
   } else {
     fetchReviews();
     fetchEmployees();
   }
-});
-
-const filteredReviews = computed(() => {
-  return reviews.value.filter(review =>
-    review.reviewerName.toLowerCase().includes(searchQuery.value.toLowerCase())
-  );
 });
 
 const totalPages = computed(() => {
@@ -232,15 +222,15 @@ const changePage = (page) => {
 };
 
 const filteredPages = computed(() => {
-    const maxPages = 5; // 페이지당 최대 표시할 페이지 수
-    const startPage = Math.max(1, currentPage.value - Math.floor(maxPages / 2));
-    const endPage = Math.min(totalPages.value, startPage + maxPages - 1);
+  const maxPages = 5; // 페이지당 최대 표시할 페이지 수
+  const startPage = Math.max(1, currentPage.value - Math.floor(maxPages / 2));
+  const endPage = Math.min(totalPages.value, startPage + maxPages - 1);
 
-    const pages = [];
-    for (let i = startPage; i <= endPage; i++) {
-        pages.push(i);
-    }
-    return pages;
+  const pages = [];
+  for (let i = startPage; i <= endPage; i++) {
+    pages.push(i);
+  }
+  return pages;
 });
 
 const prevPage = () => {
@@ -252,17 +242,17 @@ const nextPage = () => {
 };
 
 const goToPage = (page) => {
-    currentPage.value = page;
+  currentPage.value = page;
 };
 
 // 처음 페이지로 이동
 const goToFirstPage = () => {
-    currentPage.value = 1;
+  currentPage.value = 1;
 };
 
 // 마지막 페이지로 이동
 const goToLastPage = () => {
-    currentPage.value = totalPages.value;
+  currentPage.value = totalPages.value;
 };
 
 const formatDate = (datetime) => {
@@ -271,12 +261,15 @@ const formatDate = (datetime) => {
   return date.toLocaleString();
 };
 
-
 const search = () => {
-  // 검색 로직을 추가합니다.
+  if (!searchQuery.value.trim()) {
+    alert('검색어를 입력해주세요.');
+    return;
+  }
   filteredReviews.value = reviews.value.filter(review =>
     review.reviewerName.toLowerCase().includes(searchQuery.value.toLowerCase())
   );
+  currentPage.value = 1; // 검색 후 첫 페이지로 이동
 };
 
 const closeModal = (modalId) => {
@@ -295,16 +288,13 @@ const closeModal = (modalId) => {
 };
 
 const validateAndRegistContent = () => {
-    const form = document.querySelector('#addReview form');
-    if (!form.checkValidity()) {
-        form.classList.add('was-validated');
-        
-    } else {
-      addNewReview();
-    }
-    
+  const form = document.querySelector('#addReview form');
+  if (!form.checkValidity()) {
+    form.classList.add('was-validated');
+  } else {
+    addNewReview();
+  }
 };
-
 
 const addNewReview = async () => {
   const newReview = {
@@ -316,7 +306,7 @@ const addNewReview = async () => {
 
   try {
     const confirmed = window.confirm('생성하시겠습니까?');
-    if(confirmed) {
+    if (confirmed) {
       await axios.post('http://localhost:8080/review/history', newReview);
       alert('생성 완료되었습니다!');
       await fetchReviews();
@@ -447,29 +437,27 @@ tr:hover {
   background-color: #f1f1f1;
 }
 
-
 .pg {
-        grid-row-start: 5;
-        grid-column-start: 2;
-        grid-column-end: 3;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-top: 10px;
-    }
+  grid-row-start: 5;
+  grid-column-start: 2;
+  grid-column-end: 3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+}
 
-    .pagination .page-item.active .page-link {
-    background-color: #088A85; /* 원하는 배경색 */
-    border-color: #088A85; /* 원하는 테두리 색 */
-    color: white; /* 원하는 텍스트 색 */
-    }
+.pagination .page-item.active .page-link {
+  background-color: #088A85; /* 원하는 배경색 */
+  border-color: #088A85; /* 원하는 테두리 색 */
+  color: white; /* 원하는 텍스트 색 */
+}
 
-    .pagination .page-item .page-link {
-        color: #088A85; /* 기본 텍스트 색 */
-    }
+.pagination .page-item .page-link {
+  color: #088A85; /* 기본 텍스트 색 */
+}
 
-    .pagination .page-item.disabled .page-link {
-        color: #088A85; /* 비활성화된 페이지 색 */
-    }
-
+.pagination .page-item.disabled .page-link {
+  color: #088A85; /* 비활성화된 페이지 색 */
+}
 </style>

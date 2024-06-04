@@ -200,4 +200,25 @@ public class DepartmentServiceImpl implements DepartmentService {
 
         return departmentDTOList;
     }
+
+    @Override
+    public DepartmentDTO modifyDepartmentLeader(DepartmentDTO departmentDTO) {
+        DepartmentDTO currentDepartmentInfo = findDepartmentById(departmentDTO.getId());
+
+            Department department = Department.builder()
+                    .id(departmentDTO.getId())
+                    .departmentName(currentDepartmentInfo.getDepartmentName())
+                    .departmentStatus(currentDepartmentInfo.getDepartmentStatus())
+                    .startTime(currentDepartmentInfo.getStartTime())
+                    .endTime(currentDepartmentInfo.getEndTime())
+                    .memberCnt(currentDepartmentInfo.getMemberCnt())
+                    .leaderId(departmentDTO.getLeaderId())
+                    .departmentCode(currentDepartmentInfo.getDepartmentCode())
+                    .sequence(currentDepartmentInfo.getSequence())
+                    .build();
+
+            departmentRepository.save(department);
+
+        return mapper.map(department, DepartmentDTO.class);
+    }
 }
