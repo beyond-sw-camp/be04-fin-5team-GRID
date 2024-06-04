@@ -1,34 +1,92 @@
 <template>
   <div class="mainContainer">
-  <div class="mainTitle">
-    <img class="mainIcon" src="@/assets/icons/goal_icon.png">
-    <h1>메인</h1>
-  </div>
-  <div class="content">
-    <AdTime />
-  </div>
+    <div class="mainTitle">
+      <img class="mainIcon" src="@/assets/icons/goal_icon.png">
+      <h1>메인</h1>
+    </div>
+    <div class="content">
+      <AdTime />
+    </div>
+    <div  class="approvalContent">
+      <ApprovalList :approvalList="state.sReqApprovalList"/>
+    </div>
   </div>
 </template>
 
 <script setup>
-import AdTime from '@/components/AdTime/AdTimeAdd.vue'
-    import { provide, ref } from 'vue';
-    import router from '@/router/router.js';
-    import {RouterLink, RouterView} from 'vue-router';
-    import WorkCalendar from "@/components/AdTime/WorkCalendar.vue";
+  import AdTime from '@/components/AdTime/AdTimeAdd.vue'
+  import {onMounted, provide, reactive, ref} from 'vue';
+  import axios from "axios";
+  import router from '@/router/router.js';
+  import {RouterLink, RouterView} from 'vue-router';
+  import WorkCalendar from "@/components/AdTime/WorkCalendar.vue";
 
+  import ApprovalList from "@/components/Approval/ApprovalList.vue";
 
-    // function history() {
-    //     router.push("/vacation/history")
-    // }
+  const userRole = ref('');
+  const userId = ref();
 
-    // function policy() {
-    //     router.push("/vacation/policy")
-    // }
+  const isLoading = ref(true);
 
-    // function manage() {
-    //     router.push("/vacation/manage")
-    // }
+  const state = reactive({
+    sReqApprovalList: []
+  })
+      // function history() {
+      //     router.push("/vacation/history")
+      // }
+
+      // function policy() {
+      //     router.push("/vacation/policy")
+      // }
+
+      // function manage() {
+      //     router.push("/vacation/manage")
+      // }
+  function parseJwt(token) {
+    try {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      }).join(''));
+      return JSON.parse(jsonPayload);
+    } catch (error) {
+      console.error('Invalid token', error);
+      return null;
+    }
+  }
+
+  const fetchReqApprovalList = async (typeId, approvalStatus, approverId) => {
+    try {
+      const response = await axios.get(`http://localhost:8080/approval/approver/${typeId}/${approvalStatus}/${approverId}`);
+      if (response.status !== 200) {
+        throw new Error("response is not ok");
+      }
+
+      state.sReqApprovalList = response.data.approvalEmpResultList.slice(0, 5);
+      console.log(state.sReqApprovalList);
+      state.sReqApprovalList.type = 1;
+
+    } catch (error) {
+      console.error('Fetch error: ' + error.message);
+    }
+  }
+
+  onMounted(async () => {
+    const token = localStorage.getItem('access');
+    if (token) {
+      const decodedToken = parseJwt(token);
+
+      userId.value = decodedToken.id || '';
+      userRole.value = decodedToken.auth || '';
+    }
+
+    if (userRole.value !== 'ROLE_ADMIN') {
+      await fetchReqApprovalList(0, 5, userId.value);
+    }
+
+    isLoading.value = false;
+  })
 </script>
 
 <style scoped>
@@ -72,5 +130,12 @@ import AdTime from '@/components/AdTime/AdTimeAdd.vue'
 .content > * {
   width: 100%;
   height: 100%;
+}
+
+.approvalContent {
+  grid-row-start: 3;
+  grid-row-end: 4;
+  grid-column-start: 2;
+  grid-column-end: 3;
 }
 </style>
