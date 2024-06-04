@@ -27,7 +27,7 @@
         , department_id
         , leader_id
         , sequence
-        FROM TEAM
+        FROM team
         WHERE id = #{id}
     </select>
 
@@ -42,7 +42,7 @@
         , department_id
         , leader_id
         , sequence
-        FROM TEAM
+        FROM team
     </select>
 
     <select id="findSubDepartmentByDepartmentId" resultMap="TeamResultMap">
@@ -56,7 +56,7 @@
         , department_id
         , leader_id
         , sequence
-        FROM TEAM
+        FROM team
         WHERE department_id = #{departmentId}
     </select>
 
