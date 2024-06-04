@@ -104,4 +104,21 @@ public class DepartmentController {
         return ResponseEntity.status(HttpStatus.OK).body(responseDepartmentVO);
     }
 
+
+    /* 설명. 상태값만 바꾸는 수정 */
+    @PutMapping("/status")
+    public ResponseEntity<ResponseDepartmentListVO> modifyDepartmentStatus(@RequestBody List<DepartmentDTO> departmentDTO) {
+
+        List<DepartmentDTO> departmentList = departmentService.modifyDepartmentStatus(departmentDTO);
+
+        ResponseDepartmentListVO responseDepartmentVO = ResponseDepartmentListVO.builder()
+                .message("success")
+                .href("/{id}")
+                .statusCode(200)
+                .result(departmentList)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(responseDepartmentVO);
+    }
+
 }

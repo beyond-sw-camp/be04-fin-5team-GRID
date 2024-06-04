@@ -6,7 +6,7 @@
         <h1>부서 정보</h1>
       </div>
       <button class="addbtn" @click="showModal('addNewModal')">추가하기</button>
-      <button class="modifybtn" @click="">수정하기</button>
+      <button class="modifybtn" @click="modifyDepartmentsStatus">수정하기</button>
     </div>
     <div class="search">
       <input type="text" class="searchBox" placeholder="부서명 검색" v-model="searchQuery">
@@ -26,7 +26,9 @@
       </thead>
       <tbody>
         <tr v-for="(department, index) in paginatedDepartments" :key="department.sequence">
-          <td><input type="checkbox"></td>
+          <td>
+            <input type="checkbox" @change="toggleDepartmentSelection(department)" :checked="isDepartmentSelected(department)">
+          </td>
           <td>{{ department.departmentCode }}</td>
           <td>{{ department.departmentName }}</td>
           <td>{{ formatDate(department.startTime) }}</td>
@@ -117,6 +119,7 @@ const leaders = ref([]);
 const currentPage = ref(1);
 const itemsPerPage = 10;
 const searchQuery = ref('');
+const selectedDepartments = ref([]);
 
 const newDepartment = ref({
   departmentName: '',
@@ -236,7 +239,229 @@ const search = () => {
 const goToDepartmentTeams = (id) => {
   window.location.href = `/team/${id}`;
 };
+
+const modifyDepartmentsStatus = async () => {
+  if (selectedDepartments.value.length === 0) {
+    alert('수정할 부서를 선택하세요.');
+    return;
+  }
+
+  try {
+    const response = await axios.put('http://localhost:8080/department/status', selectedDepartments.value);
+    if (response.status === 200) {
+      alert('수정되었습니다.');
+      await fetchDepartments();
+      selectedDepartments.value = [];
+      clearSelection();
+    }
+  } catch (error) {
+    console.error('부서 상태를 수정하는 중 에러 발생:', error);
+    alert('부서 상태 수정 중 에러가 발생했습니다.');
+  }
+};
+
+const toggleDepartmentSelection = (department) => {
+  const index = selectedDepartments.value.findIndex(d => d.id === department.id);
+  if (index > -1) {
+    selectedDepartments.value.splice(index, 1);
+  } else {
+    selectedDepartments.value.push(department);
+  }
+};
+
+const isDepartmentSelected = (department) => {
+  return selectedDepartments.value.some(d => d.id === department.id);
+};
+
+const clearSelection = () => {
+  const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+  checkboxes.forEach(checkbox => {
+    checkbox.checked = false;
+  });
+};
 </script>
+
+<style scoped>
+@font-face {
+  font-family: 'IBMPlexSansKR-Regular';
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_20-07@1.0/IBMPlexSansKR-Regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.container {
+  display: grid;
+  grid-template-columns: 10% 80% 10%;
+  grid-template-rows: 18% 3% 2% 65% 2% 5% 5%;
+  width: 80%;
+  font-family: 'IBMPlexSansKR-Regular';
+}
+
+.search {
+  grid-row-start: 2;
+  grid-column-start: 2;
+  display: grid;
+  grid-template-columns: 74% 5% 1% 15% 1% 4%;
+  font-size: 12px;
+}
+
+.searchBox {
+    grid-column-start: 4;
+    margin-left: 2%;
+    padding: 5px 5px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-style: bold;
+}
+
+.searchBtn {
+    grid-column-start: 6;
+    margin-left: 2%;
+    width: 100%;
+    background-color: #088A85;
+    color: white;
+    padding: 5px 5px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    font-style: bold;
+}
+
+.deptTable {
+  grid-column-start: 2;
+  grid-row-start: 4;
+}
+
+.header {
+  grid-column-start: 2;
+  display: grid;
+  grid-template-columns: 90% 4.5% 1% 4.5%;
+  align-items: center;
+}
+
+.header-title {
+  align-items: center;
+  display: grid; 
+  grid-template-columns: 3% 97%;
+}
+
+.header-title h1 {
+  font-size: 25px;
+  font-weight: 600;
+  margin-left: 0.5%;
+  margin-bottom: 0;
+}
+
+.addbtn {
+  padding: 5px 5px;
+  background-color: #088A85;
+  border: none;
+  color: white;
+  border-radius: 4px;
+  font-size: 11px;
+  cursor: pointer;
+  grid-column-start: 2;
+}
+
+.modifybtn {
+  grid-column-start: 4;
+  padding: 5px 5px;
+  background-color: #088A85;
+  border: none;
+  color: white;
+  border-radius: 4px;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.search-bar {
+  grid-row-start: 2;
+  grid-column-start: 2;
+  display: grid;
+  grid-template-columns: 90% 10%;
+}
+
+.search-bar input {
+  grid-column-start: 2;
+  width: 100%;
+  border: 1px solid #ddd;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+  table-layout: fixed;
+}
+
+th, td {
+  padding: 6px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+  word-wrap: break-word;
+}
+
+th {
+  background-color: #f8f8f8;
+}
+
+td {
+  font-size: 14px;
+}
+
+tr:hover {
+  background-color: #f1f1f1;
+}
+
+.pagination {
+  grid-row-start: 6;
+  grid-column-start: 2;
+  display: flex;
+  justify-content: center;
+}
+
+.pagination a {
+  margin: 0 5px;
+  padding: 10px 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  text-decoration: none;
+  color: #333;
+}
+
+.pagination a.active {
+  background-color: #088A85;
+  color: white;
+  border: none;
+}
+
+.department-pic {
+  width: 80%;
+  grid-column-start: 1;
+}
+
+.modal-header {
+  margin-top: 10px;
+}
+
+.view-details-btn {
+  padding: 5px 10px;
+  background-color: #088A85;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.view-details-btn:hover {
+  background-color: #065f5b;
+}
+</style>
+
 
 <style scoped>
 @font-face {

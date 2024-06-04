@@ -71,10 +71,7 @@
               </div>
               <div class="mb-3">
                 <label for="departmentName" class="form-label">상위 부서명</label>
-                <div class="input-group">
-                  <input type="text" class="form-control" id="departmentName" v-model="newTeam.departmentName" readonly>
-                  <button type="button" class="btn btn-secondary" @click="showModal('selectDepartmentModal')">조회</button>
-                </div>
+                <input type="text" class="form-control" id="departmentName" v-model="newTeam.departmentName" readonly>
               </div>
               <div class="mb-3">
                 <label for="leaderName" class="form-label">책임자 명</label>
@@ -85,34 +82,6 @@
               </div>
               <button type="submit" class="btn btn-primary">추가</button>
             </form>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 부서 선택 Modal -->
-    <div class="modal fade" id="selectDepartmentModal" tabindex="-1" aria-labelledby="selectDepartmentModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="selectDepartmentModalLabel">부서 선택</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <table class="table">
-              <thead>
-                <tr>
-                  <th>부서명</th>
-                  <th>선택</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="department in departments" :key="department.id">
-                  <td>{{ department.departmentName }}</td>
-                  <td><button type="button" class="btn btn-primary" @click="selectDepartment(department)">선택</button></td>
-                </tr>
-              </tbody>
-            </table>
           </div>
         </div>
       </div>
@@ -149,7 +118,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -157,6 +126,7 @@ import 'bootstrap';
 
 const route = useRoute();
 const departmentId = ref(route.params.id);
+const departmentName = ref('');
 
 const searchQuery = ref('');
 const currentPage = ref(1);
@@ -167,7 +137,7 @@ const departments = ref([]);
 const leaders = ref([]);
 const newTeam = ref({
   teamName: '',
-  departmentId: null,
+  departmentId: departmentId.value,
   departmentName: '',
   leaderId: null,
   leaderName: ''
@@ -193,6 +163,16 @@ const fetchTeams = async () => {
   }
 };
 
+const fetchDepartmentName = async () => {
+  try {
+    const response = await axios.get(`http://localhost:8080/department/${departmentId.value}`);
+    departmentName.value = response.data.result.departmentName;
+    newTeam.value.departmentName = departmentName.value; // 부서명 설정
+  } catch (error) {
+    console.error('부서 정보를 가져오는 중 오류 발생:', error);
+  }
+};
+
 const fetchDepartments = async () => {
   try {
     const response = await axios.get('http://localhost:8080/department/find-all');
@@ -211,7 +191,16 @@ const fetchLeaders = async () => {
   }
 };
 
+// departmentId가 변경될 때마다 부서명 업데이트
+watch(departmentId, (newId) => {
+  const department = departments.value.find(dep => dep.id === newId);
+  if (department) {
+    newTeam.value.departmentName = department.departmentName;
+  }
+});
+
 onMounted(() => {
+  fetchDepartmentName(); // 부서 이름 가져오기
   fetchTeams();
   fetchDepartments();
   fetchLeaders();
@@ -269,36 +258,26 @@ const addNewTeam = async () => {
     return;
   }
   try {
-    // 팀 추가 API 호출
     await axios.post('http://localhost:8080/team', {
       teamName: newTeam.value.teamName,
       departmentId: newTeam.value.departmentId,
       leaderId: newTeam.value.leaderId
     });
 
-    // 팀 목록을 다시 불러오기
     await fetchTeams();
 
-    // 모달 닫기 및 초기화
     const modal = bootstrap.Modal.getInstance(document.getElementById('addNewTeamModal'));
     modal.hide();
     newTeam.value = {
       teamName: '',
-      departmentId: null,
-      departmentName: '',
+      departmentId: departmentId.value,
+      departmentName: departmentName.value, // 부서명 초기화
       leaderId: null,
       leaderName: ''
     };
   } catch (error) {
     console.error('팀을 추가하는 중 오류 발생:', error);
   }
-};
-
-const selectDepartment = (department) => {
-  newTeam.value.departmentId = department.id;
-  newTeam.value.departmentName = department.departmentName;
-  const modal = bootstrap.Modal.getInstance(document.getElementById('selectDepartmentModal'));
-  modal.hide();
 };
 
 const selectLeader = (leader) => {
