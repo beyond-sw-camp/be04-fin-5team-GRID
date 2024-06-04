@@ -55,7 +55,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    // 다중 유저 가입 ( csv 파싱은 프론트에서 처리해서 json 형태로 전해준다고 가정 )12
+    // 다중 유저 가입 ( csv 파싱은 프론트에서 처리해서 json 형태로 전해준다고 가정 )
     @PostMapping("/list")
     public ResponseEntity<ResUserListVO> addMultiUser(@RequestBody List<UserDTO> infoList) {
 
