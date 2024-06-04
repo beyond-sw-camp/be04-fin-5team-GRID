@@ -229,7 +229,9 @@ public class PdfServiceImpl implements PdfService {
 
         String filePath = "2" + overtimeApproval.getId() + ".pdf";
 
-        String imagePath = imgMapper.getSealImg(approvalChainService.findLeaderByEmployeeId(user.getId(), 3));
+//        String imagePath = imgMapper.getSealImg(approvalChainService.findLeaderByEmployeeId(user.getId(), 3));
+        String imagePath =  "https://png.pngtree.com/png-clipart/20220113/ourmid/pngtree-cartoon-hand-drawn-default-avatar-png-image_4156500.png";
+
 
         try {
             PdfWriter.getInstance(document, new FileOutputStream(filePath));
@@ -339,7 +341,8 @@ public class PdfServiceImpl implements PdfService {
 
         String filePath = "3" + rwApproval.getId() + ".pdf";
 
-        String imagePath = imgMapper.getSealImg(approvalChainService.findLeaderByEmployeeId(user.getId(), 4));
+//        String imagePath = imgMapper.getSealImg(approvalChainService.findLeaderByEmployeeId(user.getId(), 4));
+        String imagePath =  "https://png.pngtree.com/png-clipart/20220113/ourmid/pngtree-cartoon-hand-drawn-default-avatar-png-image_4156500.png";
 
         try {
             PdfWriter.getInstance(document, new FileOutputStream(filePath));
@@ -448,7 +451,8 @@ public class PdfServiceImpl implements PdfService {
         UserDTO user = userService.findUserById(vacationApproval.getRequesterId());
 
         String filePath = "4" + vacationApproval.getId() + ".pdf";
-        String imagePath = imgMapper.getSealImg(approvalChainService.findLeaderByEmployeeId(user.getId(), 5));
+//        String imagePath = imgMapper.getSealImg(approvalChainService.findLeaderByEmployeeId(user.getId(), 5));
+        String imagePath =  "https://png.pngtree.com/png-clipart/20220113/ourmid/pngtree-cartoon-hand-drawn-default-avatar-png-image_4156500.png";
 
         try {
             PdfWriter.getInstance(document, new FileOutputStream(filePath));

@@ -108,6 +108,7 @@
         </b-progress-bar>
       </b-progress>
     </div>
+    <ApprovalList :approvalList="state.approvalList"/>
 </div>
 </template>
 
