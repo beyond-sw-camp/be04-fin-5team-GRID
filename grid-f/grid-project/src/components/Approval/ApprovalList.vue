@@ -186,7 +186,7 @@
           {{ data.index + 1 }}
         </template>
         <template #cell(content)="data">
-          <span @click="approvalDetail(props.approvalList.type, data.item.id, data.item.employeeId, data.item.approvalStatus)">{{ data.value }}</span>
+          <span class="detail" @click="approvalDetail(props.approvalList.type, data.item.id, data.item.employeeId, data.item.approvalStatus)">{{ data.value }}</span>
         </template>
         <template #cell(writeTime)="data">
           <span>{{ data.value.substring(0, 10) }}</span>
@@ -218,5 +218,7 @@
 </template>
 
 <style scoped>
-
+.detail {
+  cursor: pointer;
+}
 </style>

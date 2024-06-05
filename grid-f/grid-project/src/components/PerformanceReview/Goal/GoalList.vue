@@ -115,7 +115,9 @@ const paginatedGoals = computed(() => {
 });
 
 const totalPages = computed(() => {
-  return Math.ceil(goalList.value.length / itemsPerPage);
+    const total = Math.ceil(goalList.value.length / itemsPerPage);
+    return total > 0 ? total : 1;
+
 });
 
 const filteredPages = computed(() => {

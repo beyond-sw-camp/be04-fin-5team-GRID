@@ -102,7 +102,7 @@
 .mx-1 p {
   margin-left: 0.5%;
   margin: 0;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 300;
 }
 
