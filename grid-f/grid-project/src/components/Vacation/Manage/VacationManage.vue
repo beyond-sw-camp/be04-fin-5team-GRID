@@ -185,6 +185,13 @@ const registType = async () => {
     if( !registVacationType.value.typeName || !registVacationType.value.vacationNum || !registVacationType.value.dateOfUse || !registVacationType.value.vacationExplain ){
         return;
     }
+
+    const duplicateType = types.value.find(type => type.typeName === registVacationType.value.typeName);
+    if(duplicateType) {
+        alert('이미 등록된 휴가 종류입니다.');
+        return;
+    }
+    
     try {
         const confirmed = window.confirm('등록하시겠습니까?');
         if (confirmed) {
@@ -300,7 +307,6 @@ const getAllVacationType = async () => {
     try {
         const response = await axios.get("/api/vacation/all/type");
         types.value = response.data.result;
-        console.log(response.data.result);
     } catch (error) {
         console.error("Error:", error);
     }
