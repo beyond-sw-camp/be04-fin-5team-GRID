@@ -33,6 +33,8 @@
 
   onMounted(async() => {
     await fetchApproval(typeId, approvalId);
+
+    console.log(state.approval)
   })
 </script>
 
@@ -46,7 +48,7 @@
           <div class="text-success" v-if="state.approval['approvalStatus'] === 'A'"> <h5 >승인됨</h5></div>
           <div class="text-danger" v-else-if="state.approval['approvalStatus'] === 'D'"> <h5 >반려됨</h5></div>
           <div class="text-warning" v-else-if="state.approval['cancelYn'] === 'Y'"> <h5 >취소</h5></div>
-          <div class="text-muted" v-else> <h5 >결재 대기</h5></div>
+          <div class="text-muted" v-else> <h5 >결재 대기중</h5></div>
         </div>
         <div class="title">
           <h1 v-if="typeId === '1'">출장 신청서</h1>
@@ -75,7 +77,7 @@
         <ApprovalCard :approval="state.approval"/>
       </b-card>
     </div>
-    <ApprovalChain :typeId="typeId" :approvalId="approvalId" :approvalStatus="state.approval['approvalStatus']" :requesterId="state.approval['employeeId']" :cancelStatus="state.approval['cancelYN']"/>
+    <ApprovalChain :typeId="typeId" :approvalId="approvalId" :approvalStatus="state.approval['approvalStatus']" :requesterId="state.approval['employeeId']" :cancelStatus="state.approval['cancelYn']" :cancelDoc="state.approval['cancelDocId']"/>
   </div>
 </div>
 </template>

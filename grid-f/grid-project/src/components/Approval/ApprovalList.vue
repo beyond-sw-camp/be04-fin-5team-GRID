@@ -169,9 +169,9 @@
           <b-badge variant="dark" v-if="data.item.cancelYn === 'Y'">취소</b-badge>
           <b-badge variant="success" v-else-if="data.item.approvalStatus === 'A'">승인</b-badge>
           <b-badge variant="danger" v-else-if="data.item.approvalStatus === 'D'">반려</b-badge>
-          <b-badge variant="warning" v-else-if="data.item.approvalStatus === 'V'">대기</b-badge>
+          <b-badge variant="warning" v-else-if="data.item.approvalStatus === 'V'">열람</b-badge>
           <b-badge variant="secondary" v-else-if="data.item.approvalStatus === 'N'">미열람</b-badge>
-          <span>&nbsp;</span><b-badge variant="light" v-if="data.item.cancelDocId > 0">취소결재</b-badge>
+          <span>&nbsp;</span><b-badge variant="primary" v-if="data.item.cancelDocId > 0">취소결재</b-badge>
         </template>
         <template #cell()="data">
           <span>{{ data.value }}</span>
@@ -195,9 +195,9 @@
           <b-badge variant="dark" v-if="data.item.cancelYn === 'Y'">취소</b-badge>
           <b-badge variant="success" v-else-if="data.item.approvalStatus === 'A'">승인</b-badge>
           <b-badge variant="danger" v-else-if="data.item.approvalStatus === 'D'">반려</b-badge>
-          <b-badge variant="warning" v-else-if="data.item.approvalStatus === 'V'">대기</b-badge>
+          <b-badge variant="warning" v-else-if="data.item.approvalStatus === 'V'">열람</b-badge>
           <b-badge variant="secondary" v-else-if="data.item.approvalStatus === 'N'">미열람</b-badge>
-          <span>&nbsp;</span><b-badge variant="light" v-if="data.item.cancelDocId !== 0">취소결재</b-badge>
+          <span>&nbsp;</span><b-badge variant="primary" v-if="data.item.cancelDocId > 0">취소결재</b-badge>
         </template>
         <template #cell()="data">
           <span>{{ data.value }}</span>
