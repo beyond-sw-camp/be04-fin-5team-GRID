@@ -86,7 +86,7 @@
 .all {
   display:grid;
   grid-template-columns: 10% 80% 10%;
-  grid-template-rows: 18% 80% 2%;
+  grid-template-rows: 13% 80% 7%;
   
 }
 
