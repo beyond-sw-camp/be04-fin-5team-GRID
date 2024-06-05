@@ -89,7 +89,7 @@ const profileUrl = computed(() => {
 
 const fetchDepartments = async () => {
   try {
-    const response = await axios.get('http://localhost:8080/department/find-all');
+    const response = await axios.get('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/department/find-all');
     departments.value = response.data.result
       .map(department => ({
         id: department.id,
@@ -127,7 +127,7 @@ const goProfile = () => {
 
 const fetchTeams = async (departmentId) => {
   try {
-    const response = await axios.get(`http://localhost:8080/team/sub-department/${departmentId}`);
+    const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/team/sub-department/${departmentId}`);
     return response.data.result
       .map(team => ({
         ...team,
@@ -143,7 +143,7 @@ const fetchTeams = async (departmentId) => {
 
 const fetchEmployees = async (teamId) => {
   try {
-    const response = await axios.get(`http://localhost:8080/users/team-list/${teamId}`);
+    const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/team-list/${teamId}`);
     return response.data.result.sort((a, b) => a.sequence - b.sequence);  // sequence 순으로 정렬
   } catch (error) {
     console.error('직원 정보를 가져오는 데 실패했습니다:', error);
@@ -196,7 +196,7 @@ const handleDragEnd = async () => {
     }));
     console.log(updatedDepartments);
 
-    await axios.put('http://localhost:8080/department/list', updatedDepartments, {
+    await axios.put('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/department/list', updatedDepartments, {
       headers: {
         'Content-Type': 'application/json'
       }
@@ -233,7 +233,7 @@ const handleTeamDragEnd = async (event) => {
     if (team) {
       team.departmentId = newDepartmentId;
       try {
-        await axios.put(`http://localhost:8080/team`, {
+        await axios.put(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/team`, {
           id: team.id,
           teamName: team.teamName,
           teamStatus: team.teamStatus,
@@ -284,7 +284,7 @@ const getNewToken = async () => {
         window.location.reload();  
       } else {
         alert("접속시간 연장을 취소했습니다. 로그아웃합니다.");
-        await axios.post('http://localhost:8080/logout', {}, { withCredentials: true });
+        await axios.post('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/logout', {}, { withCredentials: true });
         localStorage.removeItem('access');
         localStorage.removeItem('email');
         store.dispatch('resetState');
@@ -384,7 +384,7 @@ onMounted(() => {
 
 const logout = async () => {
   try {
-    await axios.post('http://localhost:8080/logout', {}, { withCredentials: true });
+    await axios.post('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/logout', {}, { withCredentials: true });
     localStorage.removeItem('access');
     localStorage.removeItem('email');
     store.dispatch('resetState');

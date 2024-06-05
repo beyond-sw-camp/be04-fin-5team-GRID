@@ -126,7 +126,7 @@ const fetchReviewDetail = async () => {
     const id = route.params.id;
 
     // 종합평가 먼저 조회해서 넣기
-    const responseTotalReview = await axios.get(`http://localhost:8080/total-performance-review/${id}`)
+    const responseTotalReview = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/total-performance-review/${id}`)
     console.log(responseTotalReview.data.findTotal);
 
     const total = responseTotalReview.data.findTotal;
@@ -147,7 +147,7 @@ const fetchReviewDetail = async () => {
 
     // 중간 평가 조회하기
     const midtermId = totalDetail.value.midtermId;
-    const responseMid = await axios.get(`http://localhost:8080/performance-review/detail/${midtermId}`);
+    const responseMid = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/performance-review/detail/${midtermId}`);
     console.log(responseMid.data);
     if (responseMid.data.findDetailReview) {
       const reviewMid = responseMid.data.findDetailReview;
@@ -167,7 +167,7 @@ const fetchReviewDetail = async () => {
 
     // 연말 평가 조회하기
     const finalId = totalDetail.value.finalId;
-    const responseFin = await axios.get(`http://localhost:8080/performance-review/detail/${finalId}`);
+    const responseFin = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/performance-review/detail/${finalId}`);
     if (responseFin.data.findDetailReview) {
       const reviewFin = responseFin.data.findDetailReview;
       finReviewItemList.value = reviewFin.reviewItemList;

@@ -14,7 +14,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:8080',
+        target: 'http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''),
       }

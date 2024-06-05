@@ -115,7 +115,7 @@ async function Login() {
 
   
     try {
-        const response = await axios.post('http://localhost:8080/login', {
+        const response = await axios.post('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/login', {
             email: inputValue.value,
             pwd: inputPwd.value
         }, {
@@ -125,7 +125,7 @@ async function Login() {
         if (response.status === 200) {
             const token = response.data.access;
 
-            const response2 = await axios.get(`http://localhost:8080/users/mail/${inputValue.value}`);
+            const response2 = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/mail/${inputValue.value}`);
             const user = response2.data.result;
 
             // 이메일과 토큰을 로컬 스토리지에 저장

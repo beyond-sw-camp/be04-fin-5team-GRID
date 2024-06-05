@@ -17,7 +17,7 @@
 
   const fetchApproval = async(typeId, approvalId) => {
     try {
-      const response = await axios.get(`http://localhost:8080/approval/detail/${typeId}/${approvalId}`);
+      const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval/detail/${typeId}/${approvalId}`);
 
       if (response.status !== 200) {
         throw new Error("response is not ok");

@@ -33,10 +33,10 @@
 
   const fetchApprovalList = async(id) => {
     try {
-      let url = `http://localhost:8080/approval/all/1/5`;
+      let url = `http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval/all/1/5`;
 
       if (userRole.value !== 'ROLE_ADMIN') {
-        url = `http://localhost:8080/approval/list/1/5/${id}`;
+        url = `http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval/list/1/5/${id}`;
       }
 
       const response = await axios.get(url);

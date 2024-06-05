@@ -71,7 +71,7 @@ const registApproval = async () => {
         console.log(formData);
         if (user.value.gender === "F") {
           const response = await axios.post(
-              `http://localhost:8080/approval/rw`,
+              `http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval/rw`,
               formData,
               {
                 headers: {

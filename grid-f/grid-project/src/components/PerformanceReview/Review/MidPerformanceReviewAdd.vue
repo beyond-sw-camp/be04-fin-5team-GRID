@@ -179,7 +179,7 @@ const fetchReviewAdd = async () => {
     const currentYear = new Date().getFullYear();   // 올해 년도
     const currentTime = getCurrentDateTimeString()  // 현재 시간
 
-    const responseGoal = await axios.get(`http://localhost:8080/review-goal/${currentYear}/${user.value.id}`);
+    const responseGoal = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/review-goal/${currentYear}/${user.value.id}`);
 
     console.log(responseGoal.data.findGoal.approvalStatus);
 
@@ -188,7 +188,7 @@ const fetchReviewAdd = async () => {
       throw new Error('평가 목표가 승인되지 않았습니다.');
     }
 
-    const responseReview = await axios.get(`http://localhost:8080/performance-review/mid/${currentYear}/${user.value.id}`)
+    const responseReview = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/performance-review/mid/${currentYear}/${user.value.id}`)
 
 
     console.log(responseReview);
@@ -203,12 +203,12 @@ const fetchReviewAdd = async () => {
       }
 
       const responseAdd = await axios.post(
-          `http://localhost:8080/performance-review`,
+          `http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/performance-review`,
           sendData
       );
 
       const id = responseAdd.data.performanceReview.id
-      const response = await axios.get(`http://localhost:8080/performance-review/detail/${id}`);
+      const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/performance-review/detail/${id}`);
 
       const review = response.data.findDetailReview;
       reviewItemList.value = review.reviewItemList;
@@ -227,7 +227,7 @@ const fetchReviewAdd = async () => {
     } else {
       // 생성된 평가 있을 때
       const id = responseReview.data.findReview.id
-      const response = await axios.get(`http://localhost:8080/performance-review/detail/${id}`);
+      const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/performance-review/detail/${id}`);
 
       const review = response.data.findDetailReview;
       reviewItemList.value = review.reviewItemList;
@@ -338,7 +338,7 @@ async function memberSave() {
       console.log(sendData);
       try {
         await axios.put(
-            `http://localhost:8080/performance-review/in-progress`,
+            `http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/performance-review/in-progress`,
             sendData
         );
 
@@ -393,7 +393,7 @@ async function submit() {
       console.log(sendData);
       try {
         await axios.put(
-            `http://localhost:8080/performance-review/submit`,
+            `http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/performance-review/submit`,
             sendData
         );
 

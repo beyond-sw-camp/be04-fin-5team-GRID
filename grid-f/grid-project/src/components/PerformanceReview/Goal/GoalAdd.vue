@@ -163,14 +163,14 @@ const fetchGoalAdd = async () => {
     console.log(currentTime);
 
     // 올해 생성된 목표 평가가 있는지 확인
-    const responseGoal = await axios.get(`http://localhost:8080/review-goal/${currentYear}/${user.value.id}`);
+    const responseGoal = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/review-goal/${currentYear}/${user.value.id}`);
 
     console.log('목표 조회', responseGoal.data);
     // 생성된 목표 없으면
     if (!responseGoal.data.findGoal) {
 
       // 팀장 조회
-      const leader = await axios.get(`http://localhost:8080/users/${user.value.id}/leaders`);
+      const leader = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/${user.value.id}/leaders`);
 
       const sandData = {
         "year": currentYear,
@@ -182,12 +182,12 @@ const fetchGoalAdd = async () => {
       }
 
       const responseAdd = await axios.post(
-          `http://localhost:8080/review-goal`,
+          `http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/review-goal`,
           sandData
       );
 
       const id = responseAdd.data.goal.id;
-      const response = await axios.get(`http://localhost:8080/review-goal/detail/${id}`);
+      const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/review-goal/detail/${id}`);
       console.log(response.data);
       const goal = response.data.findDetailGoal;
       goalItemList.value = goal.goalItemList;
@@ -207,7 +207,7 @@ const fetchGoalAdd = async () => {
     } else {
       // 생성된 목표가 있을 때
       const id = responseGoal.data.findGoal.id;
-      const response = await axios.get(`http://localhost:8080/review-goal/detail/${id}`);
+      const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/review-goal/detail/${id}`);
       console.log(response.data);
       const goal = response.data.findDetailGoal;
       goalItemList.value = goal.goalItemList;
@@ -297,7 +297,7 @@ async function deleteItem(index) {
       console.log(id);
 
       if (id != null) {
-        await axios.delete(`http://localhost:8080/goal-item/${id}`);
+        await axios.delete(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/goal-item/${id}`);
       }
       goalItemList.value.splice(index, 1);
       // 삭제 후 인덱스 값 업데이트
@@ -354,7 +354,7 @@ async function memberSave() {
 
       try {
         await axios.put(
-            `http://localhost:8080/review-goal/in-progress`,
+            `http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/review-goal/in-progress`,
             sendData
         );
 
@@ -424,7 +424,7 @@ async function submit() {
 
       try {
         const response = await axios.put(
-            `http://localhost:8080/review-goal/submit`,
+            `http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/review-goal/submit`,
             sendData
         );
 

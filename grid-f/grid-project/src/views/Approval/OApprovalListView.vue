@@ -35,10 +35,10 @@
 
   const fetchApprovalList = async(id) => {
     try {
-      let url = `http://localhost:8080/approval/all/2/5`;
+      let url = `http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval/all/2/5`;
 
       if (userRole.value !== 'ROLE_ADMIN') {
-        url = `http://localhost:8080/approval/list/2/5/${id}`;
+        url = `http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval/list/2/5/${id}`;
       }
 
       const response = await axios.get(url);
@@ -57,7 +57,7 @@
 
   const countOvertimeInWeek = async(id) => {
     try {
-      const response = await axios.get(`http://localhost:8080/approval/overtime-count/${id}`);
+      const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval/overtime-count/${id}`);
 
       if (response.status !== 200) {
         throw new Error("response is not ok");

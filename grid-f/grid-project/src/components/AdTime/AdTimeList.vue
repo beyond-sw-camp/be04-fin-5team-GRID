@@ -130,26 +130,26 @@ function getCurrentDateTimeString() {
 // 관리자용
 const fetchAllAdTime = async () => {
   try {
-    const response = await axios.get('http://localhost:8080/ad-time/all')
+    const response = await axios.get('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/ad-time/all')
     adTimeList.value = response.data.adTimeDTOList;
 
     // 오늘 지각 인원 조회
     const currentTime = getCurrentDateTimeString();
     const today = currentTime.slice(0, 10)
 
-    const responseTodayAd = await axios.get(`http://localhost:8080/ad-time/date/${today}`)
+    const responseTodayAd = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/ad-time/date/${today}`)
     todayList.value = responseTodayAd.data.adTimeDTOList;
 
     const lateAttendanceList = todayList.value.filter(item => item.attendanceStatus === "지각");
     cntLate.value = lateAttendanceList.length;
 
     //오늘 출장 인원 조회
-    const responseTodayBt = await axios.get(`http://localhost:8080/approval/today/bt`)
+    const responseTodayBt = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval/today/bt`)
     cntBt.value = responseTodayBt.data.approvalEmpResultList.length;
 
 
     //오늘 휴가 인원 조회
-    const responseTodayVacation = await axios.get(`http://localhost:8080/approval/today/v`)
+    const responseTodayVacation = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval/today/v`)
     cntVacation.value = responseTodayVacation.data.approvalEmpResultList.length;
 
   } catch (error) {
@@ -160,7 +160,7 @@ const fetchAllAdTime = async () => {
 //직원용
 const fetchEmployeeAdTime = async () => {
   try{
-    const response = await axios.get(`http://localhost:8080/ad-time/${userId.value}`);
+    const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/ad-time/${userId.value}`);
     console.log(response.data.adTimeDTOList);
     adTimeList.value = response.data.adTimeDTOList;
 
