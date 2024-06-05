@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Bean;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-
+//테스트
 @SpringBootApplication
 public class GridApplication {
 
