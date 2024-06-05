@@ -58,7 +58,6 @@
 </template>
 
 <script setup>
-
 import ModifyInfo from '@/components/HumanResources/ModifyInfo.vue';
 import ResetPwd from '@/components/Login/ResetPassword.vue';
 import { ref, onMounted, computed } from 'vue';
@@ -88,7 +87,6 @@ const fileInput = ref(null);
 const sealFileInput = ref(null);
 
 const cleanUserData = (userData) => {
-
     return {
         id: user.value.id,
         email: userData.email,
@@ -112,20 +110,14 @@ const cleanUserData = (userData) => {
     };
 };
 
-
-
 const triggerFileUpload = (inputType) => {
-
     const input = inputType === 'fileInput' ? fileInput.value : sealFileInput.value;
     if (input) {
         input.click();
     }
 };
 
-
-
 const uploadProfileImage = async (event) => {
-
     const file = event.target.files[0];
     if (!file) return;
 
@@ -142,30 +134,24 @@ const uploadProfileImage = async (event) => {
         });
 
         alert("프로필 이미지가 업로드 되었습니다.");
-        console.log(response.data);
         profilePath.value = response.data.result;
 
     } catch (error) {
-
         console.error("이미지 업로드 중 오류 발생: ", error);
         alert("이미지 업로드 중 오류가 발생했습니다.");
     }
 };
 
-
 const uploadSealImage = async (event) => {
-
     const file = event.target.files[0];
     if (!file) return;
 
     const formData = new FormData();
-
     formData.append('file', file);
     formData.append('id', user.value.id);
     formData.append('typeId', 1);
 
     try {
-
         const response = await axios.put('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/img', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
@@ -173,18 +159,15 @@ const uploadSealImage = async (event) => {
         });
 
         alert("인감 이미지가 업로드 되었습니다.");
-        console.log(response.data);
         sealPath.value = response.data.result;
 
     } catch (error) {
-
         console.error("이미지 업로드 중 오류 발생: ", error);
         alert("이미지 업로드 중 오류가 발생했습니다.");
     }
 };
 
 const submitModifications = async () => {
-
     try {
         if (updatedUser.value.callNumber == '-') {
             updatedUser.value.callNumber = null;
@@ -195,7 +178,6 @@ const submitModifications = async () => {
         alert("수정이 완료되었습니다.");
         router.push(`/hr/profile/${cleanedData.employeeNumber}`);
     } catch (error) {
-
         if (error.response && error.response.data && error.response.data.message) {
             console.error("수정 중 오류 발생: ", error.response.data.message);
             let errorMessage = error.response.data.message;
@@ -204,7 +186,6 @@ const submitModifications = async () => {
             }
 
             alert("수정 중 오류가 발생했습니다: " + errorMessage);
-
         } else {
             console.error("수정 중 오류 발생: ", error.message);
             alert("수정 중 오류가 발생했습니다: " + error.message);
@@ -212,16 +193,10 @@ const submitModifications = async () => {
     }
 };
 
-
-
 const closeModal = () => {
-
     const modalElement = document.getElementById('myModal');
-    const modalInstance = bootstrap.Modal.getInstance(modalElement);
-
-    if (modalInstance) {
-        modalInstance.hide();
-    }
+    const modalInstance = new bootstrap.Modal(modalElement);
+    modalInstance.hide();
 
     const modalBackdrop = document.querySelector('.modal-backdrop');
     if (modalBackdrop) {
@@ -229,12 +204,10 @@ const closeModal = () => {
     }
 
     document.body.classList.remove('modal-open');
+    document.body.style = '';
 };
 
-
-
 const updateUser = (newData) => {
-
     updatedUser.value = {
         ...updatedUser.value,
         ...newData,
@@ -245,13 +218,9 @@ const updateUser = (newData) => {
     };
 
     console.log("Updated user: ", updatedUser.value);
-
 };
 
-
-
 onMounted(() => {
-
     const userData = sessionStorage.getItem('user');
     if (userData) {
         const parsedUser = JSON.parse(userData);
@@ -261,21 +230,16 @@ onMounted(() => {
             updatedUser.value = { ...user.value };
             sealPath.value = user.value.sealPath;
             profilePath.value = user.value.profilePath;
-
         } else {
-
             console.error("유저 정보가 올바르지 않습니다. ID가 없습니다.");
         }
-
     } else {
-
         console.error("SessionStorage에 유저 정보가 없습니다.");
     }
 
     userRole.value = route.query.userRole;
     console.log('권한확인: ', userRole.value);
 });
-
 </script>
 
 <style scoped>
@@ -330,7 +294,6 @@ body {
     max-width: 100%;
 }
 
-
 .image {
     border-radius: 18%;
     grid-column-start: 1;
@@ -377,7 +340,6 @@ body {
 #other-info {
     display: flex;
     flex-direction: row;
-
 }
 
 #teamInfo {
@@ -396,7 +358,6 @@ body {
 #absenceInfo {
     font-size: 13px;
 }
-
 
 .button {
     grid-column-start: 5;
