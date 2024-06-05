@@ -55,19 +55,18 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    // 다중 유저 가입 ( csv 파싱은 프론트에서 처리해서 json 형태로 전해준다고 가정 )
+    // 다중 유저 가입 ( csv 파싱은 프론트에서 처리해서 json 형태로 전해준다고 가정 )12
     @PostMapping("/list")
     public ResponseEntity<ResUserListVO> addMultiUser(@RequestBody List<UserDTO> infoList) {
 
         System.out.println("infoList = " + infoList);
-        //받아온 데이터 간 중복 체크
+
         if(!userService.multiInfoInputCheck(infoList).equals("P"))
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new ResUserListVO(
                             400, "Some given infos are duplicated..",
                             "/users/list", null));
 
-        //DB데이터 체크를 위한 List 객체 생성
         List<UserDTO> givenInfo = new ArrayList<>();
 
         for (UserDTO info : infoList) {

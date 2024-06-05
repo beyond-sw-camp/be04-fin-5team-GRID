@@ -43,17 +43,6 @@
     router.push(path);
   };
 
-  // function history() {
-  //     router.push("/vacation/history")
-  // }
-
-  // function policy() {
-  //     router.push("/vacation/policy")
-  // }
-
-  // function manage() {
-  //     router.push("/vacation/manage")
-  // }
   function parseJwt(token) {
     try {
       const base64Url = token.split('.')[1];

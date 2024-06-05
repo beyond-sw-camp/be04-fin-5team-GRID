@@ -109,7 +109,6 @@ async function find() {
     }
 
     if (inputValue2.value == '') {
-        // alert('비밀번호를 입력해주세요.');
         isEmployeeNumberExistence.value = true;
         return false;
     }

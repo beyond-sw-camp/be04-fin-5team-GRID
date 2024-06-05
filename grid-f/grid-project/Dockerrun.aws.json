@@ -1,0 +1,13 @@
+{
+    "AWSEBDockerrunVersion": "1",
+    "Image": {
+        "Name": "t4e1/grid-frontend:latest",
+        "Update": "true"
+    },
+    "Ports": [
+        {
+            "ContainerPort": 8080,
+            "HostPort": 5000
+        }
+    ]
+}

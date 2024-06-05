@@ -69,8 +69,8 @@
         SELECT
         E.employee_name,
         P.position_name
-        FROM Employee E
-        JOIN E_Position P ON E.position_id = P.id
+        FROM employee E
+        JOIN e_position P ON E.position_id = P.id
         WHERE E.id = #{id}
     </select>
 
@@ -84,8 +84,8 @@
         SELECT
         E.employee_name,
         D.duties_name
-        FROM Employee E
-        JOIN Duties D ON E.duties_id = D.id
+        FROM employee E
+        JOIN duties D ON E.duties_id = D.id
         WHERE E.id = #{id}
     </select>
 
@@ -152,11 +152,11 @@
         E.absence_yn,
         E.absence_content,
         E.join_time
-        FROM Employee E
-        JOIN Team T ON E.team_id = T.id
-        JOIN Department DEP ON E.department_id = DEP.id
-        JOIN e_Position P ON E.position_id = P.id
-        JOIN Duties D ON E.duties_id = D.id
+        FROM employee E
+        JOIN team T ON E.team_id = T.id
+        JOIN department DEP ON E.department_id = DEP.id
+        JOIN e_position P ON E.position_id = P.id
+        JOIN duties D ON E.duties_id = D.id
         WHERE E.resign_yn = 'N'
         AND E.id > 1
         ORDER BY E.employee_name ASC;
@@ -201,11 +201,11 @@
 
     <select id="getUserList" resultMap="userInfo">
         SELECT <include refid="Base_Column_List"/>
-        FROM Employee E
-        JOIN Team T ON E.team_id = T.id
-        JOIN Department DEP ON E.department_id = DEP.id
-        JOIN E_Position P ON E.position_id = P.id
-        JOIN Duties D ON E.duties_id = D.id
+        FROM employee E
+        JOIN team T ON E.team_id = T.id
+        JOIN department DEP ON E.department_id = DEP.id
+        JOIN e_position P ON E.position_id = P.id
+        JOIN duties D ON E.duties_id = D.id
         WHERE E.resign_yn = 'N'
         AND E.id > 1
         ORDER BY E.employee_name ASC
@@ -214,11 +214,11 @@
 
     <select id="getUserListByName" resultMap="userInfo">
         SELECT <include refid="Base_Column_List"/>
-        FROM Employee E
-        JOIN Team T ON E.team_id = T.id
-        JOIN Department DEP ON E.department_id = DEP.id
-        JOIN E_Position P ON E.position_id = P.id
-        JOIN Duties D ON E.duties_id = D.id
+        FROM employee E
+        JOIN team T ON E.team_id = T.id
+        JOIN department DEP ON E.department_id = DEP.id
+        JOIN e_position P ON E.position_id = P.id
+        JOIN duties D ON E.duties_id = D.id
         WHERE E.resign_yn = 'N'
         AND E.id > 1
         AND E.employee_name LIKE CONCAT('%', #{name}, '%')
@@ -228,14 +228,14 @@
 
     <select id="countAllUsers" resultType="long">
         SELECT COUNT(*)
-        FROM Employee E
+        FROM employee E
         WHERE E.resign_yn = 'N'
         AND E.id > 1
     </select>
 
     <select id="countUsersByName" resultType="long">
         SELECT COUNT(*)
-        FROM Employee E
+        FROM employee E
         WHERE E.resign_yn = 'N'
         AND E.id > 1
         AND E.employee_name LIKE CONCAT('%', #{name}, '%')
@@ -271,11 +271,11 @@
         P.position_name,
         D.id d_id,
         D.duties_name
-        FROM Employee E
-        JOIN Team T ON E.team_id = T.id
-        JOIN Department DEP ON E.department_id = DEP.id
-        JOIN e_Position P ON E.position_id = P.id
-        JOIN Duties D ON E.duties_id = D.id
+        FROM employee E
+        JOIN team T ON E.team_id = T.id
+        JOIN department DEP ON E.department_id = DEP.id
+        JOIN e_position P ON E.position_id = P.id
+        JOIN duties D ON E.duties_id = D.id
         <if test="id != null and eNum == null and email == null">
             WHERE E.id = #{id}
         </if>
@@ -292,7 +292,7 @@
         SELECT
         E.email,
         E.employee_name
-        FROM Employee E
+        FROM employee E
         WHERE E.email = #{id}
     </select>
 
@@ -323,7 +323,7 @@
         E.duties_id,
         E.team_id,
         E.department_id
-        FROM Employee E
+        FROM employee E
         WHERE E.id = #{id}
     </select>
 
@@ -338,10 +338,10 @@
         D.id d_id,
         D.duties_name,
         T.id t_id
-        FROM Employee E
-        JOIN Team T ON E.team_id = T.id
-        JOIN e_Position P ON E.position_id = P.id
-        JOIN Duties D ON E.duties_id = D.id
+        FROM employee E
+        JOIN team T ON E.team_id = T.id
+        JOIN e_position P ON E.position_id = P.id
+        JOIN duties D ON E.duties_id = D.id
         WHERE E.team_id = #{teamId}
     </select>
 

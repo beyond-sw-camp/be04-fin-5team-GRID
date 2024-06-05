@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+
+  app:
+    image: t4e1/grid-backend:latest
+    container_name: grid-backend
+    environment:
+      SPRING_REDIS_HOST: redis
+    ports:
+      - "80:8080"
+    depends_on:
+      - redis
+    command: [ "java", "-jar", "/app.jar", "--jasypt.encryptor.password=${JASYPT_PASSWORD}" ]

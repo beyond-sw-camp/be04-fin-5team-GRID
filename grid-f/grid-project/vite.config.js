@@ -1,5 +1,7 @@
 import { fileURLToPath, URL } from 'node:url'
 import { defineConfig } from 'vite'
+
+
 import vue from '@vitejs/plugin-vue'
 
 export default defineConfig({
@@ -12,12 +14,14 @@ export default defineConfig({
     }
   },
   server: {
-    proxy: {
+proxy: {
       '/api': {
-        target: 'http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com',
+        target: 'http://localhost:8080',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''),
       }
-    }
+    },
+    port: 8080,
   }
 })
+
