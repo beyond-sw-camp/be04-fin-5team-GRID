@@ -115,7 +115,7 @@ async function find() {
     }
 
     try {
-        await axios.get(`http://localhost:8080/users/${inputValue2.value}`)
+        await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/${inputValue2.value}`)
             .then((response) => {
                 findResult.value = response.data.result;
                 console.log(findResult.value);

@@ -139,13 +139,13 @@ async function sendMail() {
     }
 
     try {
-        const response = await axios.get(`http://localhost:8080/users/${inputValue2.value}/name`);
+        const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/${inputValue2.value}/name`);
 
         console.log('result: ', response.data.result);
 
         if (response.data.result.employee_name == inputValue.value) {
             try {
-                const mailResponse = await axios.get(`http://localhost:8080/mails/pwd/${inputValue2.value}`);
+                const mailResponse = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/mails/pwd/${inputValue2.value}`);
                 if (mailResponse.status == 200) {
                     const modalInstance = new bootstrap.Modal(myModal.value);
                     modalInstance.show();

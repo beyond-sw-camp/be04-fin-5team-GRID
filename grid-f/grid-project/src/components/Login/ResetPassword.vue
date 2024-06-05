@@ -124,7 +124,7 @@ if (inputValue2.value != inputValue.value) {
     return false;
 }
 
-await axios.put(`http://localhost:8080/users/pwd`, {
+await axios.put(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/pwd`, {
     pwd: inputValue.value,  
     email: props.givenEmail
 })
