@@ -1,6 +1,6 @@
 FROM openjdk:17-alpine
 
-RUN apt-get update && apt-get install -y redis-tools
+RUN apk add --no-cache redis
 
 COPY build/libs/*.jar app.jar
 
