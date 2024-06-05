@@ -71,6 +71,8 @@ import draggable from 'vuedraggable';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 import defaultProfileImage from '@/assets/defaultProfile.jpg';
+import Cookies from 'js-cookie';
+
 
 const departments = ref([]);
 const router = useRouter();
@@ -261,18 +263,13 @@ const handleTeamDragEnd = async (event) => {
   }
 };
 
-function getCookie(name) {
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) return parts.pop().split(';').shift();
-  return null;
-}
-
 const addTokenTime = async () => {
   try {
       const confirmed = window.confirm('접속시간을 연장하시겠습니까?');
       if (confirmed) {
-        const refreshToken = getCookie('refresh');
+        const refreshToken = Cookies.get('refresh');
+        console.log(refreshToken);
+
 
         if (!refreshToken) {
         alert('Refresh 토큰이 없습니다.');
@@ -303,7 +300,8 @@ const getNewToken = async () => {
     try {
       const confirmed = window.confirm('접속시간을 연장하시겠습니까?');
       if (confirmed) {
-        const refreshToken = getCookie('refresh');
+        const refreshToken = Cookies.get('refresh');
+        console.log(refreshToken);
 
         if (!refreshToken) {
         alert('Refresh 토큰이 없습니다.');
@@ -435,7 +433,8 @@ onMounted(() => {
 const logout = async () => {
   try {
 
-    const refreshToken = getCookie('refresh');
+    const refreshToken = Cookies.get('refresh');
+    console.log(refreshToken);
 
     if (!refreshToken) {
       alert('Refresh 토큰이 없습니다.');

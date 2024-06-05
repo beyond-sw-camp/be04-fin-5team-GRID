@@ -25,20 +25,35 @@ public class TokenReissueController {
     @PostMapping("/tokens/re-auth")
     public ResponseEntity<?> reissue(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        //get refresh token
+        String cookieHeader = request.getHeader("Cookie");
+        System.out.println("cookieHeader = " + cookieHeader);
         String refresh = null;
-        Cookie[] cookies = request.getCookies();
-        for (Cookie cookie : cookies) {
 
-            if (cookie.getName().equals("refresh")) {
-
-                refresh = cookie.getValue();
+        // Parse the Cookie header to find the refresh token
+        if (cookieHeader != null) {
+            String[] cookies = cookieHeader.split("; ");
+            for (String cookie : cookies) {
+                if (cookie.startsWith("refresh=")) {
+                    refresh = cookie.substring("refresh=".length());
+                    break;
+                }
             }
         }
-        tokenReissueService.checkValidation(refresh);
-        tokenReissueService.checkRefreshToken(refresh);
-        tokenReissueService.deleteOldToken(refresh);
-        response = tokenReissueService.reissueToken(refresh, response);
+
+        // Check if refresh token is null
+        if (refresh == null) {
+            return new ResponseEntity<>("Refresh token not found", HttpStatus.BAD_REQUEST);
+        }
+
+        // Token validation and reissue logic
+        try {
+            tokenReissueService.checkValidation(refresh);
+            tokenReissueService.checkRefreshToken(refresh);
+            tokenReissueService.deleteOldToken(refresh);
+            response = tokenReissueService.reissueToken(refresh, response);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Token reissue failed", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
