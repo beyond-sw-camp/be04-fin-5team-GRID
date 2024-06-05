@@ -13,9 +13,11 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedOrigins(
-                        "http://grid-frontend-env-1.eba-xymvvqgw.ap-northeast-2.elasticbeanstalk.com", "*"
+                        "http://grid-frontend-env-1.eba-xymvvqgw.ap-northeast-2.elasticbeanstalk.com"
                 )
                 .allowedMethods("GET", "POST", "PUT", "DELETE")
+                .allowedHeaders("*")
+                .allowCredentials(true)
                 .exposedHeaders("access");
     }
 }

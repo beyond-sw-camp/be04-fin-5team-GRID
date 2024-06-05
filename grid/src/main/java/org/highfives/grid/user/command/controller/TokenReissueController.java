@@ -25,16 +25,12 @@ public class TokenReissueController {
     @PostMapping("/tokens/re-auth")
     public ResponseEntity<?> reissue(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        String cookieHeader = request.getHeader("Cookie");
-        System.out.println("cookieHeader = " + cookieHeader);
+        Cookie[] cookies = request.getCookies();
         String refresh = null;
-
-        // Parse the Cookie header to find the refresh token
-        if (cookieHeader != null) {
-            String[] cookies = cookieHeader.split("; ");
-            for (String cookie : cookies) {
-                if (cookie.startsWith("refresh=")) {
-                    refresh = cookie.substring("refresh=".length());
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("refresh")) {
+                    refresh = cookie.getValue();
                     break;
                 }
             }
@@ -57,6 +53,5 @@ public class TokenReissueController {
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
 }
 

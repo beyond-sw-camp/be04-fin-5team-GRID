@@ -55,8 +55,8 @@
         영문, 숫자, 특수 문자 조합으로 이루어진 8~15자리 값을 입력하세요.<br>
     </div>
     <div class="button d-grid gap-3" style="max-width: 56%;">
-                    <button type="button" class="btn btn-block" @click="resetPwd">Reset</button>
-                </div>
+        <button type="button" class="btn btn-block" @click="resetPwd">Reset</button>
+    </div>
 </template>
 
 <script setup>
@@ -100,42 +100,43 @@ function validatePwd2() {
 
 async function resetPwd() {
 
-console.log('input: ', inputValue.value)
-isPwdExistence.value = false;
-isPwdExistence2.value = false;
+    console.log('input: ', inputValue.value)
+    isPwdExistence.value = false;
+    isPwdExistence2.value = false;
 
-if (inputValue.value == '') {
-    isPwdExistence.value = true;
-    return false;
-}
+    if (inputValue.value == '') {
+        isPwdExistence.value = true;
+        return false;
+    }
 
-if (!pwdRegex.test(inputValue.value)) {
-    isPwdRight.value = true;
-    return false;
-}
+    if (!pwdRegex.test(inputValue.value)) {
+        isPwdRight.value = true;
+        return false;
+    }
 
-if (inputValue2.value == '') {
-    isPwdExistence2.value = true;
-    return false;
-}
+    if (inputValue2.value == '') {
+        isPwdExistence2.value = true;
+        return false;
+    }
 
-if (inputValue2.value != inputValue.value) {
-    isPwdRight2.value = true;
-    return false;
-}
+    if (inputValue2.value != inputValue.value) {
+        isPwdRight2.value = true;
+        return false;
+    }
 
-await axios.put(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/pwd`, {
-    pwd: inputValue.value,  
-    email: props.givenEmail
-})
-    .then((response) => {
-        if (response.status == 200) {
-            alert("비밀번호가 수정되었습니다.")
-            emit('passwordResetSuccess');
-        } else {
-            alert("에러가 발생했습니다. 다시 시도해주세요.")
-        }
-    })
+    const resetEmail = atob(props.givenEmail);
+
+    try {
+        await axios.put(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/pwd`, {
+            pwd: inputValue.value,
+            email: resetEmail
+        });
+        alert("비밀번호가 성공적으로 변경되었습니다.");
+        emit('passwordResetSuccess');
+    } catch (error) {
+        console.error("비밀번호 변경 중 오류 발생: ", error);
+        alert("비밀번호 변경 중 오류가 발생했습니다.");
+    }
 };
 
 watch(inputValue, (newValue) => {
@@ -268,6 +269,7 @@ watch(inputValue2, (newValue) => {
     background-color: #002366;
     color: white;
     font-weight: 600;
-    height: 38px; /* 버튼의 높이를 명시적으로 설정 */
+    height: 38px;
+    /* 버튼의 높이를 명시적으로 설정 */
 }
 </style>
