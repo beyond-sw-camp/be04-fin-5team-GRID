@@ -17,18 +17,6 @@ import AdTime from '@/components/AdTime/AdTimeAdd.vue'
     import {RouterLink, RouterView} from 'vue-router';
     import WorkCalendar from "@/components/AdTime/WorkCalendar.vue";
 
-
-    // function history() {
-    //     router.push("/vacation/history")
-    // }
-
-    // function policy() {
-    //     router.push("/vacation/policy")
-    // }
-
-    // function manage() {
-    //     router.push("/vacation/manage")
-    // }
 </script>
 
 <style scoped>

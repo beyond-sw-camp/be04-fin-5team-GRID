@@ -450,7 +450,7 @@ const submitForm = async () => {
 button {
     height: 100%;
 }
-/* 테스트 */
+
 .hr-main {
     display: grid;
     grid-template-columns: 10% 80% 10%;
