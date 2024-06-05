@@ -83,10 +83,7 @@ const userRole = ref('');
 
 const user = computed(() => store.state.user);
 
-const axiosInstance = axios.create({
-  withCredentials: true, // 쿠키를 자동으로 포함하도록 설정
-  baseURL: 'http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com', // 기본 URL 설정
-});
+
 
 const profileUrl = computed(() => {
   return user.value?.profilePath ? user.value.profilePath : defaultProfileImage;
@@ -271,7 +268,7 @@ const addTokenTime = async () => {
       const confirmed = window.confirm('접속시간을 연장하시겠습니까?');
       if (confirmed) {
         
-        const response = await axiosInstance.post('/tokens/re-auth');
+        const response = await axios.post('http://grid-frontend-env-1.eba-xymvvqgw.ap-northeast-2.elasticbeanstalk.com/tokens/re-auth');
         localStorage.setItem('access', response.data.access); // 새로운 access 토큰 저장
         alert('접속시간이 연장되었습니다!');
         window.location.reload();  
@@ -286,13 +283,13 @@ const getNewToken = async () => {
     try {
       const confirmed = window.confirm('접속시간을 연장하시겠습니까?');
       if (confirmed) {
-        const response = await axiosInstance.post('/tokens/re-auth');
+        const response = await axios.post('http://grid-frontend-env-1.eba-xymvvqgw.ap-northeast-2.elasticbeanstalk.com/tokens/re-auth');
         localStorage.setItem('access', response.data.access); // 새로운 access 토큰 저장
         alert('접속시간이 연장되었습니다!');
         window.location.reload();  
       } else {
         alert("접속시간 연장을 취소했습니다. 로그아웃합니다.");
-        await axiosInstance.post('/logout', {}, { withCredentials: true });
+        await axios.post('http://grid-frontend-env-1.eba-xymvvqgw.ap-northeast-2.elasticbeanstalk.com/logout', {}, { withCredentials: true });
         localStorage.removeItem('access');
         localStorage.removeItem('email');
         store.dispatch('resetState');
@@ -392,7 +389,7 @@ onMounted(() => {
 
 const logout = async () => {
   try {
-    await axiosInstance.post('/logout', {}, { withCredentials: true });
+    await axios.post('http://grid-frontend-env-1.eba-xymvvqgw.ap-northeast-2.elasticbeanstalk.com/logout', {}, { withCredentials: true });
     localStorage.removeItem('access');
     localStorage.removeItem('email');
     store.dispatch('resetState');
