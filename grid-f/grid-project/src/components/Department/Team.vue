@@ -36,29 +36,25 @@
     <table class="teamTable">
       <thead>
         <tr>
-          <th></th>
-          <th>팀명</th>
-          <th>인원</th>
-          <th>시작 일</th>
-          <th>종료일</th>
-          <th>상위 부서명</th>
-          <th>팀장 명</th>
-          <th>상태</th>
-          <th></th>
+          <th style="width: 5%;"></th>
+          <th style="width: 10%;">팀명</th>
+          <th style="width: 20%;">시작 일</th>
+          <th style="width: 20%;">종료일</th>
+          <th style="width: 10%;">상위 부서명</th>
+          <th style="width: 10%;">팀장 명</th>
+          <th style="width: 10%;"></th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="team in filteredTeams" :key="team.id">
-          <td><input type="checkbox" :value="team" v-model="selectedTeams" @change="checkSelectionLimit" /></td>
-          <td>{{ team.teamName }}</td>
-          <td>{{ team.memberCnt }}</td>
-          <td>{{ formatDate(team.startTime) }}</td>
-          <td>{{ formatDate(team.endTime) }}</td>
-          <td>{{ team.departmentName }}</td>
-          <td>{{ team.leaderName }}</td>
-          <td>{{ team.teamStatus }}</td>
-          <td>
-            <button class="view-details-btn" @click="goToTeamMembers(team.id)">자세히 보기</button>
+          <td style="width: 5%;"><input type="checkbox" :value="team" v-model="selectedTeams" @change="checkSelectionLimit" /></td>
+          <td style="width: 10%;">{{ team.teamName }}</td>
+          <td style="width: 20%;">{{ formatDate(team.startTime) }}</td>
+          <td style="width: 20%;">{{ formatDate(team.endTime) }}</td>
+          <td style="width: 10%;">{{ team.departmentName }}</td>
+          <td style="width: 10%;">{{ team.leaderName }}</td>
+          <td style="width: 10%;">
+            <button class="view-details-btn" @click="goToTeamMembers(team.id)">팀원 목록</button>
           </td>
         </tr>
       </tbody>
