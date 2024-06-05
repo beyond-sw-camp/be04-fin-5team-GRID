@@ -2,8 +2,22 @@
   <div class="container">
     <div class="header">
       <div class="header-title">
-        <img class="reviewIcon" src="@/assets/list-check.png" alt="list-check" />
-        <h1>팀 정보</h1>
+        <nav style="--bs-breadcrumb-divider: '>'; margin-top: -35px; margin-bottom: -7px;" aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a href="#" @click.prevent="goBack" style="text-decoration: none; color: grey; font-size: 17px;">
+                <i class="bi bi-person"></i>&nbsp; 팀 정보
+              </a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">
+              <span class="fw-bolder">
+                <i class="bi bi-briefcase"></i>&nbsp; {{ departmentName }}
+              </span>
+            </li>
+          </ol>
+        </nav>
+      </div>
+      <div class="department-name">
       </div>
     </div>
 
@@ -185,12 +199,13 @@
 
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap';
 
 const route = useRoute();
+const router = useRouter();
 const departmentId = ref(route.params.id);
 const departmentName = ref('');
 const userRole = ref('');
@@ -301,11 +316,24 @@ onMounted(() => {
 const filteredTeams = computed(() => {
   const start = (currentPage.value - 1) * itemsPerPage;
   const end = start + itemsPerPage;
-  return teams.value.slice(start, end);
+  
+  return teams.value
+    .filter(team => {
+      if (userRole.value !== 'ROLE_ADMIN' && team.teamStatus === 'N') {
+        return false; // 관리자가 아니고 상태가 N인 팀은 필터링
+      }
+      return true;
+    })
+    .slice(start, end);
 });
 
 const totalPages = computed(() => {
-  return Math.ceil(teams.value.length / itemsPerPage);
+  return Math.ceil(teams.value.filter(team => {
+    if (userRole.value !== 'ROLE_ADMIN' && team.teamStatus === 'N') {
+      return false; // 관리자가 아니고 상태가 N인 팀은 제외
+    }
+    return true;
+  }).length / itemsPerPage);
 });
 
 const prevPage = () => {
@@ -456,6 +484,11 @@ const toggleTeamStatus = async () => {
     alert('팀 상태 수정 중 오류가 발생했습니다.');
   }
 };
+
+const goBack = () => {
+  router.go(-1);
+};
+
 </script>
 
 <style scoped>
@@ -494,6 +527,10 @@ const toggleTeamStatus = async () => {
 
 .reviewIcon {
   width: 30px; /* 이미지 크기 유지 */
+}
+
+.department-name {
+  margin-left: auto;
 }
 
 .addNewBtn {
