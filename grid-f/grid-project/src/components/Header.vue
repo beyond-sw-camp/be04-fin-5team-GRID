@@ -263,7 +263,7 @@ const addTokenTime = async () => {
   try {
       const confirmed = window.confirm('접속시간을 연장하시겠습니까?');
       if (confirmed) {
-        const response = await axios.post("/api/tokens/re-auth");
+        const response = await axios.post("http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/tokens/re-auth");
         localStorage.setItem('access', response.data.access); // 새로운 access 토큰 저장
         alert('접속시간이 연장되었습니다!');
         window.location.reload();  
@@ -278,7 +278,7 @@ const getNewToken = async () => {
     try {
       const confirmed = window.confirm('접속시간을 연장하시겠습니까?');
       if (confirmed) {
-        const response = await axios.post("/api/tokens/re-auth");
+        const response = await axios.post("http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/tokens/re-auth");
         localStorage.setItem('access', response.data.access); // 새로운 access 토큰 저장
         alert('접속시간이 연장되었습니다!');
         window.location.reload();  
