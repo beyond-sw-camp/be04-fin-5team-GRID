@@ -261,14 +261,34 @@ const handleTeamDragEnd = async (event) => {
   }
 };
 
-
+function getCookie(name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(';').shift();
+  return null;
+}
 
 const addTokenTime = async () => {
   try {
       const confirmed = window.confirm('접속시간을 연장하시겠습니까?');
       if (confirmed) {
-        
-        const response = await axios.post('http://grid-frontend-env-1.eba-xymvvqgw.ap-northeast-2.elasticbeanstalk.com/tokens/re-auth');
+        const refreshToken = getCookie('refresh');
+
+        if (!refreshToken) {
+        alert('Refresh 토큰이 없습니다.');
+        return;
+      }
+
+        const response = await axios.post(
+        'http://grid-frontend-env-1.eba-xymvvqgw.ap-northeast-2.elasticbeanstalk.com/tokens/re-auth',
+        {},
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Cookie': `refresh=${refreshToken}`,
+          },
+        }
+      );
         localStorage.setItem('access', response.data.access); // 새로운 access 토큰 저장
         alert('접속시간이 연장되었습니다!');
         window.location.reload();  
@@ -283,13 +303,38 @@ const getNewToken = async () => {
     try {
       const confirmed = window.confirm('접속시간을 연장하시겠습니까?');
       if (confirmed) {
-        const response = await axios.post('http://grid-frontend-env-1.eba-xymvvqgw.ap-northeast-2.elasticbeanstalk.com/tokens/re-auth');
+        const refreshToken = getCookie('refresh');
+
+        if (!refreshToken) {
+        alert('Refresh 토큰이 없습니다.');
+        return;
+      }
+      const response = await axios.post(
+        'http://grid-frontend-env-1.eba-xymvvqgw.ap-northeast-2.elasticbeanstalk.com/tokens/re-auth',
+        {},
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Cookie': `refresh=${refreshToken}`,
+          },
+        }
+      );
         localStorage.setItem('access', response.data.access); // 새로운 access 토큰 저장
         alert('접속시간이 연장되었습니다!');
         window.location.reload();  
       } else {
         alert("접속시간 연장을 취소했습니다. 로그아웃합니다.");
-        await axios.post('http://grid-frontend-env-1.eba-xymvvqgw.ap-northeast-2.elasticbeanstalk.com/logout', {}, { withCredentials: true });
+        await axios.post(
+      'http://grid-frontend-env-1.eba-xymvvqgw.ap-northeast-2.elasticbeanstalk.com/logout',
+      {},
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'Cookie': `refresh=${refreshToken}`,
+        },
+        withCredentials: true,
+      }
+    );
         localStorage.removeItem('access');
         localStorage.removeItem('email');
         store.dispatch('resetState');
@@ -389,7 +434,25 @@ onMounted(() => {
 
 const logout = async () => {
   try {
-    await axios.post('http://grid-frontend-env-1.eba-xymvvqgw.ap-northeast-2.elasticbeanstalk.com/logout', {}, { withCredentials: true });
+
+    const refreshToken = getCookie('refresh');
+
+    if (!refreshToken) {
+      alert('Refresh 토큰이 없습니다.');
+      return;
+    }
+
+    await axios.post(
+      'http://grid-frontend-env-1.eba-xymvvqgw.ap-northeast-2.elasticbeanstalk.com/logout',
+      {},
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'Cookie': `refresh=${refreshToken}`,
+        },
+        withCredentials: true,
+      }
+    );
     localStorage.removeItem('access');
     localStorage.removeItem('email');
     store.dispatch('resetState');
