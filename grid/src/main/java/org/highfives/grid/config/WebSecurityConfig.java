@@ -27,6 +27,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 @Configuration
@@ -61,8 +62,8 @@ public class WebSecurityConfig {
             public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
 
                 CorsConfiguration configuration = new CorsConfiguration();
-                configuration.setAllowedOriginPatterns(Collections.singletonList("*"));
-                configuration.setAllowedMethods(Collections.singletonList("*"));
+                configuration.setAllowedOrigins(Collections.singletonList("http://www.gridhr.site"));
+                configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
                 configuration.setAllowedHeaders(Collections.singletonList("*"));
                 configuration.setAllowCredentials(true);
                 configuration.setMaxAge(3600L);
