@@ -270,7 +270,7 @@ const fetchDepartments = async () => {
 
 const fetchLeaders = async () => {
   try {
-    const response = await axios.get('http://localhost:8080/users/list');
+    const response = await axios.get('http://localhost:8080/users/list/all');
     leaders.value = response.data.result;
   } catch (error) {
     console.error('직원 정보를 가져오는 중 오류 발생:', error);
@@ -407,8 +407,12 @@ const addNewTeam = async () => {
       leaderId: null,
       leaderName: ''
     };
-  } catch (error) {
-    console.error('팀을 추가하는 중 오류 발생:', error);
+  } catch (error){ 
+      if (error.response && error.response.data) {
+        alert(error.response.data.message);
+      } else {
+      alert('팀 등록 중 오류가 발생했습니다.');
+    }
   }
 };
 
@@ -448,8 +452,12 @@ const updateLeader = async () => {
     newLeaderName.value = '';
     newLeaderId.value = null;
     selectedTeamId.value = null;
-  } catch (error) {
-    console.error('팀장 수정 중 오류 발생:', error);
+  } catch (error){ 
+      if (error.response && error.response.data) {
+        alert(error.response.data.message);
+      } else {
+      alert('팀장 수정 중 오류가 발생했습니다.');
+    }
   }
 };
 

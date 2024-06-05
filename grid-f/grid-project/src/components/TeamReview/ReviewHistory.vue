@@ -181,7 +181,7 @@ const fetchReviews = async () => {
 
 const fetchEmployees = async () => {
   try {
-    const response = await axios.get('http://localhost:8080/users/list');
+    const response = await axios.get('http://localhost:8080/users/list/all');
     employees.value = response.data.result;
   } catch (error) {
     console.error('Error fetching employees:', error);
@@ -304,11 +304,20 @@ const validateAndRegistContent = () => {
   if (!form.checkValidity()) {
     form.classList.add('was-validated');
   } else {
-    addNewReview();
+    if (newReviewYear.value <= 2023) {
+      alert('2023년이하는 설정 불가능합니다.');
+    } else {
+      addNewReview();
+    }
   }
 };
 
 const addNewReview = async () => {
+  if (newReviewYear.value <= 2023) {
+    alert('2023년이하는 설정 불가능합니다.');
+    return;
+  }
+
   const newReview = {
     content: newReviewContent.value,
     year: newReviewYear.value,
@@ -341,7 +350,6 @@ const addNewReview = async () => {
     console.error('Error adding new review:', error);
   }
 };
-
 
 </script>
 

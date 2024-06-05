@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 public interface DepartmentRepository extends JpaRepository<Department, Integer> {
 
 
-
+    boolean existsByLeaderId(int leaderId);
 }

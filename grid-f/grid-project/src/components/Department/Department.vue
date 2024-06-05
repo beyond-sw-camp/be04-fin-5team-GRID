@@ -194,7 +194,7 @@ const newDepartment = ref({
 
 const fetchLeaders = async () => {
   try {
-    const response = await axios.get(`http://localhost:8080/users/list`);
+    const response = await axios.get(`http://localhost:8080/users/list/all`);
     leaders.value = response.data.result;
   } catch (error) {
     console.error('직원 정보를 불러오는 중 에러 발생:', error);
@@ -315,6 +315,20 @@ const addNewDepartment = async () => {
     return;
   }
 
+  // 부서명과 부서코드 중복 확인
+  const isDepartmentNameDuplicate = departments.value.some(dept => dept.departmentName === newDepartment.value.departmentName);
+  const isDepartmentCodeDuplicate = departments.value.some(dept => dept.departmentCode === newDepartment.value.departmentCode);
+
+  if (isDepartmentNameDuplicate) {
+    alert('부서명이 중복됩니다.');
+    return;
+  }
+
+  if (isDepartmentCodeDuplicate) {
+    alert('부서코드가 중복됩니다.');
+    return;
+  }
+
   try {
     await axios.post('http://localhost:8080/department', newDepartment.value);
     await fetchDepartments();
@@ -329,8 +343,12 @@ const addNewDepartment = async () => {
       leaderName: ''
     };
     alert("추가되었습니다.");
-  } catch (error) {
-    console.error('에러 발생:', error);
+  } catch (error) { 
+      if (error.response && error.response.data) {
+        alert(error.response.data.message);
+      } else {
+      alert('부서 등록 중 오류가 발생했습니다.');
+    }
   }
 };
 
@@ -426,9 +444,12 @@ const updateLeader = async () => {
       newLeaderName.value = '';
       newLeaderId.value = null;
     }
-  } catch (error) {
-    console.error('부서장을 수정하는 중 에러 발생:', error);
-    alert('부서장 수정 중 에러가 발생했습니다.');
+  } catch (error){ 
+      if (error.response && error.response.data) {
+        alert(error.response.data.message);
+      } else {
+      alert('부서장 수정 중 오류가 발생했습니다.');
+    }
   }
 };
 </script>
