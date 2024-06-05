@@ -49,7 +49,7 @@
       </thead>
       <tbody>
         <tr v-for="team in filteredTeams" :key="team.id">
-          <td><input type="checkbox" :value="team" v-model="selectedTeams" /></td>
+          <td><input type="checkbox" :value="team" v-model="selectedTeams" @change="checkSelectionLimit" /></td>
           <td>{{ team.teamName }}</td>
           <td>{{ team.memberCnt }}</td>
           <td>{{ formatDate(team.startTime) }}</td>
@@ -487,6 +487,13 @@ const toggleTeamStatus = async () => {
 
 const goBack = () => {
   router.go(-1);
+};
+
+const checkSelectionLimit = () => {
+  if (selectedTeams.value.length >= 2) {
+    selectedTeams.value.pop(); // Remove the last selected item
+    alert('두 개 이상의 팀을 선택할 수 없습니다.');
+  }
 };
 
 </script>
