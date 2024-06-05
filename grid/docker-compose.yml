@@ -9,10 +9,11 @@ services:
 
   app:
     image: t4e1/grid-backend:latest
-    container_name: app
+    container_name: grid-backend
     environment:
       SPRING_REDIS_HOST: redis
     ports:
       - "5000:8080"
     depends_on:
       - redis
+    command: [ "java", "-jar", "/app.jar", "--jasypt.encryptor.password=${JASYPT_PASSWORD}" ]
