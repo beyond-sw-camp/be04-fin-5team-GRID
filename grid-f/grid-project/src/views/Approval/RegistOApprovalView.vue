@@ -1,8 +1,8 @@
 <script setup>
-import {onMounted, reactive, ref, watch} from "vue";
+  import {onMounted, reactive, ref, watch} from "vue";
   import {useRoute} from "vue-router";
   import axios from "axios";
-import router from "@/router/router.js";
+  import router from "@/router/router.js";
 
   const route = useRoute();
 
@@ -34,21 +34,13 @@ import router from "@/router/router.js";
   const updateDateTime = () => {
     postData.startTime = `${postData.s_date} ${postData.s_time}:00`;
     postData.endTime = `${postData.e_date} ${postData.e_time}:00`;
-  }
 
-  function  isStartDateValid() {
-    return this.postData.s_date !== "" ? true : false;
-  }
-  function isEndDateValid() {
-    return this.postData.e_date !== "" ? true : false;
-  }
-  function isContentValid() {
-    return this.postData.content.trim() !== "" ? true : false;
+    console.log(postData.startTime, postData.endTime)
+    console.log(postData.endTime)
   }
 
   const registApproval = async() => {
 
-    alert('결재를 제출하시겠습니까?');
     postData.requesterId = userId.value;
 
     const startTIme = new Date(postData.startTime);
@@ -57,33 +49,44 @@ import router from "@/router/router.js";
     const diff = (endTime.getTime() - startTIme.getTime()) / (1000 * 60 * 60);
 
     try {
-      if (diff < 12) {
-        const response = await axios.post(`http://localhost:8080/approval/overtime`, postData, {
-          headers: {
-            'Content-Type': "application/json"
+      const confirmed = window.confirm('결재를 제출하시겠습니까?');
+
+      if(confirmed) {
+      if (postData.content !== "" && postData.startTime !== " :00" && postData.endTime !== " :00") {
+          if (diff < 12) {
+            const response = await axios.post("http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval/overtime", postData, {
+              headers: {
+                'Content-Type': "application/json"
+              }
+            })
+            if (!response.success) {
+              alert(response.data.message)
+            } else if (response.status === 201) {
+              alert('결재가 제출되었습니다.');
+              router.push(response.data.href);
+            }
+            else {
+              throw new Error("response is not ok");
+            }
+          } else {
+            alert('시간 외 근무 시간은 12시간을 초과할 수 없습니다.');
           }
-        })
-        if (response.status === 201) {
-            alert('결재가 제출되었습니다.');
-            router.push(response.data.href);
         } else {
-            throw new Error("response is not ok");
+          alert('모든 필드를 입력해주세요.');
         }
-      } else {
-          alert('시간 외 근무 시간은 12시간을 초과할 수 없습니다.');
       }
     } catch (error) {
-      if (error.response.status === 400) {
-        alert('주별 시간 외 근무 시간의 합계가 12시간을 초과했숩니다.');
-      } else {
         console.error('Fail to post: ', error.message);
-      }
     }
   }
 
   watch(
       () => [postData.s_date, postData.s_time],
-      updateDateTime
+      () => {
+        updateDateTime();
+        postData.e_date = '';
+        postData.e_time = '';
+      }
   );
 
   watch(
@@ -103,14 +106,17 @@ import router from "@/router/router.js";
 </script>
 
 <template>
-  <nav style="--bs-breadcrumb-divider: '>'; margin-top: -35px; margin-bottom: -7px;" aria-label="breadcrumb">
+  <div class="registOAAll">
+    <div class="oaHeader">
+      <nav style="--bs-breadcrumb-divider: '>'; margin-top: -35px; margin-bottom: -7px;" aria-label="breadcrumb">
     <ol class="breadcrumb">
       <li class="breadcrumb-item"><a href="http://localhost:5173/regist/main" style="text-decoration: none; color: grey; font-size: 17px;"><i class="bi bi-pencil-square"></i>&nbsp; 결재 작성</a></li>
       <li class="breadcrumb-item active" aria-current="page"><span class="fw-bolder"><i class="bi bi-clock"></i>&nbsp; 시간 외 근무</span></li>
     </ol>
   </nav>
-  <div><h3 class="fw-bolder mb-5"><i class="bi bi-clock"></i>&nbsp; 시간 외 근무 신청</h3></div>
-  <div>
+  <div><h1 class="fw-bolder"><i class="bi bi-clock"></i>&nbsp; 시간 외 근무 신청</h1></div>
+    </div>
+  <div class="oaContent">
     <b-card class="mt-3" bg-variant="light">
       <b-form-group
           label-cols-lg="3"
@@ -125,8 +131,8 @@ import router from "@/router/router.js";
             label-cols-sm="3"
             label-align-sm="right"
         >
-          <b-form-input type="date" sid="start" v-model="postData.s_date"></b-form-input>
-          <b-form-input type="time" id="start" v-model="postData.s_time"></b-form-input>
+          <b-form-input type="date" v-model="postData.s_date"></b-form-input>
+          <b-form-input type="time" v-model="postData.s_time"></b-form-input>
         </b-form-group>
 
         <b-form-group
@@ -135,8 +141,8 @@ import router from "@/router/router.js";
             label-cols-sm="3"
             label-align-sm="right"
         >
-          <b-form-input type="date" id="end" v-model="postData.e_date" :min="postData.s_date"></b-form-input>
-          <b-form-input type="time" id="start" v-model="postData.e_time"></b-form-input>
+          <b-form-input type="date" v-model="postData.e_date" :min="postData.s_date"></b-form-input>
+          <b-form-input type="time" v-model="postData.e_time"></b-form-input>
         </b-form-group>
 
         <b-form-group
@@ -156,9 +162,58 @@ import router from "@/router/router.js";
       </b-form-group>
     </b-card>
   </div>
-  <b-button block variant="primary" @click="registApproval()">제출</b-button>
+  <div class="btnArea">
+    <b-button block variant="primary" class="btn" @click="registApproval()">제출</b-button>
+  </div>
+  
+  </div>
+  
 </template>
 
 <style scoped>
+.registOAAll {
+  display: grid;
+  grid-template-rows: 18% 50% 5% 27%;
+  grid-template-columns: 10% 80% 10%;
+  height: 100%;
+}
 
+.oaHeader {
+  grid-column-start: 2;
+  align-content: center;
+  margin-top: 2%;
+}
+
+.oaHeader h1 {
+  margin-left: 0.5%;
+  margin: 0;
+  font-size: 25px;
+  font-weight: 600;
+}
+
+.oaContent {
+  grid-column-start: 2;
+  grid-row-start: 2;
+}
+
+.btnArea {
+  grid-column-start: 2;
+  grid-row-start: 3;
+  align-content: center;
+  display: grid;
+  grid-template-columns: 45% 10% 45%;
+}
+
+.btn {
+  grid-column-start: 2;
+  width: 100%;
+  background-color: #088A85;
+  color: white;
+  padding: 5px 5px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  font-style: bold;
+}
 </style>

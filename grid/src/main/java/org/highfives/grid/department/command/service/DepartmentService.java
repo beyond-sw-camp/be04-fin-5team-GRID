@@ -14,4 +14,8 @@ public interface DepartmentService {
     void deleteDepartment(int id);
 
     List<DepartmentDTO> modifyAllDepartment(List<DepartmentDTO> departmentDTO);
+
+    List<DepartmentDTO> modifyDepartmentStatus(List<DepartmentDTO> departmentDTO);
+
+    DepartmentDTO modifyDepartmentLeader(DepartmentDTO departmentDTO);
 }

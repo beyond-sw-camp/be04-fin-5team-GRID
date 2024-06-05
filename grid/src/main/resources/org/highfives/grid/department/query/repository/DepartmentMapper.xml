@@ -28,8 +28,8 @@
             , A.SEQUENCE
             , A.DEPARTMENT_CODE
             , B.EMPLOYEE_NAME
-         FROM DEPARTMENT A
-         JOIN EMPLOYEE B ON A.LEADER_ID = B.ID
+         FROM department A
+         JOIN employee B ON A.LEADER_ID = B.ID
     </select>
 
 </mapper>

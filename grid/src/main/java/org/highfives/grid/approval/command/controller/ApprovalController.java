@@ -62,10 +62,16 @@ public class ApprovalController {
         OvertimeApprovalDTO result = approvalService.addOvertimeApproval(overtimeApprovalVO);
 
         if (result == null) {
-            return ResponseEntity.status(400).body(null);
+            ResApprovalVO response = ResApprovalVO.builder()
+                    .success(false)
+                    .message("주별 시간 외 근무 시간의 합계가 12시간을 초과했습니다.")
+                    .build();
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
         }
 
         ResApprovalVO response = ResApprovalVO.builder()
+                .success(true)
                 .statusCode(201)
                 .message("시간 외 근무 결재 생성 성공")
                 .href("/approval/detail/2/" + result.getId())

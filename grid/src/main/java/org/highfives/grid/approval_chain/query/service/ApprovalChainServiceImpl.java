@@ -46,10 +46,11 @@ public class ApprovalChainServiceImpl implements ApprovalChainService {
     }
 
     @Override
-    public ChainDTO findBTChainByApprovalAndChainId(int chainId, int approvalId) {
+    public ChainDTO findBTChainByApprovalAndChainId(int typeId, int chainId, int approvalId) {
 
         Map<String, Integer> params = new HashMap<>();
 
+        params.put("typeId", typeId);
         params.put("chainId", chainId);
         params.put("approvalId", approvalId);
 

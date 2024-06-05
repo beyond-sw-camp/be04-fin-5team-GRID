@@ -79,6 +79,7 @@
         JOIN (SELECT * FROM employee WHERE duties_id = 3) as approver
         ON A.approver_id = approver.id
         WHERE A.writer_id = #{employeeId}
+        ORDER BY A.write_time DESC
     </select>
 
     <!--  팀장 평가 목표 목록 조회  -->
@@ -101,7 +102,8 @@
         JOIN (SELECT * FROM employee WHERE duties_id = 3) as approver
         ON A.approver_id = approver.id
         WHERE A.approver_id = #{employeeId}
-        AND A.approval_status IN ('S', 'R', 'C')
+        AND A.approval_status IN ('S', 'R', 'C', 'V')
+        ORDER BY A.write_time DESC
     </select>
 
     <!--  평가 상세 조회  -->

@@ -1,107 +1,134 @@
 <script setup>
-  import {computed, onMounted, reactive, ref} from "vue";
-  import {useRoute} from "vue-router";
-  import axios from "axios";
-  import router from "@/router/router.js";
-  import {useStore} from "vuex";
+import {computed, onMounted, reactive, ref, watch} from "vue";
+import axios from "axios";
+import router from "@/router/router.js";
+import { useStore } from "vuex";
 
-  const route = useRoute();
-  const store = useStore();
+const store = useStore();
 
-  const user = computed(() => store.state.user);
+const user = computed(() => store.state.user);
+const userId = ref();
 
-  const userId = ref();
+const fileCheck = ref(true);
 
-  const fileInput = ref(null);
+let fileInput = null;
 
-  const postData = reactive({
-    startTime: "",
-    endTime: "",
-    file: null,
-    content: "",
-    requesterId: 0,
-    originName: '',
-    renameName: '',
-    path: ''
-  })
+const postData = reactive({
+  startTime: "",
+  endTime: "",
+  content: "",
+  requesterId: 0
+});
 
-  const handleFileChange = () => {
-    const file = fileInput.value;
+const handleFileChange = (event) => {
+  const file = event.target.files[0];
+  fileInput = file;
 
-    if (file) {
-      console.log('Selected file:', file);
-    } else {
-      console.error('No file selected');
-    }
+  if (file) {
+    fileCheck.value = true;
+    console.log("Selected file:", file, fileCheck.value);
+    
+  } else {
+    fileCheck.value = false;
+    console.error("No file selected", fileCheck.value, file);
   }
+};
 
-  function parseJwt(token) {
-    try {
-      const base64Url = token.split('.')[1];
-      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-      const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
-        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-      }).join(''));
-      return JSON.parse(jsonPayload);
-    } catch (error) {
-      console.error('Invalid token', error);
-      return null;
-    }
+function parseJwt(token) {
+  try {
+    const base64Url = token.split(".")[1];
+    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+    const jsonPayload = decodeURIComponent(
+        atob(base64)
+            .split("")
+            .map(function (c) {
+              return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+            })
+            .join("")
+    );
+    return JSON.parse(jsonPayload);
+  } catch (error) {
+    console.error("Invalid token", error);
+    return null;
   }
+}
 
-  const registApproval = async () => {
+const registApproval = async () => {
 
-    alert('결재를 제출하시겠습니까?');
+  postData.requesterId = userId.value;
 
-    postData.requesterId = userId.value;
+  console.log(user.value.gender)
 
-    const formData = new FormData();
+  const formData = new FormData();
 
-    formData.append('postData', JSON.stringify(postData));
-    formData.append('file', fileInput.value);
+  formData.append("file", fileInput);
+  formData.append("postData", new Blob([JSON.stringify(postData)], {type: 'application/json; charset=UTF-8'}));
 
-    try {
-      if (user.value.gender === 'M') {
-        const response = await axios.post(`http://localhost:8080/approval/rw`, formData, {
-          headers: {
-            'Content-Type': "multipart/form-data"
+  try {
+    const confirmed = window.confirm("결재를 제출하시겠습니까?");
+    if (confirmed) {
+      if (postData.content !== "" && postData.startTime !== "" && postData.endTime !== "" && fileCheck.value) {
+        console.log(formData);
+        if (user.value.gender === "F") {
+          const response = await axios.post(
+              `http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval/rw`,
+              formData,
+              {
+                headers: {
+                  "Content-Type": "multipart/form-data",
+                },
+              }
+          );
+
+          if (response.status !== 201) {
+            throw new Error("response is not ok");
+          } else {
+            alert("결재가 제출되었습니다.");
+            router.push(response.data.href);
           }
-        })
-        if (response.status !== 201) {
-          throw new Error("response is not ok");
+        } else if (user.value.gender === "M") {
+          alert("남직원은 임신 단축 근무를 신청할 수 없습니다.");
         } else {
-          alert('결재가 제출되었습니다.')
-          router.push(response.data.href);
+          alert("단축 근무 기간입니다.");
         }
-      } else if (user.value.gender === 'M'){
-        alert('남직원은 임신 단축 근무를 신청할 수 없습니다.')
       } else {
-        alert('단축 근무 기간입니다.')
+        alert("모든 필드를 입력해주세요.");
       }
-    } catch (error) {
-      console.error('Fail to post: ', error.message);
     }
+  } catch (error) {
+    console.error("Fail to post: ", error.message);
   }
+};
 
-  onMounted(async () => {
-    const token = localStorage.getItem('access');
-    if (token) {
-      const decodedToken = parseJwt(token);
-
-      userId.value = decodedToken.id || '';
+watch(
+    () => [postData.startTime],
+    () => {
+      postData.endTime = '';
     }
-  })
+);
+
+onMounted(async () => {
+  const token = localStorage.getItem("access");
+  if (token) {
+    const decodedToken = parseJwt(token);
+
+    userId.value = decodedToken.id || "";
+  }
+});
 </script>
 
 <template>
-  <nav style="--bs-breadcrumb-divider: '>'; margin-top: -35px; margin-bottom: -7px;" aria-label="breadcrumb">
-    <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a href="http://localhost:5173/regist/main" style="text-decoration: none; color: grey; font-size: 17px;"><i class="bi bi-pencil-square"></i>&nbsp; 결재 작성</a></li>
-      <li class="breadcrumb-item active" aria-current="page"><span class="fw-bolder"><i class="bi bi-heart-pulse"></i>&nbsp; 단축 근무</span></li>
-    </ol>
-  </nav>
-  <div><h3 class="fw-bolder pb-5"><i class="bi bi-heart-pulse"></i>&nbsp; 단축 근무 신청</h3></div>
-  <div>
+  <div class="rwAll">
+    <div class="rwHeader">
+      <nav style="--bs-breadcrumb-divider: '>'; margin-top: -35px; margin-bottom: -7px;" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="http://localhost:5173/regist/main" style="text-decoration: none; color: grey; font-size: 17px;"><i class="bi bi-pencil-square"></i>&nbsp; 결재 작성</a></li>
+          <li class="breadcrumb-item active" aria-current="page"><span class="fw-bolder"><i class="bi bi-heart-pulse"></i>&nbsp; 단축 근무</span></li>
+        </ol>
+      </nav>
+      <div><h1 class="fw-bolder"><i class="bi bi-heart-pulse"></i>&nbsp; 단축 근무 신청</h1></div>
+  </div>
+  <div class="rwContent">
     <b-card class="mt-3" bg-variant="light">
       <b-form-group
           label-cols-lg="3"
@@ -116,7 +143,7 @@
             label-cols-sm="3"
             label-align-sm="right"
         >
-          <b-form-input type="date" :state="false" id="start" v-model="postData.startTime"></b-form-input>
+          <b-form-input type="date" id="start" v-model="postData.startTime"></b-form-input>
         </b-form-group>
 
         <b-form-group
@@ -134,7 +161,7 @@
             label-cols-sm="3"
             label-align-sm="right"
         >
-          <input type="file" @change="handleFileChange" ref="fileInput" class="form-control" />
+          <input type="file" @change="handleFileChange" class="form-control" />
         </b-form-group>
 
         <b-form-group
@@ -154,9 +181,56 @@
       </b-form-group>
     </b-card>
   </div>
-  <b-button block variant="primary" @click="registApproval()">제출</b-button>
+  <div class="btnArea">
+    <b-button block variant="primary" class="btn" @click="registApproval()">제출</b-button>
+  </div>
+</div>
 </template>
 
 <style scoped>
+  .rwAll {
+  display: grid;
+  grid-template-rows: 18% 50% 5% 27%;
+  grid-template-columns: 10% 80% 10%;
+  height: 100%;
+}
 
+.rwHeader {
+  grid-column-start: 2;
+  align-content: center;
+  margin-top: 2%;
+}
+
+.rwHeader h1 {
+  margin-left: 0.5%;
+  margin: 0;
+  font-size: 25px;
+  font-weight: 600;
+}
+
+.rwContent {
+  grid-column-start: 2;
+  grid-row-start: 2;
+}
+
+.btnArea {
+  grid-column-start: 2;
+  grid-row-start: 3;
+  align-content: center;
+  display: grid;
+  grid-template-columns: 45% 10% 45%;
+}
+
+.btn {
+  grid-column-start: 2;
+  width: 100%;
+  background-color: #088A85;
+  color: white;
+  padding: 5px 5px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  font-style: bold;
+}
 </style>

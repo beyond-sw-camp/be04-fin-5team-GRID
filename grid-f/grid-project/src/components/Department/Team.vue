@@ -2,41 +2,59 @@
   <div class="container">
     <div class="header">
       <div class="header-title">
-        <img class="reviewIcon" src="@/assets/list-check.png" alt="list-check" />
-        <h1>팀 정보</h1>
+        <nav style="--bs-breadcrumb-divider: '>'; margin-top: -35px; margin-bottom: -7px;" aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a href="#" @click.prevent="goBack" style="text-decoration: none; color: grey; font-size: 17px;">
+                <i class="bi bi-person"></i>&nbsp; 팀 정보
+              </a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">
+              <span class="fw-bolder">
+                <i class="bi bi-briefcase"></i>&nbsp; {{ departmentName }}
+              </span>
+            </li>
+          </ol>
+        </nav>
+      </div>
+      <div class="department-name">
       </div>
     </div>
 
     <div class="search">
       <div class="search-group">
-        <input type="text" class="searchBox" v-model="searchQuery" placeholder="이름 검색" />
+        <input type="text" class="searchBox" v-model="searchQuery" placeholder="팀명 검색" />
         <button @click="search" class="searchBtn">검색</button>
       </div>
-      <button @click="showModal('addNewTeamModal')" class="addTeamBtn">팀 추가</button>
+      <div>
+        <button @click="showModal('addNewTeamModal')" class="addTeamBtn" v-if="userRole === 'ROLE_ADMIN'">팀 추가</button>
+        <button @click="toggleTeamStatus" class="toggleStatusBtn" v-if="userRole === 'ROLE_ADMIN'">활성/비활성화</button>
+        <button @click="showModal('updateLeaderModal')" class="updateLeaderBtn" v-if="userRole === 'ROLE_ADMIN'">팀장 수정</button>
+      </div>
     </div>
 
     <table class="teamTable">
       <thead>
         <tr>
-          <th>팀명</th>
-          <th>인원</th>
-          <th>시작 일</th>
-          <th>종료일</th>
-          <th>상위 부서명</th>
-          <th>책임자 명</th>
-          <th></th>
+          <th style="width: 5%;"></th>
+          <th style="width: 10%;">팀명</th>
+          <th style="width: 20%;">시작 일</th>
+          <th style="width: 20%;">종료일</th>
+          <th style="width: 10%;">상위 부서명</th>
+          <th style="width: 10%;">팀장 명</th>
+          <th style="width: 10%;"></th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="team in filteredTeams" :key="team.id">
-          <td>{{ team.teamName }}</td>
-          <td>{{ team.memberCnt }}</td>
-          <td>{{ formatDate(team.startTime) }}</td>
-          <td>{{ formatDate(team.endTime) }}</td>
-          <td>{{ team.departmentName }}</td>
-          <td>{{ team.leaderName }}</td>
-          <td>
-            <button class="view-details-btn" @click="goToTeamMembers(team.id)">자세히 보기</button>
+          <td style="width: 5%;"><input type="checkbox" :value="team" v-model="selectedTeams" @change="checkSelectionLimit" /></td>
+          <td style="width: 10%;">{{ team.teamName }}</td>
+          <td style="width: 20%;">{{ formatDate(team.startTime) }}</td>
+          <td style="width: 20%;">{{ formatDate(team.endTime) }}</td>
+          <td style="width: 10%;">{{ team.departmentName }}</td>
+          <td style="width: 10%;">{{ team.leaderName }}</td>
+          <td style="width: 10%;">
+            <button class="view-details-btn" @click="goToTeamMembers(team.id)">팀원 목록</button>
           </td>
         </tr>
       </tbody>
@@ -67,19 +85,16 @@
             <form @submit.prevent="addNewTeam">
               <div class="mb-3">
                 <label for="teamName" class="form-label">팀명</label>
-                <input type="text" class="form-control" id="teamName" v-model="newTeam.teamName" required>
+                <input type="text" class="form-control" id="teamName" v-model="newTeam.teamName" required />
               </div>
               <div class="mb-3">
                 <label for="departmentName" class="form-label">상위 부서명</label>
-                <div class="input-group">
-                  <input type="text" class="form-control" id="departmentName" v-model="newTeam.departmentName" readonly>
-                  <button type="button" class="btn btn-secondary" @click="showModal('selectDepartmentModal')">조회</button>
-                </div>
+                <input type="text" class="form-control" id="departmentName" v-model="newTeam.departmentName" readonly />
               </div>
               <div class="mb-3">
-                <label for="leaderName" class="form-label">책임자 명</label>
+                <label for="leaderName" class="form-label">팀장 명</label>
                 <div class="input-group">
-                  <input type="text" class="form-control" id="leaderName" v-model="newTeam.leaderName" readonly>
+                  <input type="text" class="form-control" id="leaderName" v-model="newTeam.leaderName" readonly />
                   <button type="button" class="btn btn-secondary" @click="showModal('selectLeaderModal')">조회</button>
                 </div>
               </div>
@@ -90,47 +105,19 @@
       </div>
     </div>
 
-    <!-- 부서 선택 Modal -->
-    <div class="modal fade" id="selectDepartmentModal" tabindex="-1" aria-labelledby="selectDepartmentModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="selectDepartmentModalLabel">부서 선택</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <table class="table">
-              <thead>
-                <tr>
-                  <th>부서명</th>
-                  <th>선택</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="department in departments" :key="department.id">
-                  <td>{{ department.departmentName }}</td>
-                  <td><button type="button" class="btn btn-primary" @click="selectDepartment(department)">선택</button></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 책임자 선택 Modal -->
+    <!-- 팀장 선택 Modal -->
     <div class="modal fade" id="selectLeaderModal" tabindex="-1" aria-labelledby="selectLeaderModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="selectLeaderModalLabel">책임자 선택</h5>
+            <h5 class="modal-title" id="selectLeaderModalLabel">팀장 선택</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
             <table class="table">
               <thead>
                 <tr>
-                  <th>책임자 명</th>
+                  <th>팀장 명</th>
                   <th>선택</th>
                 </tr>
               </thead>
@@ -145,43 +132,108 @@
         </div>
       </div>
     </div>
+
+    <!-- 팀장 수정 Modal -->
+    <div class="modal fade" id="updateLeaderModal" tabindex="-1" aria-labelledby="updateLeaderModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="updateLeaderModalLabel">팀장 수정</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form @submit.prevent="updateLeader">
+              <div class="mb-3">
+                <label for="selectTeam" class="form-label">팀 선택</label>
+                <select class="form-select" v-model="selectedTeamId" id="selectTeam" required>
+                  <option v-for="team in teams" :key="team.id" :value="team.id">{{ team.teamName }}</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="leaderName" class="form-label">팀장 명</label>
+                <div class="input-group">
+                  <input type="text" class="form-control" id="newLeaderName" v-model="newLeaderName" readonly />
+                  <button type="button" class="btn btn-secondary" @click="showModal('selectLeaderModalForUpdate')">조회</button>
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary">수정</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 팀장 선택 Modal for Update -->
+    <div class="modal fade" id="selectLeaderModalForUpdate" tabindex="-1" aria-labelledby="selectLeaderModalForUpdateLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="selectLeaderModalForUpdateLabel">팀장 선택</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>팀장 명</th>
+                  <th>선택</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="leader in leaders" :key="leader.id">
+                  <td>{{ leader.name }}</td>
+                  <td><button type="button" class="btn btn-primary" @click="selectLeaderForUpdate(leader)">선택</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
-import { useRoute } from 'vue-router';
+import { ref, computed, onMounted, watch } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap';
 
 const route = useRoute();
+const router = useRouter();
 const departmentId = ref(route.params.id);
+const departmentName = ref('');
+const userRole = ref('');
+const userId = ref('');
 
 const searchQuery = ref('');
 const currentPage = ref(1);
-const itemsPerPage = 5;
+const itemsPerPage = 10;
 const teams = ref([]);
 const allTeams = ref([]); // 전체 팀 정보를 저장할 변수
 const departments = ref([]);
 const leaders = ref([]);
+const selectedTeams = ref([]); // 선택된 팀 정보를 저장할 변수
 const newTeam = ref({
   teamName: '',
-  departmentId: null,
+  departmentId: departmentId.value,
   departmentName: '',
   leaderId: null,
   leaderName: ''
 });
+const selectedTeamId = ref(null);
+const newLeaderName = ref('');
+const newLeaderId = ref(null);
 
-// API에서 팀 정보를 가져오는 함수
 const fetchTeams = async () => {
   try {
-    const response = await axios.get(`http://localhost:8080/team/sub-department/${departmentId.value}`);
+    const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/team/sub-department/${departmentId.value}`);
     const teamData = await Promise.all(response.data.result.map(async team => {
-      const leaderResponse = await axios.get(`http://localhost:8080/users/id/${team.leaderId}`);
+      const leaderResponse = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/id/${team.leaderId}`);
       team.leaderName = leaderResponse.data.result.name;
       
-      const departmentResponse = await axios.get(`http://localhost:8080/department/${team.departmentId}`);
+      const departmentResponse = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/department/${team.departmentId}`);
       team.departmentName = departmentResponse.data.result.departmentName;
       
       return team;
@@ -193,9 +245,19 @@ const fetchTeams = async () => {
   }
 };
 
+const fetchDepartmentName = async () => {
+  try {
+    const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/department/${departmentId.value}`);
+    departmentName.value = response.data.result.departmentName;
+    newTeam.value.departmentName = departmentName.value; // 부서명 설정
+  } catch (error) {
+    console.error('부서 정보를 가져오는 중 오류 발생:', error);
+  }
+};
+
 const fetchDepartments = async () => {
   try {
-    const response = await axios.get('http://localhost:8080/department/find-all');
+    const response = await axios.get('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/department/find-all');
     departments.value = response.data.result;
   } catch (error) {
     console.error('부서 정보를 가져오는 중 오류 발생:', error);
@@ -204,27 +266,70 @@ const fetchDepartments = async () => {
 
 const fetchLeaders = async () => {
   try {
-    const response = await axios.get('http://localhost:8080/users/list');
+    const response = await axios.get('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/list/all');
     leaders.value = response.data.result;
   } catch (error) {
-    console.error('책임자 정보를 가져오는 중 오류 발생:', error);
+    console.error('직원 정보를 가져오는 중 오류 발생:', error);
   }
 };
 
+// departmentId가 변경될 때마다 부서명 업데이트
+watch(departmentId, (newId) => {
+  const department = departments.value.find(dep => dep.id === newId);
+  if (department) {
+    newTeam.value.departmentName = department.departmentName;
+  }
+});
+
+function parseJwt(token) {
+    try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        return JSON.parse(jsonPayload);
+    } catch (error) {
+        console.error('Invalid token', error);
+        return null;
+    }
+}
+
 onMounted(() => {
+  fetchDepartmentName(); // 부서 이름 가져오기
   fetchTeams();
   fetchDepartments();
   fetchLeaders();
+
+  const token = localStorage.getItem('access');
+    if (token) {
+        const decodedToken = parseJwt(token);
+        userRole.value = decodedToken?.auth || '';
+        userId.value = decodedToken?.id || '';
+    }
 });
 
 const filteredTeams = computed(() => {
   const start = (currentPage.value - 1) * itemsPerPage;
   const end = start + itemsPerPage;
-  return teams.value.slice(start, end);
+  
+  return teams.value
+    .filter(team => {
+      if (userRole.value !== 'ROLE_ADMIN' && team.teamStatus === 'N') {
+        return false; // 관리자가 아니고 상태가 N인 팀은 필터링
+      }
+      return true;
+    })
+    .slice(start, end);
 });
 
 const totalPages = computed(() => {
-  return Math.ceil(teams.value.length / itemsPerPage);
+  return Math.ceil(teams.value.filter(team => {
+    if (userRole.value !== 'ROLE_ADMIN' && team.teamStatus === 'N') {
+      return false; // 관리자가 아니고 상태가 N인 팀은 제외
+    }
+    return true;
+  }).length / itemsPerPage);
 });
 
 const prevPage = () => {
@@ -244,7 +349,8 @@ const goToPage = (page) => {
 };
 
 const search = () => {
-  teams.value = allTeams.value.filter(team => team.leaderName.includes(searchQuery.value));
+  
+  teams.value = allTeams.value.filter(team => team.teamName.includes(searchQuery.value));
   currentPage.value = 1;
 };
 
@@ -263,46 +369,137 @@ const showModal = (modalId) => {
   modal.show();
 };
 
+// Computed property to get list of leader IDs already assigned as team leaders
+const leaderIdsInTeams = computed(() => {
+  return teams.value.map(team => team.leaderId);
+});
+
 const addNewTeam = async () => {
+  if (!newTeam.value.leaderId) {
+    alert('팀장을 선택해야 합니다.');
+    return;
+  }
+
+  if (leaderIdsInTeams.value.includes(newTeam.value.leaderId)) {
+    alert('이미 다른 팀의 팀장으로 등록된 사람입니다.');
+    return;
+  }
+
   try {
-    // 팀 추가 API 호출
-    await axios.post('http://localhost:8080/team', {
+    await axios.post('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/team', {
       teamName: newTeam.value.teamName,
       departmentId: newTeam.value.departmentId,
       leaderId: newTeam.value.leaderId
     });
 
-    // 팀 목록을 다시 불러오기
     await fetchTeams();
 
-    // 모달 닫기 및 초기화
     const modal = bootstrap.Modal.getInstance(document.getElementById('addNewTeamModal'));
     modal.hide();
     newTeam.value = {
       teamName: '',
-      departmentId: null,
-      departmentName: '',
+      departmentId: departmentId.value,
+      departmentName: departmentName.value, // 부서명 초기화
       leaderId: null,
       leaderName: ''
     };
-  } catch (error) {
-    console.error('팀을 추가하는 중 오류 발생:', error);
+  } catch (error){ 
+      if (error.response && error.response.data) {
+        alert(error.response.data.message);
+      } else {
+      alert('팀 등록 중 오류가 발생했습니다.');
+    }
   }
 };
 
-const selectDepartment = (department) => {
-  newTeam.value.departmentId = department.id;
-  newTeam.value.departmentName = department.departmentName;
-  const modal = bootstrap.Modal.getInstance(document.getElementById('selectDepartmentModal'));
-  modal.hide();
-};
-
 const selectLeader = (leader) => {
+  if (leaderIdsInTeams.value.includes(leader.id)) {
+    alert('이미 다른 팀의 팀장으로 등록된 사람입니다.');
+    return;
+  }
+
   newTeam.value.leaderId = leader.id;
   newTeam.value.leaderName = leader.name;
   const modal = bootstrap.Modal.getInstance(document.getElementById('selectLeaderModal'));
   modal.hide();
 };
+
+const updateLeader = async () => {
+  if (!newLeaderId.value || !selectedTeamId.value) {
+    alert('팀장과 팀을 선택해야 합니다.');
+    return;
+  }
+
+  if (leaderIdsInTeams.value.includes(newLeaderId.value)) {
+    alert('이미 다른 팀의 팀장으로 등록된 사람입니다.');
+    return;
+  }
+
+  try {
+    await axios.put(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/team/team-leader`, {
+      id: selectedTeamId.value,
+      leaderId: newLeaderId.value
+    });
+
+    await fetchTeams();
+
+    const modal = bootstrap.Modal.getInstance(document.getElementById('updateLeaderModal'));
+    modal.hide();
+    newLeaderName.value = '';
+    newLeaderId.value = null;
+    selectedTeamId.value = null;
+  } catch (error){ 
+      if (error.response && error.response.data) {
+        alert(error.response.data.message);
+      } else {
+      alert('팀장 수정 중 오류가 발생했습니다.');
+    }
+  }
+};
+
+const selectLeaderForUpdate = (leader) => {
+  if (leaderIdsInTeams.value.includes(leader.id)) {
+    alert('이미 다른 팀의 팀장으로 등록된 사람입니다.');
+    return;
+  }
+
+  newLeaderId.value = leader.id;
+  newLeaderName.value = leader.name;
+  const modal = bootstrap.Modal.getInstance(document.getElementById('selectLeaderModalForUpdate'));
+  modal.hide();
+};
+
+const toggleTeamStatus = async () => {
+  if (selectedTeams.value.length === 0) {
+    alert('활성화 또는 비활성화할 팀을 선택하세요.');
+    return;
+  }
+
+  try {
+    const response = await axios.put('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/team/status', selectedTeams.value);
+
+    if (response.status === 200) {
+      alert('팀 상태가 수정되었습니다.');
+      await fetchTeams();
+      selectedTeams.value = [];
+    }
+  } catch (error) {
+    console.error('팀 상태를 수정하는 중 오류 발생:', error);
+    alert('팀 상태 수정 중 오류가 발생했습니다.');
+  }
+};
+
+const goBack = () => {
+  router.go(-1);
+};
+
+const checkSelectionLimit = () => {
+  if (selectedTeams.value.length >= 2) {
+    selectedTeams.value.pop(); // Remove the last selected item
+    alert('두 개 이상의 팀을 선택할 수 없습니다.');
+  }
+};
+
 </script>
 
 <style scoped>
@@ -341,6 +538,10 @@ const selectLeader = (leader) => {
 
 .reviewIcon {
   width: 30px; /* 이미지 크기 유지 */
+}
+
+.department-name {
+  margin-left: auto;
 }
 
 .addNewBtn {
@@ -404,6 +605,36 @@ const selectLeader = (leader) => {
 }
 
 .addTeamBtn:hover {
+  background-color: #065f5b;
+}
+
+.toggleStatusBtn {
+  background-color: #088A85;
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  margin-left: 10px;
+}
+
+.toggleStatusBtn:hover {
+  background-color: #065f5b;
+}
+
+.updateLeaderBtn {
+  background-color: #088A85;
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  margin-left: 10px;
+}
+
+.updateLeaderBtn:hover {
   background-color: #065f5b;
 }
 

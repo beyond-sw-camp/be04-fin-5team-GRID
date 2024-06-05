@@ -2,6 +2,8 @@ package org.highfives.grid.department.command.service;
 
 import org.highfives.grid.department.command.dto.TeamDTO;
 
+import java.util.List;
+
 public interface TeamService {
     TeamDTO addTeam(TeamDTO teamDTO);
 
@@ -9,4 +11,7 @@ public interface TeamService {
 
     void deleteTeam(int id);
 
+    TeamDTO modifyTeamLeader(TeamDTO teamDTO);
+
+    List<TeamDTO> modifyTeamStatus(List<TeamDTO> teamDTO);
 }

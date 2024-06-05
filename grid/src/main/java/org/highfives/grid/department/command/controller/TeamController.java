@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController(value = "CommandTeamController")
 @RequestMapping("/team")
 public class TeamController {
@@ -44,7 +46,7 @@ public class TeamController {
         ResponseTeamVO responseTeamVO = ResponseTeamVO.builder()
                 .message("modify success")
                 .href("/team")
-                .statusCode(201)
+                .statusCode(200)
                 .result(modifyData)
                 .build();
 
@@ -58,7 +60,29 @@ public class TeamController {
 
     }
 
+    @PutMapping("/team-leader")
+    public ResponseEntity<ResponseTeamVO> modifyTeamLeader(@RequestBody TeamDTO teamDTO) {
 
+        TeamDTO modifyData = teamService.modifyTeamLeader(teamDTO);
+
+        ResponseTeamVO responseTeamVO = ResponseTeamVO.builder()
+                .message("modify success")
+                .href("/team")
+                .statusCode(200)
+                .result(modifyData)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(responseTeamVO);
+    }
+
+    @PutMapping("/status")
+    public ResponseEntity<List<TeamDTO>> modifyTeamStatus(@RequestBody List<TeamDTO> teamDTO) {
+
+        List<TeamDTO> modifyData = teamService.modifyTeamStatus(teamDTO);
+
+
+        return ResponseEntity.status(HttpStatus.OK).body(modifyData);
+    }
 
 
 

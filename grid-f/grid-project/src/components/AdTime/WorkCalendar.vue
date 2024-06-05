@@ -101,7 +101,7 @@ const updateCalendarEvents = (events) => {
 const fetchEmployeeEvent = async () => {
   try {
     // 출근 조회
-    const responseAdTime = await axios.get(`http://localhost:8080/ad-time/${userId.value}`);
+    const responseAdTime = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/ad-time/${userId.value}`);
 
     const adTime = responseAdTime.data.adTimeDTOList;
     console.log(adTime);
@@ -110,7 +110,7 @@ const fetchEmployeeEvent = async () => {
     console.log(adTime.attendanceStatus);
     console.log(events.value);
     // 출장 조회
-    const responseBt = await axios.get(`http://localhost:8080/approval/list/1/1/${userId.value}`);
+    const responseBt = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval/list/1/1/${userId.value}`);
     console.log(responseBt.data);
 
     const bt = responseBt.data.approvalEmpResultList
@@ -118,21 +118,21 @@ const fetchEmployeeEvent = async () => {
 
 
     // 시간외 근무 조회
-    const responseO = await axios.get(`http://localhost:8080/approval/list/2/1/${userId.value}`);
+    const responseO = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval/list/2/1/${userId.value}`);
     console.log(responseO.data);
 
     const o = responseO.data.approvalEmpResultList
     const oEvents = transformEvents(o, '시간외 근무', '#c0caff');
 
     // 단축 근무 조회
-    const responseRw = await axios.get(`http://localhost:8080/approval/list/3/1/${userId.value}`);
+    const responseRw = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval/list/3/1/${userId.value}`);
     console.log(responseRw.data);
 
     const rw = responseRw.data.approvalEmpResultList
     const rwEvents = transformEvents(rw, '단축 근무', '#cbffb6');
 
     // 휴가 조회
-    const responseV = await axios.get(`http://localhost:8080/approval/list/4/1/${userId.value}`);
+    const responseV = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval/list/4/1/${userId.value}`);
     console.log(responseV.data);
 
     const v = responseV.data.approvalEmpResultList
@@ -150,7 +150,7 @@ const fetchEmployeeEvent = async () => {
 const fetchAllEvent = async () => {
   try {
     // 출근 조회
-    const responseAdTime = await axios.get(`http://localhost:8080/ad-time/${userId.value}`);
+    const responseAdTime = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/ad-time/${userId.value}`);
 
     const adTime = responseAdTime.data.adTimeDTOList;
     console.log(adTime);
@@ -160,7 +160,7 @@ const fetchAllEvent = async () => {
     console.log(events.value);
     // updateCalendarEvents(events.value);
     // 출장 조회
-    const responseBt = await axios.get(`http://localhost:8080/approval/list/1/1/${userId.value}`);
+    const responseBt = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval/list/1/1/${userId.value}`);
     console.log(responseBt.data);
 
     const bt = responseBt.data.approvalEmpResultList
@@ -168,21 +168,21 @@ const fetchAllEvent = async () => {
 
 
     // 시간외 근무 조회
-    const responseO = await axios.get(`http://localhost:8080/approval/list/2/1/${userId.value}`);
+    const responseO = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval/list/2/1/${userId.value}`);
     console.log(responseO.data);
 
     const o = responseO.data.approvalEmpResultList
     const oEvents = transformEvents(o, '시간외 근무', '#c0caff');
 
     // 단축 근무 조회
-    const responseRw = await axios.get(`http://localhost:8080/approval/list/3/1/${userId.value}`);
+    const responseRw = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval/list/3/1/${userId.value}`);
     console.log(responseRw.data);
 
     const rw = responseRw.data.approvalEmpResultList
     const rwEvents = transformEvents(rw, '단축 근무', '#cbffb6');
 
     // 휴가 조회
-    const responseV = await axios.get(`http://localhost:8080/approval/list/4/1/${userId.value}`);
+    const responseV = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval/list/4/1/${userId.value}`);
     console.log(responseV.data);
 
     const v = responseV.data.approvalEmpResultList
@@ -272,7 +272,7 @@ onMounted(async () => {
 #calendar {
   width: 100%;
   height: 100%;
-  //overflow-y: auto; /* 스크롤바 추가 */
+  overflow-y: auto; /* 스크롤바 추가 */
 }
 
 /*.fc-toolbar {
@@ -300,7 +300,7 @@ onMounted(async () => {
 #calendar .fc-daygrid-day-events {
   max-height: 100px; /* 날짜 셀의 고정 높이 */
   text-align: left;
-  //overflow: hidden;
+  overflow: auto;
   text-decoration: none;
 }
 
@@ -315,7 +315,6 @@ onMounted(async () => {
   /* 기본 커서로 변경 */
   cursor: default;
 
-  //background-color: #3fb9b8;
   color: #ffffff;
 }
 
@@ -327,7 +326,7 @@ onMounted(async () => {
 #calendar .fc-daygrid-day-frame {
   display: flex;
   flex-direction: column;
-  height: 100px; /* 날짜 셀의 고정 높이 설정 */
+  height: 80px; /* 날짜 셀의 고정 높이 설정 */
   overflow: hidden;
 }
 
@@ -338,7 +337,7 @@ onMounted(async () => {
 #calendar .fc-daygrid-day-events {
   flex: 1 1 auto;
   max-height: 60px; /* 이벤트 영역의 최대 높이 설정 */
-  overflow: hidden; /* 넘치는 내용 숨기기 */
+  overflow: auto; /* 넘치는 내용 숨기기 */
 }
 
 /* 날짜 셀의 하이퍼링크를 일반 텍스트로 표시 */

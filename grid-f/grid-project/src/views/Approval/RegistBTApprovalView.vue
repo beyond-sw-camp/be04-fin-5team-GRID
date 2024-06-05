@@ -1,10 +1,8 @@
 <script setup>
-  import {onMounted, reactive, ref} from "vue";
+import {onMounted, reactive, ref, watch} from "vue";
   import {useRoute} from "vue-router";
   import axios from "axios";
   import router from "@/router/router.js";
-
-  const route = useRoute();
 
   const userId = ref();
 
@@ -32,47 +30,62 @@
 
   const registApproval = async() => {
 
-    alert('결재를 제출하시겠습니까?');
     postData.requesterId = userId.value;
 
     try {
-      const response = await axios.post(`http://localhost:8080/approval/bt`, postData, {
-        headers: {
-          'Content-Type': "application/json"
+      const confirmed = window.confirm('결재를 제출하시겠습니까?');
+
+      if(confirmed) {
+        if (postData.content !== '' && postData.startTime !== '' && postData.endTime !== '' && postData.destination !== '') {
+          const response = await axios.post(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval/bt`, postData, {
+            headers: {
+              'Content-Type': "application/json"
+            }
+          })
+          if (response.status !== 201) {
+            throw new Error("response is not ok");
+          } else {
+            alert('결재가 제출되었습니다.')
+            router.push(response.data.href);
+          }
+        } else {
+          alert('모든 필드를 입력해주세요.');
         }
-      })
-
-      if (response.status !== 201) {
-        throw new Error("response is not ok");
-      } else {
-        alert('결재가 제출되었습니다.')
-        router.push(response.data.href);
       }
-
     } catch (error) {
       console.error('Fail to post: ', error.message);
     }
   }
 
-onMounted(async () => {
-  const token = localStorage.getItem('access');
-  if (token) {
-    const decodedToken = parseJwt(token);
+  watch(
+      () => [postData.startTime],
+      () => {
+        postData.endTime = '';
+      }
+  );
 
-    userId.value = decodedToken.id || '';
-  }
-})
+  onMounted(async () => {
+    const token = localStorage.getItem('access');
+    if (token) {
+      const decodedToken = parseJwt(token);
+
+      userId.value = decodedToken.id || '';
+    }
+  })
 </script>
 
 <template>
-  <nav style="--bs-breadcrumb-divider: '>'; margin-top: -35px; margin-bottom: -7px;" aria-label="breadcrumb">
-    <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a href="http://localhost:5173/regist/main" style="text-decoration: none; color: grey; font-size: 17px;"><i class="bi bi-pencil-square"></i>&nbsp; 결재 작성</a></li>
-      <li class="breadcrumb-item active" aria-current="page"><span class="fw-bolder"><i class="bi bi-briefcase"></i>&nbsp; 출장</span></li>
-    </ol>
-  </nav>
-  <div><h3 class="fw-bolder mb-5"><i class="bi bi-briefcase"></i>&nbsp; 출장 신청</h3></div>
-  <div>
+  <div class="registBTAll">
+    <div class="registBTHeader">
+      <nav style="--bs-breadcrumb-divider: '>'; margin-top: -35px; margin-bottom: -7px;" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="http://localhost:5173/regist/main" style="text-decoration: none; color: grey; font-size: 17px;"><i class="bi bi-pencil-square"></i>&nbsp; 결재 작성</a></li>
+          <li class="breadcrumb-item active" aria-current="page"><span class="fw-bolder"><i class="bi bi-briefcase"></i>&nbsp; 출장</span></li>
+        </ol>
+      </nav>
+      <div><h1 class="fw-bolder"><i class="bi bi-briefcase"></i>&nbsp; 출장 신청</h1></div>
+    </div> 
+  <div class="registBTContent">
     <b-card class="mt-3" bg-variant="light">
       <b-form-group
           label-cols-lg="3"
@@ -87,7 +100,7 @@ onMounted(async () => {
             label-cols-sm="3"
             label-align-sm="right"
         >
-          <b-form-input type="date" :state="false" id="start" v-model="postData.startTime"></b-form-input>
+          <b-form-input type="date" id="start" v-model="postData.startTime"></b-form-input>
         </b-form-group>
 
         <b-form-group
@@ -125,9 +138,58 @@ onMounted(async () => {
       </b-form-group>
     </b-card>
   </div>
-  <b-button block variant="primary" @click="registApproval()">제출</b-button>
+  <div class="btnArea">
+    <b-button class="btn" block variant="primary" @click="registApproval()">제출</b-button>
+  </div>
+  </div>
+  
+  
 </template>
 
 <style scoped>
+.registBTAll {
+  display: grid;
+  grid-template-rows: 18% 50% 5% 27%;
+  grid-template-columns: 10% 80% 10%;
+  height: 100%;
+}
 
+.registBTHeader {
+  grid-column-start: 2;
+  align-content: center;
+  margin-top: 2%;
+}
+
+.registBTContent {
+  grid-column-start: 2;
+  grid-row-start: 2;
+}
+
+.registBTHeader h1 {
+  margin-left: 0.5%;
+  margin: 0;
+  font-size: 25px;
+  font-weight: 600;
+}
+
+.btnArea {
+  grid-column-start: 2;
+  grid-row-start: 3;
+  align-content: center;
+  display: grid;
+  grid-template-columns: 45% 10% 45%;
+}
+
+.btn {
+  grid-column-start: 2;
+  width: 100%;
+  background-color: #088A85;
+  color: white;
+  padding: 5px 5px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  font-style: bold;
+}
 </style>

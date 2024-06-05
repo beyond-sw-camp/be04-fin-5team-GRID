@@ -185,6 +185,13 @@ const registType = async () => {
     if( !registVacationType.value.typeName || !registVacationType.value.vacationNum || !registVacationType.value.dateOfUse || !registVacationType.value.vacationExplain ){
         return;
     }
+
+    const duplicateType = types.value.find(type => type.typeName === registVacationType.value.typeName);
+    if(duplicateType) {
+        alert('이미 등록된 휴가 종류입니다.');
+        return;
+    }
+    
     try {
         const confirmed = window.confirm('등록하시겠습니까?');
         if (confirmed) {
@@ -300,7 +307,6 @@ const getAllVacationType = async () => {
     try {
         const response = await axios.get("/api/vacation/all/type");
         types.value = response.data.result;
-        console.log(response.data.result);
     } catch (error) {
         console.error("Error:", error);
     }
@@ -632,22 +638,22 @@ onMounted(() => {
     font-size:11px;
     font-weight: 600;
     color:white;
-    background-color: #77B0AA;
-    border-color:#77B0AA ;
+    background-color: #088A85;
+    border-color:#088A85 ;
     grid-row-start: 4;
   }
 
   .vacations h3 {
       font-size: 15px;
       font-weight: 600;
-      color:white;
+      color:black;
       margin: 0;
     }
   
     .card-text {
         font-size: 12px;
       font-weight: 600;
-      color:white;
+      color:black;
       margin-bottom: 0;
     }
 
@@ -661,7 +667,7 @@ onMounted(() => {
 
   .card {
     padding: 10px 10px;
-    background-color: #088A85;
+    border: 2px solid #a0a0a0;
   }
 
   .inactive-card {

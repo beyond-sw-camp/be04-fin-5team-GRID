@@ -202,8 +202,9 @@ public class ApprovalChainServiceImpl implements ApprovalChainService{
     public VApprovalChainDTO addVApprovalComment(CommentVO commentVO) {
 
         VApprovalChain vApprovalChain = vApprovalChainRepository.findById(commentVO.getChainId()).orElseThrow();
+        System.out.println(vApprovalChain);
 
-        vApprovalChain.setComment(vApprovalChain.getComment());
+        vApprovalChain.setComment(commentVO.getComment());
 
         vApprovalChainRepository.save(vApprovalChain);
 
@@ -216,10 +217,10 @@ public class ApprovalChainServiceImpl implements ApprovalChainService{
 
         // 이미 approval status가 승인이나 반려 상태인 경우 -> 예외 처리
         // 이미 chain status가 승인이나 반려 상태인 경우 -> 예외 처리
-        ChainDTO btChain = approvalChainService.findBTChainByApprovalAndChainId(chainStatusVO.getChainId(), chainStatusVO.getApprovalId());
+        ChainDTO btChain = approvalChainService.findBTChainByApprovalAndChainId(1, chainStatusVO.getChainId(), chainStatusVO.getApprovalId());
 
         if (btChain.getStage() == 2) {  // 두번째 결재자
-            ChainDTO btChain2 = approvalChainService.findBTChainByApprovalAndChainId(chainStatusVO.getChainId() + 1, chainStatusVO.getApprovalId());
+            ChainDTO btChain2 = approvalChainService.findBTChainByApprovalAndChainId(1, chainStatusVO.getChainId() + 1, chainStatusVO.getApprovalId());
             System.out.println(btChain2);
             if (btChain2.getChainStatus() == ChainStatus.A) {   // 첫번째 결재자가 승인한 경우에만 결재(승인/반려) 가능
                 BTApprovalChain approvalChain = btApprovalChainRepository.findById(btChain.getId()).orElseThrow();
@@ -270,6 +271,7 @@ public class ApprovalChainServiceImpl implements ApprovalChainService{
     }
 
     @Override
+    @Transactional
     public BTApprovalDTO modifyBTApprovalStatus(int btApprovalId, ApprovalStatus approvalStatus) {
 
         BTApproval btApproval = btApprovalRepository.findById(btApprovalId).orElseThrow();
@@ -279,6 +281,7 @@ public class ApprovalChainServiceImpl implements ApprovalChainService{
     }
 
     @Override
+    @Transactional
     public OApprovalChainDTO modifyOChainStatus(ChainStatusVO chainStatusVO) {
 
         // 현재 승인 상태 체크에 사용
@@ -308,6 +311,7 @@ public class ApprovalChainServiceImpl implements ApprovalChainService{
     }
 
     @Override
+    @Transactional
     public RWApprovalChainDTO modifyRWChainStatus(ChainStatusVO chainStatusVO) {
 
         RWApprovalChain approvalChain = rwApprovalChainRepository.findByApprovalId(chainStatusVO.getApprovalId());
@@ -341,6 +345,7 @@ public class ApprovalChainServiceImpl implements ApprovalChainService{
     }
 
     @Override
+    @Transactional
     public VApprovalChainDTO modifyVChainStatus(ChainStatusVO chainStatusVO) {
 
         VApprovalChain approvalChain = vApprovalChainRepository.findByApprovalId(chainStatusVO.getApprovalId());
@@ -354,8 +359,6 @@ public class ApprovalChainServiceImpl implements ApprovalChainService{
         if (gap <= 1) {
             gap = 1;
         }
-
-        System.out.println(gap);
 
         approvalChain.setApprovalStatus(chainStatusVO.getChainStatus());
         approvalChain.setApprovalTime(LocalDateTime.now().format(dateFormat));

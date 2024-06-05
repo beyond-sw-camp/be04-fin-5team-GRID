@@ -34,7 +34,7 @@
         </tbody>
       </table>
     </div>
-    <div class="GoalButtonContainer">
+    <div class="GoalButtonContainer" v-if="!isReadOnly">
       <div class="buttonWrapper">
         <button class="goalBtn1" @click="memberSave()">저장</button>
         <button class="goalBtn1" @click="submit()">상신</button>
@@ -163,14 +163,14 @@ const fetchGoalAdd = async () => {
     console.log(currentTime);
 
     // 올해 생성된 목표 평가가 있는지 확인
-    const responseGoal = await axios.get(`http://localhost:8080/review-goal/${currentYear}/${user.value.id}`);
+    const responseGoal = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/review-goal/${currentYear}/${user.value.id}`);
 
     console.log('목표 조회', responseGoal.data);
     // 생성된 목표 없으면
     if (!responseGoal.data.findGoal) {
 
       // 팀장 조회
-      const leader = await axios.get(`http://localhost:8080/users/${user.value.id}/leaders`);
+      const leader = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/${user.value.id}/leaders`);
 
       const sandData = {
         "year": currentYear,
@@ -182,19 +182,19 @@ const fetchGoalAdd = async () => {
       }
 
       const responseAdd = await axios.post(
-          `http://localhost:8080/review-goal`,
+          `http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/review-goal`,
           sandData
       );
 
       const id = responseAdd.data.goal.id;
-      const response = await axios.get(`http://localhost:8080/review-goal/detail/${id}`);
+      const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/review-goal/detail/${id}`);
       console.log(response.data);
       const goal = response.data.findDetailGoal;
       goalItemList.value = goal.goalItemList;
 
       console.log(goalItemList.value);
       goalDetail.value = {
-        id: goal.id,
+        id: id,
         year: goal.year,
         reviewName: goal.reviewName,
         writerName: goal.writer ? goal.writer.employeeName : '없음',
@@ -207,7 +207,7 @@ const fetchGoalAdd = async () => {
     } else {
       // 생성된 목표가 있을 때
       const id = responseGoal.data.findGoal.id;
-      const response = await axios.get(`http://localhost:8080/review-goal/detail/${id}`);
+      const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/review-goal/detail/${id}`);
       console.log(response.data);
       const goal = response.data.findDetailGoal;
       goalItemList.value = goal.goalItemList;
@@ -297,7 +297,7 @@ async function deleteItem(index) {
       console.log(id);
 
       if (id != null) {
-        await axios.delete(`http://localhost:8080/goal-item/${id}`);
+        await axios.delete(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/goal-item/${id}`);
       }
       goalItemList.value.splice(index, 1);
       // 삭제 후 인덱스 값 업데이트
@@ -321,8 +321,23 @@ async function validateWeightInput(item) {
 
 // 팀원 저장(in-progress)
 async function memberSave() {
-  if (goalDetail.value.status === '작성 중') {
+  if (goalDetail.value.status === '작성 중' || goalDetail.value.status === '반려') {
     if (confirm("목표를 저장하시겠습니까?")) {
+
+      //목표 항목 빈 배열x
+      if(goalItemList.value === null  || goalItemList.value.length === 0){
+        alert('목표 항목을 입력해주세요');
+        return;
+      }
+
+      // 업무명, 목표 입력 확인
+      for (const item of goalItemList.value) {
+        if (!item.jobName || !item.goal) {
+          alert('업무명과 목표는 필수로 작성해주세요');
+          return;
+        }
+      }
+
       console.log(goalItemList.value);
       const sendData = {
         id: goalDetail.value.id,
@@ -339,10 +354,11 @@ async function memberSave() {
 
       try {
         await axios.put(
-            `http://localhost:8080/review-goal/in-progress`,
+            `http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/review-goal/in-progress`,
             sendData
         );
 
+        alert('목표를 저장했습니다.')
         window.location.reload();
       } catch (error) {
         console.error('Error sending data:', error);
@@ -355,18 +371,52 @@ async function memberSave() {
 
 // 팀원 상신(submit)
 async function submit() {
-  if (goalDetail.value.status === '작성 중') {
+  if (goalDetail.value.status === '작성 중' || goalDetail.value.status === '반려') {
     if (confirm("목표를 상신하시겠습니까?")) {
+
+      //목표 항목 빈 배열x
+      if(goalItemList.value === null  || goalItemList.value.length === 0){
+        alert('목표 항목을 입력해주세요');
+        return;
+      }
+
+      // 필수 값이 입력되지 않은 경우
+      for (const item of goalItemList.value) {
+        if (!item.jobName || !item.goal || !item.metric || item.weight === undefined || item.weight === 0
+            || item.weight === null || !item.plan) {
+          alert('상신 시 모든 필수 값을 입력해야 합니다.');
+          return;
+        }
+      }
+
+      // 가중치 100인지 확인
+      let sumWeight = 0;
+      for (const item of goalItemList.value) {
+        sumWeight += item.weight;
+      }
+
+      // 100보다 작을 때
+      if(sumWeight < 100) {
+        alert('가중치의 합계가 100보다 작습니다.');
+        return;
+      }
+
+      // 100보다 작을 때
+      if(sumWeight > 100) {
+        alert('가중치의 합계가 100보다 큽니다.');
+        return;
+      }
+
       const sendData = {
         id: goalDetail.value.id,
         goalItemList: goalItemList.value.map(item => ({
           id: item.id || null,
           jobName: item.jobName,
           goal: item.goal,
-          metric: item.metric || null,
-          weight: item.weight || 0,
-          plan: item.plan || null,
-          objection: item.objection || null
+          metric: item.metric,
+          weight: item.weight,
+          plan: item.plan,
+          objection: null
         }))
       };
 
@@ -374,10 +424,11 @@ async function submit() {
 
       try {
         const response = await axios.put(
-            `http://localhost:8080/review-goal/submit`,
+            `http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/review-goal/submit`,
             sendData
         );
 
+        alert('목표를 상신했습니다.')
         window.location.reload();
       } catch (error) {
         console.error('Error sending data:', error);

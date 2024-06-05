@@ -1,7 +1,7 @@
 <template>
   <div class="adTimeListContainer">
     <div class="adTimeListTitle">
-      <img class="adTimeIcon" src="@/assets/icons/goal_icon.png">
+      <img class="adTimeIcon" src="@/assets/icons/ad-time-icon.png">
       <h1>출퇴근 조회</h1>
     </div>
     <div class="workerContainer" v-if="userRole === 'ROLE_ADMIN'">
@@ -50,12 +50,33 @@
         </tbody>
       </table>
     </div>
-    <div class="pagination">
-      <button @click="prevPage" :disabled="currentPage === 1">Previous</button>
-      <button v-for="page in totalPages" :key="page" @click="goToPage(page)"
-              :class="{ active: page === currentPage }">{{ page }}</button>
-      <button @click="nextPage" :disabled="currentPage === totalPages">Next</button>
-    </div>
+    <nav class="pg" aria-label="Page navigation example">
+      <ul class="pagination">
+        <li class="page-item" :class="{ disabled: currentPage === 1 }">
+          <a class="page-link" href="#" aria-label="First" @click.prevent="goToFirstPage">
+            <span aria-hidden="true">&laquo;&laquo;</span>
+          </a>
+        </li>
+        <li class="page-item" :class="{ disabled: currentPage === 1 }">
+          <a class="page-link" href="#" aria-label="Previous" @click.prevent="prevPage">
+            <span aria-hidden="true">&laquo;</span>
+          </a>
+        </li>
+        <li v-for="page in filteredPages" :key="page" class="page-item" :class="{ active: page === currentPage }">
+          <a class="page-link" @click.prevent="goToPage(page)">{{ page }}</a>
+        </li>
+        <li class="page-item" :class="{ disabled: currentPage === totalPages }">
+          <a class="page-link" aria-label="Next" @click.prevent="nextPage">
+            <span aria-hidden="true">&raquo;</span>
+          </a>
+        </li>
+        <li class="page-item" :class="{ disabled: currentPage === totalPages }">
+          <a class="page-link" href="#" aria-label="Last" @click.prevent="goToLastPage">
+            <span aria-hidden="true">&raquo;&raquo;</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
   </div>
 </template>
 
@@ -109,26 +130,26 @@ function getCurrentDateTimeString() {
 // 관리자용
 const fetchAllAdTime = async () => {
   try {
-    const response = await axios.get('http://localhost:8080/ad-time/all')
+    const response = await axios.get('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/ad-time/all')
     adTimeList.value = response.data.adTimeDTOList;
 
     // 오늘 지각 인원 조회
     const currentTime = getCurrentDateTimeString();
     const today = currentTime.slice(0, 10)
 
-    const responseTodayAd = await axios.get(`http://localhost:8080/ad-time/date/${today}`)
+    const responseTodayAd = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/ad-time/date/${today}`)
     todayList.value = responseTodayAd.data.adTimeDTOList;
 
     const lateAttendanceList = todayList.value.filter(item => item.attendanceStatus === "지각");
     cntLate.value = lateAttendanceList.length;
 
     //오늘 출장 인원 조회
-    const responseTodayBt = await axios.get(`http://localhost:8080/approval/today/bt`)
+    const responseTodayBt = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval/today/bt`)
     cntBt.value = responseTodayBt.data.approvalEmpResultList.length;
 
 
     //오늘 휴가 인원 조회
-    const responseTodayVacation = await axios.get(`http://localhost:8080/approval/today/v`)
+    const responseTodayVacation = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval/today/v`)
     cntVacation.value = responseTodayVacation.data.approvalEmpResultList.length;
 
   } catch (error) {
@@ -139,7 +160,7 @@ const fetchAllAdTime = async () => {
 //직원용
 const fetchEmployeeAdTime = async () => {
   try{
-    const response = await axios.get(`http://localhost:8080/ad-time/${userId.value}`);
+    const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/ad-time/${userId.value}`);
     console.log(response.data.adTimeDTOList);
     adTimeList.value = response.data.adTimeDTOList;
 
@@ -183,6 +204,18 @@ const totalPages = computed(() => {
   return Math.ceil(adTimeList.value.length / itemsPerPage);
 });
 
+const filteredPages = computed(() => {
+  const maxPages = 5; // 페이지당 최대 표시할 페이지 수
+  const startPage = Math.max(1, currentPage.value - Math.floor(maxPages / 2));
+  const endPage = Math.min(totalPages.value, startPage + maxPages - 1);
+
+  const pages = [];
+  for (let i = startPage; i <= endPage; i++) {
+    pages.push(i);
+  }
+  return pages;
+});
+
 const prevPage = () => {
   if (currentPage.value > 1) {
     currentPage.value--;
@@ -197,6 +230,16 @@ const nextPage = () => {
 
 const goToPage = (page) => {
   currentPage.value = page;
+};
+
+// 처음 페이지로 이동
+const goToFirstPage = () => {
+  currentPage.value = 1;
+};
+
+// 마지막 페이지로 이동
+const goToLastPage = () => {
+  currentPage.value = totalPages.value;
 };
 
 </script>
@@ -306,8 +349,9 @@ th {
   //background-color: #f2f2f2;
 }
 
-.pagination {
-  grid-row-start: 6;
+
+.pg {
+  grid-row-start: 4;
   grid-column-start: 2;
   grid-column-end: 3;
   display: flex;
@@ -316,29 +360,17 @@ th {
   margin-top: 10px;
 }
 
-.pagination button {
-  background-color: white;
-  color: black;
-  padding: 5px 10px;
-  border: 1px solid #dddddd;
-  border-radius: 4px;
-  cursor: pointer;
-  margin: 0 5px;
+.pagination .page-item.active .page-link {
+  background-color: #088A85; /* 원하는 배경색 */
+  border-color: #088A85; /* 원하는 테두리 색 */
+  color: white; /* 원하는 텍스트 색 */
 }
 
-.pagination button.active {
-  background-color: darkorange;
-  font-weight: bold;
-  color: white;
+.pagination .page-item .page-link {
+  color: #088A85; /* 기본 텍스트 색 */
 }
 
-.pagination button:disabled {
-  background-color: #dddddd;
-  cursor: not-allowed;
-}
-
-.pagination span {
-  display: flex;
-  align-items: center;
+.pagination .page-item.disabled .page-link {
+  color: #088A85; /* 비활성화된 페이지 색 */
 }
 </style>

@@ -1,7 +1,9 @@
 <template>
   <div class="adTimeAddController">
+    <div class="adList">
+      <button @click="goToAdTimeList()" class="btn btn-primary adBtn">출퇴근</button>
+    </div>
     <div class="adTimeBox">
-      <!--      <div class="todayTitle">{{ today }}</div>-->
       <div class="card-deck adCard">
         <div class="card adCardI" style="width: 18rem;">
           <div class="card-body">
@@ -12,47 +14,16 @@
         </div>
         <div class="card adCardI" style="width: 18rem;">
           <div class="card-body">
-            <h5 class="card-title" v-if="adTime.startTime">{{ adTime.startTime }}</h5>
+            <h5 class="card-title" v-if="adTime.endTime">{{ adTime.endTime }}</h5>
             <h5 class="card-title" v-else>00:00</h5>
             <button @click="addDepartureTime()" class="btn btn-primary adBtn">퇴근</button>
           </div>
         </div>
-
-        <!--        <div class="card arrival">-->
-        <!--          <div class="card-body">-->
-        <!--            <h3 class="card-title" v-if="adTime.startTime">{{ adTime.startTime }}</h3>-->
-        <!--            <h3 class="card-title" v-else>00:00</h3>-->
-        <!--            <a @click="addDepartureTime()" class="btn btn-primary">출근</a>-->
-        <!--          </div>-->
-        <!--        </div>-->
-        <!--        <div class="card ">-->
-        <!--          <div class="card-body">-->
-        <!--            <h3 class="card-title">오늘 출장 인원</h3>-->
-        <!--            <p class="card-text">{{ cntBt ? cntBt : 0 }}</p>-->
-        <!--          </div>-->
-        <!--        </div>-->
-        <!--        <div class="card ">-->
-        <!--          <div class="card-body">-->
-        <!--            <h3 class="card-title">오늘 휴가 인원</h3>-->
-        <!--            <p class="card-text">{{ cntVacation ? cntVacation : 0 }}</p>-->
-        <!--          </div>-->
-        <!--        </div>-->
       </div>
-      <!--      <b-card class="card arrival">-->
-      <!--        <div v-if="adTime.startTime">{{ adTime.startTime }}</div>-->
-      <!--        <div v-else>00:00</div>-->
-      <!--        <button @click="addArrivalTime()">출근</button>-->
-      <!--      </b-card>-->
-      <!--      <b-card class="card departure">-->
-      <!--        <div v-if="adTime.endTime">{{ adTime.endTime }}</div>-->
-      <!--        <div v-else>00:00</div>-->
-      <!--        <button @click="addDepartureTime()">퇴근</button>-->
-      <!--      </b-card>-->
-
     </div>
-    <div class="weekCalender" id="app">
-      <div id="calendar"></div>
-    </div>
+    <!--    <div class="weekCalender" id="app">-->
+    <!--      <div id="calendar"></div>-->
+    <!--    </div>-->
   </div>
 
 
@@ -117,7 +88,7 @@ const fetchAdTime = async () => {
     today.value = currentDate;
 
     console.log(currentDate);
-    const response = await axios.get(`http://localhost:8080/ad-time/${currentDate}/${userId.value}`);
+    const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/ad-time/${currentDate}/${userId.value}`);
     console.log('출근 조회: ', response.data);
     const data = response.data.adTimeDTO;
     console.log(response.data.adTimeDTO);
@@ -182,7 +153,7 @@ const fetchEmployeeEvent = async () => {
 
   try {
     // 출근 조회
-    const responseAdTime = await axios.get(`http://localhost:8080/ad-time/${userId.value}`);
+    const responseAdTime = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/ad-time/${userId.value}`);
 
     const adTime = responseAdTime.data.adTimeDTOList;
     console.log(adTime);
@@ -192,28 +163,28 @@ const fetchEmployeeEvent = async () => {
     console.log(events.value);
     // updateCalendarEvents(events.value);
     // 출장 조회
-    const responseBt = await axios.get(`http://localhost:8080/approval/list/1/1/${userId.value}`);
+    const responseBt = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval/list/1/1/${userId.value}`);
     console.log(responseBt.data);
 
     const bt = responseBt.data.approvalEmpResultList
     const btEvents = transformEvents(bt, '출장', 'red');
 
     // 시간외 근무 조회
-    const responseO = await axios.get(`http://localhost:8080/approval/list/2/1/${userId.value}`);
+    const responseO = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval/list/2/1/${userId.value}`);
     console.log(responseO.data);
 
     const O = responseBt.data.approvalEmpResultList
     const OEvents = transformEvents(O, '시간외 근무', 'blue');
 
     // 단축 근무 조회
-    const responseRw = await axios.get(`http://localhost:8080/approval/list/3/1/${userId.value}`);
+    const responseRw = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval/list/3/1/${userId.value}`);
     console.log(responseRw.data);
 
     const Rw = responseBt.data.approvalEmpResultList
     const RwEvents = transformEvents(Rw, '단축 근무', 'green');
 
     // 휴가 조회
-    const responseV = await axios.get(`http://localhost:8080/approval/list/4/1/${userId.value}`);
+    const responseV = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval/list/4/1/${userId.value}`);
     console.log(responseV.data);
 
     const V = responseBt.data.approvalEmpResultList
@@ -232,7 +203,7 @@ const fetchEmployeeEvent = async () => {
 const fetchAllEvent = async () => {
   try {
     // 출근 조회
-    const responseAdTime = await axios.get(`http://localhost:8080/ad-time/all`);
+    const responseAdTime = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/ad-time/all`);
 
     const adTime = responseAdTime.data.adTimeDTOList;
     console.log(adTime);
@@ -278,12 +249,12 @@ onMounted(async () => {
   if (userRole.value === 'ROLE_ADMIN') {
     // fetchAllAdTime();
     // await fetchAllEvent();
-    initCalendar(events);
+    // initCalendar(events);
   } else if (userRole.value === 'ROLE_USER') {
     console.log('조회');
     fetchAdTime();
-    await fetchEmployeeEvent();
-    initCalendar(events);
+    // await fetchEmployeeEvent();
+    // initCalendar(events);
   }
 
 
@@ -314,7 +285,7 @@ const addArrivalTime = async () => {
     const currentTime = getCurrentDateTimeString();
     console.log(currentTime);
     await axios.post(
-        'http://localhost:8080/ad-time/arrival-time',
+        'http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/ad-time/arrival-time',
         {
           id: null,
           startTime: currentTime,
@@ -322,11 +293,12 @@ const addArrivalTime = async () => {
           employeeId: userId.value   // 로그인한 사람
         })
         .then(response => {
+          alert('출근 시간이 체크 되었습니다.')
           window.location.reload();
           console.log('출근 시간이 기록되었습니다.');
         })
         .catch(error => {
-          alert('출근 시간이 존재합니다')
+          alert('출근 시간을 체크할 수 없습니다.')
           console.error('에러 발생:', error);
         });
   } else {
@@ -340,7 +312,7 @@ const addDepartureTime = async () => {
     const currentTime = getCurrentDateTimeString();
     console.log(currentTime);
     await axios.put(
-        'http://localhost:8080/ad-time/departure-time',
+        'http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/ad-time/departure-time',
         {
           id: null,
           startTime: null,
@@ -348,12 +320,12 @@ const addDepartureTime = async () => {
           employeeId: userId.value   // 로그인한 사람
         })
         .then(response => {
-
+          alert('퇴근 시간이 체크 되었습니다.')
           window.location.reload();
           console.log('퇴근 시간이 기록되었습니다.');
         })
         .catch(error => {
-          alert('퇴근 시간이 존재합니다');
+          alert('퇴근 시간을 체크할 수 없습니다.');
           console.error('에러 발생:', error);
         });
   } else {
@@ -361,18 +333,26 @@ const addDepartureTime = async () => {
   }
 }
 
+const goToAdTimeList = () => {
+  router.push(`/ad-time`);
+};
+
 
 </script>
 
 <style>
 .adTimeAddController {
   display: grid;
-  grid-template-rows: 40% 70%;
+  grid-template-rows: 30% 70%;
   height: 100%;
 }
 
-.adTimeBox {
+.adList {
   grid-row-start: 1;
+}
+
+.adTimeBox {
+  grid-row-start: 2;
   width: 50%;
   align-items: center;
 }
@@ -395,13 +375,13 @@ const addDepartureTime = async () => {
 .weekCalender {
   grid-row-start: 2;
   width: 100%;
-  height: 85%;
+  height: 100%;
 }
 
 #calendar {
   width: 100%;
-  height: 10%;
-  overflow: hidden;
+  height: 100%;
+  overflow: auto;
 }
 
 #calendar .fc-day-today {
@@ -409,7 +389,7 @@ const addDepartureTime = async () => {
 }
 
 #calendar .fc-daygrid-day {
-  height: 80%; /* 날짜 셀의 고정 높이 */
+  height: 100%; /* 날짜 셀의 고정 높이 */
 
 }
 
@@ -421,7 +401,7 @@ const addDepartureTime = async () => {
 #calendar .fc-daygrid-day-events {
   max-height: 100px; /* 날짜 셀의 고정 높이 */
   text-align: left;
-  //overflow: hidden;
+  //overflow: auto;
   text-decoration: none;
 }
 

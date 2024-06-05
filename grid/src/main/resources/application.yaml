@@ -20,8 +20,8 @@ spring:
 application:
   security:
     jwt:
-      secretKey: ENC(f3wKWCQ/OmBLNnU6eprBvXJ4ef1/csgBkQJ7w+oovLurPBPtYJTqR32OSW5mrkiA+1aDHYyKYXgB/54ZDi1H4ea9wNNJlBHIXHQMM3KwOimaMX7OzYjsoCkChl++daFKizqZuFJ9ZCI=)
-      expiration_time: 300000 # 5분
+      secretKey: BQFXy4afcXCxKI7BNo8argHNwP5nh6AiCcSyLnkCs0xZkS8RPImDlK42uE4Mz/DmFEidO0ALl7Lkxs2s9aGwmw==
+      expiration_time: 600000 # 10분
       refresh-token:
         expiration_time: 86400000 #1
   redis:
@@ -31,11 +31,27 @@ application:
 cloud:
   aws:
     credentials:
-      secret-key: ENC(72uIBqAtUh5oQRTdWPpyzkrNa8LJ8cjOHDz/1WZezdeChWKRG4ybe8seo7nArw7lS9CzKAfFe6k=)
-      access-key: ENC(SxEadoBpc86A6fjuzhpmvNSbKNlgksM+mrzmL9kCDqc=)
+      secret-key:
+      access-key:
     region:
-      static: ENC(6EUUAT6aKM4cwjK1i88BRhFrvovaJWOh)
+      static: 
     s3:
-      bucketName: ENC(AxkWVAblj5LXXbz3TDkaGJABO7vNbY98)
+      bucketName:
     stack:
       auto: false
+
+management:
+  endpoint:
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+
+  endpoints:
+    web:
+      exposure:
+        include: health, info, metrics, prometheus
+
+  metrics:
+    tags:
+      application: ${spring.application.name}

@@ -4,19 +4,22 @@
       <div class="logo">
         <img src="@/assets/logo.png" @click="main()" class="logoimage" style="cursor: pointer;">
       </div>
+      
       <div class="icons">
-        <button class="icon-button">
-          <img src="@/assets/icon1.png" alt="Button 1" class="icon-image" />
-        </button>
+        <div class="tokenArea">
+          <span class="token-timer">{{ timeLeft }}</span>
+          <button class="newToken" type="button" @click="addTokenTime()">연장하기</button>
+        </div>
         <button class="icon-button" type="button" data-bs-toggle="offcanvas" data-bs-target="#demo">
-          <img src="@/assets/icon2.png" alt="Button 2" class="icon-image" />
+          <img src="@/assets/people.png" alt="Button 2" class="icon-image" />
         </button>
+        
         <div class="dropdown">
           <img
             :src="profileUrl"
             alt="profile" class="profile" @click="toggleDropdown">
           <ul class="dropdown-menu" ref="dropdownMenu">
-            <li><a class="dropdown-item" href="#" @click="goToProfile">개인 정보</a></li>
+            <li><a class="dropdown-item" href="#" @click="goProfile">개인 정보</a></li>
             <li><a class="dropdown-item" href="#" @click="logout">로그 아웃</a></li>
           </ul>
         </div>
@@ -30,13 +33,13 @@
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
       </div>
       <div class="offcanvas-body" style="position: relative;">
-        <draggable v-model="departments" @end="handleDragEnd" tag="ul" class="list-group" :itemKey="item => item.id">
+        <draggable v-model="departments" @end="handleDragEnd" tag="ul" class="list-group" :itemKey="item => item.id" :disabled="userRole === 'ROLE_USER'">
           <template #item="{ element, index }">
             <li class="list-group-item" :data-id="element.id">
               <div @click="toggleTeams(element.id)" style="cursor: pointer;">
                 {{ element.departmentName }}
               </div>
-              <draggable v-if="element.showTeams" v-model="element.teams" :group="{ name: 'teams', pull: true, put: true }" @end="handleTeamDragEnd($event)" class="list-group" :itemKey="item => item.id">
+              <draggable v-if="element.showTeams" v-model="element.teams" :group="{ name: 'teams', pull: true, put: true }" @end="handleTeamDragEnd($event)" class="list-group" :itemKey="item => item.id" :disabled="userRole === 'ROLE_USER'">
                 <template #item="{ element: team }">
                   <li class="list-group-item">
                     <div @click="toggleEmployees(team.id)" style="cursor: pointer;">
@@ -66,13 +69,17 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import { Dropdown } from 'bootstrap';
 import draggable from 'vuedraggable';
 import { useRouter } from 'vue-router';
-import { useStore} from 'vuex';
+import { useStore } from 'vuex';
 import defaultProfileImage from '@/assets/defaultProfile.jpg';
 
 const departments = ref([]);
 const router = useRouter();
 const store = useStore();
 const dropdownMenu = ref(null);
+const timeLeft = ref('');
+const isTokenChecking = ref(false);
+const userId = ref('');
+const userRole = ref('');
 
 const user = computed(() => store.state.user);
 
@@ -80,10 +87,9 @@ const profileUrl = computed(() => {
   return user.value?.profilePath ? user.value.profilePath : defaultProfileImage;
 });
 
-
 const fetchDepartments = async () => {
   try {
-    const response = await axios.get('http://localhost:8080/department/find-all');
+    const response = await axios.get('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/department/find-all');
     departments.value = response.data.result
       .map(department => ({
         id: department.id,
@@ -104,8 +110,16 @@ const fetchDepartments = async () => {
   }
 };
 
+const goToProfile = async (employeeNumber) => {
+  closeOffCanvas();
+  setTimeout(() => {
+    router.push(`/hr/profile/${employeeNumber}`).then(() => {
+      window.location.reload();
+    });
+  }, 300); // 모달이 닫히는 애니메이션 시간을 고려하여 약간의 지연을 줌
+};
 
-const goToProfile = () => {
+const goProfile = () => {
   if (user.value && user.value.employeeNumber) {
     router.push(`/hr/profile/${user.value.employeeNumber}`);
   }
@@ -113,7 +127,7 @@ const goToProfile = () => {
 
 const fetchTeams = async (departmentId) => {
   try {
-    const response = await axios.get(`http://localhost:8080/team/sub-department/${departmentId}`);
+    const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/team/sub-department/${departmentId}`);
     return response.data.result
       .map(team => ({
         ...team,
@@ -129,7 +143,7 @@ const fetchTeams = async (departmentId) => {
 
 const fetchEmployees = async (teamId) => {
   try {
-    const response = await axios.get(`http://localhost:8080/users/team-list/${teamId}`);
+    const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/team-list/${teamId}`);
     return response.data.result.sort((a, b) => a.sequence - b.sequence);  // sequence 순으로 정렬
   } catch (error) {
     console.error('직원 정보를 가져오는 데 실패했습니다:', error);
@@ -182,7 +196,7 @@ const handleDragEnd = async () => {
     }));
     console.log(updatedDepartments);
 
-    await axios.put('http://localhost:8080/department/list', updatedDepartments, {
+    await axios.put('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/department/list', updatedDepartments, {
       headers: {
         'Content-Type': 'application/json'
       }
@@ -191,7 +205,6 @@ const handleDragEnd = async () => {
     console.error('부서 순서를 업데이트하는 데 실패했습니다:', error);
   }
 };
-
 
 const toggleDropdown = () => {
   if (dropdownMenu.value.style.display === 'block') {
@@ -220,7 +233,7 @@ const handleTeamDragEnd = async (event) => {
     if (team) {
       team.departmentId = newDepartmentId;
       try {
-        await axios.put(`http://localhost:8080/team`, {
+        await axios.put(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/team`, {
           id: team.id,
           teamName: team.teamName,
           teamStatus: team.teamStatus,
@@ -246,19 +259,134 @@ const handleTeamDragEnd = async (event) => {
   }
 };
 
+const addTokenTime = async () => {
+  try {
+      const confirmed = window.confirm('접속시간을 연장하시겠습니까?');
+      if (confirmed) {
+        const response = await axios.post("/api/tokens/re-auth");
+        localStorage.setItem('access', response.data.access); // 새로운 access 토큰 저장
+        alert('접속시간이 연장되었습니다!');
+        window.location.reload();  
+      } 
+    } catch (error) {
+        console.error("Error:", error);
+        alert("토큰 갱신에 실패했습니다.");
+    }
+};
+
+const getNewToken = async () => {
+    try {
+      const confirmed = window.confirm('접속시간을 연장하시겠습니까?');
+      if (confirmed) {
+        const response = await axios.post("/api/tokens/re-auth");
+        localStorage.setItem('access', response.data.access); // 새로운 access 토큰 저장
+        alert('접속시간이 연장되었습니다!');
+        window.location.reload();  
+      } else {
+        alert("접속시간 연장을 취소했습니다. 로그아웃합니다.");
+        await axios.post('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/logout', {}, { withCredentials: true });
+        localStorage.removeItem('access');
+        localStorage.removeItem('email');
+        store.dispatch('resetState');
+        router.push('/');
+      }
+        
+    } catch (error) {
+        console.error("Error:", error);
+        alert("토큰 갱신에 실패했습니다.");
+    }
+};
+
+
+
+function isTokenExpired(token) {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    const exp = payload.exp * 1000; // Expiration time in milliseconds
+    return Date.now() > exp;
+}
+
+function calculateTimeLeft(token) {
+  const payload = JSON.parse(atob(token.split('.')[1]));
+  const exp = payload.exp * 1000; // Expiration time in milliseconds
+  const timeLeft = exp - Date.now();
+  if (timeLeft > 0) {
+    const minutes = Math.floor(timeLeft / 60000);
+    const seconds = Math.floor((timeLeft % 60000) / 1000);
+    return `${minutes}분 ${seconds}초`;
+  }
+  return '토큰이 만료되었습니다.';
+}
+
+function checkToken() {
+    const token = localStorage.getItem('access'); // access 토큰을 저장한 위치에 따라 변경
+    if (token) {
+        timeLeft.value = calculateTimeLeft(token);
+        if (isTokenExpired(token) && !isTokenChecking.value) {
+            isTokenChecking.value = true;
+            getNewToken().finally(() => {
+                isTokenChecking.value = false;
+            });
+        }
+    } else {
+        timeLeft.value = '로그인 해주세요.';
+    }
+}
+
+// 주기적으로 토큰 상태를 확인
+setInterval(checkToken, 100); 
+
+function parseJwt(token) {
+  try {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+    return JSON.parse(jsonPayload);
+  } catch (error) {
+    console.error('Invalid token', error);
+    return null;
+  }
+}
+
+const closeOffCanvas = () => {
+  const offCanvasElement = document.getElementById('demo');
+  const offCanvas = bootstrap.Offcanvas.getInstance(offCanvasElement);
+  if (offCanvas) {
+    offCanvas.hide();
+  }
+  // 강제로 backdrop 제거
+  removeBackdrop();
+};
+
+const removeBackdrop = () => {
+  document.querySelectorAll('.offcanvas-backdrop, .modal-backdrop').forEach(backdrop => backdrop.remove());
+};
+
 onMounted(() => {
+  const token = localStorage.getItem('access');
+  if (token) {
+    const decodedToken = parseJwt(token);
+    userRole.value = decodedToken?.auth || '';
+    userId.value = decodedToken?.id || '';
+  }
   fetchDepartments();
   // Bootstrap 드롭다운 초기화
   const dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'));
   dropdownElementList.map(function (dropdownToggleEl) {
     return new Dropdown(dropdownToggleEl);
   });
+
+  // 오프캔버스가 닫힐 때 backdrop을 제거하는 이벤트 리스너 추가
+  const offCanvasElement = document.getElementById('demo');
+  offCanvasElement.addEventListener('hide.bs.offcanvas', removeBackdrop);
 });
 
 const logout = async () => {
   try {
-    await axios.post('http://localhost:8080/logout', {}, { withCredentials: true });
+    await axios.post('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/logout', {}, { withCredentials: true });
     localStorage.removeItem('access');
+    localStorage.removeItem('email');
     store.dispatch('resetState');
     alert('로그아웃 되었습니다');
     router.push('/');
@@ -271,10 +399,10 @@ function main() {
   router.push('/main');
 }
 
-
-
 onMounted(fetchDepartments);
 </script>
+
+
 
 <style scoped>
 @font-face {
@@ -314,7 +442,7 @@ onMounted(fetchDepartments);
   height: 40px;
   border-radius: 50%;
   cursor: pointer;
-  margin-right: 50px;
+  margin-right: 20px;
   object-fit: cover;
 }
 
@@ -326,11 +454,12 @@ onMounted(fetchDepartments);
   cursor: pointer;
   display: flex;
   align-items: center;
+  margin-right: 20px;
 }
 
 .icon-image {
-  width: 24px;
-  height: 24px;
+  width: 25px;
+  height: 25px;
 }
 
 .list-group-item {
@@ -366,4 +495,23 @@ onMounted(fetchDepartments);
   background-color: #f1f1f1;
 }
 
+.token-timer {
+  color: black;
+  font-weight: 600;
+  margin-right: 10px;
+  margin-left: 10px;
+}
+
+.tokenArea {
+  align-items: center;
+  justify-content: center;
+  margin-right:20px;
+  padding: 5px;
+  border: 1px solid black;
+}
+
+.tokenArea button {
+  background-color: #77B0AA;
+  color: black;
+}
 </style>

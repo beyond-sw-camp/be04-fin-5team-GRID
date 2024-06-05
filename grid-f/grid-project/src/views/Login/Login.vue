@@ -113,7 +113,6 @@ async function Login() {
     return;
   }
 
-
   try {
     const response = await axios.post('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/login', {
       email: inputValue.value,
@@ -121,6 +120,7 @@ async function Login() {
     }, {
       withCredentials: true
     });
+
 
     if (response.status === 200) {
       const token = response.data.access;
@@ -463,4 +463,4 @@ hr {
   color: #002366;
   transform: scale(0.85) translate(8px, -33px);
 }
-</style> 이거 디벨롭도 그대로 아니야?
+</style> 

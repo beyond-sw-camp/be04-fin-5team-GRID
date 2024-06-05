@@ -5,8 +5,9 @@
         <img src="@/assets/department_icon.png" alt="department_icon" class="department-pic">
         <h1>부서 정보</h1>
       </div>
-      <button class="addbtn" @click="showModal('addNewModal')">추가하기</button>
-      <button class="modifybtn" @click="">수정하기</button>
+      <button v-if="userRole === 'ROLE_ADMIN'" class="updateLeaderBtn" @click="showModal('updateLeaderModal')">부서장 수정</button>
+      <button v-if="userRole === 'ROLE_ADMIN'" class="addbtn" @click="showModal('addNewModal')">추가하기</button>
+      <button v-if="userRole === 'ROLE_ADMIN'" class="modifybtn" @click="modifyDepartmentsStatus">활성/비활성</button>
     </div>
     <div class="search">
       <input type="text" class="searchBox" placeholder="부서명 검색" v-model="searchQuery">
@@ -20,20 +21,22 @@
           <th style="width: 20%;">부서명</th>
           <th style="width: 20%;">시작일</th>
           <th style="width: 20%;">종료일</th>
-          <th style="width: 10%;">책임자</th>
+          <th style="width: 10%;">부서장</th>
           <th style="width: 10%;"></th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="(department, index) in paginatedDepartments" :key="department.sequence">
-          <td><input type="checkbox"></td>
+          <td>
+            <input v-if="userRole === 'ROLE_ADMIN'" type="checkbox" @change="toggleDepartmentSelection(department)" :checked="isDepartmentSelected(department)">
+          </td>
           <td>{{ department.departmentCode }}</td>
           <td>{{ department.departmentName }}</td>
           <td>{{ formatDate(department.startTime) }}</td>
           <td>{{ formatDate(department.endTime) }}</td>
           <td>{{ department.leaderName }}</td>
           <td>
-            <button class="view-details-btn" @click="goToDepartmentTeams(department.id)">자세히 보기</button>
+            <button class="view-details-btn" @click="goToDepartmentTeams(department.id)">소속팀 목록</button>
           </td>
         </tr>
       </tbody>
@@ -61,9 +64,9 @@
                 <input type="text" class="form-control" id="departmentCode" v-model="newDepartment.departmentCode" required>
               </div>
               <div class="mb-3">
-                <label for="leaderName" class="form-label">책임자</label>
+                <label for="leaderName" class="form-label">부서장</label>
                 <div class="input-group">
-                  <input type="text" class="form-control" id="leaderName" v-model="newDepartment.leaderName" readonly>
+                  <input type="text" class="form-control" id="leaderName" v-model="newDepartment.leaderName" readonly required>
                   <button type="button" class="btn btn-secondary" @click="showModal('selectLeaderModal')">조회</button>
                 </div>
               </div>
@@ -74,20 +77,20 @@
       </div>
     </div>
 
-    <!-- 책임자 선택 모달 -->
+    <!-- 부서장 선택 모달 -->
     <div class="modal fade" id="selectLeaderModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">책임자 선택</h5>
+            <h5 class="modal-title" id="exampleModalLabel">부서장 선택</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
             <table>
               <thead>
                 <tr>
-                  <th>책임자 사원번호</th>
-                  <th>책임자 이름</th>
+                  <th>사원번호</th>
+                  <th>이름</th>
                   <th>선택</th>
                 </tr>
               </thead>
@@ -96,6 +99,62 @@
                   <td>{{ leader.employeeNumber }}</td>
                   <td>{{ leader.name }}</td>
                   <td><button type="button" class="btn btn-primary" @click="selectLeader(leader)">선택</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" id="updateLeaderModal" tabindex="-1" aria-labelledby="updateLeaderModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="updateLeaderModalLabel">부서장 수정</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form @submit.prevent="updateLeader">
+              <div class="mb-3">
+                <label for="selectDepartment" class="form-label">부서 선택</label>
+                <select class="form-select" v-model="selectedDepartmentId" id="selectDepartment" required>
+                  <option v-for="department in departments" :key="department.id" :value="department.id">{{ department.departmentName }}</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="leaderName" class="form-label">부서장 명</label>
+                <div class="input-group">
+                  <input type="text" class="form-control" id="newLeaderName" v-model="newLeaderName" readonly>
+                  <button type="button" class="btn btn-secondary" @click="showModal('selectLeaderModalForUpdate')">조회</button>
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary">수정</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 부서장 선택 Modal for Update -->
+    <div class="modal fade" id="selectLeaderModalForUpdate" tabindex="-1" aria-labelledby="selectLeaderModalForUpdateLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="selectLeaderModalForUpdateLabel">부서장 선택</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>부서장 명</th>
+                  <th>선택</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="leader in leaders" :key="leader.id">
+                  <td>{{ leader.name }}</td>
+                  <td><button type="button" class="btn btn-primary" @click="selectLeaderForUpdate(leader)">선택</button></td>
                 </tr>
               </tbody>
             </table>
@@ -117,6 +176,12 @@ const leaders = ref([]);
 const currentPage = ref(1);
 const itemsPerPage = 10;
 const searchQuery = ref('');
+const selectedDepartments = ref([]);
+const userId = ref('');
+const userRole = ref('');
+const selectedDepartmentId = ref(null);
+const newLeaderName = ref('');
+const newLeaderId = ref(null);
 
 const newDepartment = ref({
   departmentName: '',
@@ -129,22 +194,23 @@ const newDepartment = ref({
 
 const fetchLeaders = async () => {
   try {
-    const response = await axios.get(`http://localhost:8080/users/list`);
+    const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/list/all`);
     leaders.value = response.data.result;
   } catch (error) {
-    console.error('책임자 정보를 불러오는 중 에러 발생:', error);
+    console.error('직원 정보를 불러오는 중 에러 발생:', error);
   }
 };
 
 // Fetch department list
 const fetchDepartments = async () => {
   try {
-    const response = await axios.get('http://localhost:8080/department/find-all');
+    const response = await axios.get('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/department/find-all');
     const departmentsData = response.data.result;
     for (const department of departmentsData) {
       department.leaderName = await fetchLeaderName(department.leaderId);
     }
     departments.value = departmentsData.sort((a, b) => a.sequence - b.sequence); // sequence 순으로 정렬
+    search(); 
   } catch (error) {
     console.error('에러 발생:', error);
   }
@@ -153,26 +219,67 @@ const fetchDepartments = async () => {
 // Fetch leader name by ID
 const fetchLeaderName = async (leaderId) => {
   try {
-    const response = await axios.get(`http://localhost:8080/users/${leaderId}/leaders`);
-    return response.data.result.depLeaderName;
+    const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/id/${leaderId}`);
+    return response.data.result.name;
   } catch (error) {
-    console.error('책임자 이름을 불러오는 중 에러 발생:', error);
+    console.error('부서장 이름을 불러오는 중 에러 발생:', error);
     return 'Unknown';
   }
 };
 
-onMounted(() => {
-  fetchDepartments();
-  fetchLeaders();
+function parseJwt(token) {
+    try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        return JSON.parse(jsonPayload);
+    } catch (error) {
+        console.error('Invalid token', error);
+        return null;
+    }
+}
+
+onMounted(async () => {
+  const token = localStorage.getItem('access');
+  if (token) {
+    const decodedToken = parseJwt(token);
+    userRole.value = decodedToken?.auth || '';
+    userId.value = decodedToken?.id || '';
+  }
+  await fetchDepartments();
+  await fetchLeaders();
+  search(); // 초기 데이터 로드 후 필터링 적용
 });
 
+const filteredDepartments = ref([]);
+
+const search = () => {
+  // 검색어에 맞는 부서 필터링
+  let departmentsFiltered = departments.value.filter(department =>
+    department.departmentName.includes(searchQuery.value)
+  );
+
+  // 부서 상태와 사용자 권한에 따른 필터링 추가
+  filteredDepartments.value = departmentsFiltered.filter(department => {
+    // 부서 상태가 'N'인 경우 ROLE_ADMIN만 접근 가능
+    if (department.departmentStatus === 'N') {
+      return userRole.value === 'ROLE_ADMIN';
+    }
+    return true; // 다른 경우는 모두 접근 가능
+  });
+
+  currentPage.value = 1;
+};
+
 const totalPages = computed(() => {
-  return Math.ceil(departments.value.length / itemsPerPage);
+  return Math.ceil(filteredDepartments.value.length / itemsPerPage);
 });
 
 const paginatedDepartments = computed(() => {
   const start = (currentPage.value - 1) * itemsPerPage;
-  return departments.value.slice(start, start + itemsPerPage);
+  return filteredDepartments.value.slice(start, start + itemsPerPage);
 });
 
 const changePage = (page) => {
@@ -192,9 +299,38 @@ const showModal = (modalId) => {
   modal.show();
 };
 
+// Computed property to get list of leader IDs already assigned as department leaders
+const leaderIdsInDepartments = computed(() => {
+  return departments.value.map(department => department.leaderId);
+});
+
 const addNewDepartment = async () => {
+  if (!newDepartment.value.leaderId) {
+    alert('부서장을 선택해야 합니다.');
+    return;
+  }
+
+  if (leaderIdsInDepartments.value.includes(newDepartment.value.leaderId)) {
+    alert('이미 다른 부서의 부서장으로 등록된 사람입니다.');
+    return;
+  }
+
+  // 부서명과 부서코드 중복 확인
+  const isDepartmentNameDuplicate = departments.value.some(dept => dept.departmentName === newDepartment.value.departmentName);
+  const isDepartmentCodeDuplicate = departments.value.some(dept => dept.departmentCode === newDepartment.value.departmentCode);
+
+  if (isDepartmentNameDuplicate) {
+    alert('부서명이 중복됩니다.');
+    return;
+  }
+
+  if (isDepartmentCodeDuplicate) {
+    alert('부서코드가 중복됩니다.');
+    return;
+  }
+
   try {
-    await axios.post('http://localhost:8080/department', newDepartment.value);
+    await axios.post('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/department', newDepartment.value);
     await fetchDepartments();
     const modal = bootstrap.Modal.getInstance(document.getElementById('addNewModal'));
     modal.hide();
@@ -206,24 +342,115 @@ const addNewDepartment = async () => {
       leaderId: '',
       leaderName: ''
     };
-  } catch (error) {
-    console.error('에러 발생:', error);
+    alert("추가되었습니다.");
+  } catch (error) { 
+      if (error.response && error.response.data) {
+        alert(error.response.data.message);
+      } else {
+      alert('부서 등록 중 오류가 발생했습니다.');
+    }
   }
 };
 
 const selectLeader = (leader) => {
+  if (leaderIdsInDepartments.value.includes(leader.id)) {
+    alert('이미 다른 부서의 부서장으로 등록된 사람입니다.');
+    return;
+  }
   newDepartment.value.leaderId = leader.id;
   newDepartment.value.leaderName = leader.name;
   const modal = bootstrap.Modal.getInstance(document.getElementById('selectLeaderModal'));
   modal.hide();
 };
 
-const search = () => {
-  currentPage.value = 1;
+const selectLeaderForUpdate = (leader) => {
+  if (leaderIdsInDepartments.value.includes(leader.id)) {
+    alert('이미 다른 부서의 부서장으로 등록된 사람입니다.');
+    return;
+  }
+  newLeaderId.value = leader.id;
+  newLeaderName.value = leader.name;
+  const modal = bootstrap.Modal.getInstance(document.getElementById('selectLeaderModalForUpdate'));
+  modal.hide();
 };
 
 const goToDepartmentTeams = (id) => {
   window.location.href = `/team/${id}`;
+};
+
+const modifyDepartmentsStatus = async () => {
+  if (selectedDepartments.value.length === 0) {
+    alert('수정할 부서를 선택하세요.');
+    return;
+  }
+
+  try {
+    const response = await axios.put('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/department/status', selectedDepartments.value);
+    if (response.status === 200) {
+      alert('수정되었습니다.');
+      await fetchDepartments();
+      selectedDepartments.value = [];
+      clearSelection();
+    }
+  } catch (error) {
+    console.error('부서 상태를 수정하는 중 에러 발생:', error);
+    alert('부서 상태 수정 중 에러가 발생했습니다.');
+  }
+};
+
+const toggleDepartmentSelection = (department) => {
+  if (selectedDepartments.value.length >= 1 && !isDepartmentSelected(department)) {
+    alert('한 개의 부서만 선택할 수 있습니다.');
+    return;
+  }
+
+  const index = selectedDepartments.value.findIndex(d => d.id === department.id);
+  if (index > -1) {
+    selectedDepartments.value.splice(index, 1);
+  } else {
+    selectedDepartments.value.push(department);
+  }
+};
+
+const isDepartmentSelected = (department) => {
+  return selectedDepartments.value.some(d => d.id === department.id);
+};
+
+const clearSelection = () => {
+  const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+  checkboxes.forEach(checkbox => {
+    checkbox.checked = false;
+  });
+};
+
+const updateLeader = async () => {
+  if (!selectedDepartmentId.value || !newLeaderId.value) {
+    alert('부서와 부서장을 선택해야 합니다.');
+    return;
+  }
+
+  try {
+    const response = await axios.put('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/department/department-leader', {
+      id: selectedDepartmentId.value,
+      leaderId: newLeaderId.value
+    });
+
+    if (response.status === 200) {
+      alert('부서장이 수정되었습니다.');
+      await fetchDepartments();
+      const modal = bootstrap.Modal.getInstance(document.getElementById('updateLeaderModal'));
+      modal.hide();
+      selectedDepartmentId.value = null;
+      newLeaderName.value = '';
+      newLeaderId.value = null;
+    }
+  } catch (error){ 
+      if (error.response && error.response.data) {
+        alert(error.response.data.message);
+      } else {
+      alert('부서장 수정 중 오류가 발생했습니다.');
+    }
+  }
 };
 </script>
 
@@ -252,26 +479,26 @@ const goToDepartmentTeams = (id) => {
 }
 
 .searchBox {
-    grid-column-start: 4;
-    margin-left: 2%;
-    padding: 5px 5px;
-    border-radius: 4px;
-    font-size: 12px;
-    font-style: bold;
+  grid-column-start: 4;
+  margin-left: 2%;
+  padding: 5px 5px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-style: bold;
 }
 
 .searchBtn {
-    grid-column-start: 6;
-    margin-left: 2%;
-    width: 100%;
-    background-color: #088A85;
-    color: white;
-    padding: 5px 5px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 12px;
-    font-style: bold;
+  grid-column-start: 6;
+  margin-left: 2%;
+  width: 100%;
+  background-color: #088A85;
+  color: white;
+  padding: 5px 5px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  font-style: bold;
 }
 
 .deptTable {
@@ -282,13 +509,13 @@ const goToDepartmentTeams = (id) => {
 .header {
   grid-column-start: 2;
   display: grid;
-  grid-template-columns: 90% 4.5% 1% 4.5%;
+  grid-template-columns: 84.5% 4.5% 1% 4.5% 1% 4.5%;
   align-items: center;
 }
 
 .header-title {
   align-items: center;
-  display: grid; 
+  display: grid;
   grid-template-columns: 3% 97%;
 }
 
@@ -307,11 +534,11 @@ const goToDepartmentTeams = (id) => {
   border-radius: 4px;
   font-size: 11px;
   cursor: pointer;
-  grid-column-start: 2;
+  grid-column-start: 4;
 }
 
 .modifybtn {
-  grid-column-start: 4;
+  grid-column-start: 6;
   padding: 5px 5px;
   background-color: #088A85;
   border: none;
@@ -319,6 +546,17 @@ const goToDepartmentTeams = (id) => {
   border-radius: 4px;
   font-size: 11px;
   cursor: pointer;
+}
+
+.updateLeaderBtn {
+  padding: 5px 5px;
+  background-color: #088A85;
+  border: none;
+  color: white;
+  border-radius: 4px;
+  font-size: 11px;
+  cursor: pointer;
+  grid-column-start: 2;
 }
 
 .search-bar {
@@ -343,7 +581,8 @@ table {
   table-layout: fixed;
 }
 
-th, td {
+th,
+td {
   padding: 6px;
   text-align: left;
   border-bottom: 1px solid #ddd;

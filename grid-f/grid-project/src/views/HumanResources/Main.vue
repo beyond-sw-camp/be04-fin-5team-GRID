@@ -229,14 +229,13 @@ button {
 .hr-main {
     display: grid;
     grid-template-columns: 10% 80% 10%;
-    grid-template-rows: 18% 4% 80% 5%;
+    grid-template-rows: 18% 4% 68% 5% 10%;
     height: 100%;
 }
 
 .hr-title {
     grid-column-start: 2;
     grid-column-end: 3;
-
     font-weight: 600;
     margin-top: 2%;
     color: #000000;
@@ -246,14 +245,15 @@ button {
 }
 
 .hr-title h1 {
-    margin-left: 1.2%;
-    font-weight: bold;
-    font-size: 14pt;
+    margin-left: 0.5%;
+    margin-bottom: 0;
+    font-size: 25px;
+    font-weight: 600;
 }
 
 .hr-icon {
     color: black;
-    width: 110%;
+    width: 80%;
     filter: invert(0%) sepia(97%) saturate(0%) hue-rotate(82deg) brightness(98%) contrast(100%) !important;
 }
 
@@ -376,6 +376,7 @@ button {
     margin-top: 20px;
     font-size: 10px;
     overflow: auto; 
+    cursor: pointer;
 }
 
 .tableContainer::-webkit-scrollbar {

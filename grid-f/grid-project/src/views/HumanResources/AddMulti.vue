@@ -173,8 +173,6 @@
     <div class="modal fade" id="guideModal" tabindex="-1" aria-labelledby="guideModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                php
-                코드 복사
                 <!-- Modal Header -->
                 <div class="modal-header">
                     <h4 class="modal-title" id="guideModalLabel">CSV 작성 가이드</h4>

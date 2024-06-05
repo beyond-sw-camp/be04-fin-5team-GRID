@@ -1,3 +1,53 @@
+<template>
+  <div class="allWork">
+    <div class="allWorkTitle">
+      <h1><i class="bi bi-list-check"></i>&nbsp; 근무 목록</h1>
+    </div>
+        <div class="cards">
+          <div v-if="isLoading">로딩 중</div>
+          <div v-else>
+            <div v-if="userRole !== 'ROLE_ADMIN'">
+              <div v-if="state.rwApprovalList.length > 0">
+                <div class="text-center mb-4"> <!-- 가운데 정렬 스타일 -->
+                  <h5 class="text-primary fw-bolder"> <!-- 타이틀 스타일 -->
+                    <span><i class="bi bi-heart-pulse"></i>&nbsp; 단축 근무 기간 &nbsp;</span>
+                    <span class="text-secondary">( {{ state.startTime }} ~ {{ state.endTime }} )</span>
+                  </h5>
+                </div>
+              </div>
+              <b-card class="cardTitle shadow">
+                <h1>출장</h1>
+                <div class="text-end">
+                  <h6 class="text-muted" style="margin-bottom: 10px; margin-top: -30px;" @click="navigateTo('/bt')">상세 <i class="bi bi-chevron-right"></i></h6>
+                </div>
+                <br>
+                <ApprovalList :approvalList="state.btApprovalList" :short="1"/>
+              </b-card>
+              <b-card class="cardTitle shadow">
+                <h1>시간 외 근무</h1>
+                <div class="text-end">
+                  <h6 class="text-muted" style="margin-bottom: 10px; margin-top: -30px;" @click="navigateTo('/overtime')">상세 <i class="bi bi-chevron-right"></i></h6>
+                </div>
+                <br>
+                <ApprovalList :approvalList="state.oApprovalList" :short="1"/>
+              </b-card>
+            </div>
+            <!-- 관리자 -->
+            <div v-else>
+              <b-card class="cardTitle shadow">
+                <h1>단축 근무</h1>
+                <div class="text-end">
+                  <h6 class="text-muted" style="margin-bottom: 10px; margin-top: -30px;" @click="navigateTo('/rw')">상세 <i class="bi bi-chevron-right"></i></h6>
+                </div>
+                <br>
+                <ApprovalList :approvalList="state.rwApprovalList" :short="1"/>
+              </b-card>
+            </div>
+        </div>
+    </div>
+  </div>
+</template>
+
 <script setup>
   import {onMounted, reactive, ref} from "vue";
   import {useRouter} from "vue-router";
@@ -16,7 +66,10 @@
     approvalList: [],
     btApprovalList: [],
     oApprovalList: [],
-    rwApprovalList: []
+    rwApprovalList: [],
+
+    startTime: '',
+    endTime: ''
   });
 
   const navigateTo = (path) => {
@@ -46,10 +99,10 @@
   const fetchApprovalList = async(typeId, approvalStatus, employeeId) => {
 
     try {
-      let url = `http://localhost:8080/approval/all/${typeId}/${approvalStatus}`;
+      let url = `http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval/all/${typeId}/${approvalStatus}`;
 
       if (userRole.value !== 'ROLE_ADMIN') {
-        url = `http://localhost:8080/approval/list/${typeId}/${approvalStatus}/${employeeId}`;
+        url = `http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval/list/${typeId}/${approvalStatus}/${employeeId}`;
       }
 
       const response = await axios.get(url);
@@ -102,41 +155,61 @@
     await fetchApprovalList(2,5,  userId.value);
     await fetchApprovalList(3,5,  userId.value);
 
-    isLoading.value = false;
+    if (state.approvalList.length > 0) {
+      state.length = state.approvalList.length - 1;
+      state.startTime = state.approvalList[state.length]['startTime'];
+      state.endTime = state.approvalList[state.length]['endTime'];
+    }
 
-    console.log(userRole.value)
+    isLoading.value = false;
   })
 </script>
-<template>
-  <div><h3 class="fw-bolder mb-5"><i class="bi bi-list-check"></i>&nbsp; 근무 목록</h3></div>
-  <div v-if="isLoading">로딩 중</div>
-  <div v-else>
-    <b-card title="출장" class="shadow mt-3 mb-3">
-      <div class="text-end">
-        <h6 class="text-muted" style="margin-bottom: 10px; margin-top: -30px;" @click="navigateTo('/bt')">상세 <i class="bi bi-chevron-right"></i></h6>
-      </div>
-      <br>
-      <ApprovalList :approvalList="state.btApprovalList" :short="1"/>
-    </b-card>
-    <b-card title="시간 외 근무" class="shadow mt-3 mb-3">
-      <div class="text-end">
-        <h6 class="text-muted" style="margin-bottom: 10px; margin-top: -30px;" @click="navigateTo('/overtime')">상세 <i class="bi bi-chevron-right"></i></h6>
-      </div>
-      <br>
-      <ApprovalList :approvalList="state.oApprovalList" :short="1"/>
-    </b-card>
-    <!-- 관리자 -->
-    <div v-if="userRole === 'ROLE_ADMIN'">
-      <b-card title="단축 근무" class="shadow mt-3 mb-3">
-        <div class="text-end">
-          <h6 class="text-muted" style="margin-bottom: 10px; margin-top: -30px;" @click="navigateTo('/rw')">상세 <i class="bi bi-chevron-right"></i></h6>
-        </div>
-        <br>
-        <ApprovalList :approvalList="state.rwApprovalList" :short="1"/>
-      </b-card>
-    </div>
-  </div>
-</template>
-<style scoped>
 
+<style scoped>
+.allWork {
+  display: grid;
+  grid-template-rows: 18% 74% 8%;
+  grid-template-columns: 10% 80% 10%;
+  height: 100%;
+}
+
+.allWorkTitle {
+  grid-column-start: 2;
+  align-content: center;
+  margin-top: 2%;
+}
+
+.cards {
+  grid-column-start: 2;
+  grid-row-start: 2;
+}
+
+.allWorkTitle h1 {
+  margin-left: 0.5%;
+  margin: 0;
+  font-size: 25px;
+  font-weight: 600;
+}
+
+.cardTitle{
+  font-size: 12px;
+  margin-bottom: 3%;
+  font-weight: 300;
+}
+
+.card-title {
+  font-size:10px;
+}
+
+.cardTitle h1 {
+  margin-left: 0.5%;
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.cardTitle h6 {
+  font-size: 12px;
+  font-weight: 300;
+}
 </style>

@@ -36,7 +36,7 @@
         </tbody>
       </table>
     </div>
-    <div class="GoalButtonContainer">
+    <div class="GoalButtonContainer" v-if="!isReadOnly">
       <div class="buttonWrapper">
         <button class="performanceBtn" @click="memberSave()">저장</button>
         <button class="performanceBtn" @click="submit()">상신</button>
@@ -174,19 +174,31 @@ function getCurrentDateTimeString() {
 
 const fetchReviewAdd = async () => {
   try {
-    // 연말 평가 기간이 아니라면 작성x 추가 필요
     // 올해 생성된 연말 평가가 있으면 조회 아니라면 새로 생성
 
     const currentYear = new Date().getFullYear();   // 올해 년도
     const currentTime = getCurrentDateTimeString()  // 현재 시간
 
-    const responseReview = await axios.get(`http://localhost:8080/performance-review/final/${currentYear}/${user.value.id}`)
+    const responseReview = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/performance-review/final/${currentYear}/${user.value.id}`);
 
+    const responseGoal = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/review-goal/${currentYear}/${user.value.id}`);
+
+    // 승인된 목표만 생성 가능
+    if(!responseGoal || responseGoal.data.findGoal.approvalStatus !== 'A'){
+      throw new Error('평가 목표가 승인되지 않았습니다.');
+    }
+
+    const responseMid = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/performance-review/mid/${currentYear}/${user.value.id}`)
+
+    // 승인된 중간 평가가 없으면 예외
+    if(!responseMid || responseMid.data.findReview.approvalStatus !== 'V') {
+      throw new Error('중간 평가가 확정되지 않았습니다.');
+    }
 
     console.log(responseReview);
 
     if (!responseReview.data.findReview) {
-      // 생성된 중간 평가 없을 때
+      // 생성된 연말 평가 없을 때
       const sendData = {
         type: "F",
         year: currentYear,
@@ -195,12 +207,12 @@ const fetchReviewAdd = async () => {
       }
 
       const responseAdd = await axios.post(
-          `http://localhost:8080/performance-review`,
+          `http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/performance-review`,
           sendData
       );
 
       const id = responseAdd.data.performanceReview.id
-      const response = await axios.get(`http://localhost:8080/performance-review/detail/${id}`);
+      const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/performance-review/detail/${id}`);
 
       const review = response.data.findDetailReview;
       reviewItemList.value = review.reviewItemList;
@@ -219,7 +231,7 @@ const fetchReviewAdd = async () => {
     } else {
       // 생성된 평가 있을 때
       const id = responseReview.data.findReview.id
-      const response = await axios.get(`http://localhost:8080/performance-review/detail/${id}`);
+      const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/performance-review/detail/${id}`);
 
       const review = response.data.findDetailReview;
       reviewItemList.value = review.reviewItemList;
@@ -237,9 +249,10 @@ const fetchReviewAdd = async () => {
       };
     }
 
-    // 팀원일 때 작성중 상태만 수정 가능
   } catch (error) {
     console.error('에러 발생:', error);
+    alert('평가를 생성할 수 없습니다.')
+    router.push(`/performance-review`);
   }
 };
 
@@ -253,9 +266,9 @@ const getApprovalStatus = (status) => {
     case 'R':
       return '확인 중';
     case 'C':
-      return '확인 완료';
+      return '확인';
     case 'V':
-      return '확정 완료';
+      return '확정';
     default:
       return '기타';
   }
@@ -307,6 +320,7 @@ const updateSelfScore = (item) => {
 async function memberSave() {
   if (reviewDetail.value.status === '작성 중') {
     if (confirm("평가를 저장하시겠습니까?")) {
+
       const sendData = {
         reviewId: reviewDetail.value.id,
         performanceReviewItemList: reviewItemList.value.map(item => ({
@@ -328,12 +342,14 @@ async function memberSave() {
       console.log(sendData);
       try {
         await axios.put(
-            `http://localhost:8080/performance-review/in-progress`,
+            `http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/performance-review/in-progress`,
             sendData
         );
-        // window.location.reload();
+        alert('평가를 저장했습니다.')
+        window.location.reload();
       } catch (error) {
         console.error('Error sending data:', error);
+        alert('평가를 저장할 수 없습니다.')
       }
     }
   } else {
@@ -345,6 +361,17 @@ async function memberSave() {
 async function submit() {
   if (reviewDetail.value.status === '작성 중') {
     if (confirm("평가를 상신하시겠습니까?")) {
+
+      // 필수 값이 입력되지 않은 경우
+      for (const item of reviewItemList.value) {
+        if (!item.goal || !item.actionItem || !item.metric || item.weight === undefined || item.weight === 0
+            || item.weight === null || !item.detailPlan || !item.performance || !item.selfComment
+            || !item.selfId || !item.selfScore) {
+          alert('상신 시 모든 필수 값을 입력해야 합니다.');
+          return;
+        }
+      }
+
       const sendData = {
         reviewId: reviewDetail.value.id,
         performanceReviewItemList: reviewItemList.value.map(item => ({
@@ -352,7 +379,7 @@ async function submit() {
           goal: item.goal,
           actionItem: item.actionItem,
           metric: item.metric,
-          detailPlan: item.detail,
+          detailPlan: item.detailPlan,
           weight: item.weight,
           performance: item.performance,
           selfId: item.selfId,
@@ -366,12 +393,15 @@ async function submit() {
       console.log(sendData);
       try {
         await axios.put(
-            `http://localhost:8080/performance-review/submit`,
+            `http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/performance-review/submit`,
             sendData
         );
+
+        alert('평가를 상신했습니다.')
         window.location.reload();
       } catch (error) {
         console.error('Error sending data:', error);
+        alert('평가를 상신할 수 없습니다.')
       }
     }
   } else {

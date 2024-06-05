@@ -22,6 +22,8 @@ public class ResApprovalVO {
 
     private String href;
 
+    private boolean success;
+
     private BTApprovalDTO btResult;
 
     private OvertimeApprovalDTO overtimeResult;

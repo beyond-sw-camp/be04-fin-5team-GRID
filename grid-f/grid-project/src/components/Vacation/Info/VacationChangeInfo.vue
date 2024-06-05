@@ -64,7 +64,7 @@
                 </template>
             </b-table>
         </div>
-        <nav class="pg" aria-label="Page navigation example" v-if="totalPages > 1">
+        <nav class="pg" aria-label="Page navigation example">
             <ul class="pagination">
                 <li class="page-item" :class="{ disabled: currentPage === 1 }">
                     <a class="page-link" href="#" aria-label="First" @click.prevent="goToFirstPage">
@@ -130,7 +130,10 @@
                     </div>
                     <div class="mb-3">
                         <label for="dayOfUsing" class="form-label">휴가 사용기한</label>
-                        <VueDatePicker locale="ko" :enable-time-picker="false" :min-date="new Date()" v-model="date" class="inputField" />
+                        <b-form-input type="date" id="start" :min="new Date().toISOString().split('T')[0]" v-model="date" required></b-form-input>
+                        <div class="invalid-feedback">
+                            휴가 사용기한을 입력해주세요.
+                        </div>    
                     </div>
                     <div class="button-container">
                         <button type="submit" class="btn btn-primary">지급</button>
@@ -496,15 +499,6 @@ onBeforeMount(() => {
         margin-bottom: 5%;
     }
 
-    .vacationsTitle {
-        margin-left: 5%;
-        display: grid;
-        grid-template-columns: 85% 10% 5%;
-        align-items: center;
-        font-size: 12px;
-        height: 10vh;
-    }
-
     .plusBtn {
         width: 100%;
         cursor: pointer;
@@ -686,15 +680,15 @@ onBeforeMount(() => {
     font-size:11px;
     font-weight: 600;
     color:white;
-    background-color: #77B0AA;
-    border-color:#77B0AA ;
+    background-color: #088A85;
+    border-color:#088A85 ;
     margin-top: 10px;
   }
 
   .vacations h3 {
       font-size: 14px;
       font-weight: 600;
-      color:white;
+      color:black;
       margin: 0;
     }
 
@@ -708,7 +702,7 @@ onBeforeMount(() => {
 
   .card {
     padding: 10px 10px;
-    background-color: #088A85;
+    border: 2px solid #a0a0a0;
   }
 
   .button-container {

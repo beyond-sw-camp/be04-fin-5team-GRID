@@ -36,9 +36,9 @@
         B.REVIEW_ID,
         B.SCORE
         FROM
-        MEMBER_REVIEW_HISTORY A
+        member_review_history A
         JOIN
-        MEMBER_REVIEW B ON A.ID = B.HISTORY_ID
+        member_review B ON A.ID = B.HISTORY_ID
         WHERE A.ID = #{historyId}
         AND A.REVIEWEE_ID = #{revieweeId}
     </select>
@@ -65,7 +65,7 @@
         A.REVIEWER_ID,
         A.REVIEWEE_ID
         FROM
-        MEMBER_REVIEW_HISTORY A
+        member_review_history A
         WHERE A.REVIEWER_ID = #{reviewerId}
     </select>
 
@@ -79,7 +79,7 @@
         A.REVIEWER_ID,
         A.REVIEWEE_ID
         FROM
-        MEMBER_REVIEW_HISTORY A
+        member_review_history A
     </select>
 
     <select id="findMyReviewHistory" resultMap="ReviewHistoryResultMap" parameterType="int">
@@ -87,12 +87,13 @@
         A.ID AS HISTORY_ID,
         A.CONTENT,
         A.WRITE_TIME ,
+        A.REVIEW_STATUS,
         A.YEAR,
         A.QUARTER,
         A.REVIEWER_ID,
         A.REVIEWEE_ID
         FROM
-        MEMBER_REVIEW_HISTORY A
+        member_review_history A
         WHERE A.REVIEWEE_ID = #{revieweeId}
     </select>
 
@@ -106,7 +107,7 @@
          A.ID
         ,A.LIST_NAME
          FROM
-         MEMBER_REVIEW_LIST A
+        member_review_list A
          WHERE A.ID = #{reviewId}
     </select>
 

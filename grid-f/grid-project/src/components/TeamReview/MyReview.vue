@@ -1,15 +1,13 @@
 <template>
   <div class="container">
-    <div class="header">
-      <div class="header-title">
-        <img class="reviewIcon" src="@/assets/list-check.png" alt="list-check" />
-        <h3>본인 평가 목록</h3>
-      </div>
+    <div class="header-title">
+      <img class="reviewIcon" src="@/assets/list-check.png" alt="list-check" />
+      <h1>평가 받은 목록</h1>
     </div>
 
     <div class="search-and-add">
       <div class="search-group">
-        <input type="text" v-model="searchQuery" placeholder="Title" class="searchBox"/>
+        <input type="text" v-model="searchQuery" placeholder="Title" class="searchBox" />
         <button @click="search" class="searchBtn">검색</button>
       </div>
     </div>
@@ -28,28 +26,52 @@
           <td>{{ review.content }}</td>
           <td>{{ review.year }}</td>
           <td>{{ review.quarter }}</td>
-          <td><button @click="openModal(review.id, review.revieweeId)" class="view-details-btn">Check</button></td>
+          <td>
+            <button
+              @click="openModal(review.id, review.revieweeId)"
+              class="view-details-btn"
+              :disabled="review.reviewStatus === 'N'"
+            >
+              Check
+            </button>
+          </td>
         </tr>
       </tbody>
     </table>
 
-    <div class="pagination">
-      <button @click="prevPage" :disabled="currentPage === 1">&laquo;</button>
-      <button 
-        v-for="page in totalPages" 
-        :key="page" 
-        @click="changePage(page)" 
-        :class="{ active: page === currentPage }"
-      >{{ page }}</button>
-      <button @click="nextPage" :disabled="currentPage === totalPages">&raquo;</button>
-    </div>
+    <nav class="pg" aria-label="Page navigation example">
+      <ul class="pagination">
+        <li class="page-item" :class="{ disabled: currentPage === 1 }">
+          <a class="page-link" href="#" aria-label="First" @click.prevent="goToFirstPage">
+            <span aria-hidden="true">&laquo;&laquo;</span>
+          </a>
+        </li>
+        <li class="page-item" :class="{ disabled: currentPage === 1 }">
+          <a class="page-link" href="#" aria-label="Previous" @click.prevent="prevPage">
+            <span aria-hidden="true">&laquo;</span>
+          </a>
+        </li>
+        <li v-for="page in filteredPages" :key="page" class="page-item" :class="{ active: page === currentPage }">
+          <a class="page-link" @click.prevent="goToPage(page)">{{ page }}</a>
+        </li>
+        <li class="page-item" :class="{ disabled: currentPage === totalPages }">
+          <a class="page-link" aria-label="Next" @click.prevent="nextPage">
+            <span aria-hidden="true">&raquo;</span>
+          </a>
+        </li>
+        <li class="page-item" :class="{ disabled: currentPage === totalPages }">
+          <a class="page-link" href="#" aria-label="Last" @click.prevent="goToLastPage">
+            <span aria-hidden="true">&raquo;&raquo;</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
 
     <!-- Modal Structure -->
     <div v-if="isModalOpen" class="modal">
       <div class="modal-content">
         <span class="close" @click="closeModal">&times;</span>
         <div v-if="selectedReview">
-          <img :src="selectedReview.revieweeImage" alt="Reviewee Image" class="reviewee-image" />
           <h2>{{ selectedReview.name }}</h2>
           <h3>{{ selectedReview.position.positionName }}</h3>
           <table>
@@ -93,7 +115,7 @@ const reviewContents = ref({});
 
 const fetchReviews = async () => {
   try {
-    const response = await axios.get(`http://localhost:8080/review/my-review/${revieweeId.value}`);
+    const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/review/my-review/${revieweeId.value}`);
     reviews.value = response.data.result;
   } catch (error) {
     console.error('Error fetching reviews:', error);
@@ -102,8 +124,8 @@ const fetchReviews = async () => {
 
 const fetchReviewDetails = async (id, revieweeId) => {
   try {
-    const response = await axios.get(`http://localhost:8080/review/history-score/${id}/${revieweeId}`);
-    const responseEmployee = await axios.get(`http://localhost:8080/users/id/${revieweeId}`);
+    const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/review/history-score/${id}/${revieweeId}`);
+    const responseEmployee = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/id/${revieweeId}`);
     selectedReview.value = responseEmployee.data.result;
     reviewItems.value = response.data.result.map(item => ({
       ...item,
@@ -124,7 +146,7 @@ const fetchReviewContents = async () => {
     for (const item of reviewItems.value) {
       for (const info of item.reviewInfo) {
         if (!reviewContents.value[info.reviewId]) {
-          const response = await axios.get(`http://localhost:8080/review/list/${info.reviewId}`);
+          const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/review/list/${info.reviewId}`);
           reviewContents.value[info.reviewId] = response.data.result.listName;
         }
         info.listName = reviewContents.value[info.reviewId];
@@ -158,6 +180,7 @@ const totalPages = computed(() => {
 
 const paginatedReviews = computed(() => {
   const start = (currentPage.value - 1) * itemsPerPage;
+  const end = start + itemsPerPage;
   return filteredReviews.value.slice(start, start + itemsPerPage);
 });
 
@@ -165,12 +188,38 @@ const changePage = (page) => {
   currentPage.value = page;
 };
 
+const filteredPages = computed(() => {
+  const maxPages = 5; // 페이지당 최대 표시할 페이지 수
+  const startPage = Math.max(1, currentPage.value - Math.floor(maxPages / 2));
+  const endPage = Math.min(totalPages.value, startPage + maxPages - 1);
+
+  const pages = [];
+  for (let i = startPage; i <= endPage; i++) {
+    pages.push(i);
+  }
+  return pages;
+});
+
 const prevPage = () => {
   if (currentPage.value > 1) currentPage.value--;
 };
 
 const nextPage = () => {
   if (currentPage.value < totalPages.value) currentPage.value++;
+};
+
+const goToPage = (page) => {
+  currentPage.value = page;
+};
+
+// 처음 페이지로 이동
+const goToFirstPage = () => {
+  currentPage.value = 1;
+};
+
+// 마지막 페이지로 이동
+const goToLastPage = () => {
+  currentPage.value = totalPages.value;
 };
 
 const openModal = async (id, revieweeId) => {
@@ -184,6 +233,15 @@ const closeModal = () => {
   reviewItems.value = [];
   reviewContents.value = {};
 };
+
+const search = () => {
+  if (!searchQuery.value.trim()) {
+    alert('검색어를 입력해주세요.');
+    return;
+  }
+  currentPage.value = 1;
+  // No need to explicitly trigger the filteredReviews computation, as it will reactively update based on searchQuery
+};
 </script>
 
 <style scoped>
@@ -195,38 +253,35 @@ const closeModal = () => {
 }
 
 .container {
-  display: flex;
-  flex-direction: column;
-  padding: 0 10%; /* 변경된 부분: padding으로 좌우 공백 추가 */
-  margin-top: 7%;
+  display: grid;
+  grid-template-rows: 18% 13% 4% 53% 8%;
+  grid-template-columns: 10% 80% 10%;
+  padding: 0;
   font-family: 'IBMPlexSansKR-Regular';
 }
 
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
 .header-title {
-  display: flex;
+  grid-column-start: 2;
+  grid-row-start: 1;
+  display: grid;
+  grid-template-columns: 3% 97%;
   align-items: center;
 }
 
-.header-title h3 {
+.header-title h1 {
+  margin-left: 0.5%;
+  margin-bottom: 0;
   font-size: 25px;
   font-weight: 600;
-  margin-left: 10px;
 }
 
 .reviewIcon {
-  width: 20px; 
-  margin-bottom: 8px;
+  width: 25px; /* 이미지 크기 유지 */
 }
 
 .search-and-add {
-  display: flex;
+  grid-row-start: 3;
+  grid-column-start: 2;
   align-items: center;
   margin-bottom: 20px;
 }
@@ -234,6 +289,7 @@ const closeModal = () => {
 .search-group {
   display: flex;
   align-items: center;
+  justify-content: end;
   flex-grow: 1;
 }
 
@@ -262,13 +318,17 @@ const closeModal = () => {
 }
 
 .reviewTable {
+  grid-row-start: 4;
+  grid-column-start: 2;
   width: 100%;
   border-collapse: collapse;
-  margin-bottom: 20px;
   table-layout: fixed;
+  height: 10px;
+  margin-top: 20px;
 }
 
-th, td {
+th,
+td {
   padding: 8px;
   text-align: left;
   border-top: 1px solid #ddd;
@@ -288,30 +348,28 @@ tr:hover {
   background-color: #f1f1f1;
 }
 
-.pagination {
+.pg {
+  grid-row-start: 5;
+  grid-column-start: 2;
+  grid-column-end: 3;
   display: flex;
   justify-content: center;
-  margin-top: 20px;
+  align-items: center;
+  margin-top: 10px;
 }
 
-.pagination button {
-  margin: 0 5px;
-  padding: 10px 15px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  background-color: white;
-  cursor: pointer;
+.pagination .page-item.active .page-link {
+  background-color: #088a85; /* 원하는 배경색 */
+  border-color: #088a85; /* 원하는 테두리 색 */
+  color: white; /* 원하는 텍스트 색 */
 }
 
-.pagination button.active {
-  background-color: #088A85;
-  color: white;
-  border: none;
+.pagination .page-item .page-link {
+  color: #088a85; /* 기본 텍스트 색 */
 }
 
-.pagination button:disabled {
-  background-color: #ddd;
-  cursor: not-allowed;
+.pagination .page-item.disabled .page-link {
+  color: #088a85; /* 비활성화된 페이지 색 */
 }
 
 .modal {
@@ -358,7 +416,7 @@ tr:hover {
 
 .view-details-btn {
   padding: 5px 10px;
-  background-color: #088A85;
+  background-color: #088a85;
   color: white;
   border: none;
   border-radius: 4px;
@@ -368,5 +426,10 @@ tr:hover {
 
 .view-details-btn:hover {
   background-color: #065f5b;
+}
+
+.view-details-btn:disabled {
+  background-color: grey;
+  cursor: not-allowed;
 }
 </style>

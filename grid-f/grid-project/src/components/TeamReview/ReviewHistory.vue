@@ -1,11 +1,9 @@
 <template>
   <div class="container">
-    <div class="header">
-      <div class="header-title">
-        <img class="reviewIcon" src="@/assets/list-check.png" alt="list-check" />
-        <h3>전체 평가 목록</h3>
-      </div>
-      <button class="addNewBtn" @click="openAddNewModal">생성</button>
+    <div class="header-title">
+      <img class="reviewIcon" src="@/assets/list-check.png" alt="list-check" />
+      <h1>전체 평가 목록</h1>
+      <button href="#" class="addNewBtn" @click="showModal('addReview')">생성</button>
     </div>
     <div class="search-and-add">
       <div class="search-group">
@@ -18,11 +16,12 @@
         <tr>
           <th style="width: 10%;">직원</th>
           <th style="width: 10%;">부서 명</th>
-          <th style="width: 30%;">평가 명</th>
+          <th style="width: 20%;">평가 명</th>
           <th style="width: 20%;">작성일</th>
           <th style="width: 10%;">연도</th>
           <th style="width: 10%;">분기</th>
           <th style="width: 10%;">대상자</th>
+          <!-- <th style="width: 10%;">평가 보기</th> -->
         </tr>
       </thead>
       <tbody>
@@ -34,47 +33,91 @@
           <td>{{ review.year }}</td>
           <td>{{ review.quarter }}</td>
           <td>{{ review.revieweeName }}</td>
+          <!-- <td>
+            <button class="view-review-btn" @click="openModal(review.id)">평가 보기</button>
+          </td> -->
         </tr>
       </tbody>
     </table>
 
-    <div class="pagination">
-      <button @click="prevPage" :disabled="currentPage === 1">&laquo;</button>
-      <button v-for="page in totalPages" :key="page" @click="changePage(page)" :class="{ active: page === currentPage }">{{ page }}</button>
-      <button @click="nextPage" :disabled="currentPage === totalPages">&raquo;</button>
-    </div>
+    <nav class="pg" aria-label="Page navigation example" v-if="totalPages > 1">
+      <ul class="pagination">
+        <li class="page-item" :class="{ disabled: currentPage === 1 }">
+          <a class="page-link" href="#" aria-label="First" @click.prevent="goToFirstPage">
+            <span aria-hidden="true">&laquo;&laquo;</span>
+          </a>
+        </li>
+        <li class="page-item" :class="{ disabled: currentPage === 1 }">
+          <a class="page-link" href="#" aria-label="Previous" @click.prevent="prevPage">
+            <span aria-hidden="true">&laquo;</span>
+          </a>
+        </li>
+        <li v-for="page in filteredPages" :key="page" class="page-item" :class="{ active: page === currentPage }">
+          <a class="page-link" @click.prevent="goToPage(page)">{{ page }}</a>
+        </li>
+        <li class="page-item" :class="{ disabled: currentPage === totalPages }">
+          <a class="page-link" aria-label="Next" @click.prevent="nextPage">
+            <span aria-hidden="true">&raquo;</span>
+          </a>
+        </li>
+        <li class="page-item" :class="{ disabled: currentPage === totalPages }">
+          <a class="page-link" href="#" aria-label="Last" @click.prevent="goToLastPage">
+            <span aria-hidden="true">&raquo;&raquo;</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
 
     <!-- Add New Modal -->
-    <div v-if="isAddNewModalOpen" class="modal">
-      <div class="modal-content">
-        <span class="close" @click="closeAddNewModal">&times;</span>
-        <h2>동료평가 생성</h2>
-        <form @submit.prevent="addNewReview">
-          <div>
-            <label for="newReviewContent">평가명 :</label>
-            <input type="text" id="newReviewContent" v-model="newReviewContent" required />
+    <div class="modal fade" id="addReview" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">동료평가 생성</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="closeModal('addReview')"></button>
           </div>
-          <div>
-            <label for="newReviewYear">연도:</label>
-            <input type="number" id="newReviewYear" v-model="newReviewYear" required />
+          <div class="modal-body">
+            <form class="needs-validation" @submit.prevent="validateAndRegistContent" novalidate>
+              <div class="mb-3">
+                <label for="newReviewContent" class="form-label">평가명</label>
+                <input class="form-control" type="text" id="newReviewContent" v-model="newReviewContent" required />
+                <div class="invalid-feedback">
+                  평가명을 입력해주세요.
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="vacationNum" class="form-label">연도</label>
+                <input class="form-control" type="number" id="newReviewYear" v-model="newReviewYear" required />
+                <div class="invalid-feedback">
+                  연도를 입력해주세요.
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="employeeNum" class="form-label">분기</label>
+                <select class="form-select" id="newReviewQuarter" v-model="newReviewQuarter" required>
+                  <option value="" disabled selected>분기를 선택해주세요.</option>
+                  <option value="1">1분기</option>
+                  <option value="2">2분기</option>
+                </select>
+                <div class="invalid-feedback">
+                  분기를 선택해주세요.
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="dayOfUsing" class="form-label">평가 대상자</label>
+                <select class="form-select" id="newRevieweeId" v-model="newRevieweeId" required>
+                  <option value="" disabled selected>평가 대상자를 선택해주세요.</option>
+                  <option v-for="employee in employees" :key="employee.id" :value="employee.id">
+                    {{ employee.name }}
+                  </option>
+                </select>
+              </div>
+              <div class="button-container">
+                <button type="submit" class="btn btn-primary">생성</button>
+              </div>
+            </form>
           </div>
-          <div>
-            <label for="newReviewQuarter">분기:</label>
-            <select id="newReviewQuarter" v-model="newReviewQuarter">
-              <option value="1">1분기</option>
-              <option value="2">2분기</option>
-            </select>
-          </div>
-          <div>
-            <label for="newRevieweeId">평가 대상자:</label>
-            <select id="newRevieweeId" v-model="newRevieweeId" required>
-              <option v-for="employee in employees" :key="employee.id" :value="employee.id">
-                {{ employee.name }}
-              </option>
-            </select>
-          </div>
-          <button type="submit" class="submitBtn">생성</button>
-        </form>
+        </div>
       </div>
     </div>
   </div>
@@ -83,36 +126,53 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import axios from 'axios';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap';
+import router from '@/router/router';
 
 const searchQuery = ref('');
 const reviews = ref([]);
+const filteredReviews = ref([]);
 const currentPage = ref(1);
 const itemsPerPage = 10;
 
-// New state for Add New modal
-const isAddNewModalOpen = ref(false);
 const employees = ref([]);
 const newReviewContent = ref('');
-const newReviewYear = ref(new Date().getFullYear());
+const currentYear = new Date().getFullYear();
+const newReviewYear = ref(currentYear);
 const newReviewQuarter = ref(1);
 const newRevieweeId = ref('');
+const userRole = ref('');
+const user = ref({});
+const selectedReviews = ref([]);
+const isModalOpen = ref(false);
+const selectedReview = ref(null);
+const reviewItems = ref([]);
+const reviewContents = ref({});
+
+
+const showModal = (modalId) => {
+  const modal = new bootstrap.Modal(document.getElementById(modalId));
+  modal.show();
+};
 
 const fetchReviews = async () => {
   try {
-    const response = await axios.get('http://localhost:8080/review/history-list');
+    const response = await axios.get('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/review/history-list');
     const reviewList = response.data.result;
 
     await Promise.all(reviewList.map(async review => {
-      const reviewerResponse = await axios.get(`http://localhost:8080/users/id/${review.reviewerId}`);
-      const revieweeResponse = await axios.get(`http://localhost:8080/users/id/${review.revieweeId}`);
+      const reviewerResponse = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/id/${review.reviewerId}`);
+      const revieweeResponse = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/id/${review.revieweeId}`);
       review.reviewerName = reviewerResponse.data.result.name;
       review.departmentId = reviewerResponse.data.result.department.id;
       review.revieweeName = revieweeResponse.data.result.name;
 
-      const departmentResponse = await axios.get(`http://localhost:8080/department/${review.departmentId}`);
+      const departmentResponse = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/department/${review.departmentId}`);
       review.departmentName = departmentResponse.data.result.departmentName;
     }));
     reviews.value = reviewList;
+    filteredReviews.value = reviewList; // 초기에는 모든 리뷰를 표시
   } catch (error) {
     console.error('평가 내역을 가져오는 중 오류 발생:', error);
   }
@@ -120,22 +180,42 @@ const fetchReviews = async () => {
 
 const fetchEmployees = async () => {
   try {
-    const response = await axios.get('http://localhost:8080/users/list');
+    const response = await axios.get('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/list/all');
     employees.value = response.data.result;
   } catch (error) {
     console.error('Error fetching employees:', error);
   }
 };
 
-onMounted(() => {
-  fetchReviews();
-  fetchEmployees();
-});
+function parseJwt(token) {
+  try {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+    return JSON.parse(jsonPayload);
+  } catch (error) {
+    console.error('Invalid token', error);
+    return null;
+  }
+}
 
-const filteredReviews = computed(() => {
-  return reviews.value.filter(review =>
-    review.reviewerName.toLowerCase().includes(searchQuery.value.toLowerCase())
-  );
+onMounted(() => {
+  const token = localStorage.getItem('access');
+  if (token) {
+    const decodedToken = parseJwt(token);
+    userRole.value = decodedToken?.auth || '';
+    user.value = decodedToken || {};
+  }
+
+  if (userRole.value !== 'ROLE_ADMIN') {
+    alert('접근 권한이 없습니다.');
+    router.go(-1);
+  } else {
+    fetchReviews();
+    fetchEmployees();
+  }
 });
 
 const totalPages = computed(() => {
@@ -144,12 +224,25 @@ const totalPages = computed(() => {
 
 const paginatedReviews = computed(() => {
   const start = (currentPage.value - 1) * itemsPerPage;
+  const end = start + itemsPerPage;
   return filteredReviews.value.slice(start, start + itemsPerPage);
 });
 
 const changePage = (page) => {
   currentPage.value = page;
 };
+
+const filteredPages = computed(() => {
+  const maxPages = 5; // 페이지당 최대 표시할 페이지 수
+  const startPage = Math.max(1, currentPage.value - Math.floor(maxPages / 2));
+  const endPage = Math.min(totalPages.value, startPage + maxPages - 1);
+
+  const pages = [];
+  for (let i = startPage; i <= endPage; i++) {
+    pages.push(i);
+  }
+  return pages;
+});
 
 const prevPage = () => {
   if (currentPage.value > 1) currentPage.value--;
@@ -159,44 +252,104 @@ const nextPage = () => {
   if (currentPage.value < totalPages.value) currentPage.value++;
 };
 
+const goToPage = (page) => {
+  currentPage.value = page;
+};
+
+// 처음 페이지로 이동
+const goToFirstPage = () => {
+  currentPage.value = 1;
+};
+
+// 마지막 페이지로 이동
+const goToLastPage = () => {
+  currentPage.value = totalPages.value;
+};
+
 const formatDate = (datetime) => {
   if (!datetime) return '-';
   const date = new Date(datetime);
   return date.toLocaleString();
 };
 
-const openAddNewModal = () => {
-  isAddNewModalOpen.value = true;
-};
-
-const closeAddNewModal = () => {
-  isAddNewModalOpen.value = false;
-};
-
 const search = () => {
-  // 검색 로직을 추가합니다.
+  if (!searchQuery.value.trim()) {
+    alert('검색어를 입력해주세요.');
+    return;
+  }
   filteredReviews.value = reviews.value.filter(review =>
     review.reviewerName.toLowerCase().includes(searchQuery.value.toLowerCase())
   );
+  currentPage.value = 1; // 검색 후 첫 페이지로 이동
+};
+
+const closeModal = (modalId) => {
+  const modal = new bootstrap.Modal(document.getElementById(modalId));
+  modal.hide();
+  if (modalId === 'addReview') {
+    newReviewContent.value = '';
+    newReviewYear.value = '';
+    newReviewQuarter.value = '';
+    newRevieweeId.value = '';
+    const form = document.querySelector(`#${modalId} form`);
+    if (form) {
+      form.classList.remove('was-validated');
+    }
+  }
+};
+
+const validateAndRegistContent = () => {
+  const form = document.querySelector('#addReview form');
+  if (!form.checkValidity()) {
+    form.classList.add('was-validated');
+  } else {
+    if (newReviewYear.value <= currentYear - 1) {
+      alert(`${currentYear - 1}년 이하로는 설정할 수 없습니다.`);
+    } else {
+      addNewReview();
+    }
+  }
 };
 
 const addNewReview = async () => {
+  if (newReviewYear.value <= currentYear - 1) {
+    alert(`${currentYear - 1}년 이하로는 설정할 수 없습니다.`);
+    return;
+  }
+
   const newReview = {
     content: newReviewContent.value,
     year: newReviewYear.value,
     quarter: newReviewQuarter.value,
     revieweeId: newRevieweeId.value,
-    reviewerId: 1 // 현재 로그인한 리뷰어 ID를 사용합니다.
   };
 
   try {
-    await axios.post('http://localhost:8080/review/history', newReview);
-    await fetchReviews();
-    closeAddNewModal();
+    // 중복된 리뷰가 있는지 확인
+    const isDuplicate = reviews.value.some(review =>
+      review.year === newReview.year &&
+      review.quarter === newReview.quarter &&
+      review.revieweeId === newReview.revieweeId
+    );
+
+    if (isDuplicate) {
+      alert('같은 연도, 같은 분기, 같은 대상자로 이미 생성된 평가가 있습니다.');
+      return;
+    }
+
+    const confirmed = window.confirm('생성하시겠습니까?');
+    if (confirmed) {
+      await axios.post('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/review/history', newReview);
+      alert('생성 완료되었습니다!');
+      await fetchReviews();
+      closeModal('addReview');
+      window.location.reload();
+    }
   } catch (error) {
     console.error('Error adding new review:', error);
   }
 };
+
 </script>
 
 <style scoped>
@@ -208,40 +361,39 @@ const addNewReview = async () => {
 }
 
 .container {
-  display: flex;
-  flex-direction: column;
-  padding: 0 10%;
-  margin-top: 70px; /* 변경된 부분: 고정된 크기의 margin-top 추가 */
+  display: grid;
+  grid-template-rows: 18% 13% 4% 53% 8%;
+  grid-template-columns: 10% 80% 10%;
+  padding: 0;
   font-family: 'IBMPlexSansKR-Regular';
 }
 
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
 .header-title {
-  display: flex;
+  grid-column-start: 2;
+  grid-row-start: 1;
   align-items: center;
+  display:grid;
+  grid-template-columns: 3% 92% 5%;
+  grid-column-start:2;
 }
 
-.header-title h3 {
+.header-title h1 {
+  margin-left: 0.5%;
+  margin-bottom: 0;
   font-size: 25px;
   font-weight: 600;
-  margin-left: 10px;
 }
 
 .reviewIcon {
-  width: 20px;
-  margin-bottom: 9px;
+  width: 25px;
 }
 
 .addNewBtn {
+  grid-column-start: 3;
+  grid-row-start: 1;
   background-color: #088A85;
   color: white;
-  padding: 10px 20px;
+  padding: 5px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -253,7 +405,8 @@ const addNewReview = async () => {
 }
 
 .search-and-add {
-  display: flex;
+  grid-row-start: 3;
+  grid-column-start: 2;
   align-items: center;
   margin-bottom: 20px;
 }
@@ -261,6 +414,7 @@ const addNewReview = async () => {
 .search-group {
   display: flex;
   align-items: center;
+  justify-content: end;
   flex-grow: 1;
 }
 
@@ -284,15 +438,16 @@ const addNewReview = async () => {
   margin-left: 10px;
 }
 
-.searchBtn:hover {
+searchBtn:hover {
   background-color: #065f5b;
 }
 
 table {
+  grid-column-start: 2;
+  grid-row-start: 4;  
   width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 20px;
-  table-layout: fixed;
+  margin-top: 20px;
+  height:10px;
 }
 
 th, td {
@@ -315,83 +470,41 @@ tr:hover {
   background-color: #f1f1f1;
 }
 
-.pagination {
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
-}
-
-.pagination button {
-  margin: 0 5px;
-  padding: 10px 15px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  background-color: white;
-  cursor: pointer;
-}
-
-.pagination button.active {
-  background-color: #088A85;
-  color: white;
-  border: none;
-}
-
-.pagination button:disabled {
-  background-color: #ddd;
-  cursor: not-allowed;
-}
-
-.pagination button:hover:not(.active):not(:disabled) {
-  background-color: #f1f1f1;
-}
-
-.modal {
+.pg {
+  grid-row-start: 5;
+  grid-column-start: 2;
+  grid-column-end: 3;
   display: flex;
   justify-content: center;
   align-items: center;
-  position: fixed;
-  z-index: 1;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgba(0, 0, 0, 0.5);
+  margin-top: 10px;
 }
 
-.modal-content {
-  background-color: white;
-  padding: 20px;
-  border-radius: 5px;
-  width: 500px;
-  max-width: 80%;
+.pagination .page-item.active .page-link {
+  background-color: #088A85; /* 원하는 배경색 */
+  border-color: #088A85; /* 원하는 테두리 색 */
+  color: white; /* 원하는 텍스트 색 */
 }
 
-.close {
-  color: #aaa;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
+.pagination .page-item .page-link {
+  color: #088A85; /* 기본 텍스트 색 */
 }
 
-.close:hover,
-.close:focus {
-  color: black;
-  text-decoration: none;
-  cursor: pointer;
+.pagination .page-item.disabled .page-link {
+  color: #088A85; /* 비활성화된 페이지 색 */
 }
 
-.submitBtn {
+.view-review-btn {
   background-color: #088A85;
   color: white;
-  padding: 10px 20px;
+  padding: 5px 10px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 12px;
 }
 
-.submitBtn:hover {
+.view-review-btn:hover {
   background-color: #065f5b;
 }
 </style>

@@ -1,53 +1,49 @@
 <template>
-  <div class="content">
-    <div class="reviewAll">
-      <div class="reviewHeader">
-        <img class="reviewIcon" src="@/assets/list-check.png" alt="list-check" />
-        <h3 class="reviewTitle">평가 생성</h3>
-      </div>
-      <div class="reviewContent">
-        <div class="buttonContainer">
-          <button type="button" class="deleteBtn" @click="deleteSelectedReviews">선택 항목 삭제</button>
-          <button type="button" class="addBtn" data-bs-toggle="modal" data-bs-target="#addQuestionModal">항목 추가</button>
-        </div>
-        <div class="reviewBox">
-          <table>
-            <thead>
-              <tr>
-                <th style="width: 5%;">선택</th>
-                <th style="width: 10%;">항목</th>
-                <th style="width: 85%;">내용</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(review, index) in reviews" :key="review.id">
-                <td><input type="checkbox" v-model="selectedReviews" :value="review.id" /></td>
-                <td>{{ index + 1 }}</td>
-                <td>{{ review.listName }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+  <div class="reviewAll">
+    <div class="reviewHeader">
+      <img class="reviewIcon" src="@/assets/list-check.png" alt="list-check" />
+      <h1>평가 생성</h1>
+    </div>
+    <div class="buttonContainer">
+      <button type="button" class="deleteBtn" @click="deleteSelectedReviews">선택 항목 삭제</button>
+      <button type="button" class="addBtn" data-bs-toggle="modal" data-bs-target="#addQuestionModal">항목 추가</button>
+    </div>
+    <div class="reviewBox">
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 5%;">선택</th>
+            <th style="width: 10%;">항목</th>
+            <th style="width: 85%;">내용</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(review, index) in reviews" :key="review.id">
+            <td><input type="checkbox" v-model="selectedReviews" :value="review.id" /></td>
+            <td>{{ index + 1 }}</td>
+            <td>{{ review.listName }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-      <!-- Modal Structure -->
-      <div class="modal fade" id="addQuestionModal" tabindex="-1" aria-labelledby="addQuestionModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="addQuestionModalLabel">항목 추가</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <!-- Modal Structure -->
+    <div class="modal fade" id="addQuestionModal" tabindex="-1" aria-labelledby="addQuestionModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addQuestionModalLabel">항목 추가</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label for="questionText" class="form-label">평가 내용</label>
+              <input type="text" class="form-control" id="questionText" v-model="newReviewText" />
             </div>
-            <div class="modal-body">
-              <div class="mb-3">
-                <label for="questionText" class="form-label">평가 내용</label>
-                <input type="text" class="form-control" id="questionText" v-model="newReviewText" />
-              </div>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
-              <button type="button" class="btn btn-primary" @click="addReview">생성</button>
-            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+            <button type="button" class="btn btn-primary" @click="addReview">생성</button>
           </div>
         </div>
       </div>
@@ -60,14 +56,17 @@ import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap';
+import router from '@/router/router';
 
 const reviews = ref([]);
 const selectedReviews = ref([]);
 const newReviewText = ref('');
+const userRole = ref('');
+const userId = ref('');
 
 const fetchReviews = async () => {
   try {
-    const response = await axios.get('http://localhost:8080/review/list');
+    const response = await axios.get('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/review/list');
     reviews.value = response.data.result;
     reviews.value.sort((a, b) => a.id - b.id);
   } catch (error) {
@@ -75,20 +74,52 @@ const fetchReviews = async () => {
   }
 };
 
+function parseJwt(token) {
+  try {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+    return JSON.parse(jsonPayload);
+  } catch (error) {
+    console.error('Invalid token', error);
+    return null;
+  }
+}
+
 onMounted(() => {
-  fetchReviews();
+  const token = localStorage.getItem('access');
+  if (token) {
+    const decodedToken = parseJwt(token);
+    userRole.value = decodedToken?.auth || '';
+    userId.value = decodedToken?.id || '';
+  }
+
+  if (userRole.value !== 'ROLE_ADMIN') {
+    alert('접근 권한이 없습니다.');
+    router.go(-1);
+  } else {
+    fetchReviews();
+  }
 });
 
 const deleteSelectedReviews = async () => {
+  if (selectedReviews.value.length === 0) {
+    alert('하나 이상의 항목을 선택해주세요.');
+    return;
+  }
+
   try {
     for (const reviewId of selectedReviews.value) {
-      await axios.delete(`http://localhost:8080/review/list/${reviewId}`);
+      await axios.delete(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/review/list/${reviewId}`);
     }
     reviews.value = reviews.value.filter(review => !selectedReviews.value.includes(review.id));
     selectedReviews.value = [];
+    alert('삭제되었습니다.');
   } catch (error) {
     console.error('에러 발생:', error);
-    alert('삭제하는 데 에러가 발생했습니다.');
+    alert('평가되지 않는 항목만 삭제할 수 있습니다.');
   }
 };
 
@@ -99,12 +130,12 @@ const addReview = async () => {
   }
 
   try {
-    const response = await axios.post('http://localhost:8080/review/list', {
+    const response = await axios.post('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/review/list', {
       listName: newReviewText.value
     });
     reviews.value.push(response.data.result);
     newReviewText.value = '';
-
+    alert('추가되었습니다.');
     const modalElement = document.getElementById('addQuestionModal');
     const modal = bootstrap.Modal.getInstance(modalElement);
     if (modal) {
@@ -129,35 +160,32 @@ const addReview = async () => {
   font-style: normal;
 }
 
-.content {
-  flex-grow: 1;
-  margin-right: 10%;
-  margin-left: 10%;
+.reviewAll {
+  display: grid;
+  grid-template-rows: 18% 13% 4% 53% 8%;
+  grid-template-columns: 10% 80% 10%;
+  height:100%;
+  padding: 0;
   font-family: 'IBMPlexSansKR-Regular';
 }
 
-.reviewAll {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-}
-
 .reviewHeader {
-  display: flex;
+  grid-column-start: 2;
+  grid-row-start: 1;
+  display:grid;
+  grid-template-columns: 3% 97%;
   align-items: center;
-  font-size: 25px;
-  margin-top: 8%;
-  color: #000000;
 }
 
 .reviewHeader img {
-  width: 20px;
-  margin-right: 10px;
-  margin-bottom: 5px;
+  width: 25px;
 }
 
-.reviewTitle {
-  font-weight: 600 !important;
+.reviewHeader h1 {
+  margin-left: 0.5%;
+  margin-bottom: 0;
+  font-size: 25px;
+  font-weight: 600;
 }
 
 .reviewContent {
@@ -165,15 +193,20 @@ const addReview = async () => {
 }
 
 .buttonContainer {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 10px;
-  gap: 10px;
+  grid-row-start: 3;
+  grid-column-start: 2;
+  align-items: center;
+  margin-bottom: 20px;
+  display: grid;
+  grid-template-columns:80% 9% 2% 9%;
 }
 
 .reviewBox {
+  grid-row-start: 4;
+  grid-column-start: 2;
   width: 100%;
-  padding: 10px;
+  border-collapse: collapse;
+  height:10px;
 }
 
 .reviewContent table {
@@ -235,14 +268,30 @@ tr:hover {
 }
 
 /* 버튼 스타일 */
-.deleteBtn, .addBtn {
+.deleteBtn {
+  width: 100%;
   background-color: #088A85;
   color: white;
-  padding: 10px 20px;
+  padding: 5px 5px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 12px;
+  font-style: bold;
+  grid-column-start: 2;
+}
+
+.addBtn {
+  width: 100%;
+  background-color: #088A85;
+  color: white;
+  padding: 5px 5px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  font-style: bold;
+  grid-column-start: 4;
 }
 
 .deleteBtn:hover, .addBtn:hover {
