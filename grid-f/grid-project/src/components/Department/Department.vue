@@ -36,7 +36,7 @@
           <td>{{ formatDate(department.endTime) }}</td>
           <td>{{ department.leaderName }}</td>
           <td>
-            <button class="view-details-btn" @click="goToDepartmentTeams(department.id)">자세히 보기</button>
+            <button class="view-details-btn" @click="goToDepartmentTeams(department.id)">소속팀 목록</button>
           </td>
         </tr>
       </tbody>

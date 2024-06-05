@@ -121,8 +121,6 @@
       </div>
     </div>
   </div>
-
-
 </template>
 
 <script setup>
@@ -140,7 +138,8 @@ const itemsPerPage = 10;
 
 const employees = ref([]);
 const newReviewContent = ref('');
-const newReviewYear = ref(new Date().getFullYear());
+const currentYear = new Date().getFullYear();
+const newReviewYear = ref(currentYear);
 const newReviewQuarter = ref(1);
 const newRevieweeId = ref('');
 const userRole = ref('');
@@ -304,8 +303,8 @@ const validateAndRegistContent = () => {
   if (!form.checkValidity()) {
     form.classList.add('was-validated');
   } else {
-    if (newReviewYear.value <= 2023) {
-      alert('2023년이하는 설정 불가능합니다.');
+    if (newReviewYear.value <= currentYear - 1) {
+      alert(`${currentYear - 1}년 이하로는 설정할 수 없습니다.`);
     } else {
       addNewReview();
     }
@@ -313,8 +312,8 @@ const validateAndRegistContent = () => {
 };
 
 const addNewReview = async () => {
-  if (newReviewYear.value <= 2023) {
-    alert('2023년이하는 설정 불가능합니다.');
+  if (newReviewYear.value <= currentYear - 1) {
+    alert(`${currentYear - 1}년 이하로는 설정할 수 없습니다.`);
     return;
   }
 
