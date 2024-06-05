@@ -21,10 +21,10 @@
         </div>
         <div v-if="isValueExistence" id="error-message">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-               class="bi bi-exclamation-circle" viewBox="0 0 16 16">
+            class="bi bi-exclamation-circle" viewBox="0 0 16 16">
             <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
             <path
-                d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0M7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0z" />
+              d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0M7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0z" />
           </svg>
           &nbsp; 이메일을 입력해주세요.
         </div>
@@ -38,19 +38,19 @@
         </div>
         <div v-if="isValue2Existence" id="error-message2">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-               class="bi bi-exclamation-circle" viewBox="0 0 16 16">
+            class="bi bi-exclamation-circle" viewBox="0 0 16 16">
             <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
             <path
-                d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0M7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0z" />
+              d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0M7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0z" />
           </svg>
           &nbsp; 비밀번호를 입력해주세요.
         </div>
         <div v-if="isWrong" id="error-message">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-               class="bi bi-exclamation-circle" viewBox="0 0 16 16">
+            class="bi bi-exclamation-circle" viewBox="0 0 16 16">
             <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
             <path
-                d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0M7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0z" />
+              d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0M7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0z" />
           </svg>
           &nbsp; 아이디 또는 비밀번호를 확인해주세요!
         </div>
@@ -113,36 +113,36 @@ async function Login() {
     return;
   }
 
-  
-    try {
-        const response = await axios.post('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/login', {
-            email: inputValue.value,
-            pwd: inputPwd.value
-        }, {
-            withCredentials: true
-        });
 
-        if (response.status === 200) {
-            const token = response.data.access;
+  try {
+    const response = await axios.post('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/login', {
+      email: inputValue.value,
+      pwd: inputPwd.value
+    }, {
+      withCredentials: true
+    });
 
-            const response2 = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/mail/${inputValue.value}`);
-            const user = response2.data.result;
+    if (response.status === 200) {
+      const token = response.data.access;
 
-            // 이메일과 토큰을 로컬 스토리지에 저장
-            localStorage.setItem('email', inputValue.value);
-            localStorage.setItem('access', token);
+      const response2 = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/mail/${inputValue.value}`);
+      const user = response2.data.result;
 
-            // Vuex 스토어에 사용자 정보와 이메일 저장
-            store.commit('setUser', user);
+      // 이메일과 토큰을 로컬 스토리지에 저장
+      localStorage.setItem('email', inputValue.value);
+      localStorage.setItem('access', token);
 
-            alert('로그인 되었습니다');
-            isWrong.value = false;
+      // Vuex 스토어에 사용자 정보와 이메일 저장
+      store.commit('setUser', user);
 
-            router.push('/main');
-        }
-    } catch (e) {
-        isWrong.value = true;
+      alert('로그인 되었습니다');
+      isWrong.value = false;
+
+      router.push('/main');
     }
+  } catch (e) {
+    isWrong.value = true;
+  }
 }
 
 
