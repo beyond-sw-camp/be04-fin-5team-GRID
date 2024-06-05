@@ -1,5 +1,7 @@
 FROM openjdk:17-alpine
 
+RUN apt-get update && apt-get install -y redis-tools
+
 COPY build/libs/*.jar app.jar
 
 ARG JASYPT_KEY
