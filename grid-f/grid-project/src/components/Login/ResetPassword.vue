@@ -124,12 +124,10 @@ async function resetPwd() {
         return false;
     }
 
-    const resetEmail = atob(props.givenEmail);
-
     try {
         await axios.put(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/pwd`, {
             pwd: inputValue.value,
-            email: resetEmail
+            email: props.givenEmail
         });
         alert("비밀번호가 성공적으로 변경되었습니다.");
         emit('passwordResetSuccess');
