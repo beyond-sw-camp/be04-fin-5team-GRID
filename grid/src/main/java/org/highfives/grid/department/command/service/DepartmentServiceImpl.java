@@ -4,6 +4,7 @@ import org.highfives.grid.department.command.dto.DepartmentDTO;
 import org.highfives.grid.department.command.aggregate.Department;
 import org.highfives.grid.department.command.exception.DepartmentNotFoundException;
 import org.highfives.grid.department.command.repository.DepartmentRepository;
+import org.highfives.grid.department.command.repository.TeamRepository;
 import org.highfives.grid.user.command.aggregate.Employee;
 import org.highfives.grid.user.command.dto.UserDTO;
 import org.highfives.grid.user.command.repository.UserRepository;
@@ -25,19 +26,21 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     private final DepartmentRepository departmentRepository;
 
+    private final TeamRepository teamRepository;
+
     private final UserService userService;
 
     private final UserRepository userRepository;
     private final ModelMapper mapper;
 
     @Autowired
-    public DepartmentServiceImpl(DepartmentRepository departmentRepository, UserService userService, UserRepository userRepository, ModelMapper mapper) {
+    public DepartmentServiceImpl(DepartmentRepository departmentRepository, TeamRepository teamRepository, UserService userService, UserRepository userRepository, ModelMapper mapper) {
         this.departmentRepository = departmentRepository;
+        this.teamRepository = teamRepository;
         this.userService = userService;
         this.userRepository = userRepository;
         this.mapper = mapper;
     }
-
 
 
 
@@ -64,12 +67,18 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Override
     public DepartmentDTO registDepartment(DepartmentDTO departmentDTO) {
 
+        // 사용자가 이미 팀장인지 확인
+        boolean isTeamLeader = teamRepository.existsByLeaderId(departmentDTO.getLeaderId());
+        if (isTeamLeader) {
+            throw new IllegalArgumentException("해당 사용자는 이미 팀장으로 등록되어 있습니다.");
+        }
+
+
         Date currentDate = new Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String formattedDate = dateFormat.format(currentDate);
 
-
-
+        // 새로운 부서 생성
         Department department = Department.builder()
                 .departmentName(departmentDTO.getDepartmentName())
                 .departmentStatus("Y")
@@ -80,6 +89,12 @@ public class DepartmentServiceImpl implements DepartmentService {
                 .build();
 
         departmentRepository.save(department);
+
+        // 부서장 정보 업데이트
+        Employee leader = userRepository.findById(departmentDTO.getLeaderId()).orElseThrow(() -> new RuntimeException("리더를 찾을 수 없습니다."));
+        leader.setDepartmentId(department.getId());
+        leader.setDutiesId(2);
+        userRepository.save(leader);
 
         return mapper.map(department, DepartmentDTO.class);
     }
@@ -219,7 +234,20 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public DepartmentDTO modifyDepartmentLeader(DepartmentDTO departmentDTO) {
+
+        // 사용자가 이미 팀장인지 확인
+        boolean isTeamLeader = teamRepository.existsByLeaderId(departmentDTO.getLeaderId());
+        if (isTeamLeader) {
+            throw new IllegalArgumentException("해당 사용자는 이미 팀장으로 등록되어 있습니다.");
+        }
+
         DepartmentDTO currentDepartmentInfo = findDepartmentById(departmentDTO.getId());
+
+        Employee previousLeader = userRepository.findById(currentDepartmentInfo.getLeaderId()).orElseThrow(()-> new RuntimeException());
+        if (previousLeader != null) {
+            previousLeader.setDutiesId(4);
+            userRepository.save(previousLeader);
+        }
 
             Department department = Department.builder()
                     .id(departmentDTO.getId())
@@ -237,10 +265,12 @@ public class DepartmentServiceImpl implements DepartmentService {
 
             departmentRepository.save(department);
 
-
-            Employee employee = userRepository.findById(department.getLeaderId()).orElseThrow(() -> new RuntimeException());
-        UserDTO userDTO = new UserDTO();
-//            userService.modifyUser(employee.getId(), );
+            Employee leader = userRepository.findById(department.getLeaderId()).orElseThrow(() -> new RuntimeException());
+            if (leader != null) {
+            leader.setDepartmentId(departmentDTO.getId());
+            leader.setDutiesId(2);
+                userRepository.save(leader);
+            }
 
 
         return mapper.map(department, DepartmentDTO.class);

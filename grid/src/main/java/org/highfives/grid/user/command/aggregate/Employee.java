@@ -135,4 +135,16 @@ public class Employee {
     public void setResignYn(YN resignYn) {
         this.resignYn = resignYn;
     }
+
+    public void setDutiesId(int dutiesId) {
+        this.dutiesId = dutiesId;
+    }
+
+    public void setTeamId(int teamId) {
+        this.teamId = teamId;
+    }
+
+    public void setDepartmentId(int departmentId) {
+        this.departmentId = departmentId;
+    }
 }

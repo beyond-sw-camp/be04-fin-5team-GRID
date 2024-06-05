@@ -174,11 +174,11 @@ public class ReviewServiceImpl implements ReviewService {
 
         Employee employees = userRepository.findById(historyDTO.getRevieweeId()).orElseThrow(() -> new IllegalArgumentException("Employee not found"));
 
-        List<Employee> departmentEmployees = userRepository.findByDepartmentId(employees.getDepartmentId());
+        List<Employee> teamEmployees = userRepository.findByTeamId(employees.getTeamId());
 
         List<ReviewHistoryDTO> reviewHistoryDTOList = new ArrayList<>();
-        for (Employee departmentInEmployee : departmentEmployees) {
-            if (departmentInEmployee.getId() == (historyDTO.getRevieweeId())) {
+        for (Employee teamInEmployee : teamEmployees) {
+            if (teamInEmployee.getId() == (historyDTO.getRevieweeId())) {
                 continue;
             }
 
@@ -188,7 +188,7 @@ public class ReviewServiceImpl implements ReviewService {
                     .quarter(historyDTO.getQuarter())
                     .reviewStatus(ReviewStatus.N)
                     .writeTime(null)
-                    .reviewerId(departmentInEmployee.getId())
+                    .reviewerId(teamInEmployee.getId())
                     .revieweeId(historyDTO.getRevieweeId())
                     .build();
 
