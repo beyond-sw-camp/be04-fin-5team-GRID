@@ -58,6 +58,7 @@
 </template>
 
 <script setup>
+
 import ModifyInfo from '@/components/HumanResources/ModifyInfo.vue';
 import ResetPwd from '@/components/Login/ResetPassword.vue';
 import { ref, onMounted, computed } from 'vue';
@@ -81,12 +82,13 @@ const profileUrl = computed(() => {
 
 const sealUrl = computed(() => {
     return sealPath.value ? `${sealPath.value}?t=${new Date().getTime()}` : defaultSealImage;
-})
+});
 
 const fileInput = ref(null);
 const sealFileInput = ref(null);
 
 const cleanUserData = (userData) => {
+
     return {
         id: user.value.id,
         email: userData.email,
@@ -110,14 +112,20 @@ const cleanUserData = (userData) => {
     };
 };
 
+
+
 const triggerFileUpload = (inputType) => {
+
     const input = inputType === 'fileInput' ? fileInput.value : sealFileInput.value;
     if (input) {
         input.click();
     }
 };
 
+
+
 const uploadProfileImage = async (event) => {
+
     const file = event.target.files[0];
     if (!file) return;
 
@@ -132,61 +140,71 @@ const uploadProfileImage = async (event) => {
                 'Content-Type': 'multipart/form-data'
             }
         });
+
         alert("프로필 이미지가 업로드 되었습니다.");
         console.log(response.data);
-        console.log(response.data.result);
         profilePath.value = response.data.result;
-        console.log("Updated profilePath: ", profilePath.value);
+
     } catch (error) {
+
         console.error("이미지 업로드 중 오류 발생: ", error);
         alert("이미지 업로드 중 오류가 발생했습니다.");
     }
 };
 
+
 const uploadSealImage = async (event) => {
+
     const file = event.target.files[0];
     if (!file) return;
 
     const formData = new FormData();
+
     formData.append('file', file);
     formData.append('id', user.value.id);
     formData.append('typeId', 1);
 
     try {
+
         const response = await axios.put('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/img', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
         });
+
         alert("인감 이미지가 업로드 되었습니다.");
         console.log(response.data);
-        console.log(response.data.result);
         sealPath.value = response.data.result;
-        console.log("Updated sealPath: ", sealPath.value);
+
     } catch (error) {
+
         console.error("이미지 업로드 중 오류 발생: ", error);
         alert("이미지 업로드 중 오류가 발생했습니다.");
     }
 };
 
 const submitModifications = async () => {
+
     try {
         if (updatedUser.value.callNumber == '-') {
             updatedUser.value.callNumber = null;
         }
-        const cleanedData = cleanUserData(updatedUser.value);  // 변경된 데이터가 제대로 반영되었는지 확인
-        console.log('변경될 정보 확인 cleanedData: ', cleanedData);
+
+        const cleanedData = cleanUserData(updatedUser.value);
         const response = await axios.put(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/${user.value.id}`, cleanedData);
         alert("수정이 완료되었습니다.");
         router.push(`/hr/profile/${cleanedData.employeeNumber}`);
     } catch (error) {
+
         if (error.response && error.response.data && error.response.data.message) {
             console.error("수정 중 오류 발생: ", error.response.data.message);
             let errorMessage = error.response.data.message;
-            if (errorMessage.length > 100) {  // 원하는 길이로 제한
+            if (errorMessage.length > 100) {
                 errorMessage = errorMessage.substring(0, 100) + "...";
             }
+
             alert("수정 중 오류가 발생했습니다: " + errorMessage);
+
         } else {
             console.error("수정 중 오류 발생: ", error.message);
             alert("수정 중 오류가 발생했습니다: " + error.message);
@@ -194,7 +212,10 @@ const submitModifications = async () => {
     }
 };
 
+
+
 const closeModal = () => {
+
     const modalElement = document.getElementById('myModal');
     const modalInstance = bootstrap.Modal.getInstance(modalElement);
 
@@ -206,9 +227,14 @@ const closeModal = () => {
     if (modalBackdrop) {
         modalBackdrop.remove();
     }
+
+    document.body.classList.remove('modal-open');
 };
 
+
+
 const updateUser = (newData) => {
+
     updatedUser.value = {
         ...updatedUser.value,
         ...newData,
@@ -217,10 +243,15 @@ const updateUser = (newData) => {
         positionId: newData.positionId !== undefined ? newData.positionId : user.value.position?.id,
         dutiesId: newData.dutiesId !== undefined ? newData.dutiesId : user.value.duties?.id,
     };
+
     console.log("Updated user: ", updatedUser.value);
+
 };
 
+
+
 onMounted(() => {
+
     const userData = sessionStorage.getItem('user');
     if (userData) {
         const parsedUser = JSON.parse(userData);
@@ -230,10 +261,14 @@ onMounted(() => {
             updatedUser.value = { ...user.value };
             sealPath.value = user.value.sealPath;
             profilePath.value = user.value.profilePath;
+
         } else {
+
             console.error("유저 정보가 올바르지 않습니다. ID가 없습니다.");
         }
+
     } else {
+
         console.error("SessionStorage에 유저 정보가 없습니다.");
     }
 

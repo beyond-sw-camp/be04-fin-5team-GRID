@@ -264,32 +264,24 @@ const handleTeamDragEnd = async (event) => {
 };
 
 const addTokenTime = async () => {
-  try {
-      const confirmed = window.confirm('접속시간을 연장하시겠습니까?');
-      if (confirmed) {
-        const refreshToken = Cookies.get('refresh');
-        console.log(refreshToken);
+    try {
+        const confirmed = window.confirm('접속시간을 연장하시겠습니까?');
+        if (confirmed) {
+            const response = await axios.post(
+                'http://grid-frontend-env-1.eba-xymvvqgw.ap-northeast-2.elasticbeanstalk.com/tokens/re-auth',
+                {},
+                {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    withCredentials: true 
+                }
+            );
 
-
-        if (!refreshToken) {
-        alert('Refresh 토큰이 없습니다.');
-        return;
-      }
-
-        const response = await axios.post(
-        'http://grid-frontend-env-1.eba-xymvvqgw.ap-northeast-2.elasticbeanstalk.com/tokens/re-auth',
-        {},
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            'Cookie': `refresh=${refreshToken}`,
-          },
-        }
-      );
-        localStorage.setItem('access', response.data.access); // 새로운 access 토큰 저장
-        alert('접속시간이 연장되었습니다!');
-        window.location.reload();  
-      } 
+            localStorage.setItem('access', response.data.access); 
+            alert('접속시간이 연장되었습니다!');
+            window.location.reload();  
+        } 
     } catch (error) {
         console.error("Error:", error);
         alert("토큰 갱신에 실패했습니다.");
@@ -298,47 +290,39 @@ const addTokenTime = async () => {
 
 const getNewToken = async () => {
     try {
-      const confirmed = window.confirm('접속시간을 연장하시겠습니까?');
-      if (confirmed) {
-        const refreshToken = Cookies.get('refresh');
-        console.log(refreshToken);
+        const confirmed = window.confirm('접속시간을 연장하시겠습니까?');
+        if (confirmed) {
+            const response = await axios.post(
+                'http://grid-frontend-env-1.eba-xymvvqgw.ap-northeast-2.elasticbeanstalk.com/tokens/re-auth',
+                {},
+                {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    withCredentials: true // httpOnly 쿠키 전송을 위해 필요
+                }
+            );
 
-        if (!refreshToken) {
-        alert('Refresh 토큰이 없습니다.');
-        return;
-      }
-      const response = await axios.post(
-        'http://grid-frontend-env-1.eba-xymvvqgw.ap-northeast-2.elasticbeanstalk.com/tokens/re-auth',
-        {},
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            'Cookie': `refresh=${refreshToken}`,
-          },
+            localStorage.setItem('access', response.data.access); // 새로운 access 토큰 저장
+            alert('접속시간이 연장되었습니다!');
+            window.location.reload();  
+        } else {
+            alert("접속시간 연장을 취소했습니다. 로그아웃합니다.");
+            await axios.post(
+                'http://grid-frontend-env-1.eba-xymvvqgw.ap-northeast-2.elasticbeanstalk.com/logout',
+                {},
+                {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    withCredentials: true // httpOnly 쿠키 전송을 위해 필요
+                }
+            );
+            localStorage.removeItem('access');
+            localStorage.removeItem('email');
+            store.dispatch('resetState');
+            router.push('/');
         }
-      );
-        localStorage.setItem('access', response.data.access); // 새로운 access 토큰 저장
-        alert('접속시간이 연장되었습니다!');
-        window.location.reload();  
-      } else {
-        alert("접속시간 연장을 취소했습니다. 로그아웃합니다.");
-        await axios.post(
-      'http://grid-frontend-env-1.eba-xymvvqgw.ap-northeast-2.elasticbeanstalk.com/logout',
-      {},
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'Cookie': `refresh=${refreshToken}`,
-        },
-        withCredentials: true,
-      }
-    );
-        localStorage.removeItem('access');
-        localStorage.removeItem('email');
-        store.dispatch('resetState');
-        router.push('/');
-      }
-        
     } catch (error) {
         console.error("Error:", error);
         alert("토큰 갱신에 실패했습니다.");
@@ -431,35 +415,26 @@ onMounted(() => {
 });
 
 const logout = async () => {
-  try {
+    try {
+        await axios.post(
+            'http://grid-frontend-env-1.eba-xymvvqgw.ap-northeast-2.elasticbeanstalk.com/logout',
+            {},
+            {
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                withCredentials: true // httpOnly 쿠키 전송을 위해 필요
+            }
+        );
 
-    const refreshToken = Cookies.get('refresh');
-    console.log(refreshToken);
-
-    if (!refreshToken) {
-      alert('Refresh 토큰이 없습니다.');
-      return;
+        localStorage.removeItem('access');
+        localStorage.removeItem('email');
+        store.dispatch('resetState');
+        alert('로그아웃 되었습니다');
+        router.push('/');
+    } catch (error) {
+        console.error('로그아웃 중 오류가 발생했습니다:', error);
     }
-
-    await axios.post(
-      'http://grid-frontend-env-1.eba-xymvvqgw.ap-northeast-2.elasticbeanstalk.com/logout',
-      {},
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'Cookie': `refresh=${refreshToken}`,
-        },
-        withCredentials: true,
-      }
-    );
-    localStorage.removeItem('access');
-    localStorage.removeItem('email');
-    store.dispatch('resetState');
-    alert('로그아웃 되었습니다');
-    router.push('/');
-  } catch (error) {
-    console.error('로그아웃 중 오류가 발생했습니다:', error);
-  }
 };
 
 function main() {

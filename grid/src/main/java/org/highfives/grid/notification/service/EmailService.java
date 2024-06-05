@@ -4,7 +4,9 @@ import org.springframework.stereotype.Service;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 import java.util.Properties;
 
 @Service
@@ -41,8 +43,16 @@ public class EmailService {
             // Set Subject: header field
             message.setSubject(subject);
 
+            MimeBodyPart messageBodyPart = new MimeBodyPart();
+            messageBodyPart.setContent(body, "text/html; charset=utf-8");
+
+            Multipart multipart = new MimeMultipart();
+            multipart.addBodyPart(messageBodyPart);
+
+            message.setContent(multipart);
+
             // Now set the actual message
-            message.setText(body);
+//            message.setText(body);
 
             System.out.println("Sending...");
 
