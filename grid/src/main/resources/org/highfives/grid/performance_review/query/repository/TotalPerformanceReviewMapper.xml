@@ -46,7 +46,8 @@
         ON A.reviewer_id = reviewer.id
         JOIN review_grade as grade
         ON A.total_id = grade.id
-        WHERE A.reviewee_id = #{employeeId};
+        WHERE A.reviewee_id = #{employeeId}
+        ORDER BY A.year DESC
     </select>
 
     <select id="selectTotalByReviewerId" resultMap="totalResultMap" parameterType="int">
@@ -68,7 +69,8 @@
         ON A.reviewer_id = reviewer.id
         JOIN review_grade as grade
         ON A.total_id = grade.id
-        WHERE A.reviewer_id = #{employeeId};
+        WHERE A.reviewer_id = #{employeeId}
+        ORDER BY A.year DESC
     </select>
 
     <select id="selectAllTotal" resultMap="totalResultMap">
@@ -90,6 +92,7 @@
         ON A.reviewer_id = reviewer.id
         JOIN review_grade as grade
         ON A.total_id = grade.id
+        ORDER BY A.year DESC
     </select>
 
     <select id="selectTotalById" resultMap="totalResultMap" parameterType="int">

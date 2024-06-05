@@ -36,12 +36,12 @@
         </tbody>
       </table>
     </div>
-    <div class="GoalButtonContainer">
+    <div class="GoalButtonContainer" v-if="!isReadOnly">
       <div class="buttonWrapper">
         <button class="performanceBtn" v-if="isMember" @click="memberSave()">저장</button>
         <button class="performanceBtn" v-if="isMember" @click="submit()">상신</button>
         <button class="performanceBtn" v-if="!isMember" @click="leaderSave()">저장</button>
-        <button class="performanceBtn" v-if="!isMember" @click="complete()">확인</button>
+        <!--        <button class="performanceBtn" v-if="!isMember" @click="complete()">확인</button>-->
         <button class="performanceBtn" v-if="!isMember" @click="valid()">확정</button>
       </div>
     </div>
@@ -257,7 +257,7 @@ const fetchReviewDetail = async () => {
         isReadOnly.value = false;
       console.log(reviewDetail.value.status);
     } else {
-      if (reviewDetail.value.status === '상신' || reviewDetail.value.status === '확인 중' || reviewDetail.value.status === '확인 완료')
+      if (reviewDetail.value.status === '상신' || reviewDetail.value.status === '확인 중' || reviewDetail.value.status === '확인')
         isReadOnly.value = false;
     }
   } catch (error) {
@@ -286,9 +286,9 @@ const getApprovalStatus = (status) => {
       if (!isMember.value) {
         isReadOnly.value = false;
       }
-      return '확인 완료';
+      return '확인';
     case 'V':
-      return '확정 완료';
+      return '확정';
     default:
       return '기타';
   }
@@ -312,7 +312,7 @@ onMounted(() => {
       if (user.value.duties.dutiesName === '팀장')
         isMember.value = false;
 
-      console.log('멤버확인',isMember.value);
+      console.log('멤버확인', isMember.value);
       fetchReviewDetail();
 
     }
@@ -447,10 +447,11 @@ async function leaderSave() {
   if (reviewDetail.value.status === '상신' || reviewDetail.value.status === '확인 중') {
     if (confirm("평가를 저장하시겠습니까?")) {
 
+      console.log('저장 확인:', reviewItemList.value);
       // 필수 값이 입력되지 않은 경우
       for (const item of reviewItemList.value) {
         if (!item.goal || !item.actionItem || !item.metric || item.weight === undefined || item.weight === 0
-            || item.weight === null || !item.detailPlan || !item.performance || item.selfComment
+            || item.weight === null || !item.detailPlan || !item.performance || !item.selfComment
             || !item.selfId || !item.selfScore || !item.superiorId || !item.superiorScore) {
           alert('저장 시 모든 필수 값을 입력해야 합니다.');
           return;
@@ -547,7 +548,7 @@ async function complete() {
 
 // 팀장 확정(complete)
 async function valid() {
-  if (reviewDetail.value.status === '확인 완료') {
+  if (reviewDetail.value.status === '상신' || reviewDetail.value.status === '확인 중' || reviewDetail.value.status === '확인') {
     if (confirm("평가를 확정하시겠습니까?")) {
 
       // 필수 값이 입력되지 않은 경우
@@ -560,37 +561,37 @@ async function valid() {
         }
       }
 
-  const sendData = {
-    reviewId: reviewDetail.value.id,
-    performanceReviewItemList: reviewItemList.value.map(item => ({
-      id: item.id,
-      goal: item.goal,
-      actionItem: item.actionItem,
-      metric: item.metric,
-      detailPlan: item.detailPlan,
-      weight: item.weight,
-      performance: item.performance,
-      selfId: item.selfId,
-      selfScore: item.selfScore,
-      selfComment: item.selfComment,
-      superiorId: item.superiorId,
-      superiorScore: item.superiorScore,
-      reviewId: reviewDetail.value.id
-    }))
-  };
-  console.log(sendData);
-  try {
-    await axios.put(
-        `http://localhost:8080/performance-review/valid`,
-        sendData
-    );
+      const sendData = {
+        reviewId: reviewDetail.value.id,
+        performanceReviewItemList: reviewItemList.value.map(item => ({
+          id: item.id,
+          goal: item.goal,
+          actionItem: item.actionItem,
+          metric: item.metric,
+          detailPlan: item.detailPlan,
+          weight: item.weight,
+          performance: item.performance,
+          selfId: item.selfId,
+          selfScore: item.selfScore,
+          selfComment: item.selfComment,
+          superiorId: item.superiorId,
+          superiorScore: item.superiorScore,
+          reviewId: reviewDetail.value.id
+        }))
+      };
+      console.log(sendData);
+      try {
+        await axios.put(
+            `http://localhost:8080/performance-review/valid`,
+            sendData
+        );
 
-    alert('평가를 확정했습니다.')
-    window.location.reload();
-  } catch (error) {
-    console.error('Error sending data:', error);
-    alert('평가를 확정할 수 없습니다.')
-  }
+        alert('평가를 확정했습니다.')
+        window.location.reload();
+      } catch (error) {
+        console.error('Error sending data:', error);
+        alert('평가를 확정할 수 없습니다.')
+      }
     }
   } else {
     alert('평가를 확정할 수 없습니다.')

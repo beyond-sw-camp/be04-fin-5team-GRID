@@ -38,7 +38,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr v-for="(item, index) in reviewItemList" :key="item.id">
+        <tr v-for="(item, index) in finReviewItemList" :key="item.id">
           <td>{{ index + 1 }}</td>
           <td>
             {{ item.goal }}
@@ -63,15 +63,24 @@
       </table>
     </div>
     <div class="scoreTableContainer">
+      <span>중간 점수 * 0.3 + 연말 점수 * 0.7 = 종합 점수</span>
       <div class="scoreTable">
         <table>
           <thead>
           <tr>
-            <td>점수</td>
-            <td>{{ totalDetail.totalScore }}</td>
+            <td>중간 점수</td>
+            <td>{{ Math.round(midScore * 100) / 100 }}</td>
+            <td>연말 점수</td>
+            <td>{{ Math.round(finScore * 100) / 100 }}</td>
+            <td>종합 점수</td>
+            <td>{{ Math.round(totalDetail.totalScore * 100) / 100 }}</td>
           </tr>
           <tr>
-            <td>등급</td>
+            <td>중간 등급</td>
+            <td>{{ midGrade }}</td>
+            <td>연말 등급</td>
+            <td>{{ finGrade }}</td>
+            <td>종합 등급</td>
             <td>{{ totalDetail.totalGrade }}</td>
           </tr>
           </thead>
@@ -88,7 +97,13 @@ import axios from 'axios';
 
 const router = useRouter();
 
-const reviewItemList = ref([]);
+const midReviewItemList = ref([]);
+const finReviewItemList = ref([]);
+
+const midScore = ref(null);
+const finScore = ref(null);
+const midGrade = ref(null);
+const finGrade = ref(null);
 
 const totalDetail = ref({
   id: '',
@@ -130,17 +145,47 @@ const fetchReviewDetail = async () => {
 
     console.log(totalDetail.value);
 
+    // 중간 평가 조회하기
+    const midtermId = totalDetail.value.midtermId;
+    const responseMid = await axios.get(`http://localhost:8080/performance-review/detail/${midtermId}`);
+    console.log(responseMid.data);
+    if (responseMid.data.findDetailReview) {
+      const reviewMid = responseMid.data.findDetailReview;
+      midReviewItemList.value = reviewMid.reviewItemList;
+    }
+    console.log(midReviewItemList.value);
+
+    // 중간 평가 점수와 등급
+    let scoreM = 0;
+    for (const midItem of midReviewItemList.value) {
+      scoreM += midItem.superiorScore;
+    }
+
+    midScore.value = scoreM;
+    midGrade.value = mappingScoreGrade(scoreM);
+
+
     // 연말 평가 조회하기
     const finalId = totalDetail.value.finalId;
-    const response = await axios.get(`http://localhost:8080/performance-review/detail/${finalId}`);
-    if (response.data.findDetailReview) {
-      const review = response.data.findDetailReview;
-      reviewItemList.value = review.reviewItemList;
+    const responseFin = await axios.get(`http://localhost:8080/performance-review/detail/${finalId}`);
+    if (responseFin.data.findDetailReview) {
+      const reviewFin = responseFin.data.findDetailReview;
+      finReviewItemList.value = reviewFin.reviewItemList;
     }
+
+    // 연말 평가 점수와 등급
+    let scoreF = 0;
+    for (const finItem of finReviewItemList.value) {
+      scoreF += finItem.superiorScore;
+    }
+
+    finScore.value = scoreF;
+    finGrade.value = mappingScoreGrade(scoreF);
 
   } catch (error) {
     console.error('에러 발생:', error);
     alert("종합 평가를 조회할 수 없습니다.")
+    router.push(`/performance-review/total`);
   }
 };
 
@@ -148,14 +193,20 @@ onMounted(() => {
   fetchReviewDetail();
 });
 
-// 점수 계산
-const scoreMapping = {
-  1: 95, // S
-  2: 85,  // A
-  3: 75,  // B+
-  4: 65,  // B
-  5: 55   // C
-};
+const mappingScoreGrade = (score) => {
+  console.log('점수', score);
+  if (score <= 95 && score > 85)
+    return 'S';
+  if (score <= 85 && score > 75)
+    return 'A'
+  if (score <= 75 && score > 65)
+    return 'B+'
+  if (score <= 65 && score > 55)
+    return 'B'
+  if (score <= 55)
+    return 'C'
+}
+
 
 </script>
 
@@ -227,7 +278,7 @@ const scoreMapping = {
   grid-column-start: 2;
   grid-column-end: 3;
   display: grid;
-  grid-template-columns: 70% 30%;
+  grid-template-columns: 50% 50%;
 }
 
 .scoreTable {
