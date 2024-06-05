@@ -25,7 +25,7 @@ application:
       refresh-token:
         expiration_time: 86400000 #1
   redis:
-    host: ENC(zMQ28iRF5X7jpiV/eDnfEBmsYDQKf4m8SP3m3V7Ila2KbxhpTxWGPIRkvT7g1QENK6C5jTc/SQ/R/flX3UthGF3SWY/s31PxcbDs2mTGcfs=)
+    host: ENC(TK4u3+ixOmAz6UsqZusBkOTtF6iulguacvZoN9w3iaDJSofL8zSXlj+HA+tALRhlFnhbhn1N9kn6ZgP19tT+aGCM79R3/ord)
     port: ENC(1zFLi5HV6FlxgxsBlk+WYA==)
 
 cloud:
