@@ -130,7 +130,10 @@
                     </div>
                     <div class="mb-3">
                         <label for="dayOfUsing" class="form-label">휴가 사용기한</label>
-                        <VueDatePicker locale="ko" :enable-time-picker="false" :min-date="new Date()" v-model="date" class="inputField" />
+                        <b-form-input type="date" id="start" :min="new Date().toISOString().split('T')[0]" v-model="date" required></b-form-input>
+                        <div class="invalid-feedback">
+                            휴가 사용기한을 입력해주세요.
+                        </div>    
                     </div>
                     <div class="button-container">
                         <button type="submit" class="btn btn-primary">지급</button>
