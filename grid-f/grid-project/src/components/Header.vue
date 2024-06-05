@@ -4,7 +4,7 @@
       <div class="logo">
         <img src="@/assets/logo.png" @click="main()" class="logoimage" style="cursor: pointer;">
       </div>
-      
+
       <div class="icons">
         <div class="tokenArea">
           <span class="token-timer">{{ timeLeft }}</span>
@@ -13,11 +13,9 @@
         <button class="icon-button" type="button" data-bs-toggle="offcanvas" data-bs-target="#demo">
           <img src="@/assets/people.png" alt="Button 2" class="icon-image" />
         </button>
-        
+
         <div class="dropdown">
-          <img
-            :src="profileUrl"
-            alt="profile" class="profile" @click="toggleDropdown">
+          <img :src="profileUrl" alt="profile" class="profile" @click="toggleDropdown">
           <ul class="dropdown-menu" ref="dropdownMenu">
             <li><a class="dropdown-item" href="#" @click="goProfile">개인 정보</a></li>
             <li><a class="dropdown-item" href="#" @click="logout">로그 아웃</a></li>
@@ -33,32 +31,36 @@
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
       </div>
       <div class="offcanvas-body" style="position: relative;">
-        <draggable v-model="departments" @end="handleDragEnd" tag="ul" class="list-group" :itemKey="item => item.id" :disabled="userRole === 'ROLE_USER'">
+        <draggable v-model="departments" @end="handleDragEnd" tag="ul" class="list-group" :itemKey="item => item.id"
+          :disabled="userRole === 'ROLE_USER'">
           <template #item="{ element, index }">
             <li class="list-group-item" :data-id="element.id">
               <div @click="toggleTeams(element.id)" style="cursor: pointer;">
                 {{ element.departmentName }}
               </div>
-              <draggable v-if="element.showTeams" v-model="element.teams" :group="{ name: 'teams', pull: true, put: true }" @end="handleTeamDragEnd($event)" class="list-group" :itemKey="item => item.id" :disabled="userRole === 'ROLE_USER'">
+              <draggable v-if="element.showTeams" v-model="element.teams"
+                :group="{ name: 'teams', pull: true, put: true }" @end="handleTeamDragEnd($event)" class="list-group"
+                :itemKey="item => item.id" :disabled="userRole === 'ROLE_USER'">
                 <template #item="{ element: team }">
-                  <li class="list-group-item">
-                    <div @click="toggleEmployees(team.id)" style="cursor: pointer;">
-                      {{ team.teamName }}
-                    </div>
-                    <ul v-if="team.showEmployees">
-                      <li v-for="employee in team.employees" :key="employee.id" @click="goToProfile(employee.employeeNumber)" style="cursor: pointer;">
-                        {{ employee.name }}
-                      </li>
-                    </ul>
-                  </li>
-                </template>
-              </draggable>
+            <li class="list-group-item">
+              <div @click="toggleEmployees(team.id)" style="cursor: pointer;">
+                {{ team.teamName }}
+              </div>
+              <ul v-if="team.showEmployees">
+                <li v-for="employee in team.employees" :key="employee.id" @click="goToProfile(employee.employeeNumber)"
+                  style="cursor: pointer;">
+                  {{ employee.name }}
+                </li>
+              </ul>
             </li>
           </template>
         </draggable>
-      </div>
-    </div>
-  </div>
+        </li>
+</template>
+</draggable>
+</div>
+</div>
+</div>
 </template>
 
 <script setup>
@@ -264,77 +266,77 @@ const handleTeamDragEnd = async (event) => {
 };
 
 const addTokenTime = async () => {
-    try {
-        const confirmed = window.confirm('접속시간을 연장하시겠습니까?');
-        if (confirmed) {
-            const response = await axios.post(
-                'http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/tokens/re-auth',
-                {},
-                {
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    withCredentials: true 
-                }
-            );
+  try {
+    const confirmed = window.confirm('접속시간을 연장하시겠습니까?');
+    if (confirmed) {
+      const response = await axios.post(
+        'http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/tokens/re-auth',
+        {},
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          withCredentials: true
+        }
+      );
 
-            localStorage.setItem('access', response.data.access); 
-            alert('접속시간이 연장되었습니다!');
-            window.location.reload();  
-        } 
-    } catch (error) {
-        console.error("Error:", error);
-        alert("토큰 갱신에 실패했습니다.");
+      localStorage.setItem('access', response.data.access);
+      alert('접속시간이 연장되었습니다!');
+      window.location.reload();
     }
+  } catch (error) {
+    console.error("Error:", error);
+    alert("토큰 갱신에 실패했습니다.");
+  }
 };
 
 const getNewToken = async () => {
-    try {
-        const confirmed = window.confirm('접속시간을 연장하시겠습니까?');
-        if (confirmed) {
-            const response = await axios.post(
-                'http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/tokens/re-auth',
-                {},
-                {
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    withCredentials: true // httpOnly 쿠키 전송을 위해 필요
-                }
-            );
-
-            localStorage.setItem('access', response.data.access); // 새로운 access 토큰 저장
-            alert('접속시간이 연장되었습니다!');
-            window.location.reload();  
-        } else {
-            alert("접속시간 연장을 취소했습니다. 로그아웃합니다.");
-            await axios.post(
-                'http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/logout',
-                {},
-                {
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    withCredentials: true // httpOnly 쿠키 전송을 위해 필요
-                }
-            );
-            localStorage.removeItem('access');
-            localStorage.removeItem('email');
-            store.dispatch('resetState');
-            router.push('/');
+  try {
+    const confirmed = window.confirm('접속시간을 연장하시겠습니까?');
+    if (confirmed) {
+      const response = await axios.post(
+        'http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/tokens/re-auth',
+        {},
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          withCredentials: true // httpOnly 쿠키 전송을 위해 필요
         }
-    } catch (error) {
-        console.error("Error:", error);
-        alert("토큰 갱신에 실패했습니다.");
+      );
+
+      localStorage.setItem('access', response.data.access); // 새로운 access 토큰 저장
+      alert('접속시간이 연장되었습니다!');
+      window.location.reload();
+    } else {
+      alert("접속시간 연장을 취소했습니다. 로그아웃합니다.");
+      await axios.post(
+        'http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/logout',
+        {},
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          withCredentials: true // httpOnly 쿠키 전송을 위해 필요
+        }
+      );
+      localStorage.removeItem('access');
+      localStorage.removeItem('email');
+      store.dispatch('resetState');
+      router.push('/');
     }
+  } catch (error) {
+    console.error("Error:", error);
+    alert("토큰 갱신에 실패했습니다.");
+  }
 };
 
 
 
 function isTokenExpired(token) {
-    const payload = JSON.parse(atob(token.split('.')[1]));
-    const exp = payload.exp * 1000; // Expiration time in milliseconds
-    return Date.now() > exp;
+  const payload = JSON.parse(atob(token.split('.')[1]));
+  const exp = payload.exp * 1000; // Expiration time in milliseconds
+  return Date.now() > exp;
 }
 
 function calculateTimeLeft(token) {
@@ -350,22 +352,22 @@ function calculateTimeLeft(token) {
 }
 
 function checkToken() {
-    const token = localStorage.getItem('access'); // access 토큰을 저장한 위치에 따라 변경
-    if (token) {
-        timeLeft.value = calculateTimeLeft(token);
-        if (isTokenExpired(token) && !isTokenChecking.value) {
-            isTokenChecking.value = true;
-            getNewToken().finally(() => {
-                isTokenChecking.value = false;
-            });
-        }
-    } else {
-        timeLeft.value = '로그인 해주세요.';
+  const token = localStorage.getItem('access'); // access 토큰을 저장한 위치에 따라 변경
+  if (token) {
+    timeLeft.value = calculateTimeLeft(token);
+    if (isTokenExpired(token) && !isTokenChecking.value) {
+      isTokenChecking.value = true;
+      getNewToken().finally(() => {
+        isTokenChecking.value = false;
+      });
     }
+  } else {
+    timeLeft.value = '로그인 해주세요.';
+  }
 }
 
 // 주기적으로 토큰 상태를 확인
-setInterval(checkToken, 100); 
+setInterval(checkToken, 100);
 
 function parseJwt(token) {
   try {
@@ -415,26 +417,26 @@ onMounted(() => {
 });
 
 const logout = async () => {
-    try {
-        await axios.post(
-            'http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/logout',
-            {},
-            {
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                withCredentials: true // httpOnly 쿠키 전송을 위해 필요
-            }
-        );
+  try {
+    await axios.post(
+      'http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/logout',
+      {},
+      {
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        withCredentials: true // httpOnly 쿠키 전송을 위해 필요
+      }
+    );
 
-        localStorage.removeItem('access');
-        localStorage.removeItem('email');
-        store.dispatch('resetState');
-        alert('로그아웃 되었습니다');
-        router.push('/');
-    } catch (error) {
-        console.error('로그아웃 중 오류가 발생했습니다:', error);
-    }
+    localStorage.removeItem('access');
+    localStorage.removeItem('email');
+    store.dispatch('resetState');
+    alert('로그아웃 되었습니다');
+    router.push('/');
+  } catch (error) {
+    console.error('로그아웃 중 오류가 발생했습니다:', error);
+  }
 };
 
 function main() {
@@ -452,6 +454,10 @@ onMounted(fetchDepartments);
   src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_20-07@1.0/IBMPlexSansKR-Regular.woff') format('woff');
   font-weight: normal;
   font-style: normal;
+}
+
+.logoimgae {
+  filter: invert(100%) sepia(65%) saturate(424%) hue-rotate(91deg) brightness(129%) contrast(107%);
 }
 
 .header {
@@ -502,6 +508,7 @@ onMounted(fetchDepartments);
 .icon-image {
   width: 25px;
   height: 25px;
+  filter: invert(100%) sepia(65%) saturate(424%) hue-rotate(91deg) brightness(129%) contrast(107%);
 }
 
 .list-group-item {
@@ -538,7 +545,7 @@ onMounted(fetchDepartments);
 }
 
 .token-timer {
-  color: black;
+  color: white;
   font-weight: 600;
   margin-right: 10px;
   margin-left: 10px;
@@ -547,13 +554,20 @@ onMounted(fetchDepartments);
 .tokenArea {
   align-items: center;
   justify-content: center;
-  margin-right:20px;
+  margin-right: 20px;
   padding: 5px;
-  border: 1px solid black;
 }
 
 .tokenArea button {
   background-color: #77B0AA;
   color: black;
+}
+
+.newToken {
+  color: white;
+  padding: 5px 5px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
 }
 </style>

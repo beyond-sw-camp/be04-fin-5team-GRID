@@ -37,7 +37,8 @@ import ResetPassword from '@/components/Login/ResetPassword.vue';
 
 const router = useRouter();
 const route = useRoute();
-const givenEmail = route.params.email;
+
+const givenEmail = atob(route.params.email);
 
 
 function login() {
