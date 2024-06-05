@@ -398,7 +398,7 @@ const confirmResignation = () => {
         resignUser();
     }
 };
-
+// 테스트
 const resignUser = async () => {
     try {
         const response = await axios.put(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/${props.user.employeeNumber}/status`, {
