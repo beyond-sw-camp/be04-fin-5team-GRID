@@ -13,7 +13,7 @@ services:
     environment:
       SPRING_REDIS_HOST: redis
     ports:
-      - "5000:8080"
+      - "80:8080"
     depends_on:
       - redis
     command: [ "java", "-jar", "/app.jar", "--jasypt.encryptor.password=${JASYPT_PASSWORD}" ]
