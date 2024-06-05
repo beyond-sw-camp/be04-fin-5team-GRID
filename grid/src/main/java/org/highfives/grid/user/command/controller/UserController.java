@@ -90,7 +90,6 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity<ResUserVO> modifyUserInfo(@PathVariable("id") int id, @RequestBody UserDTO modifyInfo) {
 
-        System.out.println("modifyInfo = " + modifyInfo);
         if(!userService.idCheck(id, modifyInfo))
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new ResUserVO(400, "Unmatched Id info", "/users/{id}", null));

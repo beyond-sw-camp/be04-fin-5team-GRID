@@ -7,7 +7,7 @@
       </div>
       <button v-if="userRole === 'ROLE_ADMIN'" class="updateLeaderBtn" @click="showModal('updateLeaderModal')">부서장 수정</button>
       <button v-if="userRole === 'ROLE_ADMIN'" class="addbtn" @click="showModal('addNewModal')">추가하기</button>
-      <button v-if="userRole === 'ROLE_ADMIN'" class="modifybtn" @click="modifyDepartmentsStatus">수정하기</button>
+      <button v-if="userRole === 'ROLE_ADMIN'" class="modifybtn" @click="modifyDepartmentsStatus">활성/비활성</button>
     </div>
     <div class="search">
       <input type="text" class="searchBox" placeholder="부서명 검색" v-model="searchQuery">
@@ -210,7 +210,7 @@ const fetchDepartments = async () => {
       department.leaderName = await fetchLeaderName(department.leaderId);
     }
     departments.value = departmentsData.sort((a, b) => a.sequence - b.sequence); // sequence 순으로 정렬
-    filteredDepartments.value = departments.value; // Initialize filtered departments
+    search(); 
   } catch (error) {
     console.error('에러 발생:', error);
   }
@@ -226,6 +226,7 @@ const fetchLeaderName = async (leaderId) => {
     return 'Unknown';
   }
 };
+
 function parseJwt(token) {
     try {
         const base64Url = token.split('.')[1];
@@ -240,24 +241,35 @@ function parseJwt(token) {
     }
 }
 
-onMounted(() => {
+onMounted(async () => {
   const token = localStorage.getItem('access');
-    if (token) {
-        const decodedToken = parseJwt(token);
-        userRole.value = decodedToken?.auth || '';
-        userId.value = decodedToken?.id || '';
-    }
-  fetchDepartments();
-  fetchLeaders();
+  if (token) {
+    const decodedToken = parseJwt(token);
+    userRole.value = decodedToken?.auth || '';
+    userId.value = decodedToken?.id || '';
+  }
+  await fetchDepartments();
+  await fetchLeaders();
+  search(); // 초기 데이터 로드 후 필터링 적용
 });
 
 const filteredDepartments = ref([]);
 
 const search = () => {
-
-  filteredDepartments.value = departments.value.filter(department =>
+  // 검색어에 맞는 부서 필터링
+  let departmentsFiltered = departments.value.filter(department =>
     department.departmentName.includes(searchQuery.value)
   );
+
+  // 부서 상태와 사용자 권한에 따른 필터링 추가
+  filteredDepartments.value = departmentsFiltered.filter(department => {
+    // 부서 상태가 'N'인 경우 ROLE_ADMIN만 접근 가능
+    if (department.departmentStatus === 'N') {
+      return userRole.value === 'ROLE_ADMIN';
+    }
+    return true; // 다른 경우는 모두 접근 가능
+  });
+
   currentPage.value = 1;
 };
 
@@ -287,11 +299,22 @@ const showModal = (modalId) => {
   modal.show();
 };
 
+// Computed property to get list of leader IDs already assigned as department leaders
+const leaderIdsInDepartments = computed(() => {
+  return departments.value.map(department => department.leaderId);
+});
+
 const addNewDepartment = async () => {
   if (!newDepartment.value.leaderId) {
-    alert('부서장를 선택해야 합니다.');
+    alert('부서장을 선택해야 합니다.');
     return;
   }
+
+  if (leaderIdsInDepartments.value.includes(newDepartment.value.leaderId)) {
+    alert('이미 다른 부서의 부서장으로 등록된 사람입니다.');
+    return;
+  }
+
   try {
     await axios.post('http://localhost:8080/department', newDepartment.value);
     await fetchDepartments();
@@ -312,6 +335,10 @@ const addNewDepartment = async () => {
 };
 
 const selectLeader = (leader) => {
+  if (leaderIdsInDepartments.value.includes(leader.id)) {
+    alert('이미 다른 부서의 부서장으로 등록된 사람입니다.');
+    return;
+  }
   newDepartment.value.leaderId = leader.id;
   newDepartment.value.leaderName = leader.name;
   const modal = bootstrap.Modal.getInstance(document.getElementById('selectLeaderModal'));
@@ -319,6 +346,10 @@ const selectLeader = (leader) => {
 };
 
 const selectLeaderForUpdate = (leader) => {
+  if (leaderIdsInDepartments.value.includes(leader.id)) {
+    alert('이미 다른 부서의 부서장으로 등록된 사람입니다.');
+    return;
+  }
   newLeaderId.value = leader.id;
   newLeaderName.value = leader.name;
   const modal = bootstrap.Modal.getInstance(document.getElementById('selectLeaderModalForUpdate'));
@@ -350,6 +381,11 @@ const modifyDepartmentsStatus = async () => {
 };
 
 const toggleDepartmentSelection = (department) => {
+  if (selectedDepartments.value.length >= 1 && !isDepartmentSelected(department)) {
+    alert('한 개의 부서만 선택할 수 있습니다.');
+    return;
+  }
+
   const index = selectedDepartments.value.findIndex(d => d.id === department.id);
   if (index > -1) {
     selectedDepartments.value.splice(index, 1);

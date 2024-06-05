@@ -2,8 +2,22 @@
   <div class="container">
     <div class="header">
       <div class="header-title">
-        <img class="reviewIcon" src="@/assets/list-check.png" alt="list-check" />
-        <h1>팀 정보</h1>
+        <nav style="--bs-breadcrumb-divider: '>'; margin-top: -35px; margin-bottom: -7px;" aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a href="#" @click.prevent="goBack" style="text-decoration: none; color: grey; font-size: 17px;">
+                <i class="bi bi-person"></i>&nbsp; 팀 정보
+              </a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">
+              <span class="fw-bolder">
+                <i class="bi bi-briefcase"></i>&nbsp; {{ departmentName }}
+              </span>
+            </li>
+          </ol>
+        </nav>
+      </div>
+      <div class="department-name">
       </div>
     </div>
 
@@ -14,6 +28,7 @@
       </div>
       <div>
         <button @click="showModal('addNewTeamModal')" class="addTeamBtn" v-if="userRole === 'ROLE_ADMIN'">팀 추가</button>
+        <button @click="toggleTeamStatus" class="toggleStatusBtn" v-if="userRole === 'ROLE_ADMIN'">활성/비활성화</button>
         <button @click="showModal('updateLeaderModal')" class="updateLeaderBtn" v-if="userRole === 'ROLE_ADMIN'">팀장 수정</button>
       </div>
     </div>
@@ -21,23 +36,27 @@
     <table class="teamTable">
       <thead>
         <tr>
+          <th></th>
           <th>팀명</th>
           <th>인원</th>
           <th>시작 일</th>
           <th>종료일</th>
           <th>상위 부서명</th>
-          <th>책임자 명</th>
+          <th>팀장 명</th>
+          <th>상태</th>
           <th></th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="team in filteredTeams" :key="team.id">
+          <td><input type="checkbox" :value="team" v-model="selectedTeams" @change="checkSelectionLimit" /></td>
           <td>{{ team.teamName }}</td>
           <td>{{ team.memberCnt }}</td>
           <td>{{ formatDate(team.startTime) }}</td>
           <td>{{ formatDate(team.endTime) }}</td>
           <td>{{ team.departmentName }}</td>
           <td>{{ team.leaderName }}</td>
+          <td>{{ team.teamStatus }}</td>
           <td>
             <button class="view-details-btn" @click="goToTeamMembers(team.id)">자세히 보기</button>
           </td>
@@ -70,16 +89,16 @@
             <form @submit.prevent="addNewTeam">
               <div class="mb-3">
                 <label for="teamName" class="form-label">팀명</label>
-                <input type="text" class="form-control" id="teamName" v-model="newTeam.teamName" required>
+                <input type="text" class="form-control" id="teamName" v-model="newTeam.teamName" required />
               </div>
               <div class="mb-3">
                 <label for="departmentName" class="form-label">상위 부서명</label>
-                <input type="text" class="form-control" id="departmentName" v-model="newTeam.departmentName" readonly>
+                <input type="text" class="form-control" id="departmentName" v-model="newTeam.departmentName" readonly />
               </div>
               <div class="mb-3">
-                <label for="leaderName" class="form-label">책임자 명</label>
+                <label for="leaderName" class="form-label">팀장 명</label>
                 <div class="input-group">
-                  <input type="text" class="form-control" id="leaderName" v-model="newTeam.leaderName" readonly>
+                  <input type="text" class="form-control" id="leaderName" v-model="newTeam.leaderName" readonly />
                   <button type="button" class="btn btn-secondary" @click="showModal('selectLeaderModal')">조회</button>
                 </div>
               </div>
@@ -90,7 +109,7 @@
       </div>
     </div>
 
-    <!-- 책임자 선택 Modal -->
+    <!-- 팀장 선택 Modal -->
     <div class="modal fade" id="selectLeaderModal" tabindex="-1" aria-labelledby="selectLeaderModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -102,7 +121,7 @@
             <table class="table">
               <thead>
                 <tr>
-                  <th>책임자 명</th>
+                  <th>팀장 명</th>
                   <th>선택</th>
                 </tr>
               </thead>
@@ -118,7 +137,7 @@
       </div>
     </div>
 
-    <!-- 책임자 수정 Modal -->
+    <!-- 팀장 수정 Modal -->
     <div class="modal fade" id="updateLeaderModal" tabindex="-1" aria-labelledby="updateLeaderModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -137,7 +156,7 @@
               <div class="mb-3">
                 <label for="leaderName" class="form-label">팀장 명</label>
                 <div class="input-group">
-                  <input type="text" class="form-control" id="newLeaderName" v-model="newLeaderName" readonly>
+                  <input type="text" class="form-control" id="newLeaderName" v-model="newLeaderName" readonly />
                   <button type="button" class="btn btn-secondary" @click="showModal('selectLeaderModalForUpdate')">조회</button>
                 </div>
               </div>
@@ -148,7 +167,7 @@
       </div>
     </div>
 
-    <!-- 책임자 선택 Modal for Update -->
+    <!-- 팀장 선택 Modal for Update -->
     <div class="modal fade" id="selectLeaderModalForUpdate" tabindex="-1" aria-labelledby="selectLeaderModalForUpdateLabel" aria-hidden="true">
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -175,19 +194,18 @@
         </div>
       </div>
     </div>
-
   </div>
 </template>
 
-
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap';
 
 const route = useRoute();
+const router = useRouter();
 const departmentId = ref(route.params.id);
 const departmentName = ref('');
 const userRole = ref('');
@@ -195,11 +213,12 @@ const userId = ref('');
 
 const searchQuery = ref('');
 const currentPage = ref(1);
-const itemsPerPage = 5;
+const itemsPerPage = 10;
 const teams = ref([]);
 const allTeams = ref([]); // 전체 팀 정보를 저장할 변수
 const departments = ref([]);
 const leaders = ref([]);
+const selectedTeams = ref([]); // 선택된 팀 정보를 저장할 변수
 const newTeam = ref({
   teamName: '',
   departmentId: departmentId.value,
@@ -297,11 +316,24 @@ onMounted(() => {
 const filteredTeams = computed(() => {
   const start = (currentPage.value - 1) * itemsPerPage;
   const end = start + itemsPerPage;
-  return teams.value.slice(start, end);
+  
+  return teams.value
+    .filter(team => {
+      if (userRole.value !== 'ROLE_ADMIN' && team.teamStatus === 'N') {
+        return false; // 관리자가 아니고 상태가 N인 팀은 필터링
+      }
+      return true;
+    })
+    .slice(start, end);
 });
 
 const totalPages = computed(() => {
-  return Math.ceil(teams.value.length / itemsPerPage);
+  return Math.ceil(teams.value.filter(team => {
+    if (userRole.value !== 'ROLE_ADMIN' && team.teamStatus === 'N') {
+      return false; // 관리자가 아니고 상태가 N인 팀은 제외
+    }
+    return true;
+  }).length / itemsPerPage);
 });
 
 const prevPage = () => {
@@ -341,11 +373,22 @@ const showModal = (modalId) => {
   modal.show();
 };
 
+// Computed property to get list of leader IDs already assigned as team leaders
+const leaderIdsInTeams = computed(() => {
+  return teams.value.map(team => team.leaderId);
+});
+
 const addNewTeam = async () => {
   if (!newTeam.value.leaderId) {
     alert('팀장을 선택해야 합니다.');
     return;
   }
+
+  if (leaderIdsInTeams.value.includes(newTeam.value.leaderId)) {
+    alert('이미 다른 팀의 팀장으로 등록된 사람입니다.');
+    return;
+  }
+
   try {
     await axios.post('http://localhost:8080/team', {
       teamName: newTeam.value.teamName,
@@ -370,6 +413,11 @@ const addNewTeam = async () => {
 };
 
 const selectLeader = (leader) => {
+  if (leaderIdsInTeams.value.includes(leader.id)) {
+    alert('이미 다른 팀의 팀장으로 등록된 사람입니다.');
+    return;
+  }
+
   newTeam.value.leaderId = leader.id;
   newTeam.value.leaderName = leader.name;
   const modal = bootstrap.Modal.getInstance(document.getElementById('selectLeaderModal'));
@@ -381,6 +429,12 @@ const updateLeader = async () => {
     alert('팀장과 팀을 선택해야 합니다.');
     return;
   }
+
+  if (leaderIdsInTeams.value.includes(newLeaderId.value)) {
+    alert('이미 다른 팀의 팀장으로 등록된 사람입니다.');
+    return;
+  }
+
   try {
     await axios.put(`http://localhost:8080/team/team-leader`, {
       id: selectedTeamId.value,
@@ -400,12 +454,50 @@ const updateLeader = async () => {
 };
 
 const selectLeaderForUpdate = (leader) => {
+  if (leaderIdsInTeams.value.includes(leader.id)) {
+    alert('이미 다른 팀의 팀장으로 등록된 사람입니다.');
+    return;
+  }
+
   newLeaderId.value = leader.id;
   newLeaderName.value = leader.name;
   const modal = bootstrap.Modal.getInstance(document.getElementById('selectLeaderModalForUpdate'));
   modal.hide();
 };
+
+const toggleTeamStatus = async () => {
+  if (selectedTeams.value.length === 0) {
+    alert('활성화 또는 비활성화할 팀을 선택하세요.');
+    return;
+  }
+
+  try {
+    const response = await axios.put('http://localhost:8080/team/status', selectedTeams.value);
+
+    if (response.status === 200) {
+      alert('팀 상태가 수정되었습니다.');
+      await fetchTeams();
+      selectedTeams.value = [];
+    }
+  } catch (error) {
+    console.error('팀 상태를 수정하는 중 오류 발생:', error);
+    alert('팀 상태 수정 중 오류가 발생했습니다.');
+  }
+};
+
+const goBack = () => {
+  router.go(-1);
+};
+
+const checkSelectionLimit = () => {
+  if (selectedTeams.value.length >= 2) {
+    selectedTeams.value.pop(); // Remove the last selected item
+    alert('두 개 이상의 팀을 선택할 수 없습니다.');
+  }
+};
+
 </script>
+
 <style scoped>
 @font-face {
   font-family: 'IBMPlexSansKR-Regular';
@@ -442,6 +534,10 @@ const selectLeaderForUpdate = (leader) => {
 
 .reviewIcon {
   width: 30px; /* 이미지 크기 유지 */
+}
+
+.department-name {
+  margin-left: auto;
 }
 
 .addNewBtn {
@@ -505,6 +601,21 @@ const selectLeaderForUpdate = (leader) => {
 }
 
 .addTeamBtn:hover {
+  background-color: #065f5b;
+}
+
+.toggleStatusBtn {
+  background-color: #088A85;
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  margin-left: 10px;
+}
+
+.toggleStatusBtn:hover {
   background-color: #065f5b;
 }
 
@@ -600,4 +711,3 @@ tr:hover {
   background-color: #065f5b;
 }
 </style>
-

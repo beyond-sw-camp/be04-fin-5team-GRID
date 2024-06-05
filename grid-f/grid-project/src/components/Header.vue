@@ -224,7 +224,7 @@ const handleTeamDragEnd = async (event) => {
     let team;
     for (const department of departments.value) {
       const foundTeam = department.teams.find(t => t.id === teamId);
-      if (foundFound) {
+      if (foundTeam) {
         team = foundTeam;
         break;
       }

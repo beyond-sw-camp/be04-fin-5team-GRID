@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service(value = "commandTeamService")
 public class TeamServiceImpl implements TeamService{
@@ -105,6 +107,7 @@ public class TeamServiceImpl implements TeamService{
                     .teamStatus(currentTeamData.getTeamStatus())
                     .startTime(currentTeamData.getStartTime())
                     .endTime(currentTeamData.getEndTime())
+                    .memberCnt(currentTeamData.getMemberCnt())
                     .leaderId(teamDTO.getLeaderId())
                     .departmentId(currentTeamData.getDepartmentId())
                     .sequence(currentTeamData.getSequence())
@@ -114,5 +117,35 @@ public class TeamServiceImpl implements TeamService{
 
             return mapper.map(team, TeamDTO.class);
 
+    }
+
+    @Override
+    public List<TeamDTO> modifyTeamStatus(List<TeamDTO> teamDTO) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        List<TeamDTO> updatedTeams = teamDTO.stream().map(update -> {
+            Team currentTeamData = teamRepository.findById(update.getId())
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid team ID"));
+
+            TeamStatus newStatus = (update.getTeamStatus() == TeamStatus.Y) ? TeamStatus.N : TeamStatus.Y;
+            String endTime = TeamStatus.Y.equals(newStatus) ? null : dateFormat.format(new Date());
+
+            Team team = Team.builder()
+                    .id(update.getId())
+                    .memberCnt(currentTeamData.getMemberCnt())
+                    .teamName(currentTeamData.getTeamName())
+                    .teamStatus(newStatus)
+                    .startTime(currentTeamData.getStartTime())
+                    .endTime(endTime)
+                    .leaderId(currentTeamData.getLeaderId())
+                    .departmentId(currentTeamData.getDepartmentId())
+                    .sequence(currentTeamData.getSequence())
+                    .build();
+
+            teamRepository.save(team);
+            return mapper.map(team, TeamDTO.class);
+        }).collect(Collectors.toList());
+
+        return updatedTeams;
     }
 }

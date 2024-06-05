@@ -2,7 +2,7 @@
   <div class="container">
     <div class="header-title">
       <img class="reviewIcon" src="@/assets/list-check.png" alt="list-check" />
-      <h1>본인 평가 목록</h1>
+      <h1>평가 받은 목록</h1>
     </div>
 
     <div class="search-and-add">
@@ -26,7 +26,15 @@
           <td>{{ review.content }}</td>
           <td>{{ review.year }}</td>
           <td>{{ review.quarter }}</td>
-          <td><button @click="openModal(review.id, review.revieweeId)" class="view-details-btn">Check</button></td>
+          <td>
+            <button
+              @click="openModal(review.id, review.revieweeId)"
+              class="view-details-btn"
+              :disabled="review.reviewStatus === 'N'"
+            >
+              Check
+            </button>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -418,5 +426,10 @@ tr:hover {
 
 .view-details-btn:hover {
   background-color: #065f5b;
+}
+
+.view-details-btn:disabled {
+  background-color: grey;
+  cursor: not-allowed;
 }
 </style>

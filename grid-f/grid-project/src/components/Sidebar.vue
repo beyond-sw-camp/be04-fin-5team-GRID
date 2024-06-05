@@ -47,10 +47,10 @@
         <li>
           <span @click="toggleMenu('departmentEvaluation')">동료 평가</span>
           <ul v-show="activeMenus.departmentEvaluation">
-            <li @click="goToTeamMyReview">본인 평가 목록</li>
-            <li @click="goToTeamReviewList">동료 평가 작성</li>
-            <li @click="goToAddTeamReview" v-if="userRole === 'ROLE_ADMIN'">평가 생성</li>
-            <li @click="goToTeamReviewHistory" v-if="userRole === 'ROLE_ADMIN'">전체 평가 내역</li>
+            <li @click="goToTeamMyReview" v-if="userRole === 'ROLE_USER'">평가 받은 목록</li>
+            <li @click="goToTeamReviewList" v-if="userRole === 'ROLE_USER'">동료 평가 작성</li>
+            <li @click="goToAddTeamReview" v-if="userRole === 'ROLE_ADMIN'">평가 항목 등록</li>
+            <li @click="goToTeamReviewHistory" v-if="userRole === 'ROLE_ADMIN'">전체 평가 목록</li>
           </ul>
         </li>
         <li>

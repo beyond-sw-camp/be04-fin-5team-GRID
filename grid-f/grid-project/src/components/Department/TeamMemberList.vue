@@ -2,8 +2,20 @@
   <div class="container">
     <div class="header">
       <div class="header-title">
-        <img class="reviewIcon" src="@/assets/list-check.png" alt="list-check" />
-        <h2>팀 정보 > {{ teamName }}</h2>
+        <nav style="--bs-breadcrumb-divider: '>'; margin-top: -7px; margin-bottom: -7px;" aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a href="#" @click.prevent="goBack" style="text-decoration: none; color: grey; font-size: 17px;">
+                <i class="bi bi-person"></i>&nbsp; 팀 정보
+              </a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">
+              <span class="fw-bolder">
+                <i class="bi bi-briefcase"></i>&nbsp; {{ teamName }}
+              </span>
+            </li>
+          </ol>
+        </nav>
       </div>
     </div>
 
@@ -55,9 +67,10 @@
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue';
 import axios from 'axios';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 const route = useRoute();
+const router = useRouter();
 const teamId = ref(route.params.teamId); // 라우트에서 teamId를 가져옴
 
 const teamName = ref('');
@@ -142,6 +155,10 @@ const nextPage = () => {
 const goToPage = (page) => {
   currentPage.value = page;
 };
+
+const goBack = () => {
+  router.go(-1);
+};
 </script>
 
 <style scoped>
@@ -162,24 +179,20 @@ const goToPage = (page) => {
 
 .header {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
   margin-bottom: 20px;
 }
 
 .header-title {
   display: flex;
-  align-items: center;
+  flex-direction: column;
 }
 
 .header-title h2 {
   font-size: 25px;
   font-weight: 600;
   margin-left: 10px;
-}
-
-.reviewIcon {
-  width: 30px; /* 이미지 크기 유지 */
 }
 
 .search-and-add {

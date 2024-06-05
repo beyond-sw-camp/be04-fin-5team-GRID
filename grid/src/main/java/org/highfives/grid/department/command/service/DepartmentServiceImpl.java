@@ -4,6 +4,10 @@ import org.highfives.grid.department.command.dto.DepartmentDTO;
 import org.highfives.grid.department.command.aggregate.Department;
 import org.highfives.grid.department.command.exception.DepartmentNotFoundException;
 import org.highfives.grid.department.command.repository.DepartmentRepository;
+import org.highfives.grid.user.command.aggregate.Employee;
+import org.highfives.grid.user.command.dto.UserDTO;
+import org.highfives.grid.user.command.repository.UserRepository;
+import org.highfives.grid.user.command.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,13 +24,23 @@ public class DepartmentServiceImpl implements DepartmentService {
 
 
     private final DepartmentRepository departmentRepository;
+
+    private final UserService userService;
+
+    private final UserRepository userRepository;
     private final ModelMapper mapper;
 
     @Autowired
-    public DepartmentServiceImpl(DepartmentRepository departmentRepository, ModelMapper mapper) {
+    public DepartmentServiceImpl(DepartmentRepository departmentRepository, UserService userService, UserRepository userRepository, ModelMapper mapper) {
         this.departmentRepository = departmentRepository;
+        this.userService = userService;
+        this.userRepository = userRepository;
         this.mapper = mapper;
     }
+
+
+
+
 
     @Override
     public DepartmentDTO findDepartmentById(int id) {
@@ -53,6 +67,8 @@ public class DepartmentServiceImpl implements DepartmentService {
         Date currentDate = new Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String formattedDate = dateFormat.format(currentDate);
+
+
 
         Department department = Department.builder()
                 .departmentName(departmentDTO.getDepartmentName())
@@ -217,7 +233,15 @@ public class DepartmentServiceImpl implements DepartmentService {
                     .sequence(currentDepartmentInfo.getSequence())
                     .build();
 
+
+
             departmentRepository.save(department);
+
+
+            Employee employee = userRepository.findById(department.getLeaderId()).orElseThrow(() -> new RuntimeException());
+        UserDTO userDTO = new UserDTO();
+//            userService.modifyUser(employee.getId(), );
+
 
         return mapper.map(department, DepartmentDTO.class);
     }
