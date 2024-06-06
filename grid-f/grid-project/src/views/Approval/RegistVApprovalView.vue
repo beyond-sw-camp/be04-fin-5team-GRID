@@ -62,16 +62,16 @@ const getUserVacationInfo = async (id) => {
 };
 
 const updateDateTime = () => {
-  if (postData.startTime === '') {
+  if (postData.s_time === '') {
     postData.startTime = `${postData.s_date} 00:00:00`;
   } else {
-    postData.startTime = `${postData.s_date} ${postData.s_time}:00`;
+    postData.startTime = `${postData.s_date} ${postData.s_time}`;
   }
 
-  if (postData.endTime === '') {
+  if (postData.e_time === '') {
     postData.endTime = `${postData.e_date} 00:00:00`
   } else {
-    postData.endTime = `${postData.e_date} ${postData.e_time}:00`
+    postData.endTime = `${postData.e_date} ${postData.e_time}`
   }
 }
 
@@ -193,7 +193,7 @@ onMounted(async() => {
     <div class="vHeader">
   <nav style="--bs-breadcrumb-divider: '>'; margin-top: -35px; margin-bottom: -7px;" aria-label="breadcrumb">
   <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="http://localhost:5173/regist/main" style="text-decoration: none; color: grey; font-size: 17px;"><i class="bi bi-pencil-square"></i>&nbsp; 결재 작성</a></li>
+    <li class="breadcrumb-item"><a href="http://www.gridhr.site//regist/main" style="text-decoration: none; color: grey; font-size: 17px;"><i class="bi bi-pencil-square"></i>&nbsp; 결재 작성</a></li>
     <li class="breadcrumb-item active" aria-current="page"><span class="fw-bolder"><i class="bi bi-brightness-high"></i>&nbsp; 휴가</span></li>
   </ol>
   </nav>
