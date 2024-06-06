@@ -368,7 +368,7 @@ const allUsers = async () => {
     try {
         const confirmed = window.confirm('지급하시겠습니까?');
         if (confirmed) {
-            const formattedDate = date.value.toISOString().split('T')[0];
+            const formattedDate = date.value;
             const response = await axios.post('/api/vacation/payments', {
                 vacationNum: vacationNum.value,
                 endTime: formattedDate,
