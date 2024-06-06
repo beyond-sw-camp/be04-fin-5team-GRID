@@ -73,8 +73,6 @@ import draggable from 'vuedraggable';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 import defaultProfileImage from '@/assets/defaultProfile.jpg';
-import Cookies from 'js-cookie';
-
 
 const departments = ref([]);
 const router = useRouter();
