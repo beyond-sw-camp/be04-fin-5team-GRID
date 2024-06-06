@@ -13,10 +13,10 @@ import java.util.Map;
 
 public interface PdfService {
 
-    void BTexportToPDF(BTApprovalDTO btApproval, ByteArrayOutputStream outputStream);
-    void OexportToPDF(OvertimeApprovalDTO overtimeApproval, ByteArrayOutputStream outputStream);
-    void RWexportToPDF(RWApprovalDTO rwApproval, ByteArrayOutputStream outputStream);
-    void VexportToPDF(VacationApprovalDTO vacationApproval, ByteArrayOutputStream outputStream);
+    String BTexportToPDF(BTApprovalDTO btApproval, ByteArrayOutputStream outputStream);
+    String OexportToPDF(OvertimeApprovalDTO overtimeApproval, ByteArrayOutputStream outputStream);
+    String RWexportToPDF(RWApprovalDTO rwApproval, ByteArrayOutputStream outputStream);
+    String VexportToPDF(VacationApprovalDTO vacationApproval, ByteArrayOutputStream outputStream);
     Map<String, String> pdfS3Upload(ByteArrayOutputStream outputStream);
     ResponseEntity<InputStreamResource> downloadFile(int typeId, int approvalId);
 }

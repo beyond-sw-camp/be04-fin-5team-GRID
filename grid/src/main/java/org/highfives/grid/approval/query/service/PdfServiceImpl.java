@@ -86,11 +86,13 @@ public class PdfServiceImpl implements PdfService {
     }
 
     @Override
-    public void BTexportToPDF(BTApprovalDTO btApproval, ByteArrayOutputStream outputStream) {
+    public String BTexportToPDF(BTApprovalDTO btApproval, ByteArrayOutputStream outputStream) {
 
         Document document = new Document();
 
         UserDTO user = userService.findUserById(btApproval.getRequesterId());
+
+        String fileName = "business_trip_" + user.getEmployeeNumber() + "_" + btApproval.getId() + ".pdf";
 
         String d_imgPath = imgMapper.getSealImg(approvalChainService.findLeaderByEmployeeId(user.getId(), 1));
 //        String d_imgPath = "https://png.pngtree.com/png-clipart/20220113/ourmid/pngtree-cartoon-hand-drawn-default-avatar-png-image_4156500.png";
@@ -206,14 +208,18 @@ public class PdfServiceImpl implements PdfService {
         } finally {
             document.close();
         }
+
+        return fileName;
     }
 
     @Override
-    public void OexportToPDF(OvertimeApprovalDTO overtimeApproval, ByteArrayOutputStream outputStream) {
+    public String  OexportToPDF(OvertimeApprovalDTO overtimeApproval, ByteArrayOutputStream outputStream) {
 
         Document document = new Document();
 
         UserDTO user = userService.findUserById(overtimeApproval.getRequesterId());
+
+        String fileName = "overtime_" + user.getEmployeeNumber() + "_" + overtimeApproval.getId() + ".pdf";
 
         String imagePath = imgMapper.getSealImg(approvalChainService.findLeaderByEmployeeId(user.getId(), 3));
 //        String imagePath =  "https://png.pngtree.com/png-clipart/20220113/ourmid/pngtree-cartoon-hand-drawn-default-avatar-png-image_4156500.png";
@@ -315,14 +321,18 @@ public class PdfServiceImpl implements PdfService {
         } finally {
             document.close();
         }
+
+        return fileName;
     }
 
     @Override
-    public void RWexportToPDF(RWApprovalDTO rwApproval, ByteArrayOutputStream outputStream) {
+    public String RWexportToPDF(RWApprovalDTO rwApproval, ByteArrayOutputStream outputStream) {
 
         Document document = new Document();
 
         UserDTO user = userService.findUserById(rwApproval.getRequesterId());
+
+        String fileName = "reduced_work_" + user.getEmployeeNumber() + "_" + rwApproval.getId() + ".pdf";
 
         String imagePath = imgMapper.getSealImg(approvalChainService.findLeaderByEmployeeId(user.getId(), 4));
 //        String imagePath =  "https://png.pngtree.com/png-clipart/20220113/ourmid/pngtree-cartoon-hand-drawn-default-avatar-png-image_4156500.png";
@@ -424,14 +434,18 @@ public class PdfServiceImpl implements PdfService {
         } finally {
             document.close();
         }
+
+        return fileName;
     }
 
     @Override
-    public void VexportToPDF(VacationApprovalDTO vacationApproval, ByteArrayOutputStream outputStream) {
+    public String VexportToPDF(VacationApprovalDTO vacationApproval, ByteArrayOutputStream outputStream) {
         Document document = new Document();
 
         ResOneVacationTypeVO vacation = vacationService.getVacationTypeById(vacationApproval.getInfoId());
         UserDTO user = userService.findUserById(vacationApproval.getRequesterId());
+
+        String fileName = "vacation_" + user.getEmployeeNumber() + "_" + vacationApproval.getId() + ".pdf";
 
         String imagePath = imgMapper.getSealImg(approvalChainService.findLeaderByEmployeeId(user.getId(), 5));
 //        String imagePath =  "https://png.pngtree.com/png-clipart/20220113/ourmid/pngtree-cartoon-hand-drawn-default-avatar-png-image_4156500.png";
@@ -535,6 +549,8 @@ public class PdfServiceImpl implements PdfService {
         } finally {
             document.close();
         }
+
+        return fileName;
     }
 
     @Override
@@ -582,33 +598,31 @@ public class PdfServiceImpl implements PdfService {
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
+        String fileName = "";
+
         switch (typeId) {
             case 1:
                 BTApproval btApproval = btApprovalRepository.findById(approvalId).orElseThrow();
-                BTexportToPDF(mapper.map(btApproval, BTApprovalDTO.class), outputStream);
+                fileName = BTexportToPDF(mapper.map(btApproval, BTApprovalDTO.class), outputStream);
                 break;
 
             case 2:
                 OvertimeApproval overtimeApproval = oApprovalRepository.findById(approvalId).orElseThrow();
-                OexportToPDF(mapper.map(overtimeApproval, OvertimeApprovalDTO.class), outputStream);
+                fileName = OexportToPDF(mapper.map(overtimeApproval, OvertimeApprovalDTO.class), outputStream);
                 break;
 
             case 3:
                 RWApproval rwApproval = rwApprovalRepository.findById(approvalId).orElseThrow();
-                RWexportToPDF(mapper.map(rwApproval, RWApprovalDTO.class), outputStream);
+                fileName = RWexportToPDF(mapper.map(rwApproval, RWApprovalDTO.class), outputStream);
                 break;
 
             case 4:
                 VacationApproval vacationApproval = vApprovalRepository.findById(approvalId).orElseThrow();
-                VexportToPDF(mapper.map(vacationApproval, VacationApprovalDTO.class), outputStream);
+                fileName = VexportToPDF(mapper.map(vacationApproval, VacationApprovalDTO.class), outputStream);
                 break;
         }
 
-        String fileName = pdfS3Upload(outputStream).get("new");
-
-        // S3에서 파일 가져오기
-        S3Object s3Object = amazonS3.getObject(new GetObjectRequest(bucketName, fileName));
-        InputStream inputStream = s3Object.getObjectContent();
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
 
         try {
             // InputStreamResource로 변환하여 ResponseEntity로 반환
