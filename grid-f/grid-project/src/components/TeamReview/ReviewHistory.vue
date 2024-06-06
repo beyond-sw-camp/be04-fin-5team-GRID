@@ -7,7 +7,7 @@
     </div>
     <div class="search-and-add">
       <div class="search-group">
-        <input type="text" v-model="searchQuery" placeholder="Title" class="searchBox"/>
+        <input type="text" v-model="searchQuery" placeholder="이름 검색" class="searchBox"/>
         <button @click="search" class="searchBtn">검색</button>
       </div>
     </div>

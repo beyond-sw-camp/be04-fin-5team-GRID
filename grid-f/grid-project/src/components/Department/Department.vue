@@ -13,8 +13,8 @@
       <input type="text" class="searchBox" placeholder="부서명 검색" v-model="searchQuery">
       <button @click="search" class="searchBtn">검색</button>
     </div>
-    <table class="deptTable">
-      <thead>
+    <table class="deptTable" style="background-color: white;">
+      <thead >
         <tr>
           <th style="width: 10%;"></th>
           <th style="width: 10%;">부서코드</th>
@@ -590,7 +590,7 @@ td {
 }
 
 th {
-  background-color: #f8f8f8;
+  background-color: white;
 }
 
 td {

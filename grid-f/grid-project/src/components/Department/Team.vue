@@ -33,32 +33,20 @@
       </div>
     </div>
 
-    <table class="teamTable">
-      <thead>
-        <tr>
-          <th style="width: 5%;"></th>
-          <th style="width: 10%;">팀명</th>
-          <th style="width: 20%;">시작 일</th>
-          <th style="width: 20%;">종료일</th>
-          <th style="width: 10%;">상위 부서명</th>
-          <th style="width: 10%;">팀장 명</th>
-          <th style="width: 10%;"></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="team in filteredTeams" :key="team.id">
-          <td style="width: 5%;"><input type="checkbox" :value="team" v-model="selectedTeams" @change="checkSelectionLimit" /></td>
-          <td style="width: 10%;">{{ team.teamName }}</td>
-          <td style="width: 20%;">{{ formatDate(team.startTime) }}</td>
-          <td style="width: 20%;">{{ formatDate(team.endTime) }}</td>
-          <td style="width: 10%;">{{ team.departmentName }}</td>
-          <td style="width: 10%;">{{ team.leaderName }}</td>
-          <td style="width: 10%;">
-            <button class="view-details-btn" @click="goToTeamMembers(team.id)">팀원 목록</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <b-table hover :items="filteredTeams" :fields="fields" responsive>
+      <template #cell(selected)="data">
+        <input type="checkbox" :value="data.item" v-model="selectedTeams" @change="checkSelectionLimit" />
+      </template>
+      <template #cell(startTime)="data">
+        {{ formatDate(data.item.startTime) }}
+      </template>
+      <template #cell(endTime)="data">
+        {{ formatDate(data.item.endTime) }}
+      </template>
+      <template #cell(actions)="data">
+        <button class="view-details-btn" @click="goToTeamMembers(data.item.id)">팀원 목록</button>
+      </template>
+    </b-table>
 
     <div class="pagination">
       <button @click="prevPage" :disabled="currentPage === 1">❮</button>
@@ -199,6 +187,7 @@ import { useRoute, useRouter } from 'vue-router';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap';
+import { BTable } from 'bootstrap-vue-3';
 
 const route = useRoute();
 const router = useRouter();
@@ -282,17 +271,17 @@ watch(departmentId, (newId) => {
 });
 
 function parseJwt(token) {
-    try {
-        const base64Url = token.split('.')[1];
-        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
-            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-        }).join(''));
-        return JSON.parse(jsonPayload);
-    } catch (error) {
-        console.error('Invalid token', error);
-        return null;
-    }
+  try {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+    return JSON.parse(jsonPayload);
+  } catch (error) {
+    console.error('Invalid token', error);
+    return null;
+  }
 }
 
 onMounted(() => {
@@ -302,12 +291,23 @@ onMounted(() => {
   fetchLeaders();
 
   const token = localStorage.getItem('access');
-    if (token) {
-        const decodedToken = parseJwt(token);
-        userRole.value = decodedToken?.auth || '';
-        userId.value = decodedToken?.id || '';
-    }
+  if (token) {
+    const decodedToken = parseJwt(token);
+    userRole.value = decodedToken?.auth || '';
+    userId.value = decodedToken?.id || '';
+  }
 });
+
+
+const fields = [
+  { key: 'selected', label: '', thStyle: { width: '5%' } },
+  { key: 'teamName', label: '팀명', thStyle: { width: '10%' } },
+  { key: 'startTime', label: '시작 일', thStyle: { width: '20%' } },
+  { key: 'endTime', label: '종료일', thStyle: { width: '20%' } },
+  { key: 'departmentName', label: '상위 부서명', thStyle: { width: '10%' } },
+  { key: 'leaderName', label: '팀장 명', thStyle: { width: '10%' } },
+  { key: 'actions', label: '', thStyle: { width: '10%' } }
+];
 
 const filteredTeams = computed(() => {
   const start = (currentPage.value - 1) * itemsPerPage;
@@ -499,7 +499,6 @@ const checkSelectionLimit = () => {
     alert('두 개 이상의 팀을 선택할 수 없습니다.');
   }
 };
-
 </script>
 
 <style scoped>
@@ -646,29 +645,6 @@ const checkSelectionLimit = () => {
   table-layout: fixed;
 }
 
-/* 테이블 헤더와 셀 스타일 */
-th, td {
-  padding: 8px;
-  text-align: left;
-  border-top: 1px solid #ddd;
-  border-bottom: 1px solid #ddd;
-}
-
-/* 테이블 헤더 스타일 */
-th {
-  background-color: #f2f2f2;
-  color: #333;
-}
-
-/* 테이블 데이터 셀 스타일 */
-td {
-  font-size: 14px;
-}
-
-/* 테이블 행 호버 스타일 */
-tr:hover {
-  background-color: #f1f1f1;
-}
 
 /* 페이지네이션 스타일 */
 .pagination {
