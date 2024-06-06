@@ -90,7 +90,8 @@ public class TokenReissueServiceImpl implements TokenReissueService{
         tokenReissueRepository.save(redisToken);
 
         //response
-        response.addCookie(jwtUtil.createCookie("refresh", newRefresh));
+//        response.addCookie(jwtUtil.createCookie("refresh", newRefresh));
+        response.addHeader("Set-Cookie", jwtUtil.createCookie("refresh", newRefresh).toString());
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
         out.print("{\"access\": \"" + newAccess + "\"}");
