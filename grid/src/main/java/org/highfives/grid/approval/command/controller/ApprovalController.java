@@ -14,6 +14,7 @@ import org.highfives.grid.approval.query.service.PdfService;
 import org.highfives.grid.user.command.service.ImgService;
 import org.highfives.grid.user.command.vo.ResImgUploadVO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -33,6 +34,9 @@ public class ApprovalController {
     private final ApprovalService approvalService;
     private final PdfService pdfService;
     private final ImgService imgService;
+
+    @Value("${file.download-dir}")
+    private String downloadDir;
 
     @Autowired
     public ApprovalController(ApprovalService approvalService, PdfService pdfService, ImgService imgService) {
@@ -350,16 +354,13 @@ public class ApprovalController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @PostMapping("/pdf/{typeId}/{approvalId}")
-    public void exportToPDF(@PathVariable int typeId, @PathVariable int approvalId) {
-
-        pdfService.exportToPDF(typeId, approvalId);
-    }
-
     @GetMapping("/downloadPdf/{typeId}/{approvalId}")
     public ResponseEntity<FileSystemResource> downloadPdf(@PathVariable int typeId, @PathVariable int approvalId) {
-        // PDF 파일의 경로
-        String filePath = "C:/Users/Playdata/Documents/be04-fin-5team-GRID/grid/" + typeId + approvalId + ".pdf";
+
+        pdfService.exportToPDF(typeId, approvalId);
+
+        String filePath = downloadDir + "/" + typeId + approvalId + ".pdf";
+        // 이 경로에 저장된 pdf를 불러와서 다운로드
 
         File file = new File(filePath);
         FileSystemResource resource = new FileSystemResource(file);

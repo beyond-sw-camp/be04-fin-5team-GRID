@@ -22,6 +22,7 @@ import org.highfives.grid.approval.common.dto.OvertimeApprovalDTO;
 import org.highfives.grid.approval.common.dto.RWApprovalDTO;
 import org.highfives.grid.approval.common.dto.VacationApprovalDTO;
 import org.highfives.grid.approval_chain.query.service.ApprovalChainService;
+import org.highfives.grid.user.command.service.ImgService;
 import org.highfives.grid.user.query.dto.UserDTO;
 import org.highfives.grid.user.query.repository.ImgMapper;
 import org.highfives.grid.user.query.service.UserService;
@@ -32,6 +33,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.awt.*;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -51,13 +53,14 @@ public class PdfServiceImpl implements PdfService {
     private final UserService userService;
     private final VacationService vacationService;
     private final ImgMapper imgMapper;
+    private final ImgService imgService;
     private final ApprovalChainService approvalChainService;
 
     DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     String date = LocalDateTime.now().format(dateFormat);
 
     @Autowired
-    public PdfServiceImpl(ModelMapper mapper, BTApprovalRepository btApprovalRepository, OApprovalRepository oApprovalRepository, RWApprovalRepository rwApprovalRepository, VApprovalRepository vApprovalRepository, UserService userService, VacationService vacationService, ImgMapper imgMapper, ApprovalChainService approvalChainService) {
+    public PdfServiceImpl(ModelMapper mapper, BTApprovalRepository btApprovalRepository, OApprovalRepository oApprovalRepository, RWApprovalRepository rwApprovalRepository, VApprovalRepository vApprovalRepository, UserService userService, VacationService vacationService, ImgMapper imgMapper, ImgService imgService, ApprovalChainService approvalChainService) {
         this.mapper = mapper;
         this.btApprovalRepository = btApprovalRepository;
         this.oApprovalRepository = oApprovalRepository;
@@ -66,6 +69,7 @@ public class PdfServiceImpl implements PdfService {
         this.userService = userService;
         this.vacationService = vacationService;
         this.imgMapper = imgMapper;
+        this.imgService = imgService;
         this.approvalChainService = approvalChainService;
     }
 
@@ -218,6 +222,8 @@ public class PdfServiceImpl implements PdfService {
         } finally {
             document.close();
         }
+
+        imgService.pdfS3Upload(new File(filePath));
     }
 
     @Override
