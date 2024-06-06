@@ -80,7 +80,7 @@ const itemsPerPage = 10;
 const fetchMemberReview = async () => {
   try {
     // 팀원일때
-    const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/performance-review/member/${user.value.id}`);
+    const response = await axios.get(`https://api.gridhr.site/performance-review/member/${user.value.id}`);
 
     console.log(response.data.findReviewList);
     reviewList.value = response.data.findReviewList;
@@ -92,7 +92,7 @@ const fetchMemberReview = async () => {
 const fetchLeaderReview = async () => {
   try {
     // 팀장일 때
-    const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/performance-review/leader/${user.value.id}`);
+    const response = await axios.get(`https://api.gridhr.site/performance-review/leader/${user.value.id}`);
     console.log(response.data.findReviewList);
     reviewList.value = response.data.findReviewList;
   } catch (error) {

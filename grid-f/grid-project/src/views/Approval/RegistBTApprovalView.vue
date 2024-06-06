@@ -37,7 +37,7 @@ import {onMounted, reactive, ref, watch} from "vue";
 
       if(confirmed) {
         if (postData.content !== '' && postData.startTime !== '' && postData.endTime !== '' && postData.destination !== '') {
-          const response = await axios.post(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval/bt`, postData, {
+          const response = await axios.post(`https://api.gridhr.site/approval/bt`, postData, {
             headers: {
               'Content-Type': "application/json"
             }

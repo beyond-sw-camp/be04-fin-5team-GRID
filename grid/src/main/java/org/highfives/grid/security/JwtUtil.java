@@ -190,7 +190,7 @@ public class JwtUtil {
                 .sameSite("None")
                 .httpOnly(true)
                 .maxAge(24*60*60)
-                .secure(false)
+                .secure(true)
                 .build();
 //        Cookie cookie = new Cookie(key, value);
 //        cookie.setMaxAge(24*60*60);

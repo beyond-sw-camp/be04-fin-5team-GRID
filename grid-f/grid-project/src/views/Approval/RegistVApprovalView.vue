@@ -77,7 +77,7 @@ const updateDateTime = () => {
 
 const fetchVacationType = async() => {
   try {
-    const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/vacation/type`);
+    const response = await axios.get(`https://api.gridhr.site/vacation/type`);
 
     if (response.status !== 200) {
       throw new Error("response is not ok");
@@ -127,7 +127,7 @@ const registApproval = async () => {
       console.log(postData.startTime, postData.endTime);
       if (postData.content !== '' && postData.startTime !== ' 00:00:00' && postData.endTime !== ' 00:00:00' && postData.infoId !== 0) {
         if (vacationNum.value >= daysBetween) {
-          const response = await axios.post(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval/vacation`, postData, {
+          const response = await axios.post(`https://api.gridhr.site/approval/vacation`, postData, {
             headers: {
               'Content-Type': "application/json"
             }

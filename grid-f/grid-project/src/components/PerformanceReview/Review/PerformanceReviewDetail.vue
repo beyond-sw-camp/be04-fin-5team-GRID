@@ -235,7 +235,7 @@ const fetchReviewDetail = async () => {
     const route = router.currentRoute.value;
     const id = route.params.id;
 
-    const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/performance-review/detail/${id}`)
+    const response = await axios.get(`https://api.gridhr.site/performance-review/detail/${id}`)
     console.log(response.data);
     const review = response.data.findDetailReview;
     reviewItemList.value = review.reviewItemList;
@@ -378,7 +378,7 @@ async function memberSave() {
       console.log(sendData);
       try {
         await axios.put(
-            `http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/performance-review/in-progress`,
+            `https://api.gridhr.site/performance-review/in-progress`,
             sendData
         );
         alert('평가를 저장했습니다.')
@@ -429,7 +429,7 @@ async function submit() {
       console.log(sendData);
       try {
         await axios.put(
-            `http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/performance-review/submit`,
+            `https://api.gridhr.site/performance-review/submit`,
             sendData
         );
         window.location.reload();
@@ -479,7 +479,7 @@ async function leaderSave() {
       console.log(sendData);
       try {
         await axios.put(
-            `http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/performance-review/read`,
+            `https://api.gridhr.site/performance-review/read`,
             sendData
         );
         alert('평가를 저장했습니다.')
@@ -530,7 +530,7 @@ async function complete() {
       console.log(sendData);
       try {
         await axios.put(
-            `http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/performance-review/complete`,
+            `https://api.gridhr.site/performance-review/complete`,
             sendData
         );
 
@@ -582,7 +582,7 @@ async function valid() {
       console.log(sendData);
       try {
         await axios.put(
-            `http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/performance-review/valid`,
+            `https://api.gridhr.site/performance-review/valid`,
             sendData
         );
 
