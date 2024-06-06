@@ -21,7 +21,7 @@
 
     <div class="search-and-add">
       <div class="search-group">
-        <input type="text" class="searchBox" placeholder="검색" v-model="searchQuery" @input="filterBySearch" />
+        <input type="text" class="searchBox" placeholder="이름 검색" v-model="searchQuery" />
         <button @click="search" class="searchBtn">검색</button>
       </div>
     </div>
@@ -29,12 +29,12 @@
     <table class="teamTable">
       <thead>
         <tr>
-          <th>이름</th>
-          <th>사원 번호</th>
-          <th>이메일</th>
-          <th>업무용 번호</th>
-          <th>직급</th>
-          <th>직책</th>
+          <th style="width: 10%;">이름</th>
+          <th style="width: 10%;">사원 번호</th>
+          <th style="width: 20%;">이메일</th>
+          <th style="width: 20%;">업무용 번호</th>
+          <th style="width: 10%;">직급</th>
+          <th style="width: 10%;">직책</th>
         </tr>
       </thead>
       <tbody>
@@ -123,7 +123,7 @@ watch(
   { immediate: true }
 );
 
-const filterBySearch = () => {
+const search = () => {
   filteredEmployees.value = employees.value.filter(emp =>
     emp.name.toLowerCase().includes(searchQuery.value.toLowerCase())
   );
@@ -243,13 +243,12 @@ const goBack = () => {
 th, td {
   padding: 8px;
   text-align: left;
-  border-top: 1px solid #ddd;
   border-bottom: 1px solid #ddd;
 }
 
 /* 테이블 헤더 스타일 */
 th {
-  background-color: #f2f2f2;
+  background-color: white;
   color: #333;
 }
 
