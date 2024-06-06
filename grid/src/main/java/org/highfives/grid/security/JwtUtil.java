@@ -187,8 +187,8 @@ public class JwtUtil {
         cookie.setMaxAge(24*60*60);
         cookie.setHttpOnly(true);
         cookie.setPath("/");
-        cookie.setDomain("www.gridhr.site");
-
+        cookie.setDomain("grid-frontend-env-1.eba-xymvvqgw.ap-northeast-2.elasticbeanstalk.com");
+        cookie.setSecure(false); // HTTPS를 사용하지 않으므로 false
         return cookie;
     }
 }
