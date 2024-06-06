@@ -40,13 +40,14 @@
                         <td><img :src="getProfileUrl(employee.profilePath)" alt="profile" class="profile-image"></td>
                         <td>{{ employee.name }}</td>
                         <td>{{ employee.employeeNumber }}</td>
-                        <td>{{ employee.department }}</td>
-                        <td>{{ employee.team }}</td>
-                        <td>{{ employee.position }}</td>
-                        <td>{{ employee.duties }}</td>
+                        <td>{{ employee.department.departmentName }}</td>
+                        <td>{{ employee.team.teamName }}</td>
+                        <td>{{ employee.position.positionName }}</td>
+                        <td>{{ employee.duties.dutiesName }}</td>
                         <td>
                             <div class="badge-class">
-                                <b-badge class="mt-3" variant="warning" style="margin: 0;" v-if="employee.absenceYn === 'Y'">부재중</b-badge>
+                                <b-badge class="mt-3" variant="warning" style="margin: 0;"
+                                    v-if="employee.absenceYn === 'Y'">부재중</b-badge>
                                 <b-badge class="mt-3" variant="success" style="margin: 0;" v-else>재실중</b-badge>
                             </div>
                         </td>
