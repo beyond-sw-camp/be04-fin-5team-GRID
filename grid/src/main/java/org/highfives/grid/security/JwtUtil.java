@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.highfives.grid.user.command.service.UserService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -181,14 +182,22 @@ public class JwtUtil {
                 .compact();
     }
 
+
     public Cookie createCookie(String key, String value) {
 
+//        ResponseCookie cookie = ResponseCookie.from(key, value)
+//                .path("/")
+//                .sameSite("None")
+//                .httpOnly(true)
+//                .maxAge(24*60*60)
+//                .secure(true)
+//                .build();
         Cookie cookie = new Cookie(key, value);
         cookie.setMaxAge(24*60*60);
-        cookie.setHttpOnly(true);
+//        cookie.setHttpOnly(true);
         cookie.setPath("/");
-        cookie.setDomain(".gridhr.site");
-
+        cookie.setDomain("gridhr.site");
+        cookie.setSecure(false); // HTTPS를 사용하지 않으므로 false
         return cookie;
     }
 }

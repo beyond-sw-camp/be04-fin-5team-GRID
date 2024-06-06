@@ -103,7 +103,7 @@ hr {
 }
 
 .right {
-    background-color: #002366;
+    background-color: #088A85;
     width: 30%;
     padding: 0;
     margin: 0;
@@ -165,7 +165,7 @@ hr {
 
 #toLogin2 {
     font-weight: bold;
-    color: #002366;
+    color: #088A85;
     cursor: pointer;
 }
 
@@ -177,7 +177,7 @@ hr {
 
 #find-id2 {
     font-weight: bold;
-    color: #002366;
+    color: #088A85;
     cursor: pointer;
 }
 

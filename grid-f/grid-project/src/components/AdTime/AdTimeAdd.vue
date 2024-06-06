@@ -390,7 +390,6 @@ const goToAdTimeList = () => {
 
 #calendar .fc-daygrid-day {
   height: 100%; /* 날짜 셀의 고정 높이 */
-
 }
 
 /*#calendar .fc {
@@ -401,7 +400,7 @@ const goToAdTimeList = () => {
 #calendar .fc-daygrid-day-events {
   max-height: 100px; /* 날짜 셀의 고정 높이 */
   text-align: left;
-  //overflow: auto;
+  overflow: auto;
   text-decoration: none;
 }
 
@@ -416,7 +415,7 @@ const goToAdTimeList = () => {
   /* 기본 커서로 변경 */
   cursor: default;
 
-  //background-color: #3fb9b8;
+  background-color: #3fb9b8;
   color: #ffffff;
   height: 10%;
 }

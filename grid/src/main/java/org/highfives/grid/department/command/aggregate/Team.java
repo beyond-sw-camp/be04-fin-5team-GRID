@@ -35,6 +35,7 @@ public class Team {
     private int departmentId;
 
     @Column(name = "leader_id")
+    @Setter
     private int leaderId;
 
     @Column(name = "sequence")

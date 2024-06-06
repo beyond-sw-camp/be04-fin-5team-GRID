@@ -231,7 +231,7 @@ body {
 }
 
 .right {
-    background-color: #002366;
+    background-color: #088A85;
     width: 30%;
     padding: 0;
     margin: 0;
@@ -273,7 +273,7 @@ body {
 }
 
 .btn {
-    background-color: #002366;
+    background-color: #088A85;
     color: white;
     font-weight: 600;
 }
@@ -346,7 +346,7 @@ hr {
 
 #toLogin2 {
     font-weight: bold;
-    color: #002366;
+    color: #088A85;
     cursor: pointer;
 }
 
@@ -358,7 +358,7 @@ hr {
 
 #find-id2 {
     font-weight: bold;
-    color: #002366;
+    color: #088A85;
     cursor: pointer;
 }
 
@@ -450,23 +450,23 @@ hr {
 
 .outBox .inputBox input[type="text"]:focus,
 .outBox.existence .inputBox input[type="text"] {
-    border: 2px solid #002366;
+    border: 2px solid #088A85;
 }
 
 .outBox .inputBox input[type="text"]:focus+label,
 .outBox.existence .inputBox label {
-    color: #002366;
+    color: #088A85;
     transform: scale(0.85) translate(8px, -33px);
 }
 
 .outBox .inputBox input[type="text"]:focus,
 .outBox.existence .inputBox input[type="text"] {
-    border: 2px solid #002366;
+    border: 2px solid #088A85;
 }
 
 .outBox .inputBox input[type="text"]:focus+label,
 .outBox.existence .inputBox label {
-    color: #002366;
+    color: #088A85;
     transform: scale(0.85) translate(8px, -33px);
 }
 </style>
