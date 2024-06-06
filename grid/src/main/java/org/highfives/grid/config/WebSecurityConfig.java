@@ -26,6 +26,7 @@ import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -57,22 +58,13 @@ public class WebSecurityConfig {
     protected SecurityFilterChain configure(HttpSecurity http) throws Exception {
 
 
-        http.cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.configurationSource(new CorsConfigurationSource() {
-            @Override
-            public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
-
-                CorsConfiguration configuration = new CorsConfiguration();
-                configuration.setAllowedOrigins(Collections.singletonList("http://www.gridhr.site"));
-                configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
-                configuration.setAllowedHeaders(Collections.singletonList("*"));
-                configuration.setAllowCredentials(true);
-                configuration.setMaxAge(3600L);
-
-                return configuration;
-            }
-        }))
+        http.cors(httpSecurityCorsConfigurer ->
+                        httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource()))
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("**").permitAll())
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .formLogin(Customizer.withDefaults())
                 .httpBasic(Customizer.withDefaults());
 
@@ -81,24 +73,22 @@ public class WebSecurityConfig {
         authenticationManagerBuilder.userDetailsService(userService).passwordEncoder(bCryptPasswordEncoder);
 
         AuthenticationManager authenticationManager = authenticationManagerBuilder.build();
+        http.authenticationManager(authenticationManager);
 
-        http.csrf((csrf) -> csrf.disable());
-
-        http.authorizeHttpRequests((authz) ->
-                            authz
-//                                    .requestMatchers(new AntPathRequestMatcher("/users/*", "POST")).hasRole("ADMIN")
-//                                    .requestMatchers(new AntPathRequestMatcher("/users/*", "GET")).hasAnyRole("ADMIN", "USER")
-                                    .requestMatchers(new AntPathRequestMatcher("/users/**")).permitAll()
-                                    .requestMatchers(new AntPathRequestMatcher("/**")).permitAll()
-                                    .requestMatchers(new AntPathRequestMatcher("/login")).permitAll()
-
-                                    .requestMatchers(new AntPathRequestMatcher("/reissue")).permitAll()
-                                    .requestMatchers(new AntPathRequestMatcher("/actuator/**")).permitAll()
-                                    .anyRequest().authenticated()
-                )
-                .authenticationManager(authenticationManager)
-                .sessionManagement((session) -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+//        http.authorizeHttpRequests((authz) ->
+//                            authz
+////                                    .requestMatchers(new AntPathRequestMatcher("/users/*", "POST")).hasRole("ADMIN")
+////                                    .requestMatchers(new AntPathRequestMatcher("/users/*", "GET")).hasAnyRole("ADMIN", "USER")
+//                                    .requestMatchers(new AntPathRequestMatcher("/users/**")).permitAll()
+//                                    .requestMatchers(new AntPathRequestMatcher("/**")).permitAll()
+//                                    .requestMatchers(new AntPathRequestMatcher("/login")).permitAll()
+//                                    .requestMatchers(new AntPathRequestMatcher("/reissue")).permitAll()
+//                                    .requestMatchers(new AntPathRequestMatcher("/actuator/**")).permitAll()
+//                                    .anyRequest().authenticated()
+//                )
+//                .authenticationManager(authenticationManager)
+//                .sessionManagement((session) -> session
+//                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         http.addFilter(getAuthenticationFilter(authenticationManager));
         http.addFilterBefore(new JwtFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
@@ -106,9 +96,21 @@ public class WebSecurityConfig {
 
         return http.build();
     }
-    private Filter getAuthenticationFilter(AuthenticationManager authenticationManager) {
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Collections.singletonList("http://www.gridhr.site"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowCredentials(true);
+        configuration.setMaxAge(3600L);
 
-        return new AuthenticationFilter(authenticationManager, environment, tokenReissueRepository);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 
+    private Filter getAuthenticationFilter(AuthenticationManager authenticationManager) {
+        return new AuthenticationFilter(authenticationManager, environment, tokenReissueRepository);
+    }
 }
