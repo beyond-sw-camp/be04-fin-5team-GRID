@@ -27,6 +27,7 @@ public class ImgServiceImpl implements ImgService {
 
     private final ImgRepository imgRepository;
     private final AmazonS3Client amazonS3Client;
+
     @Value("${cloud.aws.s3.bucketName}")
     private String bucketName;
 
@@ -127,44 +128,5 @@ public class ImgServiceImpl implements ImgService {
         String fileName = path.substring(path.lastIndexOf(splitStr) + splitStr.length());
 
         amazonS3Client.deleteObject(new DeleteObjectRequest(bucketName, fileName));
-    }
-
-    @Override
-    public Map<String, String> pdfS3Upload(File file) {
-
-        Map<String, String> result = new HashMap<>();
-
-        String originFileName = file.getName();
-        String extension = originFileName.substring(originFileName.lastIndexOf("."));
-
-        UUID uuid = UUID.randomUUID();
-        String newFileName = uuid.toString() + extension;
-
-        long size = file.length(); // 파일 크기
-
-        ObjectMetadata objectMetaData = new ObjectMetadata();
-        objectMetaData.setContentLength(size);
-
-        try {
-            amazonS3Client.putObject(
-                    new PutObjectRequest(bucketName, newFileName, file)
-                            .withCannedAcl(CannedAccessControlList.PublicRead));
-
-            String fileUrl = amazonS3Client.getUrl(bucketName, newFileName).toString();
-            System.out.println("File URL = " + fileUrl);
-
-            result.put("origin",originFileName);
-            result.put("new",newFileName);
-            result.put("path",fileUrl);
-
-        } catch (AmazonServiceException e) {
-            System.err.println(e.getErrorMessage());
-        } catch (AmazonClientException e) {
-            System.err.println(e.getMessage());
-        }
-
-        System.out.println(result);
-
-        return result;
     }
 }

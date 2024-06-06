@@ -1,5 +1,10 @@
 package org.highfives.grid.approval.query.service;
 
+import com.amazonaws.AmazonClientException;
+import com.amazonaws.AmazonServiceException;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.*;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Font;
@@ -30,16 +35,18 @@ import org.highfives.grid.vacation.query.service.VacationService;
 import org.highfives.grid.vacation.query.vo.ResOneVacationTypeVO;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.awt.*;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
 
 @Service
@@ -53,14 +60,18 @@ public class PdfServiceImpl implements PdfService {
     private final UserService userService;
     private final VacationService vacationService;
     private final ImgMapper imgMapper;
-    private final ImgService imgService;
     private final ApprovalChainService approvalChainService;
+    private final AmazonS3Client amazonS3Client;
+    private final AmazonS3 amazonS3;
+
+    @Value("${cloud.aws.s3.bucketName}")
+    private String bucketName;
 
     DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     String date = LocalDateTime.now().format(dateFormat);
 
     @Autowired
-    public PdfServiceImpl(ModelMapper mapper, BTApprovalRepository btApprovalRepository, OApprovalRepository oApprovalRepository, RWApprovalRepository rwApprovalRepository, VApprovalRepository vApprovalRepository, UserService userService, VacationService vacationService, ImgMapper imgMapper, ImgService imgService, ApprovalChainService approvalChainService) {
+    public PdfServiceImpl(ModelMapper mapper, BTApprovalRepository btApprovalRepository, OApprovalRepository oApprovalRepository, RWApprovalRepository rwApprovalRepository, VApprovalRepository vApprovalRepository, UserService userService, VacationService vacationService, ImgMapper imgMapper, ImgService imgService, ApprovalChainService approvalChainService, AmazonS3Client amazonS3Client, AmazonS3 amazonS3) {
         this.mapper = mapper;
         this.btApprovalRepository = btApprovalRepository;
         this.oApprovalRepository = oApprovalRepository;
@@ -69,52 +80,25 @@ public class PdfServiceImpl implements PdfService {
         this.userService = userService;
         this.vacationService = vacationService;
         this.imgMapper = imgMapper;
-        this.imgService = imgService;
         this.approvalChainService = approvalChainService;
+        this.amazonS3Client = amazonS3Client;
+        this.amazonS3 = amazonS3;
     }
 
     @Override
-    public void exportToPDF(int typeId, int approvalId) {
-
-        switch (typeId) {
-            case 1:
-                BTApproval btApproval = btApprovalRepository.findById(approvalId).orElseThrow();
-                BTexportToPDF(mapper.map(btApproval, BTApprovalDTO.class));
-                break;
-
-            case 2:
-                OvertimeApproval overtimeApproval = oApprovalRepository.findById(approvalId).orElseThrow();
-                OexportToPDF(mapper.map(overtimeApproval, OvertimeApprovalDTO.class));
-                break;
-
-            case 3:
-                RWApproval rwApproval = rwApprovalRepository.findById(approvalId).orElseThrow();
-                RWexportToPDF(mapper.map(rwApproval, RWApprovalDTO.class));
-                break;
-
-            case 4:
-                VacationApproval vacationApproval = vApprovalRepository.findById(approvalId).orElseThrow();
-                VexportToPDF(mapper.map(vacationApproval, VacationApprovalDTO.class));
-                break;
-        }
-    }
-
-    @Override
-    public void BTexportToPDF(BTApprovalDTO btApproval) {
+    public void BTexportToPDF(BTApprovalDTO btApproval, ByteArrayOutputStream outputStream) {
 
         Document document = new Document();
 
         UserDTO user = userService.findUserById(btApproval.getRequesterId());
 
-        String filePath = "1" + btApproval.getId() + ".pdf";
-
-//        String d_imgPath = imgMapper.getSealImg(approvalChainService.findLeaderByEmployeeId(user.getId(), 1));
-        String d_imgPath = "https://png.pngtree.com/png-clipart/20220113/ourmid/pngtree-cartoon-hand-drawn-default-avatar-png-image_4156500.png";
-//        String t_imgPath = imgMapper.getSealImg(approvalChainService.findLeaderByEmployeeId(user.getId(), 2));
-        String t_imgPath =  "https://png.pngtree.com/png-clipart/20220113/ourmid/pngtree-cartoon-hand-drawn-default-avatar-png-image_4156500.png";
+        String d_imgPath = imgMapper.getSealImg(approvalChainService.findLeaderByEmployeeId(user.getId(), 1));
+//        String d_imgPath = "https://png.pngtree.com/png-clipart/20220113/ourmid/pngtree-cartoon-hand-drawn-default-avatar-png-image_4156500.png";
+        String t_imgPath = imgMapper.getSealImg(approvalChainService.findLeaderByEmployeeId(user.getId(), 2));
+//        String t_imgPath =  "https://png.pngtree.com/png-clipart/20220113/ourmid/pngtree-cartoon-hand-drawn-default-avatar-png-image_4156500.png";
 
         try {
-            PdfWriter.getInstance(document, new FileOutputStream(filePath));
+            PdfWriter.getInstance(document, outputStream);
             document.open();
 
             Image d_img = com.lowagie.text.Image.getInstance(d_imgPath);
@@ -222,25 +206,20 @@ public class PdfServiceImpl implements PdfService {
         } finally {
             document.close();
         }
-
-        imgService.pdfS3Upload(new File(filePath));
     }
 
     @Override
-    public void OexportToPDF(OvertimeApprovalDTO overtimeApproval) {
+    public void OexportToPDF(OvertimeApprovalDTO overtimeApproval, ByteArrayOutputStream outputStream) {
 
         Document document = new Document();
 
         UserDTO user = userService.findUserById(overtimeApproval.getRequesterId());
 
-        String filePath = "2" + overtimeApproval.getId() + ".pdf";
-
-//        String imagePath = imgMapper.getSealImg(approvalChainService.findLeaderByEmployeeId(user.getId(), 3));
-        String imagePath =  "https://png.pngtree.com/png-clipart/20220113/ourmid/pngtree-cartoon-hand-drawn-default-avatar-png-image_4156500.png";
-
+        String imagePath = imgMapper.getSealImg(approvalChainService.findLeaderByEmployeeId(user.getId(), 3));
+//        String imagePath =  "https://png.pngtree.com/png-clipart/20220113/ourmid/pngtree-cartoon-hand-drawn-default-avatar-png-image_4156500.png";
 
         try {
-            PdfWriter.getInstance(document, new FileOutputStream(filePath));
+            PdfWriter.getInstance(document, outputStream);
             document.open();
 
             Image img = com.lowagie.text.Image.getInstance(imagePath);
@@ -339,19 +318,17 @@ public class PdfServiceImpl implements PdfService {
     }
 
     @Override
-    public void RWexportToPDF(RWApprovalDTO rwApproval) {
+    public void RWexportToPDF(RWApprovalDTO rwApproval, ByteArrayOutputStream outputStream) {
 
         Document document = new Document();
 
         UserDTO user = userService.findUserById(rwApproval.getRequesterId());
 
-        String filePath = "3" + rwApproval.getId() + ".pdf";
-
-//        String imagePath = imgMapper.getSealImg(approvalChainService.findLeaderByEmployeeId(user.getId(), 4));
-        String imagePath =  "https://png.pngtree.com/png-clipart/20220113/ourmid/pngtree-cartoon-hand-drawn-default-avatar-png-image_4156500.png";
+        String imagePath = imgMapper.getSealImg(approvalChainService.findLeaderByEmployeeId(user.getId(), 4));
+//        String imagePath =  "https://png.pngtree.com/png-clipart/20220113/ourmid/pngtree-cartoon-hand-drawn-default-avatar-png-image_4156500.png";
 
         try {
-            PdfWriter.getInstance(document, new FileOutputStream(filePath));
+            PdfWriter.getInstance(document, outputStream);
             document.open();
 
             Image img = com.lowagie.text.Image.getInstance(imagePath);
@@ -450,18 +427,17 @@ public class PdfServiceImpl implements PdfService {
     }
 
     @Override
-    public void VexportToPDF(VacationApprovalDTO vacationApproval) {
+    public void VexportToPDF(VacationApprovalDTO vacationApproval, ByteArrayOutputStream outputStream) {
         Document document = new Document();
 
         ResOneVacationTypeVO vacation = vacationService.getVacationTypeById(vacationApproval.getInfoId());
         UserDTO user = userService.findUserById(vacationApproval.getRequesterId());
 
-        String filePath = "4" + vacationApproval.getId() + ".pdf";
-//        String imagePath = imgMapper.getSealImg(approvalChainService.findLeaderByEmployeeId(user.getId(), 5));
-        String imagePath =  "https://png.pngtree.com/png-clipart/20220113/ourmid/pngtree-cartoon-hand-drawn-default-avatar-png-image_4156500.png";
+        String imagePath = imgMapper.getSealImg(approvalChainService.findLeaderByEmployeeId(user.getId(), 5));
+//        String imagePath =  "https://png.pngtree.com/png-clipart/20220113/ourmid/pngtree-cartoon-hand-drawn-default-avatar-png-image_4156500.png";
 
         try {
-            PdfWriter.getInstance(document, new FileOutputStream(filePath));
+            PdfWriter.getInstance(document, outputStream);
             document.open();
 
             Image img = com.lowagie.text.Image.getInstance(imagePath);
@@ -558,6 +534,97 @@ public class PdfServiceImpl implements PdfService {
             throw new RuntimeException(e);
         } finally {
             document.close();
+        }
+    }
+
+    @Override
+    public Map<String, String> pdfS3Upload(ByteArrayOutputStream outputStream) {
+
+        Map<String, String> result = new HashMap<>();
+
+        UUID uuid = UUID.randomUUID();
+        String newFileName = uuid.toString() + ".pdf";
+
+        long size = outputStream.size(); // 파일 크기
+
+        ObjectMetadata objectMetaData = new ObjectMetadata();
+        objectMetaData.setContentLength(size);
+        objectMetaData.setContentType("application/pdf");
+
+        try (ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray())) {
+            // S3에 파일 업로드
+            amazonS3Client.putObject(
+                    new PutObjectRequest(bucketName, newFileName, inputStream, objectMetaData)
+                            .withCannedAcl(CannedAccessControlList.PublicRead));
+
+            // 업로드된 파일의 URL을 가져옵니다.
+            String fileUrl = amazonS3Client.getUrl(bucketName, newFileName).toString();
+            System.out.println("File URL = " + fileUrl);
+
+            result.put("origin", newFileName);
+            result.put("new", newFileName);
+            result.put("path", fileUrl);
+
+        } catch (AmazonServiceException e) {
+            System.err.println(e.getErrorMessage());
+        } catch (AmazonClientException e) {
+            System.err.println(e.getMessage());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        System.out.println(result);
+
+        return result;
+    }
+
+    public ResponseEntity<InputStreamResource> downloadFile(int typeId, int approvalId) {
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+        switch (typeId) {
+            case 1:
+                BTApproval btApproval = btApprovalRepository.findById(approvalId).orElseThrow();
+                BTexportToPDF(mapper.map(btApproval, BTApprovalDTO.class), outputStream);
+                break;
+
+            case 2:
+                OvertimeApproval overtimeApproval = oApprovalRepository.findById(approvalId).orElseThrow();
+                OexportToPDF(mapper.map(overtimeApproval, OvertimeApprovalDTO.class), outputStream);
+                break;
+
+            case 3:
+                RWApproval rwApproval = rwApprovalRepository.findById(approvalId).orElseThrow();
+                RWexportToPDF(mapper.map(rwApproval, RWApprovalDTO.class), outputStream);
+                break;
+
+            case 4:
+                VacationApproval vacationApproval = vApprovalRepository.findById(approvalId).orElseThrow();
+                VexportToPDF(mapper.map(vacationApproval, VacationApprovalDTO.class), outputStream);
+                break;
+        }
+
+        String fileName = pdfS3Upload(outputStream).get("new");
+
+        // S3에서 파일 가져오기
+        S3Object s3Object = amazonS3.getObject(new GetObjectRequest(bucketName, fileName));
+        InputStream inputStream = s3Object.getObjectContent();
+
+        try {
+            // InputStreamResource로 변환하여 ResponseEntity로 반환
+            InputStreamResource resource = new InputStreamResource(inputStream);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName);
+
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .contentType(MediaType.APPLICATION_PDF)
+                    .body(resource);
+        } catch (Exception e) {
+            // 예외 처리
+            e.printStackTrace();
+            return ResponseEntity.badRequest().build();
         }
     }
 }

@@ -11,5 +11,4 @@ public interface ImgService {
     Map<String, String> imgS3Upload(MultipartFile multipartFile) throws IOException;
     String imgTableUpdate(Map<String, String> result, int id, int typeId);
     void imgS3Delete(String result);
-    Map<String, String> pdfS3Upload(File file);
 }

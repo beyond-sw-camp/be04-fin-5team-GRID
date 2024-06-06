@@ -16,6 +16,7 @@ import org.highfives.grid.user.command.vo.ResImgUploadVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -34,9 +35,6 @@ public class ApprovalController {
     private final ApprovalService approvalService;
     private final PdfService pdfService;
     private final ImgService imgService;
-
-    @Value("${file.download-dir}")
-    private String downloadDir;
 
     @Autowired
     public ApprovalController(ApprovalService approvalService, PdfService pdfService, ImgService imgService) {
@@ -355,22 +353,8 @@ public class ApprovalController {
     }
 
     @GetMapping("/downloadPdf/{typeId}/{approvalId}")
-    public ResponseEntity<FileSystemResource> downloadPdf(@PathVariable int typeId, @PathVariable int approvalId) {
+    public ResponseEntity<InputStreamResource> downloadPdf(@PathVariable int typeId, @PathVariable int approvalId) {
 
-        pdfService.exportToPDF(typeId, approvalId);
-
-        String filePath = downloadDir + "/" + typeId + approvalId + ".pdf";
-        // 이 경로에 저장된 pdf를 불러와서 다운로드
-
-        File file = new File(filePath);
-        FileSystemResource resource = new FileSystemResource(file);
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + file.getName());
-
-        return ResponseEntity.ok()
-                .headers(headers)
-                .contentType(MediaType.APPLICATION_PDF)
-                .body(resource);
+         return pdfService.downloadFile(typeId, approvalId);
     }
 }
