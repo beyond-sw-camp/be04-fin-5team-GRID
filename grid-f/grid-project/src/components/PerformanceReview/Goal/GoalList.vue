@@ -22,7 +22,14 @@
           <td>{{ (currentPage - 1) * itemsPerPage + index + 1 }}</td>
           <td>{{ item.year }}</td>
           <td>{{ item.reviewName }}</td>
-          <td>{{ getApprovalStatus(item.approvalStatus) }}</td>
+          <td>
+            <b-badge variant="warning" v-if="item.approvalStatus === 'IP'">작성 중</b-badge>
+            <b-badge variant="info" v-else-if="item.approvalStatus === 'S'">상신</b-badge>
+            <b-badge variant="primary" v-else-if="item.approvalStatus === 'R'">확인 중</b-badge>
+            <b-badge variant="success" v-else-if="item.approvalStatus === 'A'">승인</b-badge>
+            <b-badge variant="danger" v-else-if="item.approvalStatus === 'D'">반려</b-badge>
+            <!--            {{ getApprovalStatus(item.approvalStatus) }}-->
+          </td>
           <td>{{ getEmployeeName(item.writer) }}</td>
           <td>{{ getEmployeeName(item.approver) }}</td>
           <td><button @click="goToDetailPage(item.id)"><img class="more" src="@/assets/buttons/zoom.png"></button></td>
