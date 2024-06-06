@@ -14,7 +14,9 @@ import org.highfives.grid.approval.query.service.PdfService;
 import org.highfives.grid.user.command.service.ImgService;
 import org.highfives.grid.user.command.vo.ResImgUploadVO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -350,26 +352,9 @@ public class ApprovalController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @PostMapping("/pdf/{typeId}/{approvalId}")
-    public void exportToPDF(@PathVariable int typeId, @PathVariable int approvalId) {
-
-        pdfService.exportToPDF(typeId, approvalId);
-    }
-
     @GetMapping("/downloadPdf/{typeId}/{approvalId}")
-    public ResponseEntity<FileSystemResource> downloadPdf(@PathVariable int typeId, @PathVariable int approvalId) {
-        // PDF 파일의 경로
-        String filePath = "C:/Users/Playdata/Documents/be04-fin-5team-GRID/grid/" + typeId + approvalId + ".pdf";
+    public ResponseEntity<InputStreamResource> downloadPdf(@PathVariable int typeId, @PathVariable int approvalId) {
 
-        File file = new File(filePath);
-        FileSystemResource resource = new FileSystemResource(file);
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + file.getName());
-
-        return ResponseEntity.ok()
-                .headers(headers)
-                .contentType(MediaType.APPLICATION_PDF)
-                .body(resource);
+         return pdfService.downloadFile(typeId, approvalId);
     }
 }
