@@ -224,12 +224,12 @@ watch(inputValue2, (newValue) => {
 
 .outBox .inputBox input[type="password"]:focus,
 .outBox.existence .inputBox input[type="password"] {
-    border: 2px solid #002366;
+    border: 2px solid #088A85;
 }
 
 .outBox .inputBox input[type="password"]:focus+label,
 .outBox.existence .inputBox label {
-    color: #002366;
+    color: #088A85;
     transform: scale(0.85) translate(8px, -33px);
 }
 
@@ -264,7 +264,7 @@ watch(inputValue2, (newValue) => {
 }
 
 .btn {
-    background-color: #002366;
+    background-color: #088A85;
     color: white;
     font-weight: 600;
     height: 38px;

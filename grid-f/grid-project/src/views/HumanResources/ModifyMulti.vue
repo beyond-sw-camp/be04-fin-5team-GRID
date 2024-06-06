@@ -10,11 +10,11 @@
             </div>
             <button class="downloadBtn" @click="downloadCSV">
                 <img src="@/assets/buttons/download.png" alt="download button">
-                Format
+                작성 양식
             </button>
             <button class="uploadBtn" @click="triggerFileUpload">
                 <img src="@/assets/buttons/upload.png" alt="upload button">
-                Upload CSV
+                CSV 업로드
             </button>
             <input type="file" ref="fileInput" class="d-none" @change="handleFileUpload" accept=".csv" />
         </div>
@@ -115,11 +115,11 @@
             </div>
             <button class="plusBtn" @click="addEmployee">
                 <img src="@/assets/buttons/plus.png" alt="add button">
-                Add row
+                행 추가
             </button>
             <button class="submitBtn" @click="submitForm">
                 <img src="@/assets/buttons/submit.png" alt="submit button">
-                Submit
+                확인
             </button>
         </div>
     </div>
@@ -138,11 +138,11 @@
                     </div>
                     <div class="example-content">
                         <hr>
-                        <p>1. 성별은 M(남성), F(여성)으로 입력해주세요.</p>
-                        <p>2. 입사일은 'yyyy-MM-dd'의 형태로 입력해주세요.</p>
-                        <p>3. 입사 유형은 NEW(신입), EXPERIENCED(경력)으로 입력해주세요.</p>
+                        <p>1. 수정하실 사원 번호와 이름을 입력해주세요. </p>
+                        <p>2. 수정을 원하는 부서, 팀, 직위, 직책을 선택해 주세요. </p>
+                        <p>3. 부서, 팀, 직위, 직책은 숫자로 입력해주세요. </p>
                         <p>4. 근로 유형은 R(정규직), C(계약직)으로 입력해주세요.</p>
-                        <p>5. 이외의 부서, 팀, 직위, 직책의 경우 숫자로 입력해주세요.</p>
+                        <p>5. 날짜는 'yyyy-MM-dd' 형태로 입력해주세요.(ex: 1999-12-31)</p>
                         <p>6. 엑셀 이외의 프로그램(메모장, 노트패드 등...)으로 편집시 쉼표(,)를 구분자로 사용하세요.</p>
                     </div>
                 </div>

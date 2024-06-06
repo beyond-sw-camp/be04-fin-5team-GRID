@@ -7,15 +7,15 @@
         <div class="search">
             <button class="printBtn" @click="downloadCSV">
                 <img src="@/assets/buttons/download.png" alt="download button">
-                Download
+                목록 받기
             </button>
             <button type="button" class="modifyBtn" @click="toModify" v-if="userRole === 'ROLE_ADMIN'">
                 <img src="@/assets/buttons/modify-btn.png" alt="modify button">
-                Modify
+                정보 수정
             </button>
             <button type="button" class="addBtn" @click="toAddMulti" v-if="userRole === 'ROLE_ADMIN'">
                 <img src="@/assets/buttons/plus.png" alt="add button">
-                Add new
+                사원 추가
             </button>
             <input class="sortBox" v-model="searchCondition" type="text" placeholder="이름" @keyup.enter="findUser">
             <button class="searchBtn" @click="findUser">검색</button>
@@ -31,7 +31,7 @@
                         <th>팀</th>
                         <th>직위</th>
                         <th>직책</th>
-                        <th>부재중</th>
+                        <th>부재 상태</th>
                         <th>비고</th>
                     </tr>
                 </thead>
@@ -44,7 +44,10 @@
                         <td>{{ employee.team }}</td>
                         <td>{{ employee.position }}</td>
                         <td>{{ employee.duties }}</td>
-                        <td>{{ employee.absenceYn === 'Y' ? 'Yes' : 'No' }}</td>
+                        <td>
+                            <b-badge class="mt-3" variant="warning" v-if="employee.absenceYn === 'Y'">부재중</b-badge>
+                            <b-badge class="mt-3" variant="info" v-else>재실중</b-badge>
+                        </td>
                         <td>{{ employee.absenceContent }}</td>
                     </tr>
                 </tbody>
@@ -62,7 +65,8 @@
                         <span aria-hidden="true">&laquo;</span>
                     </a>
                 </li>
-                <li v-for="page in visiblePages" :key="page" class="page-item" :class="{ active: page === currentPage + 1 }">
+                <li v-for="page in visiblePages" :key="page" class="page-item"
+                    :class="{ active: page === currentPage + 1 }">
                     <a class="page-link" href="#" @click.prevent="goToPage(page - 1)">{{ page }}</a>
                 </li>
                 <li class="page-item" :class="{ disabled: currentPage + 1 === totalPages }">
@@ -229,7 +233,7 @@ button {
 .hr-main {
     display: grid;
     grid-template-columns: 10% 80% 10%;
-    grid-template-rows: 18% 4% 68% 5% 10%;
+    grid-template-rows: 18% 4% 75% 5% 10%;
     height: 100%;
 }
 
@@ -375,18 +379,18 @@ button {
     grid-column-end: 3;
     margin-top: 20px;
     font-size: 10px;
-    overflow: auto; 
+    overflow: auto;
     cursor: pointer;
 }
 
 .tableContainer::-webkit-scrollbar {
-    width: 0px;  
-    height: 0px; 
+    width: 0px;
+    height: 0px;
 }
 
 .tableContainer {
-    scrollbar-width: none; 
-    -ms-overflow-style: none; 
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }
 
 table {
@@ -415,6 +419,7 @@ thead th {
 tbody tr:hover {
     background-color: #f9f9f9;
 }
+
 .pg {
     grid-row-start: 4;
     grid-column-start: 2;
@@ -435,7 +440,8 @@ tbody tr:hover {
 }
 
 .pagination a {
-    color: rgb(124, 122, 122); /* 기본 글자색을 검은색으로 설정 */
+    color: rgb(124, 122, 122);
+    /* 기본 글자색을 검은색으로 설정 */
 }
 
 .pagination button {
@@ -456,6 +462,7 @@ tbody tr:hover {
 .page-item.active .page-link {
     background-color: #088A85;
     border-color: #088A85;
-    color: white; /* 선택된 버튼의 글자색을 흰색으로 설정 */
+    color: white;
+    /* 선택된 버튼의 글자색을 흰색으로 설정 */
 }
 </style>
