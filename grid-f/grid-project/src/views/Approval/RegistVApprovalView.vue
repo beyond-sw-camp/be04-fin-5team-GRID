@@ -62,13 +62,13 @@ const getUserVacationInfo = async (id) => {
 };
 
 const updateDateTime = () => {
-  if (postData.startTime === '') {
+  if (postData.s_time === '') {
     postData.startTime = `${postData.s_date} 00:00:00`;
   } else {
     postData.startTime = `${postData.s_date} ${postData.s_time}:00`;
   }
 
-  if (postData.endTime === '') {
+  if (postData.e_time === '') {
     postData.endTime = `${postData.e_date} 00:00:00`
   } else {
     postData.endTime = `${postData.e_date} ${postData.e_time}:00`
