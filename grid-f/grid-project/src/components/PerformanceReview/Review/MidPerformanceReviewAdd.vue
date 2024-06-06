@@ -280,6 +280,13 @@ const getType = (type) => {
 
 onMounted(() => {
   try {
+    // 6월에만 작성 가능, 시연을 위해 주석처리
+    // const currentMonth = new Date().getMonth() + 1;
+    // if (currentMonth !== 6){
+    //   alert('현재 중간 평가 작성기간이 아닙니다.')
+    //   router.push('/performance-review');
+    // }
+
     if (user.value.duties.dutiesName === '팀원')
       fetchReviewAdd();
 
