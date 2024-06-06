@@ -70,7 +70,7 @@
           <hr style="border-top: 2px dotted #000; margin-bottom: 20px;">
           <div style="margin-left: 10px;">
             <h6 class="mb-3"><strong><i class="bi fs-5 bi-envelope"></i>&nbsp; &nbsp;</strong> {{ state.user['email'] }}</h6>
-            <h6><strong><i class="bi fs-5 bi-telephone"></i>&nbsp; &nbsp; </strong> 061-723-2093{{ state.user['callNumber'] }}</h6>
+            <h6><strong><i class="bi fs-5 bi-telephone"></i>&nbsp; &nbsp; </strong> {{ state.user['callNumber'] }}</h6>
           </div>
           <hr style="border-top: 2px dotted #000; margin-top: 20px; margin-bottom: 30px;">
         </div>
