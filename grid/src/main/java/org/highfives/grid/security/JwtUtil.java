@@ -187,7 +187,7 @@ public class JwtUtil {
         cookie.setMaxAge(24*60*60);
         cookie.setHttpOnly(true);
         cookie.setPath("/");
-        cookie.setDomain("gridhr.site");
+        cookie.setDomain(".gridhr.site");
 
         return cookie;
     }

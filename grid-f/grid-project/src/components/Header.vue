@@ -454,10 +454,6 @@ onMounted(fetchDepartments);
   font-style: normal;
 }
 
-.logoimgae {
-  filter: invert(100%) sepia(65%) saturate(424%) hue-rotate(91deg) brightness(129%) contrast(107%);
-}
-
 .header {
   background: #088A85;
   color: white;
@@ -476,6 +472,7 @@ onMounted(fetchDepartments);
 .logo img {
   height: 40px;
   margin-right: 10px;
+  filter: invert(100%) sepia(65%) saturate(424%) hue-rotate(91deg) brightness(129%) contrast(107%);
 }
 
 .icons {
@@ -544,7 +541,6 @@ onMounted(fetchDepartments);
 
 .token-timer {
   color: white;
-  font-weight: 600;
   margin-right: 10px;
   margin-left: 10px;
 }
@@ -558,7 +554,7 @@ onMounted(fetchDepartments);
 
 .tokenArea button {
   background-color: #77B0AA;
-  color: black;
+  color: white;
 }
 
 .newToken {

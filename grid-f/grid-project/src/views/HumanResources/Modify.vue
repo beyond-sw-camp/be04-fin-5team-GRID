@@ -195,8 +195,11 @@ const submitModifications = async () => {
 
 const closeModal = () => {
     const modalElement = document.getElementById('myModal');
-    const modalInstance = new bootstrap.Modal(modalElement);
-    modalInstance.hide();
+    const modalInstance = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
+
+    if (modalInstance) {
+        modalInstance.hide();
+    }
 
     const modalBackdrop = document.querySelector('.modal-backdrop');
     if (modalBackdrop) {
@@ -205,6 +208,8 @@ const closeModal = () => {
 
     document.body.classList.remove('modal-open');
     document.body.style = '';
+
+    window.location.reload();
 };
 
 const updateUser = (newData) => {
