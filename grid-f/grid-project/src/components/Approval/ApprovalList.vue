@@ -59,7 +59,7 @@
   const registStatus = async (status, approvalId) => {
 
     try {
-      const response = await axios.put("https://api.gridhr.site/approval/" + pathList[props.approvalList.type - 1] + `-status/${approvalId}`, {
+      const response = await axios.put("http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval/" + pathList[props.approvalList.type - 1] + `-status/${approvalId}`, {
         headers: {
           'Content-Type': "application/json"
         }

@@ -15,10 +15,10 @@
 
 const fetchApprovalList = async (id) => {
     try {
-      let url = `https://api.gridhr.site/approval/all/${typeId}/5`;
+      let url = `http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval/all/${typeId}/5`;
 
       if (admin !== 1) {
-        url = `https://api.gridhr.site/approval/list/${typeId}/5/${id}`;
+        url = `http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval/list/${typeId}/5/${id}`;
       }
 
       const response = await axios.get(url);

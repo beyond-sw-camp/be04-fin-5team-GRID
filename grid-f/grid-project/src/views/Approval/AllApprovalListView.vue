@@ -39,9 +39,9 @@
 
   const fetchApprovalList = async (typeId, approvalStatus, employeeId) => {
     try {
-      let url = `https://api.gridhr.site/approval/all/${typeId}/${approvalStatus}`;
+      let url = `http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval/all/${typeId}/${approvalStatus}`;
       if (userRole.value !== 'ROLE_ADMIN') {
-        url = `https://api.gridhr.site/approval/list/${typeId}/${approvalStatus}/${employeeId}`;
+        url = `http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval/list/${typeId}/${approvalStatus}/${employeeId}`;
       }
       const response = await axios.get(url);
       if (response === null || response.status !== 200) {
@@ -61,7 +61,7 @@
 
   const fetchReqApprovalList = async (typeId, approvalStatus, approverId) => {
     try {
-      const response = await axios.get(`https://api.gridhr.site/approval/approver/${typeId}/${approvalStatus}/${approverId}`);
+      const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval/approver/${typeId}/${approvalStatus}/${approverId}`);
       if (response.status !== 200) {
         throw new Error("response is not ok");
       }

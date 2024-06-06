@@ -103,8 +103,8 @@ const getProfileUrl = (profilePath) => {
 const findUser = async () => {
     let response = null;
     const url = searchCondition.value.trim() === ''
-        ? `https://api.gridhr.site/users/list?page=${currentPage.value}&size=${pageSize.value}`
-        : `https://api.gridhr.site/users/list/${encodeURIComponent(searchCondition.value)}?page=${currentPage.value}&size=${pageSize.value}`;
+        ? `http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/list?page=${currentPage.value}&size=${pageSize.value}`
+        : `http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/list/${encodeURIComponent(searchCondition.value)}?page=${currentPage.value}&size=${pageSize.value}`;
 
     response = await axios.get(url);
     employeeList.value = response.data.result;
@@ -131,7 +131,7 @@ const updateVisiblePages = () => {
 };
 
 const downloadCSV = async () => {
-    const response = await axios.get('https://api.gridhr.site/users/list/all');
+    const response = await axios.get('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/list/all');
     const csvData = response.data.result.map(
         item => ({
             name: item.name,

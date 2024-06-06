@@ -27,7 +27,7 @@
 
   const fetchApprovalList = async(typeId, approvalStatus, employeeId) => {
     try {
-      const response = await axios.get(`https://api.gridhr.site/approval/list/${typeId}/${approvalStatus}/${employeeId}`);
+      const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval/list/${typeId}/${approvalStatus}/${employeeId}`);
 
       if (response.status !== 200) {
         throw new Error("response is not ok");

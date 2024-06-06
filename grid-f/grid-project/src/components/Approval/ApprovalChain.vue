@@ -59,7 +59,7 @@
 
   const fetchApprovalChain = async (typeId, approvalId) => {
     try {
-      const response = await axios.get(`https://api.gridhr.site/approval-chain/list/${typeId}/${approvalId}`);
+      const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval-chain/list/${typeId}/${approvalId}`);
 
       if (response.status !== 200) {
         throw new Error("response is not ok");
@@ -118,7 +118,7 @@
         const confirmed = window.confirm('댓글을 작성하시겠습니까?');
 
         if(confirmed) {
-          const response = await axios.put(`https://api.gridhr.site/approval-chain/${pathList[props.typeId - 1]}`, putCommentData, {
+          const response = await axios.put(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval-chain/${pathList[props.typeId - 1]}`, putCommentData, {
             headers: {
               'Content-Type': "application/json"
             }
@@ -157,7 +157,7 @@
       const confirmed = window.confirm(msg + '하시겠습니까?');
 
       if(confirmed) {
-        const response = await axios.put(`https://api.gridhr.site/approval-chain/status`, putStatusData, {
+        const response = await axios.put(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval-chain/status`, putStatusData, {
           headers: {
             'Content-Type': "application/json"
           }
@@ -180,7 +180,7 @@
       const confirmed = window.confirm('결재를 취소하시겠습니까?');
 
       if(confirmed) {
-        const response = await axios.post(`https://api.gridhr.site/approval/${pathList[props.typeId - 1]}/${props.approvalId}`);
+        const response = await axios.post(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval/${pathList[props.typeId - 1]}/${props.approvalId}`);
 
         if (response.status !== 201) {
           throw new Error("response is not ok");
@@ -204,9 +204,9 @@
       const confirmed = window.confirm('pdf 파일을 다운로드 하시겠습니까?');
 
       if(confirmed) {
-        const response = await axios.post(`https://api.gridhr.site/approval/pdf/${props.typeId}/${props.approvalId}`);
+        const response = await axios.post(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval/pdf/${props.typeId}/${props.approvalId}`);
 
-        var url = `https://api.gridhr.site/approval/downloadPdf/${props.typeId}/${props.approvalId}`;
+        var url = `http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval/downloadPdf/${props.typeId}/${props.approvalId}`;
 
         // 새 창 열기
         window.open(url, "_blank");

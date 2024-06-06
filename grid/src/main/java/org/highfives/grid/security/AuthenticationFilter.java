@@ -83,7 +83,8 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         tokenReissueRepository.save(redisToken);
 
         // 생성한 토큰 data/쿠키에 저장
-        response.addHeader("Set-Cookie", jwtUtil.createCookie("refresh", refreshToken).toString());
+        response.addCookie(jwtUtil.createCookie("refresh", refreshToken));
+//        response.addHeader("Set-Cookie", jwtUtil.createCookie("refresh", refreshToken).toString());
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
         out.print("{\"access\": \"" + accessToken + "\"}");

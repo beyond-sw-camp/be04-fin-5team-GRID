@@ -119,7 +119,7 @@ onMounted(async () => {
         userId.value = decodedToken?.id || '';
     }
 
-    const response = await axios.get(`https://api.gridhr.site/users/${route.params.employeeNumber}`);
+    const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/${route.params.employeeNumber}`);
     result.value = response.data.result;
     if (result.value.absenceYn === 'Y') {
         isAbsence.value = true;

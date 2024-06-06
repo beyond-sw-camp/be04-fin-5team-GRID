@@ -115,7 +115,7 @@ const reviewContents = ref({});
 
 const fetchReviews = async () => {
   try {
-    const response = await axios.get(`https://api.gridhr.site/review/my-review/${revieweeId.value}`);
+    const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/review/my-review/${revieweeId.value}`);
     reviews.value = response.data.result;
   } catch (error) {
     console.error('Error fetching reviews:', error);
@@ -124,8 +124,8 @@ const fetchReviews = async () => {
 
 const fetchReviewDetails = async (id, revieweeId) => {
   try {
-    const response = await axios.get(`https://api.gridhr.site/review/history-score/${id}/${revieweeId}`);
-    const responseEmployee = await axios.get(`https://api.gridhr.site/users/id/${revieweeId}`);
+    const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/review/history-score/${id}/${revieweeId}`);
+    const responseEmployee = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/id/${revieweeId}`);
     selectedReview.value = responseEmployee.data.result;
     reviewItems.value = response.data.result.map(item => ({
       ...item,
@@ -146,7 +146,7 @@ const fetchReviewContents = async () => {
     for (const item of reviewItems.value) {
       for (const info of item.reviewInfo) {
         if (!reviewContents.value[info.reviewId]) {
-          const response = await axios.get(`https://api.gridhr.site/review/list/${info.reviewId}`);
+          const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/review/list/${info.reviewId}`);
           reviewContents.value[info.reviewId] = response.data.result.listName;
         }
         info.listName = reviewContents.value[info.reviewId];

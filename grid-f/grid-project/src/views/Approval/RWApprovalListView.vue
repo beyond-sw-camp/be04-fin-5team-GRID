@@ -15,7 +15,7 @@
 
   const fetchApprovalList = async() => {
     try {
-      const url = `https://api.gridhr.site/approval/all/3/5`;
+      const url = `http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval/all/3/5`;
 
       const response = await axios.get(url);
 

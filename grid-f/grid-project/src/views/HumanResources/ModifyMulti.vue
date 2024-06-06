@@ -172,16 +172,16 @@ const dutiesList = ref([]);
 const fileInput = ref(null);
 
 const fetchDropdownData = async () => {
-    const departmentRes = await axios.get('https://api.gridhr.site/department/find-all');
+    const departmentRes = await axios.get('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/department/find-all');
     departments.value = departmentRes.data.result.map(d => ({ value: d.id, text: d.departmentName }));
 
-    const teamRes = await axios.get('https://api.gridhr.site/team/find-all');
+    const teamRes = await axios.get('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/team/find-all');
     teams.value = teamRes.data.result.map(t => ({ value: t.id, text: t.teamName }));
 
-    const positionRes = await axios.get('https://api.gridhr.site/users/positions');
+    const positionRes = await axios.get('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/positions');
     positions.value = positionRes.data.result.map(p => ({ value: p.id, text: p.positionName }));
 
-    const dutiesRes = await axios.get('https://api.gridhr.site/users/duties');
+    const dutiesRes = await axios.get('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/duties');
     dutiesList.value = dutiesRes.data.result.map(d => ({ value: d.id, text: d.dutiesName }));
 };
 
@@ -365,7 +365,7 @@ const submitForm = async () => {
 
     try {
         console.log('보낼 데이터: ', cleanedEmployees)
-        await axios.put('https://api.gridhr.site/users/list', cleanedEmployees);
+        await axios.put('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/list', cleanedEmployees);
         alert('수정에 성공하였습니다.');
         router.push('/hr');
     } catch (e) {

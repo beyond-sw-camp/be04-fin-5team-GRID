@@ -179,16 +179,16 @@ const fetchReviewAdd = async () => {
     const currentYear = new Date().getFullYear();   // 올해 년도
     const currentTime = getCurrentDateTimeString()  // 현재 시간
 
-    const responseReview = await axios.get(`https://api.gridhr.site/performance-review/final/${currentYear}/${user.value.id}`);
+    const responseReview = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/performance-review/final/${currentYear}/${user.value.id}`);
 
-    const responseGoal = await axios.get(`https://api.gridhr.site/review-goal/${currentYear}/${user.value.id}`);
+    const responseGoal = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/review-goal/${currentYear}/${user.value.id}`);
 
     // 승인된 목표만 생성 가능
     if(!responseGoal || responseGoal.data.findGoal.approvalStatus !== 'A'){
       throw new Error('평가 목표가 승인되지 않았습니다.');
     }
 
-    const responseMid = await axios.get(`https://api.gridhr.site/performance-review/mid/${currentYear}/${user.value.id}`)
+    const responseMid = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/performance-review/mid/${currentYear}/${user.value.id}`)
 
     // 승인된 중간 평가가 없으면 예외
     if(!responseMid || responseMid.data.findReview.approvalStatus !== 'V') {
@@ -207,12 +207,12 @@ const fetchReviewAdd = async () => {
       }
 
       const responseAdd = await axios.post(
-          `https://api.gridhr.site/performance-review`,
+          `http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/performance-review`,
           sendData
       );
 
       const id = responseAdd.data.performanceReview.id
-      const response = await axios.get(`https://api.gridhr.site/performance-review/detail/${id}`);
+      const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/performance-review/detail/${id}`);
 
       const review = response.data.findDetailReview;
       reviewItemList.value = review.reviewItemList;
@@ -231,7 +231,7 @@ const fetchReviewAdd = async () => {
     } else {
       // 생성된 평가 있을 때
       const id = responseReview.data.findReview.id
-      const response = await axios.get(`https://api.gridhr.site/performance-review/detail/${id}`);
+      const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/performance-review/detail/${id}`);
 
       const review = response.data.findDetailReview;
       reviewItemList.value = review.reviewItemList;
@@ -342,7 +342,7 @@ async function memberSave() {
       console.log(sendData);
       try {
         await axios.put(
-            `https://api.gridhr.site/performance-review/in-progress`,
+            `http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/performance-review/in-progress`,
             sendData
         );
         alert('평가를 저장했습니다.')
@@ -393,7 +393,7 @@ async function submit() {
       console.log(sendData);
       try {
         await axios.put(
-            `https://api.gridhr.site/performance-review/submit`,
+            `http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/performance-review/submit`,
             sendData
         );
 

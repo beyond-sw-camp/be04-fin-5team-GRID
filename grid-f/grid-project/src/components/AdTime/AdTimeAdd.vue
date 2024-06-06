@@ -88,7 +88,7 @@ const fetchAdTime = async () => {
     today.value = currentDate;
 
     console.log(currentDate);
-    const response = await axios.get(`https://api.gridhr.site/ad-time/${currentDate}/${userId.value}`);
+    const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/ad-time/${currentDate}/${userId.value}`);
     console.log('출근 조회: ', response.data);
     const data = response.data.adTimeDTO;
     console.log(response.data.adTimeDTO);
@@ -153,7 +153,7 @@ const fetchEmployeeEvent = async () => {
 
   try {
     // 출근 조회
-    const responseAdTime = await axios.get(`https://api.gridhr.site/ad-time/${userId.value}`);
+    const responseAdTime = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/ad-time/${userId.value}`);
 
     const adTime = responseAdTime.data.adTimeDTOList;
     console.log(adTime);
@@ -163,28 +163,28 @@ const fetchEmployeeEvent = async () => {
     console.log(events.value);
     // updateCalendarEvents(events.value);
     // 출장 조회
-    const responseBt = await axios.get(`https://api.gridhr.site/approval/list/1/1/${userId.value}`);
+    const responseBt = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval/list/1/1/${userId.value}`);
     console.log(responseBt.data);
 
     const bt = responseBt.data.approvalEmpResultList
     const btEvents = transformEvents(bt, '출장', 'red');
 
     // 시간외 근무 조회
-    const responseO = await axios.get(`https://api.gridhr.site/approval/list/2/1/${userId.value}`);
+    const responseO = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval/list/2/1/${userId.value}`);
     console.log(responseO.data);
 
     const O = responseBt.data.approvalEmpResultList
     const OEvents = transformEvents(O, '시간외 근무', 'blue');
 
     // 단축 근무 조회
-    const responseRw = await axios.get(`https://api.gridhr.site/approval/list/3/1/${userId.value}`);
+    const responseRw = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval/list/3/1/${userId.value}`);
     console.log(responseRw.data);
 
     const Rw = responseBt.data.approvalEmpResultList
     const RwEvents = transformEvents(Rw, '단축 근무', 'green');
 
     // 휴가 조회
-    const responseV = await axios.get(`https://api.gridhr.site/approval/list/4/1/${userId.value}`);
+    const responseV = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval/list/4/1/${userId.value}`);
     console.log(responseV.data);
 
     const V = responseBt.data.approvalEmpResultList
@@ -203,7 +203,7 @@ const fetchEmployeeEvent = async () => {
 const fetchAllEvent = async () => {
   try {
     // 출근 조회
-    const responseAdTime = await axios.get(`https://api.gridhr.site/ad-time/all`);
+    const responseAdTime = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/ad-time/all`);
 
     const adTime = responseAdTime.data.adTimeDTOList;
     console.log(adTime);
@@ -285,7 +285,7 @@ const addArrivalTime = async () => {
     const currentTime = getCurrentDateTimeString();
     console.log(currentTime);
     await axios.post(
-        'https://api.gridhr.site/ad-time/arrival-time',
+        'http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/ad-time/arrival-time',
         {
           id: null,
           startTime: currentTime,
@@ -312,7 +312,7 @@ const addDepartureTime = async () => {
     const currentTime = getCurrentDateTimeString();
     console.log(currentTime);
     await axios.put(
-        'https://api.gridhr.site/ad-time/departure-time',
+        'http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/ad-time/departure-time',
         {
           id: null,
           startTime: null,
@@ -390,7 +390,6 @@ const goToAdTimeList = () => {
 
 #calendar .fc-daygrid-day {
   height: 100%; /* 날짜 셀의 고정 높이 */
-
 }
 
 /*#calendar .fc {
@@ -401,7 +400,7 @@ const goToAdTimeList = () => {
 #calendar .fc-daygrid-day-events {
   max-height: 100px; /* 날짜 셀의 고정 높이 */
   text-align: left;
-  //overflow: auto;
+  overflow: auto;
   text-decoration: none;
 }
 
@@ -416,7 +415,7 @@ const goToAdTimeList = () => {
   /* 기본 커서로 변경 */
   cursor: default;
 
-  //background-color: #3fb9b8;
+  background-color: #3fb9b8;
   color: #ffffff;
   height: 10%;
 }

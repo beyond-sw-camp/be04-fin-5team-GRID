@@ -79,7 +79,7 @@ const itemsPerPage = 10;
 const fetchMemberGoal = async () => {
   try {
     // 팀원일때
-    const response = await axios.get(`https://api.gridhr.site/review-goal/member/${user.value.id}`);
+    const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/review-goal/member/${user.value.id}`);
 
     goalList.value = response.data.findGoalList;
   } catch (error) {
@@ -91,7 +91,7 @@ const fetchLeaderGoal = async () => {
   try {
 
     // 팀장일 때
-    const response = await axios.get(`https://api.gridhr.site/review-goal/leader/${user.value.id}`);
+    const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/review-goal/leader/${user.value.id}`);
     console.log(response.data.findGoalList);
     goalList.value = response.data.findGoalList;
   } catch (error) {

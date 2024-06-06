@@ -22,7 +22,7 @@ export default createStore({
     actions: {
         async fetchUserByEmail({ commit }, email) {
             try {
-                const response = await axios.get(`https://api.gridhr.site/users/mail/${email}`);
+                const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/mail/${email}`);
                 commit('setUser', response.data.result);
                 commit('setEmail', email);
                 console.log('유저 정보 fetch: ', response.data.result);

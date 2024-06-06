@@ -183,21 +183,21 @@ public class JwtUtil {
     }
 
 
-    public ResponseCookie createCookie(String key, String value) {
+    public Cookie createCookie(String key, String value) {
 
-        ResponseCookie cookie = ResponseCookie.from(key, value)
-                .path("/")
-                .sameSite("None")
-                .httpOnly(true)
-                .maxAge(24*60*60)
-                .secure(true)
-                .build();
-//        Cookie cookie = new Cookie(key, value);
-//        cookie.setMaxAge(24*60*60);
+//        ResponseCookie cookie = ResponseCookie.from(key, value)
+//                .path("/")
+//                .sameSite("None")
+//                .httpOnly(true)
+//                .maxAge(24*60*60)
+//                .secure(true)
+//                .build();
+        Cookie cookie = new Cookie(key, value);
+        cookie.setMaxAge(24*60*60);
 //        cookie.setHttpOnly(true);
-//        cookie.setPath("/");
-//        cookie.setDomain("");
-//        cookie.setSecure(false); // HTTPS를 사용하지 않으므로 false
+        cookie.setPath("/");
+        cookie.setDomain("gridhr.site");
+        cookie.setSecure(false); // HTTPS를 사용하지 않으므로 false
         return cookie;
     }
 }
