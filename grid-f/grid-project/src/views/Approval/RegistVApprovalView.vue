@@ -7,6 +7,7 @@ import router from '@/router/router';
 const route = useRoute();
 
 const userId = ref();
+
 const allInfo = ref([]);
 const vacationNum = ref(0);
 
@@ -18,9 +19,9 @@ const state = reactive({
 
 const postData = reactive({
   s_date: "",
-  s_time: "00:00",
+  s_time: "00:00:00",
   e_date: "",
-  e_time: "00:00",
+  e_time: "00:00:00",
   infoId: 0,
   content: "",
   requesterId: 0
@@ -46,7 +47,6 @@ const getUserVacationInfo = async (id) => {
 
     allInfo.value = response.data.result;
 
-
     if(id === 5 || id === 6) {
       const vacationInfo = allInfo.value.find(info => info.typeId === 1);
       vacationNum.value = vacationInfo ? vacationInfo.vacationNum : 0;
@@ -62,8 +62,17 @@ const getUserVacationInfo = async (id) => {
 };
 
 const updateDateTime = () => {
-  postData.startTime = `${postData.s_date} ${postData.s_time}:00`;
-  postData.endTime = `${postData.e_date} ${postData.e_time}:00`;
+  if (postData.startTime === '') {
+    postData.startTime = `${postData.s_date} 00:00:00`;
+  } else {
+    postData.startTime = `${postData.s_date} ${postData.s_time}:00`;
+  }
+
+  if (postData.endTime === '') {
+    postData.endTime = `${postData.e_date} 00:00:00`
+  } else {
+    postData.endTime = `${postData.e_date} ${postData.e_time}:00`
+  }
 }
 
 const fetchVacationType = async() => {

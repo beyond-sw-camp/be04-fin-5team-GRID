@@ -34,9 +34,6 @@
   const updateDateTime = () => {
     postData.startTime = `${postData.s_date} ${postData.s_time}:00`;
     postData.endTime = `${postData.e_date} ${postData.e_time}:00`;
-
-    console.log(postData.startTime, postData.endTime)
-    console.log(postData.endTime)
   }
 
   const registApproval = async() => {
@@ -59,7 +56,7 @@
                 'Content-Type': "application/json"
               }
             })
-            if (!response.success) {
+            if (!response.data.success) {
               alert(response.data.message)
             } else if (response.status === 201) {
               alert('결재가 제출되었습니다.');
