@@ -45,7 +45,10 @@
           <td>{{ item.employeeName }}</td>
           <td>{{ item.startTime }}</td>
           <td>{{ item.endTime }}</td>
-          <td>{{ item.attendanceStatus }}</td>
+          <td>
+            <b-badge variant="success" v-if="item.attendanceStatus === '정시 출근'">{{ item.attendanceStatus }}</b-badge>
+            <b-badge variant="danger" v-else>{{ item.attendanceStatus }}</b-badge>
+          </td>
         </tr>
         </tbody>
       </table>
