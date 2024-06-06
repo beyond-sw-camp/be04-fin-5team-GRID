@@ -130,7 +130,7 @@ public class GridLogoutFilter extends GenericFilterBean {
         Cookie cookie = new Cookie("refresh", null);
         cookie.setMaxAge(0);
         cookie.setPath("/");
-
+        
         response.addCookie(cookie);
         response.setStatus(HttpServletResponse.SC_OK);
     }
