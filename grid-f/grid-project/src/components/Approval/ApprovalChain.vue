@@ -199,25 +199,14 @@
   }
 
   const printApproval = async () => {
-
-    try {
       const confirmed = window.confirm('pdf 파일을 다운로드 하시겠습니까?');
 
       if(confirmed) {
-        const response = await axios.post(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval/pdf/${props.typeId}/${props.approvalId}`);
-
         var url = `http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval/downloadPdf/${props.typeId}/${props.approvalId}`;
 
         // 새 창 열기
         window.open(url, "_blank");
-
-        if (response.status !== 201) {
-          throw new Error("response is not ok");
-        }
       }
-    } catch (error) {
-      console.error('Fail to post: ', error.message);
-    }
   }
 
   onMounted(async () => {

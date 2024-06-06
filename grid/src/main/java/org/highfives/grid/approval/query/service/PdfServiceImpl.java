@@ -181,8 +181,8 @@ public class PdfServiceImpl implements PdfService {
             d_leader.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
             d_leader.setVerticalAlignment(PdfPCell.ALIGN_MIDDLE);
 
-            sigTable.addCell(t_leader);
             sigTable.addCell(d_leader);
+            sigTable.addCell(t_leader);
 
             sigTable.setTotalWidth(160);
             sigTable.setLockedWidth(true);
