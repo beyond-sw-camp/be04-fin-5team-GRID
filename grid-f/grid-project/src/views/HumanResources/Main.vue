@@ -40,13 +40,14 @@
                         <td><img :src="getProfileUrl(employee.profilePath)" alt="profile" class="profile-image"></td>
                         <td>{{ employee.name }}</td>
                         <td>{{ employee.employeeNumber }}</td>
-                        <td>{{ employee.department }}</td>
-                        <td>{{ employee.team }}</td>
-                        <td>{{ employee.position }}</td>
-                        <td>{{ employee.duties }}</td>
+                        <td>{{ employee.department.departmentName }}</td>
+                        <td>{{ employee.team.teamName }}</td>
+                        <td>{{ employee.position.positionName }}</td>
+                        <td>{{ employee.duties.dutiesName }}</td>
                         <td>
                             <div class="badge-class">
-                                <b-badge class="mt-3" variant="warning" style="margin: 0;" v-if="employee.absenceYn === 'Y'">부재중</b-badge>
+                                <b-badge class="mt-3" variant="warning" style="margin: 0;"
+                                    v-if="employee.absenceYn === 'Y'">부재중</b-badge>
                                 <b-badge class="mt-3" variant="success" style="margin: 0;" v-else>재실중</b-badge>
                             </div>
                         </td>
@@ -102,6 +103,16 @@ const pageSize = ref(8);
 const visiblePages = ref([]);
 const userRole = ref('');
 
+const parseData = (data) => {
+    return data.map(employee => ({
+        ...employee,
+        department: JSON.parse(employee.department.replace(/(\w+)\s*=/g, '"$1":').replace(/'/g, '"')),
+        team: JSON.parse(employee.team.replace(/(\w+)\s*=/g, '"$1":').replace(/'/g, '"')),
+        position: JSON.parse(employee.position.replace(/(\w+)\s*=/g, '"$1":').replace(/'/g, '"')),
+        duties: JSON.parse(employee.duties.replace(/(\w+)\s*=/g, '"$1":').replace(/'/g, '"'))
+    }));
+};
+
 const getProfileUrl = (profilePath) => {
     return profilePath ? profilePath : defaultProfileImage;
 };
@@ -113,7 +124,7 @@ const findUser = async () => {
         : `http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/list/${encodeURIComponent(searchCondition.value)}?page=${currentPage.value}&size=${pageSize.value}`;
 
     response = await axios.get(url);
-    employeeList.value = response.data.result;
+    employeeList.value = parseData(response.data.result);
     totalPages.value = response.data.totalPages;
     updateVisiblePages();
     console.log("사원리스트 조회 결과: ", employeeList.value);
@@ -226,6 +237,7 @@ onMounted(async () => {
     }
 });
 </script>
+
 
 <style scoped>
 button {
