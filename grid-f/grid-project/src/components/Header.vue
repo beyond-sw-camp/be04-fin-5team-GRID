@@ -93,7 +93,7 @@ const profileUrl = computed(() => {
 
 const fetchDepartments = async () => {
   try {
-    const response = await axios.get('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/department/find-all');
+    const response = await axios.get('https://api.gridhr.site/department/find-all');
     departments.value = response.data.result
       .map(department => ({
         id: department.id,
@@ -131,7 +131,7 @@ const goProfile = () => {
 
 const fetchTeams = async (departmentId) => {
   try {
-    const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/team/sub-department/${departmentId}`);
+    const response = await axios.get(`https://api.gridhr.site/team/sub-department/${departmentId}`);
     return response.data.result
       .map(team => ({
         ...team,
@@ -147,7 +147,7 @@ const fetchTeams = async (departmentId) => {
 
 const fetchEmployees = async (teamId) => {
   try {
-    const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/team-list/${teamId}`);
+    const response = await axios.get(`https://api.gridhr.site/users/team-list/${teamId}`);
     return response.data.result.sort((a, b) => a.sequence - b.sequence);  // sequence 순으로 정렬
   } catch (error) {
     console.error('직원 정보를 가져오는 데 실패했습니다:', error);
@@ -200,7 +200,7 @@ const handleDragEnd = async () => {
     }));
     console.log(updatedDepartments);
 
-    await axios.put('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/department/list', updatedDepartments, {
+    await axios.put('https://api.gridhr.site/department/list', updatedDepartments, {
       headers: {
         'Content-Type': 'application/json'
       }
@@ -237,7 +237,7 @@ const handleTeamDragEnd = async (event) => {
     if (team) {
       team.departmentId = newDepartmentId;
       try {
-        await axios.put(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/team`, {
+        await axios.put(`https://api.gridhr.site/team`, {
           id: team.id,
           teamName: team.teamName,
           teamStatus: team.teamStatus,

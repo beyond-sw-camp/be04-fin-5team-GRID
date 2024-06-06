@@ -99,10 +99,10 @@
   const fetchApprovalList = async(typeId, approvalStatus, employeeId) => {
 
     try {
-      let url = `http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval/all/${typeId}/${approvalStatus}`;
+      let url = `https://api.gridhr.site/approval/all/${typeId}/${approvalStatus}`;
 
       if (userRole.value !== 'ROLE_ADMIN') {
-        url = `http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval/list/${typeId}/${approvalStatus}/${employeeId}`;
+        url = `https://api.gridhr.site/approval/list/${typeId}/${approvalStatus}/${employeeId}`;
       }
 
       const response = await axios.get(url);

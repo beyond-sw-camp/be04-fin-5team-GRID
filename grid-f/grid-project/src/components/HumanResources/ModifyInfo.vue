@@ -333,24 +333,24 @@ const changeValues = (user) => {
 
 onMounted(async () => {
     changeValues(props.user);
-    const depRes = await axios.get('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/department/find-all');
+    const depRes = await axios.get('https://api.gridhr.site/department/find-all');
     departmentInfo.value = depRes.data.result;
     console.log('부서정보:', depRes.data.result);
 
-    const teamRes = await axios.get('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/team/find-all');
+    const teamRes = await axios.get('https://api.gridhr.site/team/find-all');
     teamInfo.value = teamRes.data.result;
 
-    const dutiesRes = await axios.get('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/duties');
+    const dutiesRes = await axios.get('https://api.gridhr.site/users/duties');
     dutiesInfo.value = dutiesRes.data.result;
 
-    const positionRes = await axios.get('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/positions');
+    const positionRes = await axios.get('https://api.gridhr.site/users/positions');
     positionInfo.value = positionRes.data.result;
 });
 
 const checkDuplicate = async (field) => {
     try {
         console.log('체크 정보 확인: ', props.user[field]);
-        const response = await axios.post('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/duplication', { field, value: props.user[field] });
+        const response = await axios.post('https://api.gridhr.site/users/duplication', { field, value: props.user[field] });
         duplicateWarning.value[field] = response.data.isDuplicate;
     } catch (error) {
         if (error.response) {
@@ -401,7 +401,7 @@ const confirmResignation = () => {
 // 테스트
 const resignUser = async () => {
     try {
-        const response = await axios.put(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/${props.user.employeeNumber}/status`, {
+        const response = await axios.put(`https://api.gridhr.site/users/${props.user.employeeNumber}/status`, {
             resignYn: 'Y',
             resignedTime: format(new Date(), 'yyyy-MM-dd')
         });

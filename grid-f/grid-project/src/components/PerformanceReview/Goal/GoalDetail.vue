@@ -185,7 +185,7 @@ const fetchGoalDetail = async () => {
     console.log(isMember.value);
     const route = router.currentRoute.value;
     const id = route.params.id;
-    const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/review-goal/detail/${id}`);
+    const response = await axios.get(`https://api.gridhr.site/review-goal/detail/${id}`);
     const goal = response.data.findDetailGoal;
     console.log(response.data.findDetailGoal);
     goalItemList.value = goal.goalItemList;
@@ -299,7 +299,7 @@ async function deleteItem(index) {
       console.log(id);
 
       if (id != null) {
-        await axios.delete(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/goal-item/${id}`);
+        await axios.delete(`https://api.gridhr.site/goal-item/${id}`);
       }
       goalItemList.value.splice(index, 1);
       // 삭제 후 인덱스 값 업데이트
@@ -355,7 +355,7 @@ async function memberSave() {
 
       try {
         await axios.put(
-            `http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/review-goal/in-progress`,
+            `https://api.gridhr.site/review-goal/in-progress`,
             sendData
         );
 
@@ -425,7 +425,7 @@ async function submit() {
 
       try {
         const response = await axios.put(
-            `http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/review-goal/submit`,
+            `https://api.gridhr.site/review-goal/submit`,
             sendData
         );
 
@@ -461,7 +461,7 @@ async function leaderSave() {
       console.log(sendData);
       try {
         const response = await axios.put(
-            `http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/review-goal/read`,
+            `https://api.gridhr.site/review-goal/read`,
             sendData
         );
 
@@ -505,7 +505,7 @@ async function approval() {
 
       try {
         const response = await axios.put(
-            `http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/review-goal/approval`,
+            `https://api.gridhr.site/review-goal/approval`,
             sendData
         );
         console.log("확인: ", response);
@@ -566,7 +566,7 @@ async function denied() {
 
       try {
         const response = await axios.put(
-            `http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/review-goal/denied`,
+            `https://api.gridhr.site/review-goal/denied`,
             sendData
         );
         console.log("확인: ", response);

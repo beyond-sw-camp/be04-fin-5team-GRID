@@ -79,7 +79,7 @@ const itemsPerPage = 10;
 const fetchMemberTotal = async () => {
   try {
     // 팀원일때
-    const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/total-performance-review/reviewee/${user.value.id}`);
+    const response = await axios.get(`https://api.gridhr.site/total-performance-review/reviewee/${user.value.id}`);
     console.log(response.data.findTotalList);
     totalList.value = response.data.findTotalList;
   } catch (error) {
@@ -90,7 +90,7 @@ const fetchMemberTotal = async () => {
 const fetchLeaderTotal = async () => {
   try {
     // 팀장일 때
-    const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/total-performance-review/reviewer/${user.value.id}`);
+    const response = await axios.get(`https://api.gridhr.site/total-performance-review/reviewer/${user.value.id}`);
     console.log(response.data.findTotalList);
     totalList.value = response.data.findTotalList;
   } catch (error) {
@@ -101,7 +101,7 @@ const fetchLeaderTotal = async () => {
 const fetchAllTotal = async () => {
   try {
     // 관리자
-    const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/total-performance-review`);
+    const response = await axios.get(`https://api.gridhr.site/total-performance-review`);
     console.log(response.data.findTotalList);
     totalList.value = response.data.findTotalList;
   } catch (error) {

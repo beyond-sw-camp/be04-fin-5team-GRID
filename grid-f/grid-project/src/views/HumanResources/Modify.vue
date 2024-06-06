@@ -127,7 +127,7 @@ const uploadProfileImage = async (event) => {
     formData.append('typeId', 2);
 
     try {
-        const response = await axios.put('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/img', formData, {
+        const response = await axios.put('https://api.gridhr.site/users/img', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
@@ -152,7 +152,7 @@ const uploadSealImage = async (event) => {
     formData.append('typeId', 1);
 
     try {
-        const response = await axios.put('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/img', formData, {
+        const response = await axios.put('https://api.gridhr.site/users/img', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
@@ -174,7 +174,7 @@ const submitModifications = async () => {
         }
 
         const cleanedData = cleanUserData(updatedUser.value);
-        const response = await axios.put(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/${user.value.id}`, cleanedData);
+        const response = await axios.put(`https://api.gridhr.site/users/${user.value.id}`, cleanedData);
         alert("수정이 완료되었습니다.");
         router.push(`/hr/profile/${cleanedData.employeeNumber}`);
     } catch (error) {
