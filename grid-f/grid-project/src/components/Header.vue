@@ -7,7 +7,7 @@
 
       <div class="icons">
         <div class="tokenArea">
-          <span class="token-timer">{{ timeLeft }}</span>
+          <span class="token-timer" style="font: 20px;">{{ timeLeft }}</span>
           <button class="newToken" type="button" @click="addTokenTime()">연장하기</button>
         </div>
         <button class="icon-button" type="button" data-bs-toggle="offcanvas" data-bs-target="#demo">
@@ -73,6 +73,7 @@ import draggable from 'vuedraggable';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 import defaultProfileImage from '@/assets/defaultProfile.jpg';
+import Cookies from 'js-cookie';
 
 const departments = ref([]);
 const router = useRouter();
@@ -429,6 +430,18 @@ const logout = async () => {
 
     localStorage.removeItem('access');
     localStorage.removeItem('email');
+
+    // Check if the 'refresh' cookie exists
+    const refreshCookie = Cookies.get('refresh');
+
+    if (refreshCookie) {
+      // Delete the 'refresh' cookie
+      Cookies.remove('refresh');
+      console.log('Refresh cookie deleted');
+    } else {
+      console.log('Refresh cookie does not exist');
+    }
+
     store.dispatch('resetState');
     alert('로그아웃 되었습니다');
     router.push('/');

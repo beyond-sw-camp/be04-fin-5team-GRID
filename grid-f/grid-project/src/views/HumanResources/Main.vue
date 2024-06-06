@@ -45,8 +45,10 @@
                         <td>{{ employee.position }}</td>
                         <td>{{ employee.duties }}</td>
                         <td>
-                            <b-badge class="mt-3" variant="warning" v-if="employee.absenceYn === 'Y'">부재중</b-badge>
-                            <b-badge class="mt-3" variant="info" v-else>재실중</b-badge>
+                            <div class="badge-class">
+                                <b-badge class="mt-3" variant="warning" style="margin: 0;" v-if="employee.absenceYn === 'Y'">부재중</b-badge>
+                                <b-badge class="mt-3" variant="success" style="margin: 0;" v-else>재실중</b-badge>
+                            </div>
                         </td>
                         <td>{{ employee.absenceContent }}</td>
                     </tr>
@@ -464,5 +466,11 @@ tbody tr:hover {
     border-color: #088A85;
     color: white;
     /* 선택된 버튼의 글자색을 흰색으로 설정 */
+}
+
+.badge-class {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 </style>

@@ -9,7 +9,7 @@
                 <img :src="profileUrl" alt="프로필 이미지">
             </div>
             <div class="name">
-                <div id="name" >
+                <div id="name">
                     {{ result.name }}
                 </div>
                 <div id="other-info">
@@ -22,13 +22,15 @@
                     </div>
                     <div id="dot">•</div>
                     <div id="absenceInfo">
-                        {{ isAbsence ? '부재중' : '재실' }}
+                        <b-badge v-if="isAbsence" variant="danger">부재중</b-badge>
+                        <b-badge v-else variant="success">재실중</b-badge>
                     </div>
                 </div>
             </div>
             <div class="button" v-if="userRole === 'ROLE_ADMIN' || userId == result.id">
                 <div>
-                    <button class="modifyBtn" @click="toModify(result.employeeNumber, result)" :userRole="userRole">회원 정보 수정</button>
+                    <button class="modifyBtn" @click="toModify(result.employeeNumber, result)" :userRole="userRole">회원
+                        정보 수정</button>
                 </div>
             </div>
         </div>
@@ -154,7 +156,8 @@ body {
 }
 
 .tab-button {
-    width: 110px; /* 고정된 너비 */
+    width: 110px;
+    /* 고정된 너비 */
     height: 30px;
     text-align: center;
     font-weight: bold;
@@ -173,7 +176,8 @@ body {
 }
 
 .inactive-tab {
-    background-color: #c1dcdb; /* 비활성화된 탭의 배경색 */
+    background-color: #c1dcdb;
+    /* 비활성화된 탭의 배경색 */
     color: black !important;
 }
 
@@ -182,8 +186,10 @@ body {
 }
 
 .b-nav-item .nav-link {
-    font-weight: bold; /* 볼드체 적용 */
-    text-decoration: none; /* 기본 밑줄 제거 */
+    font-weight: bold;
+    /* 볼드체 적용 */
+    text-decoration: none;
+    /* 기본 밑줄 제거 */
     padding: 0;
 }
 
@@ -216,20 +222,24 @@ body {
     grid-template-columns: 23% 47% 30%;
     max-height: 100%;
     max-width: 100%;
-    height: 300px; /* 고정 높이 설정 */
+    height: 300px;
+    /* 고정 높이 설정 */
 }
 
 .image {
-    border-radius: 18%; /* 이미지 컨테이너 둥근 모서리 */
+    border-radius: 18%;
+    /* 이미지 컨테이너 둥근 모서리 */
     grid-column-start: 1;
     padding: 0;
     height: 100%;
     width: 100%;
-    overflow: hidden; /* 이미지가 컨테이너를 넘지 않도록 설정 */
+    overflow: hidden;
+    /* 이미지가 컨테이너를 넘지 않도록 설정 */
 }
 
 .image img {
-    border-radius: 18%; /* 이미지 둥근 모서리 */
+    border-radius: 18%;
+    /* 이미지 둥근 모서리 */
     width: 90%;
     height: 100%;
 }
@@ -320,8 +330,10 @@ body {
     grid-row-start: 4;
     grid-column-start: 2;
     margin-top: 15px;
-    overflow-y: auto; /* 스크롤 가능하게 설정 */
-    min-height: 750px; /* 고정 높이 설정 */
+    overflow-y: auto;
+    /* 스크롤 가능하게 설정 */
+    min-height: 750px;
+    /* 고정 높이 설정 */
 }
 
 .modal-body {

@@ -321,13 +321,19 @@ public class UserServiceImpl implements UserService{
         }
         if (givenInfo.getDutiesId() == 3) { // 팀장으로 변경할 경우 해당 팀 불러와서 leaderid 변경
             Team team = teamRepository.findById(givenInfo.getTeamId()).orElseThrow(NullPointerException::new);
+            Employee oldLeader = userRepository.findById(team.getLeaderId()).orElseThrow(NullPointerException::new);
             team.setLeaderId(oldInfo.getId());
+            oldLeader.setDutiesId(4);
             teamRepository.save(team);
+            userRepository.save(oldLeader);
         }
         if (givenInfo.getDutiesId() == 2) { // 부서장으로 변경할 경우 해당 팀 불러와서 leaderid 변경
             Department department = departmentRepository.findById(givenInfo.getDepartmentId()).orElseThrow(NullPointerException::new);
+            Employee oldLeader = userRepository.findById(department.getLeaderId()).orElseThrow(NullPointerException::new);
             department.setLeaderId(oldInfo.getId());
+            oldLeader.setDutiesId(4);
             departmentRepository.save(department);
+            userRepository.save(oldLeader);
         }
         if(givenInfo.getWorkType() == null)
             givenInfo.setWorkType(oldInfo.getWorkType());
@@ -379,6 +385,22 @@ public class UserServiceImpl implements UserService{
             givenInfo.setPositionId(oldInfo.getPositionId());
         if(givenInfo.getDutiesId() == 0)
             givenInfo.setDutiesId(oldInfo.getDutiesId());
+        if (givenInfo.getDutiesId() == 3) { // 팀장으로 변경할 경우 해당 팀 불러와서 leaderid 변경
+            Team team = teamRepository.findById(givenInfo.getTeamId()).orElseThrow(NullPointerException::new);
+            Employee oldLeader = userRepository.findById(team.getLeaderId()).orElseThrow(NullPointerException::new);
+            team.setLeaderId(oldInfo.getId());
+            oldLeader.setDutiesId(4);
+            teamRepository.save(team);
+            userRepository.save(oldLeader);
+        }
+        if (givenInfo.getDutiesId() == 2) { // 부서장으로 변경할 경우 해당 팀 불러와서 leaderid 변경
+            Department department = departmentRepository.findById(givenInfo.getDepartmentId()).orElseThrow(NullPointerException::new);
+            Employee oldLeader = userRepository.findById(department.getLeaderId()).orElseThrow(NullPointerException::new);
+            department.setLeaderId(oldInfo.getId());
+            oldLeader.setDutiesId(4);
+            departmentRepository.save(department);
+            userRepository.save(oldLeader);
+        }
         if(givenInfo.getWorkType() == null)
             givenInfo.setWorkType(oldInfo.getWorkType());
         if(givenInfo.getContractEndTime() == null)
