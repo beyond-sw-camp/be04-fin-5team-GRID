@@ -103,6 +103,16 @@ const pageSize = ref(8);
 const visiblePages = ref([]);
 const userRole = ref('');
 
+const parseData = (data) => {
+    return data.map(employee => ({
+        ...employee,
+        department: JSON.parse(employee.department.replace(/(\w+)\s*=/g, '"$1":').replace(/'/g, '"')),
+        team: JSON.parse(employee.team.replace(/(\w+)\s*=/g, '"$1":').replace(/'/g, '"')),
+        position: JSON.parse(employee.position.replace(/(\w+)\s*=/g, '"$1":').replace(/'/g, '"')),
+        duties: JSON.parse(employee.duties.replace(/(\w+)\s*=/g, '"$1":').replace(/'/g, '"'))
+    }));
+};
+
 const getProfileUrl = (profilePath) => {
     return profilePath ? profilePath : defaultProfileImage;
 };
@@ -114,7 +124,7 @@ const findUser = async () => {
         : `http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/list/${encodeURIComponent(searchCondition.value)}?page=${currentPage.value}&size=${pageSize.value}`;
 
     response = await axios.get(url);
-    employeeList.value = response.data.result;
+    employeeList.value = parseData(response.data.result);
     totalPages.value = response.data.totalPages;
     updateVisiblePages();
     console.log("사원리스트 조회 결과: ", employeeList.value);
@@ -227,6 +237,7 @@ onMounted(async () => {
     }
 });
 </script>
+
 
 <style scoped>
 button {
