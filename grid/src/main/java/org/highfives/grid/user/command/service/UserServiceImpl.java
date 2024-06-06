@@ -5,6 +5,12 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.highfives.grid.department.command.aggregate.Department;
+import org.highfives.grid.department.command.aggregate.Team;
+import org.highfives.grid.department.command.repository.DepartmentRepository;
+import org.highfives.grid.department.command.repository.TeamRepository;
+import org.highfives.grid.department.command.service.DepartmentServiceImpl;
+import org.highfives.grid.department.command.service.TeamServiceImpl;
 import org.highfives.grid.user.command.aggregate.*;
 import org.highfives.grid.user.command.dto.UserDTO;
 import org.highfives.grid.user.command.repository.UserRepository;
@@ -31,14 +37,20 @@ public class UserServiceImpl implements UserService{
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final TeamRepository teamRepository;
+    private final DepartmentRepository departmentRepository;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository,
                            ModelMapper modelMapper,
-                           BCryptPasswordEncoder bCryptPasswordEncoder) {
+                           BCryptPasswordEncoder bCryptPasswordEncoder,
+                           TeamRepository teamRepository,
+                           DepartmentRepository departmentRepository) {
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.teamRepository = teamRepository;
+        this.departmentRepository = departmentRepository;
     }
 
     @Override
@@ -83,8 +95,12 @@ public class UserServiceImpl implements UserService{
     @Transactional
     public UserDTO modifyUser(int id, UserDTO modifyInfo) {
 
+        // 기존 정보 불러오기
         Employee oldInfo = userRepository.findById(id).orElseThrow(NullPointerException::new);
+
+        // 기존 정보와 새 정보 비교해서 정보 넣기
         userRepository.save(inputNewInfo(oldInfo, modifyInfo));
+
         Employee resultInfo = userRepository.findById(modifyInfo.getId()).orElseThrow(NullPointerException::new);
         return modelMapper.map(resultInfo, UserDTO.class);
     }
@@ -300,8 +316,19 @@ public class UserServiceImpl implements UserService{
             givenInfo.setTeamId(oldInfo.getTeamId());
         if(givenInfo.getPositionId() == 0)
             givenInfo.setPositionId(oldInfo.getPositionId());
-        if(givenInfo.getDutiesId() == 0)
+        if(givenInfo.getDutiesId() == 0) {
             givenInfo.setDutiesId(oldInfo.getDutiesId());
+        }
+        if (givenInfo.getDutiesId() == 3) { // 팀장으로 변경할 경우 해당 팀 불러와서 leaderid 변경
+            Team team = teamRepository.findById(givenInfo.getTeamId()).orElseThrow(NullPointerException::new);
+            team.setLeaderId(oldInfo.getId());
+            teamRepository.save(team);
+        }
+        if (givenInfo.getDutiesId() == 2) { // 부서장으로 변경할 경우 해당 팀 불러와서 leaderid 변경
+            Department department = departmentRepository.findById(givenInfo.getDepartmentId()).orElseThrow(NullPointerException::new);
+            department.setLeaderId(oldInfo.getId());
+            departmentRepository.save(department);
+        }
         if(givenInfo.getWorkType() == null)
             givenInfo.setWorkType(oldInfo.getWorkType());
         if(givenInfo.getContractEndTime() == null)

@@ -157,7 +157,7 @@ const reviewDetail = ref({
   status: ''
 });
 
-const isReadOnly = ref(false);
+const isReadOnly = ref(true);
 
 
 // 현재 시간
@@ -284,6 +284,13 @@ const getType = (type) => {
 
 onMounted(() => {
   try {
+    // 12월에만 작성 가능, 시연을 위해 주석처리
+    // const currentMonth = new Date().getMonth() + 1;
+    // if (currentMonth !== 12){
+    //   alert('현재 연말 평가 작성기간이 아닙니다.')
+    //   router.push('/performance-review');
+    // }
+
     if (user.value.duties.dutiesName === '팀원')
       fetchReviewAdd();
 

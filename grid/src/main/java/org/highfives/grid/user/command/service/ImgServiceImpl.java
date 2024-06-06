@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,6 +27,7 @@ public class ImgServiceImpl implements ImgService {
 
     private final ImgRepository imgRepository;
     private final AmazonS3Client amazonS3Client;
+
     @Value("${cloud.aws.s3.bucketName}")
     private String bucketName;
 

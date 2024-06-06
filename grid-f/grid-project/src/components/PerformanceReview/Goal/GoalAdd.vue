@@ -253,6 +253,13 @@ const getApprovalStatus = (status) => {
 
 onMounted(() => {
   try {
+    //3월에만 작성 가능, 시연을 위해 주석처리
+    // const currentMonth = new Date().getMonth() + 1;
+    // if (currentMonth !== 3){
+    //   alert('현재 목표 작성기간이 아닙니다.')
+    //   router.push('/performance-review/goal');
+    // }
+
     if (user.value.duties.dutiesName === '팀원')
       fetchGoalAdd();
   } catch (error) {

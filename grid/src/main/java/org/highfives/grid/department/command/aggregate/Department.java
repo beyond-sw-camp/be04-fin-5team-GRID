@@ -1,10 +1,7 @@
 package org.highfives.grid.department.command.aggregate;
 
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 @Entity
 @Table(name = "department")
@@ -35,6 +32,7 @@ public class Department {
 
 
     @Column(name = "leader_id", nullable = false)
+    @Setter
     private int leaderId;
 
     @Column(name = "department_code", nullable = false)

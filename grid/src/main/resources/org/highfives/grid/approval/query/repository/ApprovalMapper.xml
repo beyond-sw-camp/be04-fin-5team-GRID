@@ -101,6 +101,7 @@
                     AND  b.cancel_yn = 'N'
                     AND  b.cancel_document_id = 0
                 </if>
+                ORDER BY b.write_time DESC;
     </select>
 
     <select id="findAllBTApprovalByEmployeeId" resultMap="approvalMap" parameterType="map">
@@ -145,6 +146,7 @@
                 AND  b.cancel_yn = 'N'
                 AND  b.cancel_document_id = 0
             </if>
+            ORDER BY b.write_time DESC;
     </select>
 
     <select id="findAllOApprovalByEmployeeId" resultMap="approvalMap" parameterType="map">
@@ -188,6 +190,7 @@
             AND  b.cancel_yn = 'N'
             AND  b.cancel_document_id = 0
         </if>
+        ORDER BY b.write_time DESC;
     </select>
 
     <select id="findAllRWApprovalByEmployeeId" resultMap="approvalMap" parameterType="map">
@@ -234,6 +237,7 @@
             AND  b.cancel_yn = 'N'
             AND  b.cancel_document_id = 0
         </if>
+        ORDER BY b.write_time DESC;
     </select>
 
     <select id="findAllVApprovalByEmployeeId" resultMap="approvalMap" parameterType="map">
@@ -281,6 +285,7 @@
             AND  b.cancel_yn = 'N'
             AND  b.cancel_document_id = 0
         </if>
+        ORDER BY b.write_time DESC;
     </select>
 
     <select id="findBTDetailByApprovalId" resultMap="approvalMap" parameterType="int">
@@ -406,6 +411,7 @@
              OR  b.approval_status = 'V')
             AND  a.approval_status = 'W'
         </if>
+        ORDER BY b.write_time DESC;
     </select>
 
     <select id="findTodayBTandV" resultMap="approvalMap" parameterType="map">
