@@ -45,7 +45,8 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
                     new ObjectMapper().readValue(request.getInputStream(), ReqLoginVO.class);
 
             System.out.println("requestLogin = " + requestLogin);
-            // 사용자가 전달한 id / pwd 를 사용해 authentication 토큰을 만듬
+            System.out.println("chechorigins : " + request.getHeader("Origin"));
+          // 사용자가 전달한 id / pwd 를 사용해 authentication 토큰을 만듬
             return getAuthenticationManager().authenticate(
                     new UsernamePasswordAuthenticationToken(
                             requestLogin.getEmail(), requestLogin.getPwd(), new ArrayList<>())
@@ -78,7 +79,6 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         String accessToken = jwtUtil.createJwt(claims, "access");
         String refreshToken = jwtUtil.createJwt(claims, "refresh");
 
-        // 생성한 refresh 토큰 redis에 저장
         RefreshToken redisToken = new RefreshToken(userId, refreshToken);
         tokenReissueRepository.save(redisToken);
 
