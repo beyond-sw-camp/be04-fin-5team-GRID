@@ -2,6 +2,10 @@ package org.highfives.grid.user.query.vo;
 
 import lombok.*;
 import org.highfives.grid.user.command.aggregate.YN;
+import org.highfives.grid.user.query.dto.DepartmentDTO;
+import org.highfives.grid.user.query.dto.DutiesDTO;
+import org.highfives.grid.user.query.dto.PositionDTO;
+import org.highfives.grid.user.query.dto.TeamDTO;
 
 @Getter
 @Setter
@@ -13,10 +17,10 @@ public class SimpleInfo {
     private String profilePath;
     private String name;
     private String employeeNumber;
-    private String department;
-    private String team;
-    private String position;
-    private String duties;
+    private DepartmentDTO department;
+    private TeamDTO team;
+    private PositionDTO position;
+    private DutiesDTO duties;
     private String phoneNumber;
     private YN absenceYn;
     private String absenceContent;
