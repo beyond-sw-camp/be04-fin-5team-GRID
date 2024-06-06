@@ -2,6 +2,7 @@
 
 ### 로고
   
+![Group 70](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/105986200/0d18dc34-0d96-4a3a-ac6c-1e2d3676f37b)
 
 ---
 
