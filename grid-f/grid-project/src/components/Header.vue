@@ -268,7 +268,7 @@ const addTokenTime = async () => {
     const confirmed = window.confirm('접속시간을 연장하시겠습니까?');
     if (confirmed) {
       const response = await axios.post(
-        'http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/tokens/re-auth',
+        '/api/tokens/re-auth',
         {},
         {
           headers: {
@@ -293,7 +293,7 @@ const getNewToken = async () => {
     const confirmed = window.confirm('접속시간을 연장하시겠습니까?');
     if (confirmed) {
       const response = await axios.post(
-        'http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/tokens/re-auth',
+        '/api/tokens/re-auth',
         {},
         {
           headers: {
@@ -309,7 +309,7 @@ const getNewToken = async () => {
     } else {
       alert("접속시간 연장을 취소했습니다. 로그아웃합니다.");
       await axios.post(
-        'http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/logout',
+        '/api/logout',
         {},
         {
           headers: {
@@ -417,7 +417,7 @@ onMounted(() => {
 const logout = async () => {
   try {
     await axios.post(
-      'http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/logout',
+      '/api/logout',
       {},
       {
         headers: {
