@@ -90,6 +90,7 @@ public class PdfServiceImpl implements PdfService {
 
         Document document = new Document();
 
+
         UserDTO user = userService.findUserById(btApproval.getRequesterId());
 
         String fileName = "business_trip_" + user.getEmployeeNumber() + "_" + btApproval.getId() + ".pdf";
@@ -218,18 +219,24 @@ public class PdfServiceImpl implements PdfService {
         Document document = new Document();
 
         UserDTO user = userService.findUserById(overtimeApproval.getRequesterId());
+        System.out.println("user = " + user);
 
         String fileName = "overtime_" + user.getEmployeeNumber() + "_" + overtimeApproval.getId() + ".pdf";
+        System.out.println("fileName = " + fileName);
 
         String imagePath = imgMapper.getSealImg(approvalChainService.findLeaderByEmployeeId(user.getId(), 3));
 //        String imagePath =  "https://png.pngtree.com/png-clipart/20220113/ourmid/pngtree-cartoon-hand-drawn-default-avatar-png-image_4156500.png";
 
+        System.out.println("imagePath = " + imagePath);
         try {
             PdfWriter.getInstance(document, outputStream);
             document.open();
 
+            System.out.println("outputStream = " + outputStream);
+
             Image img = com.lowagie.text.Image.getInstance(imagePath);
             img.scaleToFit(60, 100);
+            System.out.println("img = " + img);
 
             String fontPath = "src/main/resources/fonts/Sejong hospital Light.ttf";
             BaseFont bf = BaseFont.createFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
@@ -311,6 +318,8 @@ public class PdfServiceImpl implements PdfService {
             document.add(title);
             document.add(new Paragraph("\n\n\n\n", font));
             document.add(table);
+
+            System.out.println("document = " + document);
 
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
@@ -625,7 +634,7 @@ public class PdfServiceImpl implements PdfService {
 
                 fileName = RWexportToPDF(mapper.map(rwApproval, RWApprovalDTO.class), outputStream);
                 System.out.println("fileName = " + fileName);
-                
+
                 break;
 
             case 4:
