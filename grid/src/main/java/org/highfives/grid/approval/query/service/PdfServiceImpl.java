@@ -238,14 +238,18 @@ public class PdfServiceImpl implements PdfService {
             img.scaleToFit(60, 100);
             System.out.println("img = " + img);
 
-            String fontPath = "src/main/resources/fonts/Sejong hospital Light.ttf";
-            System.out.println("fontPath = " + fontPath);
-            BaseFont bf = BaseFont.createFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
-            System.out.println("bf = " + bf);
+//            String fontPath = "src/main/resources/fonts/Sejong hospital Light.ttf";
+//            System.out.println("fontPath = " + fontPath);
+//            BaseFont bf = BaseFont.createFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+//            System.out.println("bf = " + bf);
 
-            Font titleFont = new Font(bf, 20, Font.BOLD);
-            Font headerFont = new Font(bf, 12, Font.BOLD);
-            Font font = new Font(bf, 12);
+            Font titleFont = new Font(Font.HELVETICA, 20, Font.BOLD);
+            Font headerFont = new Font(Font.HELVETICA, 12, Font.BOLD);
+            Font font = new Font(Font.HELVETICA, 12);
+
+//            Font titleFont = new Font(bf, 20, Font.BOLD);
+//            Font headerFont = new Font(bf, 12, Font.BOLD);
+//            Font font = new Font(bf, 12);
 
             System.out.println("font = " + font);
 
