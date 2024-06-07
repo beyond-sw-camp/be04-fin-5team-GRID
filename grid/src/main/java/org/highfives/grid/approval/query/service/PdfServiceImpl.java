@@ -603,22 +603,38 @@ public class PdfServiceImpl implements PdfService {
         switch (typeId) {
             case 1:
                 BTApproval btApproval = btApprovalRepository.findById(approvalId).orElseThrow();
+                System.out.println("btApproval = " + btApproval);
+
                 fileName = BTexportToPDF(mapper.map(btApproval, BTApprovalDTO.class), outputStream);
+                System.out.println("fileName = " + fileName);
+
                 break;
 
             case 2:
                 OvertimeApproval overtimeApproval = oApprovalRepository.findById(approvalId).orElseThrow();
+                System.out.println("overtimeApproval = " + overtimeApproval);
+
                 fileName = OexportToPDF(mapper.map(overtimeApproval, OvertimeApprovalDTO.class), outputStream);
+                System.out.println("fileName = " + fileName);
+
                 break;
 
             case 3:
                 RWApproval rwApproval = rwApprovalRepository.findById(approvalId).orElseThrow();
+                System.out.println("rwApproval = " + rwApproval);
+
                 fileName = RWexportToPDF(mapper.map(rwApproval, RWApprovalDTO.class), outputStream);
+                System.out.println("fileName = " + fileName);
+                
                 break;
 
             case 4:
                 VacationApproval vacationApproval = vApprovalRepository.findById(approvalId).orElseThrow();
+                System.out.println("vacationApproval = " + vacationApproval);
+
                 fileName = VexportToPDF(mapper.map(vacationApproval, VacationApprovalDTO.class), outputStream);
+                System.out.println("fileName = " + fileName);
+
                 break;
         }
 
