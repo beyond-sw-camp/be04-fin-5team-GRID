@@ -509,7 +509,7 @@ const updateLeader = async () => {
 .header {
   grid-column-start: 2;
   display: grid;
-  grid-template-columns: 84.5% 4.5% 1% 4.5% 1% 4.5%;
+  grid-template-columns: 78.5% 6.5% 1% 6.5% 1% 6.5%;
   align-items: center;
 }
 
