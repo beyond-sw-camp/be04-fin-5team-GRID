@@ -623,6 +623,7 @@ public class PdfServiceImpl implements PdfService {
         }
 
         ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
+        System.out.println("inputStream: " + inputStream);
 
         try {
             // InputStreamResource로 변환하여 ResponseEntity로 반환
@@ -630,6 +631,9 @@ public class PdfServiceImpl implements PdfService {
 
             HttpHeaders headers = new HttpHeaders();
             headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName);
+
+            System.out.println("resource" + resource);
+            System.out.println(headers);
 
             return ResponseEntity.ok()
                     .headers(headers)
