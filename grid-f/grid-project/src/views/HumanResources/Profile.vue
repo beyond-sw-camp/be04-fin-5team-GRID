@@ -150,7 +150,7 @@ body {
 
 .profile-main {
     display: grid;
-    grid-template-columns: 10% 80% 10%;
+    grid-template-columns: 22% 56% 22%;
     grid-template-rows: 18% 33% 15% auto;
     height: 100%;
 }
@@ -219,7 +219,7 @@ body {
     grid-row-start: 2;
     grid-column-start: 2;
     display: grid;
-    grid-template-columns: 23% 47% 30%;
+    grid-template-columns: 27%  3% 40% 30%;
     max-height: 100%;
     max-width: 100%;
     height: 300px;
@@ -240,11 +240,12 @@ body {
 .image img {
     border-radius: 18%;
     /* 이미지 둥근 모서리 */
-    width: 90%;
+    width: 100%;
     height: 100%;
 }
 
 .name {
+    grid-column-start: 3;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
@@ -281,6 +282,7 @@ body {
 }
 
 .button {
+    grid-column-start: 4;
     display: flex;
     justify-content: flex-end;
 }
