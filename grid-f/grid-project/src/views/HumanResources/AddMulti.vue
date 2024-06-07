@@ -335,7 +335,7 @@ const execDaumPostcode = (employee) => {
 
 const downloadCSV = () => {
     const csvData = [
-        ['이름', '사번', '이메일', '성별', '휴대폰 번호', '입사일', '입사 유형', '근로 유형', '계약 시작일', '계약 종료일', '부서', '팀', '직위', '직책', '우편 번호', '주소', '상세 주소'],
+        ['이름', '사번', '이메일', '성별', '휴대폰 번호', '입사일', '입사 유형', '근로 유형', '계약 시작일', '계약 종료일', '부서', '팀', '직위', '직책', '우편 번호', '도로명 주소', '상세 주소'],
         ...employees.map(emp => [
             emp.name,
             emp.employeeNumber,
@@ -391,7 +391,7 @@ const handleFileUpload = (event) => {
                         positionId: (row['직위'] || '').trim(),
                         dutiesId: (row['직책'] || '').trim(),
                         zipCode: (row['우편 번호'] || '').trim(),
-                        address1: (row['주소'].split(' ')[0] || '').trim(),
+                        address1: (row['도로명 주소'] || '').trim(),
                         address2: (row['상세 주소'] || '').trim(),
                         invalid: false // Add invalid field for validation
                     });
