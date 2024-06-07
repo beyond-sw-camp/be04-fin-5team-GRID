@@ -237,14 +237,14 @@ button {
 .hr-main {
     display: grid;
     grid-template-columns: 10% 80% 10%;
-    grid-template-rows: 18% 4% 75% 5% 10%;
+    grid-template-rows: 18% 4% 85% 5% 10%;
     height: 100%;
 }
 
 .hr-title {
     grid-column-start: 2;
     grid-column-end: 3;
-    font-weight: 600;
+    font-weight: 600;   
     margin-top: 2%;
     color: #000000;
     display: grid;

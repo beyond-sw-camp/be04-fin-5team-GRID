@@ -1,77 +1,38 @@
 <template>
   <aside class="sidebar">
     <div class="profile">
-      <!-- 프로필 이미지 -->
       <img :src="profileUrl" alt="Profile Picture" class="profile-pic" />
       <div class="profile-info">
         <h3>{{ user?.name }}</h3>
         <p>{{ user?.email }}</p>
       </div>
     </div>
-    <nav class="menu">
-      <ul>
-        <li>
-          <span @click="toggleMenu('workManagement')">근태 관리</span>
-          <ul v-show="activeMenus.workManagement">
-<!--            <li @click="toWorkCalender()">근무 관리</li>-->
-            <li @click="toAdTime()">출퇴근 조회</li>
-            <li @click="navigateTo('/work')">근무 정보</li>
-            <li @click="toVacationManage()" v-if="userRole === 'ROLE_ADMIN'">휴가 종류</li>
-            <li @click="toVacationPolicy()" v-if="userRole === 'ROLE_ADMIN'">휴가 정책</li>
-            <li @click="toVacationPolicy()" v-if="userRole === 'ROLE_USER'">휴가 종류/정책</li>
-            <li @click="toVacationInfo()">휴가 보유 정보</li>
-            <li @click="toVacationChangeInfo()">휴가 변화 이력</li>
-          </ul>
-        </li>
-        <li>
-          <span @click="toggleMenu('paymentManagement')">결재 관리</span>
-          <ul v-show="activeMenus.paymentManagement">
-
-            <li @click="navigateTo('/regist/main')">결재 문서 작성</li>
-
-            <li @click="navigateTo('/approval')">결재 문서 목록</li>
-          </ul>
-        </li>
-        <li>
-          <span @click="toggleMenu('hrManagement')">인사 관리</span>
-          <ul v-show="activeMenus.hrManagement">
-            <li @click="toHR">인사 정보</li>
-          </ul>
-        </li>
-        <li>
-          <span @click="toggleMenu('departmentManagement')">부서 관리</span>
-          <ul v-show="activeMenus.departmentManagement">
-            <li @click="gotodepartmentInfo">부서 정보</li>
-          </ul>
-        </li>
-        <li>
-          <span @click="toggleMenu('departmentEvaluation')">동료 평가</span>
-          <ul v-show="activeMenus.departmentEvaluation">
-            <li @click="goToTeamMyReview" v-if="userRole === 'ROLE_USER'">평가 받은 목록</li>
-            <li @click="goToTeamReviewList" v-if="userRole === 'ROLE_USER'">동료 평가 작성</li>
-            <li @click="goToAddTeamReview" v-if="userRole === 'ROLE_ADMIN'">평가 항목 등록</li>
-            <li @click="goToTeamReviewHistory" v-if="userRole === 'ROLE_ADMIN'">전체 평가 목록</li>
-          </ul>
-        </li>
-        <li>
-          <span @click="toggleMenu('performanceReview')">업적 평가 관리</span>
-          <ul v-show="activeMenus.performanceReview">
-            <li @click="toAddPerformanceReviewGoal()" v-if="userRole === 'ROLE_USER'">목표 작성</li>
-            <li @click="toPerformanceReviewGoal()" v-if="userRole === 'ROLE_USER'">목표 조회</li>
-            <li @click="toAddMidPerformanceReview()" v-if="userRole === 'ROLE_USER'">중간 평가 작성</li>
-            <li @click="toAddFinalPerformanceReview()" v-if="userRole === 'ROLE_USER'">연말 평가 작성</li>
-            <li @click="toPerformanceReview()" v-if="userRole === 'ROLE_USER'">평가 조회</li>
-            <li @click="toTotalPerformanceReview()">종합 평가 조회</li>
-          </ul>
-        </li>
-      </ul>
-    </nav>
+    <div class="w3-sidebar w3-card" style="width:250px">
+      <div v-for="(menu, key) in filteredMenus" :key="key" class="menu-item">
+        <button class="w3-button w3-block w3-left-align dropdown-title" :class="{ active: activeMenu === key }"
+          @click="toggleMenu(key)">
+          <span class="title-text">{{ menu.title }}</span>
+          <img :class="{ rotated: activeMenu === key }" src="@/assets/buttons/plus.png" class="dropdown-icon">
+        </button>
+        <transition name="slide-fade">
+          <div v-show="activeMenu === key" class="w3-bar-block w3-white w3-card-4 dropdown-content">
+            <a v-for="item in menu.items" :key="item.label" @click="navigateTo(item.path)"
+              class="w3-bar-item w3-button dropdown-item">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                class="bi bi-chevron-right dropdown-item-icon" viewBox="0 0 16 16">
+                <path fill-rule="evenodd"
+                  d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708" />
+              </svg> &nbsp {{ item.label }}
+            </a>
+          </div>
+        </transition>
+      </div>
+    </div>
   </aside>
 </template>
 
 <script setup>
-import axios from 'axios';
-import { ref, onMounted, reactive, computed } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 import defaultProfileImage from '@/assets/defaultProfile.jpg';
@@ -79,152 +40,92 @@ import defaultProfileImage from '@/assets/defaultProfile.jpg';
 const router = useRouter();
 const store = useStore();
 const userRole = ref('');
-const error = ref([]);
+const activeMenu = ref('');
 
 const user = computed(() => store.state.user);
 const profileUrl = computed(() => {
   return user.value?.profilePath ? user.value.profilePath : defaultProfileImage;
 });
 
-const activeMenus = reactive({
-  workManagement: false,
-  paymentManagement: false,
-  hrManagement: false,
-  departmentManagement: false,
-  departmentEvaluation: false,
-  performanceReview: false,
-});
-
-const toggleMenu = (menu) => {
-  activeMenus[menu] = !activeMenus[menu];
+const menus = {
+  workManagement: {
+    title: '근태 관리',
+    items: [
+      { label: '출퇴근 조회', path: '/ad-time' },
+      { label: '근무 정보', path: '/work' },
+      { label: '휴가 종류', path: '/vacation/manage', role: 'ROLE_ADMIN' },
+      { label: '휴가 정책', path: '/vacation/policy', role: 'ROLE_ADMIN' },
+      { label: '휴가 종류/정책', path: '/vacation/policy', role: 'ROLE_USER' },
+      { label: '휴가 보유 정보', path: '/vacation/info' },
+      { label: '휴가 변화 이력', path: '/vacation/changeInfo' },
+    ]
+  },
+  paymentManagement: {
+    title: '결재 관리',
+    items: [
+      { label: '결재 문서 작성', path: '/regist/main' },
+      { label: '결재 문서 목록', path: '/approval' },
+    ]
+  },
+  hrManagement: {
+    title: '인사 관리',
+    items: [
+      { label: '인사 정보', path: '/hr' },
+    ]
+  },
+  departmentManagement: {
+    title: '부서 관리',
+    items: [
+      { label: '부서 정보', path: '/department' },
+    ]
+  },
+  departmentEvaluation: {
+    title: '동료 평가',
+    items: [
+      { label: '평가 받은 목록', path: '/team-review/myreview', role: 'ROLE_USER' },
+      { label: '동료 평가 작성', path: '/team-review/list', role: 'ROLE_USER' },
+      { label: '평가 항목 등록', path: '/team-review/add', role: 'ROLE_ADMIN' },
+      { label: '전체 평가 목록', path: '/team-review/history', role: 'ROLE_ADMIN' },
+    ]
+  },
+  performanceReview: {
+    title: '업적 평가 관리',
+    items: [
+      { label: '목표 작성', path: '/performance-review/goal/add', role: 'ROLE_USER' },
+      { label: '목표 조회', path: '/performance-review/goal', role: 'ROLE_USER' },
+      { label: '중간 평가 작성', path: '/performance-review/mid', role: 'ROLE_USER' },
+      { label: '연말 평가 작성', path: '/performance-review/final', role: 'ROLE_USER' },
+      { label: '평가 조회', path: '/performance-review', role: 'ROLE_USER' },
+      { label: '종합 평가 조회', path: '/performance-review/total' },
+    ]
+  }
 };
 
-const gotodepartmentInfo = () => {
-  router.push('/department');
-}
-
-const goToAddTeamReview = () => {
-  router.push('/team-review/add');
-}
+const toggleMenu = (menu) => {
+  activeMenu.value = activeMenu.value === menu ? '' : menu;
+};
 
 const navigateTo = (path) => {
   router.push(path);
 };
 
-function toHR() {
-  router.push('/hr');
-}
+const filteredMenus = computed(() => {
+  return Object.keys(menus).reduce((acc, key) => {
+    const items = menus[key].items.filter(item => !item.role || item.role === userRole.value);
+    if (items.length) {
+      acc[key] = { ...menus[key], items };
+    }
+    return acc;
+  }, {});
+});
 
-function toVacationManage() {
-  router.push('/vacation/manage');
-}
-
-function toVacationPolicy() {
-  router.push('/vacation/policy');
-}
-
-function toVacationInfo() {
-  router.push('/vacation/info');
-}
-
-function toVacationChangeInfo() {
-  router.push('/vacation/changeInfo');
-}
-
-const goToTeamReviewHistory = () => {
-  router.push('/team-review/history');
-}
-
-const goToTeamReviewList = () => {
-  router.push(`/team-review/list/${user.value.id}`);
-}
-
-const goToTeamMyReview = () => {
-  router.push(`/team-review/myreview/${user.value.id}`);
-}
-
-function toAddPerformanceReviewGoal() {
-  if(user.value.duties.dutiesName === '팀원'){
-    router.push('/performance-review/goal/add');
-  } else {
-    alert('팀원만 작성 가능합니다.');
+onMounted(() => {
+  const token = localStorage.getItem('access');
+  if (token) {
+    const decodedToken = parseJwt(token);
+    userRole.value = decodedToken?.auth || '';
   }
-
-
-  // 3월에만 평가 작성할 수 있게 함
-  // if(user.value.duties.dutiesName === '팀원'){
-  //   const currentMonth = new Date().getMonth() + 1; // JavaScript에서 월은 0부터 시작하므로 +1을 해줍니다.
-  //   if (currentMonth === 3) {
-  //     router.push('/performance-review/goal/add');
-  //   } else {
-  //     alert('현재 목표 작성 기간이 아닙니다.');
-  //   }
-  // } else {
-  //   alert('팀원만 작성 가능합니다.');
-  // }
-}
-
-function toPerformanceReviewGoal() {
-  router.push('/performance-review/goal');
-}
-
-function toAddMidPerformanceReview() {
-  if(user.value.duties.dutiesName === '팀원'){
-    router.push('/performance-review/mid');
-  } else {
-    alert('팀원만 작성 가능합니다.');
-  }
-
-  // 6월에만 평가 작성할 수 있게 함
-  // if(user.value.duties.dutiesName === '팀원'){
-  //   const currentMonth = new Date().getMonth() + 1; // JavaScript에서 월은 0부터 시작하므로 +1을 해줍니다.
-  //   if (currentMonth === 6) {
-  //     router.push('/performance-review/mid');
-  //   } else {
-  //     alert('현재 중간 평가 작성 기간이 아닙니다.');
-  //   }
-  // } else {
-  //   alert('팀원만 작성 가능합니다.');
-  // }
-}
-
-function toAddFinalPerformanceReview() {
-  if(user.value.duties.dutiesName === '팀원'){
-    router.push('/performance-review/final');
-  } else {
-    alert('팀원만 작성 가능합니다.');
-  }
-
-  // 12월에만 평가 작성할 수 있게 함
-  // if(user.value.duties.dutiesName === '팀원'){
-  //   const currentMonth = new Date().getMonth() + 1; // JavaScript에서 월은 0부터 시작하므로 +1을 해줍니다.
-  //   if (currentMonth === 12) {
-  //     router.push('/performance-review/final');
-  //   } else {
-  //     alert('현재 연말 평가 작성 기간이 아닙니다.');
-  //   }
-  // } else {
-  //   alert('팀원만 작성 가능합니다.');
-  // }
-
-}
-
-function toPerformanceReview() {
-  router.push('/performance-review');
-}
-
-function toTotalPerformanceReview() {
-  router.push('/performance-review/total');
-}
-
-function toWorkCalender() {
-  router.push('/work-calendar');
-}
-
-function toAdTime() {
-  router.push('/ad-time');
-}
-
+});
 
 function parseJwt(token) {
   try {
@@ -239,16 +140,6 @@ function parseJwt(token) {
     return null;
   }
 }
-
-
-
-onMounted(() => {
-  const token = localStorage.getItem('access');
-  if (token) {
-    const decodedToken = parseJwt(token);
-    userRole.value = decodedToken?.auth || '';
-  }
-});
 </script>
 
 <style scoped>
@@ -260,7 +151,7 @@ onMounted(() => {
 }
 
 .sidebar {
-  width: 200px;
+  width: 250px;
   background: #fff;
   border-right: 1px solid #e5e5e5;
   height: 100vh;
@@ -304,33 +195,111 @@ onMounted(() => {
   font-size: 14px;
 }
 
-.menu {
-  padding: 10px 0;
+.menu-item {
+  position: relative;
 }
 
-.menu ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+.w3-button.active {
+  background-color: #088A85;
+  color: white;
 }
 
-.menu li {
-  padding: 10px 20px;
-  cursor: pointer;
+.w3-button.active .dropdown-icon {
+  filter: invert(100%) sepia(65%) saturate(424%) hue-rotate(91deg) brightness(129%) contrast(107%);
 }
 
-.menu li span {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.dropdown-title:hover {
+  background-color: #088A85;
+  color: white;
 }
 
-.menu li ul {
+.dropdown-title:hover .dropdown-icon {
+  filter: invert(100%) sepia(65%) saturate(424%) hue-rotate(91deg) brightness(129%) contrast(107%);
+}
+
+.dropdown-icon {
+  float: right;
+  transition: transform 0.3s, filter 0.3s;
+  height: 18px;
+  width: 18px;
+}
+
+.rotated {
+  transform: rotate(45deg);
+}
+
+.slide-fade-enter-active,
+.slide-fade-leave-active {
+  transition: max-height 0.5s ease, opacity 0.5s ease;
+}
+
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  max-height: 0;
+  opacity: 0;
+}
+
+.slide-fade-enter-to,
+.slide-fade-leave-from {
+  max-height: 500px;
+  /* Adjust according to the content's height */
+  opacity: 1;
+}
+
+.dropdown-content {
+  overflow: hidden;
+}
+
+.w3-bar-item {
+  padding: 8px;
   padding-left: 20px;
-  margin-top: 10px;
+  /* Add padding for indent */
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  color: #888; /* Change text color */
 }
 
-.menu li ul li {
-  padding: 5px 0;
+.w3-bar-item .dropdown-item-icon {
+  color: #888; /* Change icon color */
+}
+
+.w3-bar-item:hover {
+  background-color: #ddd;
+}
+
+.dropdown-title {
+  position: relative;
+  overflow: hidden;
+  font-weight: bold;
+  /* Make the title bold */
+}
+
+.dropdown-title:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #088A85;
+  transition: transform 0.5s;
+  z-index: 0;
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+.dropdown-title:hover:before {
+  transform: scaleX(1);
+}
+
+.dropdown-title span {
+  position: relative;
+  z-index: 1;
+  transition: color 0.3s;
+}
+
+.dropdown-title:hover span {
+  color: white;
 }
 </style>
