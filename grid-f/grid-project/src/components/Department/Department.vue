@@ -86,18 +86,21 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <table>
+            <input type="text" class="form-control mb-3" placeholder="이름, 사원번호 또는 직책 검색" v-model="leaderSearchQuery" @input="searchLeaders">
+            <table class="table">
               <thead>
                 <tr>
                   <th>사원번호</th>
                   <th>이름</th>
+                  <th>직책</th>
                   <th>선택</th>
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="leader in leaders" :key="leader.id">
+                <tr v-for="leader in filteredLeaders" :key="leader.id">
                   <td>{{ leader.employeeNumber }}</td>
                   <td>{{ leader.name }}</td>
+                  <td>{{ leader.position.positionName }}</td>
                   <td><button type="button" class="btn btn-primary" @click="selectLeader(leader)">선택</button></td>
                 </tr>
               </tbody>
@@ -144,16 +147,21 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
+            <input type="text" class="form-control mb-3" placeholder="이름, 사원번호 또는 직책 검색" v-model="leaderSearchQuery" @input="searchLeaders">
             <table class="table">
               <thead>
                 <tr>
-                  <th>부서장 명</th>
+                  <th>사원번호</th>
+                  <th>이름</th>
+                  <th>직책</th>
                   <th>선택</th>
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="leader in leaders" :key="leader.id">
+                <tr v-for="leader in filteredLeaders" :key="leader.id">
+                  <td>{{ leader.employeeNumber }}</td>
                   <td>{{ leader.name }}</td>
+                  <td>{{ leader.position.positionName }}</td>
                   <td><button type="button" class="btn btn-primary" @click="selectLeaderForUpdate(leader)">선택</button></td>
                 </tr>
               </tbody>
@@ -182,6 +190,7 @@ const userRole = ref('');
 const selectedDepartmentId = ref(null);
 const newLeaderName = ref('');
 const newLeaderId = ref(null);
+const leaderSearchQuery = ref('');
 
 const newDepartment = ref({
   departmentName: '',
@@ -196,6 +205,7 @@ const fetchLeaders = async () => {
   try {
     const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/list/all`);
     leaders.value = response.data.result;
+    searchLeaders();
   } catch (error) {
     console.error('직원 정보를 불러오는 중 에러 발생:', error);
   }
@@ -451,6 +461,19 @@ const updateLeader = async () => {
       alert('부서장 수정 중 오류가 발생했습니다.');
     }
   }
+};
+
+const filteredLeaders = computed(() => {
+  return leaders.value.filter(leader => {
+    return leader.name.includes(leaderSearchQuery.value) || leader.employeeNumber.includes(leaderSearchQuery.value) || leader.position.includes(leaderSearchQuery.value);
+  });
+});
+
+const searchLeaders = () => {
+  // 필터링된 leaders를 재계산합니다.
+  filteredLeaders.value = leaders.value.filter(leader => {
+    return leader.name.includes(leaderSearchQuery.value) || leader.employeeNumber.includes(leaderSearchQuery.value) || leader.position.includes(leaderSearchQuery.value);
+  });
 };
 </script>
 
