@@ -1,0 +1,44 @@
+/* button.styles.css */
+.custom-button {
+    background-color: white;
+    color: #088A85;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.4s, color 0.4s;
+    position: relative;
+    overflow: hidden;
+    font-weight: bold;
+}
+
+.custom-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background-color: #088A85;
+    transition: left 0.4s;
+    z-index: 1; /* 기본 z-index로 설정 */
+}
+
+.custom-button:hover::before {
+    left: 0;
+}
+
+.custom-button span, 
+.custom-button i {
+    position: relative;
+    z-index: 2; /* 기본 z-index로 설정 */
+    color: #088A85;
+}
+
+.custom-button:hover span, 
+.custom-button:hover i {
+    color: white !important; /* !important 추가 */
+}
+
+.custom-button:hover {
+    color: white !important; /* !important 추가 */
+}

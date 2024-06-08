@@ -101,9 +101,11 @@
         vp.ID,
         vp.CONTENT,
         vp.TYPE_ID,
-        vt.TYPE_NAME
+        vt.TYPE_NAME,
+        vt.USE_YN
         FROM vacation_policy vp
         JOIN vacation_type vt ON vp.TYPE_ID = vt.ID
+        WHERE vt.USE_YN = 'Y'
     </select>
     <select id="selectAllHistories" resultMap="vacationHistoryResultMap">
         SELECT

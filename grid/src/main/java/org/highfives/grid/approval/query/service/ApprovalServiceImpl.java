@@ -169,15 +169,15 @@ public class ApprovalServiceImpl implements ApprovalService{
     }
 
     @Override
-    public List<ApprovalEmpDTO> findTodayBT() {
+    public List<ApprovalEmpDTO> findTodayBT(String start, String end) {
 
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String today = LocalDateTime.now().format(dateFormat);
 
         Map<String, Object> params = new HashMap<>();
 
         params.put("typeId", 1);
-        params.put("today", today);
+        params.put("start", start);
+        params.put("end", end);
 
         List<ApprovalEmpDTO> approvalEmpList = approvalMapper.findTodayBTandV(params);
         System.out.println(approvalEmpList);
