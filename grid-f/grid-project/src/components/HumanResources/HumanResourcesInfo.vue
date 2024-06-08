@@ -208,10 +208,20 @@ hr {
 
 .hr-main {
     display: grid;
-    grid-template-columns: 25% 51% auto;
+    grid-template-columns: 35% 40% auto;
     grid-template-rows: 4% 2% auto 4% 2% auto 4% 2% auto;
     width: 100%;
     height: 100%;
+    overflow: auto;
+}
+
+.hr-main::-webkit-scrollbar {
+  display: none; /* Hide scrollbar for webkit browsers */
+}
+
+.hr-main {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
 
 .hr-info-title {

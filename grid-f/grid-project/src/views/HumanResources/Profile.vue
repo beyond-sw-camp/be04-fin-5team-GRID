@@ -1,8 +1,18 @@
 <template>
     <div class="profile-main">
         <div class="profile-title">
-            <img class="profile-icon" src="@/assets/profile.png" alt="인사 정보 메인 이미지">
-            <h1>인사 정보 상세 </h1>
+            <nav class="title-nav" style="--bs-breadcrumb-divider: '>'; font-weight: normal;" aria-label="breadcrumb">
+                <ol class="breadcrumb" style="margin-bottom: 0;">
+                    <li class="breadcrumb-item"><a href="http://www.gridhr.site/hr"
+                            style="text-decoration: none; color: grey; font-size: 17px;"><i
+                                class="bi bi-people"></i>&nbsp; 인사 정보</a></li>
+                    <li class="breadcrumb-item active" aria-current="page"><span class="fw-bolder"><i
+                                class="bi bi-file-person"></i>&nbsp; 인사 정보 상세</span></li>
+                </ol>
+            </nav>
+            <div class="title-content">
+                <h1><i class="bi bi-file-person"></i> &nbsp 인사 정보 상세 </h1>
+            </div>
         </div>
         <div class="first">
             <div class="image">
@@ -29,8 +39,10 @@
             </div>
             <div class="button" v-if="userRole === 'ROLE_ADMIN' || userId == result.id">
                 <div>
-                    <button class="modifyBtn" @click="toModify(result.employeeNumber, result)" :userRole="userRole">회원
-                        정보 수정</button>
+                    <button class="custom-button" @click="toModify(result.employeeNumber, result)" :userRole="userRole">
+                        <i class="bi bi-gear"></i>&nbsp;
+                        <span>회원 정보 수정</span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -135,6 +147,8 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+@import '@/assets/css/button-styles.css';
+
 @font-face {
     font-family: 'IBMPlexSansKR-Regular';
     src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_20-07@1.0/IBMPlexSansKR-Regular.woff') format('woff');
@@ -150,8 +164,8 @@ body {
 
 .profile-main {
     display: grid;
-    grid-template-columns: 10% 80% 10%;
-    grid-template-rows: 18% 33% 15% auto;
+    grid-template-columns: 22% 56% 22%;
+    grid-template-rows: 18% 33% 15% 80%;
     height: 100%;
 }
 
@@ -199,27 +213,32 @@ body {
     margin-top: 2%;
     color: #000000;
     display: grid;
-    grid-template-columns: 3% 97%;
     align-items: center;
+    grid-template-rows: 20% 80%;
+}
+
+.oaHeader {
+    grid-column-start: 2;
+    align-content: center;
+    margin-top: 2%;
+}
+
+.oaHeader h1 {
+    margin-left: 0.5%;
+    font-size: 25px;
+    font-weight: 600;
 }
 
 .profile-title h1 {
-    margin-left: 1.2%;
     font-weight: bold;
     font-size: 14pt;
-}
-
-.profile-icon {
-    width: 110%;
-    margin: 0 40px 10px 0;
-    filter: invert(0%) sepia(64%) saturate(7%) hue-rotate(334deg) brightness(85%) contrast(101%);
 }
 
 .first {
     grid-row-start: 2;
     grid-column-start: 2;
     display: grid;
-    grid-template-columns: 23% 47% 30%;
+    grid-template-columns: 27% 3% 40% 30%;
     max-height: 100%;
     max-width: 100%;
     height: 300px;
@@ -240,11 +259,12 @@ body {
 .image img {
     border-radius: 18%;
     /* 이미지 둥근 모서리 */
-    width: 90%;
+    width: 100%;
     height: 100%;
 }
 
 .name {
+    grid-column-start: 3;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
@@ -281,23 +301,20 @@ body {
 }
 
 .button {
+    grid-column-start: 4;
     display: flex;
     justify-content: flex-end;
 }
 
-.modifyBtn {
+.custom-btn {
     margin-left: 2%;
     width: 50%;
-    min-width: 102.24px;
+    min-width: 110px;
     min-height: 28px;
-    background-color: #088A85;
-    color: white;
-    padding: 5px 5px;
+    /* custom button 스타일 */
     border: none;
-    border-radius: 4px;
-    cursor: pointer;
+    font-weight: bold;
     font-size: 12px;
-    font-style: bold;
 }
 
 .pwdBtn {
@@ -339,5 +356,16 @@ body {
 .modal-body {
     padding: 0 0 50px 0;
     height: 50%;
+}
+
+.title-nav {
+    display: grid;
+    align-items: flex-end;
+    width: 100%;
+}
+.title-content {
+    display: grid;
+    align-items: flex-start;
+    height: 80%;
 }
 </style>

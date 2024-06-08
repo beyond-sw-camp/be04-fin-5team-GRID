@@ -1,60 +1,55 @@
 <template>
     <div class="hr-main">
         <div class="hr-title">
-            <img class="hr-icon" src="@/assets/HR/hr.png" alt="인사 정보 메인 이미지">
-            <h1>인사 정보</h1>
+            <h1> <i class="bi bi-people"></i>&nbsp;인사 정보</h1>
         </div>
         <div class="search">
             <button class="printBtn" @click="downloadCSV">
-                <img src="@/assets/buttons/download.png" alt="download button">
-                목록 받기
+                <i class="bi bi-download"></i>&nbsp; &nbsp;
+                <span>목록 받기</span>
             </button>
             <button type="button" class="modifyBtn" @click="toModify" v-if="userRole === 'ROLE_ADMIN'">
-                <img src="@/assets/buttons/modify-btn.png" alt="modify button">
-                정보 수정
+                <i class="bi bi-pencil-square"></i>&nbsp; &nbsp;
+                <span>정보 수정</span>
             </button>
             <button type="button" class="addBtn" @click="toAddMulti" v-if="userRole === 'ROLE_ADMIN'">
-                <img src="@/assets/buttons/plus.png" alt="add button">
-                사원 추가
+                <i class="bi bi-plus-circle"></i>&nbsp; &nbsp;
+                <span>사원 추가</span>
             </button>
             <input class="sortBox" v-model="searchCondition" type="text" placeholder="이름" @keyup.enter="findUser">
             <button class="searchBtn" @click="findUser">검색</button>
         </div>
         <div class="tableContainer">
-            <table>
-                <thead>
-                    <tr>
-                        <th></th>
-                        <th>이름</th>
-                        <th>사원 번호</th>
-                        <th>부서</th>
-                        <th>팀</th>
-                        <th>직위</th>
-                        <th>직책</th>
-                        <th>부재 상태</th>
-                        <th>비고</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="employee in employeeList" :key="employee.id" @click="toInfo(employee.employeeNumber)">
-                        <td><img :src="getProfileUrl(employee.profilePath)" alt="profile" class="profile-image"></td>
-                        <td>{{ employee.name }}</td>
-                        <td>{{ employee.employeeNumber }}</td>
-                        <td>{{ employee.department.departmentName }}</td>
-                        <td>{{ employee.team.teamName }}</td>
-                        <td>{{ employee.position.positionName }}</td>
-                        <td>{{ employee.duties.dutiesName }}</td>
-                        <td>
-                            <div class="badge-class">
-                                <b-badge class="mt-3" variant="warning" style="margin: 0;"
-                                    v-if="employee.absenceYn === 'Y'">부재중</b-badge>
-                                <b-badge class="mt-3" variant="success" style="margin: 0;" v-else>재실중</b-badge>
-                            </div>
-                        </td>
-                        <td>{{ employee.absenceContent }}</td>
-                    </tr>
-                </tbody>
-            </table>
+            <b-table hover small :fields="fields" :items="employeeList" @row-clicked="rowClicked">
+                <template #cell(profileImage)="data">
+                    <img :src="getProfileUrl(data.item.profilePath)" alt="profile" class="profile-image">
+                </template>
+                <template #cell(name)="data">
+                    <span>{{ data.item.name }}</span>
+                </template>
+                <template #cell(employeeNumber)="data">
+                    <span>{{ data.item.employeeNumber }}</span>
+                </template>
+                <template #cell(departmentName)="data">
+                    <span>{{ data.item.department.departmentName }}</span>
+                </template>
+                <template #cell(teamName)="data">
+                    <span>{{ data.item.team.teamName }}</span>
+                </template>
+                <template #cell(positionName)="data">
+                    <span>{{ data.item.position.positionName }}</span>
+                </template>
+                <template #cell(dutiesName)="data">
+                    <span>{{ data.item.duties.dutiesName }}</span>
+                </template>
+                <template #cell(absenceStatus)="data">
+                    <b-badge variant="warning" v-if="data.item.absenceYn === 'Y'">부재중</b-badge>
+                    <b-badge variant="success" v-else>재실중</b-badge>
+                </template>
+                <template #cell(absenceContent)="data">
+                    <span>{{ data.item.absenceContent }}</span>
+                </template>
+            </b-table>
         </div>
         <nav class="pg" aria-label="Page navigation example" v-if="totalPages > 1">
             <ul class="pagination">
@@ -89,19 +84,31 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import defaultProfileImage from '@/assets/defaultProfile.jpg';
 import axios from 'axios';
 import router from '@/router/router';
 import { saveAs } from 'file-saver';
 import { Parser } from '@json2csv/plainjs';
+import defaultProfileImage from '@/assets/defaultProfile.jpg';
 
 const employeeList = ref([]);
 const searchCondition = ref('');
 const currentPage = ref(0);
 const totalPages = ref(0);
-const pageSize = ref(8);
+const pageSize = ref(12); // 페이징을 12명 기준으로 설정
 const visiblePages = ref([]);
 const userRole = ref('');
+
+const fields = [
+    { key: 'profileImage', label: '프로필' },
+    { key: 'name', label: '이름' },
+    { key: 'employeeNumber', label: '사원 번호' },
+    { key: 'departmentName', label: '부서' },
+    { key: 'teamName', label: '팀' },
+    { key: 'positionName', label: '직위' },
+    { key: 'dutiesName', label: '직책' },
+    { key: 'absenceStatus', label: '부재 상태' },
+    { key: 'absenceContent', label: '비고' }
+];
 
 const getProfileUrl = (profilePath) => {
     return profilePath ? profilePath : defaultProfileImage;
@@ -177,6 +184,10 @@ const toInfo = (employeeNumber) => {
     router.push(`/hr/profile/${employeeNumber}`)
 };
 
+const rowClicked = (item) => {
+    toInfo(item.employeeNumber);
+};
+
 const prevPage = () => {
     if (currentPage.value > 0) {
         currentPage.value--;
@@ -228,7 +239,6 @@ onMounted(async () => {
 });
 </script>
 
-
 <style scoped>
 button {
     height: 100%;
@@ -248,7 +258,6 @@ button {
     margin-top: 2%;
     color: #000000;
     display: grid;
-    grid-template-columns: 3% 97%;
     align-items: center;
 }
 
@@ -268,89 +277,98 @@ button {
 .search {
     grid-row-start: 2;
     grid-column-start: 2;
-    grid-template-columns: 14% 0.5% 12% 0.5% 12% 36.5% 18% 0.5% 6%;
+    grid-template-columns: 10% 0.5% 10% 0.5% 10% 44.5% 18% 0.5% 6%;
     display: grid;
-    justify-content: flex-end;
+    justify-content: flex-start;
     height: 100%;
+}
+
+button {
+    background-color: white;
+    color: #088A85;
+    border: 2px solid #088A85;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.4s, color 0.4s;
+    position: relative;
+    overflow: hidden;
+}
+
+button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background-color: #088A85;
+    transition: left 0.4s;
+    z-index: 1; /* 기본 z-index로 설정 */
+}
+
+button:hover::before {
+    left: 0;
+}
+
+button span, button i {
+    position: relative;
+    z-index: 2; /* 기본 z-index로 설정 */
+    color: #088A85;
+}
+
+button:hover span, button:hover i {
+    color: white;
+}
+
+button:hover {
+    color: white;
+}
+
+.printBtn, .modifyBtn, .addBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .printBtn {
     grid-column-start: 1;
     margin: 3px;
     height: 100%;
-    min-width: 110px;
-    background-color: #088A85;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
+    min-width: 70px;
     font-size: 12px;
-    font-size: 70%;
     font-style: bold;
     justify-self: flex-start;
     width: 100%;
+    border: none;
+    font-weight: bold;
 }
 
 .modifyBtn {
     grid-column-start: 3;
     margin: 3px;
-    min-width: 90px;
+    min-width: 70px;
     height: 100%;
-    background-color: #088A85;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
     font-size: 12px;
     font-style: bold;
     justify-self: flex-start;
     width: 100%;
+    border: none;
+    font-weight: bold;
 }
 
 .addBtn {
     grid-column-start: 5;
     margin: 3px;
     width: 100%;
-    min-width: 90px;
+    min-width: 70px;
     height: 100%;
-    background-color: #088A85;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
     font-size: 12px;
     font-style: bold;
     justify-self: flex-start;
+    border: none;
+    font-weight: bold;
 }
 
-.printBtn img {
-    width: 15%;
-    height: 80%;
-    margin: 0 6% 4% 0;
-    filter: invert(100%) sepia(65%) saturate(424%) hue-rotate(91deg) brightness(129%) contrast(107%);
-    transition: transform 0.3s ease;
-}
-
-.modifyBtn img {
-    width: 16%;
-    height: 50%;
-    margin: 0 7% 2% 0;
-    filter: invert(100%) sepia(65%) saturate(424%) hue-rotate(91deg) brightness(129%) contrast(107%);
-}
-
-.addBtn img {
-    width: auto;
-    height: auto;
-    max-width: 20%;
-    max-height: 90%;
-    margin: 0 4% 2% 0;
-    filter: invert(100%) sepia(65%) saturate(424%) hue-rotate(91deg) brightness(129%) contrast(107%);
-    transition: transform 0.3s ease;
-}
-
-.addBtn img.rotated {
-    transform: rotate(45deg);
-}
 
 .sortBox {
     grid-column-start: 7;
@@ -368,21 +386,54 @@ button {
     width: 100%;
     min-width: 50px;
     background-color: #088A85;
-    color: white;
+    color: white !important;
     padding: 5px 5px;
-    border: none;
+    border: 1px solid #088A85;
     border-radius: 4px;
     cursor: pointer;
     font-size: 12px;
     font-style: bold;
+    transition: background-color 0.4s, color 0.4s;
+    position: relative;
+    overflow: hidden;
+}
+
+.searchBtn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background-color: #088A85;
+    transition: left 0.4s;
+    z-index: 1; /* 기본 z-index로 설정 */
+}
+
+.searchBtn span, .searchBtn i {
+    position: relative;
+    z-index: 2; /* 기본 z-index로 설정 */
+    color: #088A85;
+}
+
+.searchBtn:hover::before {
+    left: -100%;
+}
+
+.searchBtn:hover span, .searchBtn:hover i {
+    color: #088A85;
+}
+
+.searchBtn:hover {
+    color: #088A85;
 }
 
 .tableContainer {
     grid-row-start: 3;
     grid-column-start: 2;
     grid-column-end: 3;
-    margin-top: 20px;
-    font-size: 10px;
+    margin-top: 30px;
+    font-size: 12pt; /* 전체 폰트 크기를 15pt로 설정 */
     overflow: auto;
     cursor: pointer;
 }
@@ -397,36 +448,21 @@ button {
     -ms-overflow-style: none;
 }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-th,
-td {
-    border: 1px solid #dddddd;
-    text-align: center;
-    vertical-align: middle;
-    color: #a7a4a4;
-    padding: 1rem;
-}
-
-th {
-    background-color: #f2f2f2;
-}
-
-thead th {
-    background-color: #f4f4f4;
+.tableContainer .table th {
     font-weight: bold;
+    padding: 1rem;
+    background-color: #f2f2f2;
+    color: #a7a4a4;
+    border: 1px solid #dddddd;
+    text-align: center; /* th의 내용을 가운데 정렬 */
 }
 
-tbody tr:hover {
-    background-color: #f9f9f9;
-}
-
-.pg {
-    grid-row-start: 4;
-    grid-column-start: 2;
+.tableContainer .table td {
+    font-size: 13pt; /* td의 폰트 크기를 13pt로 설정 */
+    text-align: center;
+    vertical-align: middle; /* 각 내용물의 세로 가운데 정렬 */
+    padding: 1rem;
+    border: 1px solid #dddddd;
 }
 
 .profile-image {
@@ -434,6 +470,11 @@ tbody tr:hover {
     height: 25px;
     border-radius: 50%;
     object-fit: cover;
+}
+
+.pg {
+    grid-row-start: 4;
+    grid-column-start: 2;
 }
 
 .pagination {
