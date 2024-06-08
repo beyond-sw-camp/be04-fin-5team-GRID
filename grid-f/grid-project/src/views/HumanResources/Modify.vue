@@ -1,8 +1,23 @@
 <template>
     <div class="profile-main">
         <div class="profile-title">
-            <img class="profile-icon" src="@/assets/HR/modify-user.png" alt="인사 정보 메인 이미지">
-            <h1>인사 정보 수정 </h1>
+            <nav class="title-nav" style="--bs-breadcrumb-divider: '>'; font-weight: normal;" aria-label="breadcrumb">
+                <ol class="breadcrumb" style="margin-bottom: 0;">
+                    <li class="breadcrumb-item"><a href="http://www.gridhr.site/hr"
+                            style="text-decoration: none; color: grey; font-size: 17px;"><i
+                                class="bi bi-people"></i>&nbsp; 인사
+                            정보</a></li>
+                    <li class="breadcrumb-item"><a :href="`http://www.gridhr.site/hr/profile/${employeeNum}`"
+                            style="text-decoration: none; color: grey; font-size: 17px;"><i
+                                class="bi bi-file-person"></i>&nbsp; 인사 
+                            정보 상세</a></li>
+                    <li class="breadcrumb-item active" aria-current="page"><span class="fw-bolder"><i
+                                class="bi bi-pencil-square"></i>&nbsp; 인사 정보 수정</span></li>
+                </ol>
+            </nav>
+            <div class="title-content">
+                <h1> <i class="bi bi-pencil-square"></i>&nbsp;인사 정보 수정 </h1>
+            </div>
         </div>
         <div class="first" v-if="user">
             <div class="image">
@@ -13,10 +28,16 @@
             </div>
             <div class="button">
                 <div style="margin-right: 2%">
-                    <button class="pwdBtn" data-bs-toggle="modal" data-bs-target="#myModal">비밀번호 변경</button>
+                    <button class="custom-btn" data-bs-toggle="modal" data-bs-target="#myModal">
+                        <i class="bi bi-key"></i>&nbsp; &nbsp;
+                        <span>비밀번호 변경</span>
+                    </button>
                 </div>
                 <div>
-                    <button class="modifyBtn" @click="submitModifications">수정</button>
+                    <button class="custom-btn" @click="submitModifications">
+                        <i class="bi bi-gear"></i>&nbsp; &nbsp;
+                        <span>수정</span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -74,6 +95,7 @@ const givenEmail = ref('');
 const profilePath = ref('');
 const sealPath = ref('');
 const userRole = ref('');
+const employeeNum = ref('');
 
 const profileUrl = computed(() => {
     return profilePath.value ? `${profilePath.value}?t=${new Date().getTime()}` : defaultProfileImage;
@@ -231,6 +253,7 @@ onMounted(() => {
         const parsedUser = JSON.parse(userData);
         if (parsedUser && parsedUser.id) {
             user.value = parsedUser;
+            employeeNum.value = user.value.employeeNumber;
             givenEmail.value = user.value.email;
             updatedUser.value = { ...user.value };
             sealPath.value = user.value.sealPath;
@@ -264,7 +287,7 @@ body {
 .profile-main {
     display: grid;
     grid-template-columns: 10% 80% 10%;
-    grid-template-rows: 18% 33% 8% 10% auto;
+    grid-template-rows: 18% 33% 8% 10% 140%;
     height: 100%;
 }
 
@@ -274,12 +297,11 @@ body {
     margin-top: 2%;
     color: #000000;
     display: grid;
-    grid-template-columns: 3% 97%;
     align-items: center;
+    grid-template-rows: 20% 80%;
 }
 
 .profile-title h1 {
-    margin-left: 1.2%;
     font-weight: bold;
     font-size: 14pt;
 }
@@ -370,35 +392,54 @@ body {
     justify-content: flex-end;
 }
 
-.modifyBtn {
+.custom-btn, .pwdBtn {
+    background-color: white;
+    color: #088A85;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.4s, color 0.4s;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     margin-left: 2%;
     width: 50%;
     min-width: 102.24px;
     min-height: 28px;
-    background-color: #088A85;
-    color: white;
-    padding: 5px 5px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
     font-size: 12px;
-    font-style: bold;
+    font-weight: bold;
 }
 
-.pwdBtn {
-    margin-left: 2%;
-    margin-right: 4%;
-    width: 50%;
-    min-width: 102.24px;
-    min-height: 28px;
+.custom-btn::before, .pwdBtn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
     background-color: #088A85;
+    transition: left 0.4s;
+    z-index: 1; /* 기본 z-index로 설정 */
+}
+
+.custom-btn:hover::before, .pwdBtn:hover::before {
+    left: 0;
+}
+
+.custom-btn span, .custom-btn i, .pwdBtn span, .pwdBtn i {
+    position: relative;
+    z-index: 2; /* 기본 z-index로 설정 */
+    color: #088A85;
+}
+
+.custom-btn:hover span, .custom-btn:hover i, .pwdBtn:hover span, .pwdBtn:hover i {
     color: white;
-    padding: 5px 5px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 12px;
-    font-style: bold;
+}
+
+.custom-btn:hover, .pwdBtn:hover {
+    color: white;
 }
 
 .modifyFirst {
@@ -465,5 +506,11 @@ body {
     text-align: center;
     color: rgb(180, 177, 177);
     font-weight: bold;
+}
+
+.title-content {
+    display: grid;
+    align-items: flex-start;
+    height: 80%;
 }
 </style>
