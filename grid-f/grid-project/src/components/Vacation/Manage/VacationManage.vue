@@ -3,6 +3,7 @@
         <div class="manageTitle">
             <img class = "manageIcon" src="@/assets/buttons/vacation.png">
             <h1>휴가 종류</h1>
+            <img src="@/assets/buttons/guide.png" v-if="userRole === 'ROLE_ADMIN'" class="guide" @click="showModal('guideManage')"></img>
             <button class="manageRegist" type="button" @click="showModal('registVacation')">등록하기</button>
             <button class="manageVacation" type="button" @click="showModal('manageVacation')">관리하기</button>
         </div>
@@ -138,8 +139,35 @@
         </div>
     </div>
 </div>
+    <!-- 가이드 모달 -->
+    <div class="modal fade" id="guideManage" tabindex="-1" aria-labelledby="guideManageLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="guideManageLabel">휴가 종류 가이드</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="example-content">
+                        <p>여러가지 휴가의 종류를 관리할 수 있는 페이지 입니다. </p>
+                        <p>현재페이지는 관리자에게만 보입니다.</p>
+                        <hr>
+                        <p>1. 현재 표시되어 있는 휴가들은 활성화되어있는 휴가들입니다.</p>
+                        <p>2. 새로운 휴가종류를 원하시면 <등록하기> 버튼을 통해 등록 가능합니다.</p>
+                        <p>2-1. 모든 값을 채우고 등록한 후에 정책페이지로 이동하여 정책을 등록해주세요.</p>
+                        <p>2-2. 정책을 등록하면 직원들이 정책을 확인하여 사내에 운영중인 휴가의 종류를 확인할 수 있습니다.</p>
+                        <p>3. 사용을 멈추고싶은 휴가의 종류가 있다면 <관리하기> 버튼을 통하여 활성/비활성 할 수 있습니다.</p>
+                        <p>3-1. 현재 비활성화 되어있는 휴가는 휴가이름옆에 (비활성화)로 표시되어 있습니다.</p>
+                        <p>3-2. 비활성화 하면 휴가정책도 함께 사라집니다.</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                </div>
 
-
+            </div>
+        </div>
+    </div>
   
     </div>
 </template>
@@ -479,7 +507,7 @@ onMounted(() => {
         margin-top: 2%;
         color: #000000;
         display: grid;
-        grid-template-columns: 3% 85% 5% 2% 5%;
+        grid-template-columns: 3% 12% 1% 5% 67% 5% 2% 5%;
         align-items: center;
     }
 
@@ -504,6 +532,7 @@ onMounted(() => {
         font-size: 11px;
         font-style: bold;
         width: 100%;
+        grid-column-start: 6;
     }
 
     .manageVacation {
@@ -516,8 +545,9 @@ onMounted(() => {
         font-size: 11px;
         font-style: bold;
         width: 100%;
-        grid-column-start: 5;;
+        grid-column-start: 8;
     }
+
 
     .vacations {
         margin-top: 2%;
@@ -568,6 +598,14 @@ onMounted(() => {
         width: calc(100% - 20px);
         padding: 10px;
         background-color: #F2F2F2;
+    }
+
+    .guide {
+        width: 60%;
+        height: 25px;
+        grid-column: 4;
+        margin: 0;
+        cursor: pointer;
     }
 
     .registMain textarea {

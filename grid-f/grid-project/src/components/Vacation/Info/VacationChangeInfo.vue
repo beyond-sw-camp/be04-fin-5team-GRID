@@ -4,6 +4,7 @@
         <div class="historyTitle">
             <img class="historyIcon" src="@/assets/buttons/vacation.png">
             <h1>휴가 변화 이력</h1>
+            <img src="@/assets/buttons/guide.png" v-if="userRole === 'ROLE_ADMIN'" class="guide" @click="showModal('guideModal')"></img>
         </div>
         <div class="vacations">
             <div class="annual" v-if="userRole === 'ROLE_ADMIN'">
@@ -93,6 +94,37 @@
         </nav>
 
     </div>
+    <!-- 가이드 모달 -->
+    <div class="modal fade" id="guideModal" tabindex="-1" aria-labelledby="guideModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="guideModalLabel">휴가 변화 이력 가이드</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="example-content">
+                        <p>휴가 변화이력 확인 및 휴가를 지급할 수 있는 페이지입니다.</p>
+                        <p>지급버튼은 관리자에게만 보입니다.</p>
+                        <hr>
+                        <p>1. 전직원의 휴가 변화이력을 확인할 수 있습니다.</p>
+                        <p>2. 연 단위 휴가 지급 버튼을 누르면 연차와 정기휴가가 지급됩니다.</p>
+                        <p>2-1. 1년 이상의 직원들에게는 15개부터 20개까지 계산되어 연차가 지급됩니다.</p>
+                        <p>2-2. 1년 미만의 직원들에게는 입사일 이후부터 다음 년도 1월1일까지 몇개월 근무했는지를 <br> &nbsp; &nbsp; &nbsp; 계산하여 근무한 달만큼 지급됩니다.</p>
+                        <p>2-3. 정기휴가는 4개씩 전직원에게 지급됩니다.</p>
+                        <p>3. 월 단위 휴가 지급 버튼을 누르면 월차와 보건휴가가 지급됩니다.</p>
+                        <p>3-1. 1년 미만의 직원들은 한달에 한개씩 월차가 지급됩니다.</p>
+                        <p>3-2. 여성직원들에게는 한달에 한개씩 보건휴가가 지급됩니다.</p>
+                        <p>4. 직접지급 버튼을 누르면 원하는 휴가타입과 휴가일수, 사용기한을 입력한 후에 사번을 통해 <br> &nbsp; &nbsp; &nbsp; 해당직원에게 직접 휴가를 지급할 수 있습니다.</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
 
       <!-- 휴가지급 모달 -->
       <div class="modal fade" id="giveVacation" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -142,6 +174,8 @@
             </div>
         </div>
     </div>
+
+    
 </div>
 
 </template>
@@ -475,7 +509,7 @@ onBeforeMount(() => {
         margin-top: 2%;
         color: #000000;
         display: grid;
-        grid-template-columns: 3% 97%;
+        grid-template-columns: 3% 18% 1% 5% 73%;
         align-items: center;
     }
 
@@ -488,6 +522,14 @@ onBeforeMount(() => {
 
     .historyIcon {
         width: 80%;
+    }
+
+    .guide {
+        width: 60%;
+        height: 25px;
+        grid-column: 4;
+        margin: 0;
+        cursor: pointer;
     }
 
     .vacations {
