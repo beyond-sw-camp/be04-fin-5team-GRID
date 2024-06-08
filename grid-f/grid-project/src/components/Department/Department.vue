@@ -465,16 +465,21 @@ const updateLeader = async () => {
 
 const filteredLeaders = computed(() => {
   return leaders.value.filter(leader => {
-    return leader.name.includes(leaderSearchQuery.value) || leader.employeeNumber.includes(leaderSearchQuery.value) || leader.position.includes(leaderSearchQuery.value);
+    return leader.name.includes(leaderSearchQuery.value) || 
+           leader.employeeNumber.includes(leaderSearchQuery.value) || 
+           leader.position.positionName.includes(leaderSearchQuery.value);
   });
 });
 
 const searchLeaders = () => {
   // 필터링된 leaders를 재계산합니다.
   filteredLeaders.value = leaders.value.filter(leader => {
-    return leader.name.includes(leaderSearchQuery.value) || leader.employeeNumber.includes(leaderSearchQuery.value) || leader.position.includes(leaderSearchQuery.value);
+    return leader.name.includes(leaderSearchQuery.value) || 
+           leader.employeeNumber.includes(leaderSearchQuery.value) || 
+           leader.position.positionName.includes(leaderSearchQuery.value);
   });
 };
+
 </script>
 
 <style scoped>
