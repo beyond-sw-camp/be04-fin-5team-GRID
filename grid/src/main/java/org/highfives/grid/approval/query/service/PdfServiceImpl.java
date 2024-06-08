@@ -110,7 +110,8 @@ public class PdfServiceImpl implements PdfService {
             d_img.scaleToFit(60, 100);
             t_img.scaleToFit(60, 100);
 
-            String fontPath = "src/main/resources/fonts/NotoSansKR-Regular.ttf";
+            String fontPath = "src/main/resources/fonts/NotoSansCJKkr-Regular.otf";
+//            String fontPath = "src/main/resources/fonts/NotoSansKR-Regular.ttf";
 //            String fontPath = "src/main/resources/fonts/malgun.ttf";
             BaseFont bf = BaseFont.createFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
 
@@ -232,7 +233,8 @@ public class PdfServiceImpl implements PdfService {
             Image img = com.lowagie.text.Image.getInstance(imagePath);
             img.scaleToFit(60, 100);
 
-            String fontPath = "src/main/resources/fonts/NotoSansKR-Regular.ttf";
+            String fontPath = "src/main/resources/fonts/NotoSansCJKkr-Regular.otf";
+//            String fontPath = "src/main/resources/fonts/NotoSansKR-Regular.ttf";
 //            String fontPath = "src/main/resources/fonts/malgun.ttf";
             BaseFont bf = BaseFont.createFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
 
@@ -350,7 +352,8 @@ public class PdfServiceImpl implements PdfService {
             Image img = com.lowagie.text.Image.getInstance(imagePath);
             img.scaleToFit(60, 100);
 
-            String fontPath = "src/main/resources/fonts/NotoSansKR-Regular.ttf";
+            String fontPath = "src/main/resources/fonts/NotoSansCJKkr-Regular.otf";
+//            String fontPath = "src/main/resources/fonts/NotoSansKR-Regular.ttf";
 //            String fontPath = "src/main/resources/fonts/malgun.ttf"
             BaseFont bf = BaseFont.createFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
 
@@ -464,7 +467,7 @@ public class PdfServiceImpl implements PdfService {
             Image img = com.lowagie.text.Image.getInstance(imagePath);
             img.scaleToFit(60, 100);
 
-            String fontPath = "src/main/resources/fonts/NotoSansKR-Regular.ttf";
+            String fontPath = "src/main/resources/fonts/NotoSansCJKkr-Regular.otf";
 //            String fontPath = "src/main/resources/fonts/malgun.ttf";
             BaseFont bf = BaseFont.createFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
 
