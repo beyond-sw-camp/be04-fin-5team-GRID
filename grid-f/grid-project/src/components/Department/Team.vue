@@ -27,9 +27,9 @@
         <button @click="search" class="searchBtn">검색</button>
       </div>
       <div>
+        <button @click="showModal('updateLeaderModal')" class="updateLeaderBtn" v-if="userRole === 'ROLE_ADMIN'">팀장 수정</button>
         <button @click="showModal('addNewTeamModal')" class="addTeamBtn" v-if="userRole === 'ROLE_ADMIN'">팀 추가</button>
         <button @click="toggleTeamStatus" class="toggleStatusBtn" v-if="userRole === 'ROLE_ADMIN'">활성/비활성화</button>
-        <button @click="showModal('updateLeaderModal')" class="updateLeaderBtn" v-if="userRole === 'ROLE_ADMIN'">팀장 수정</button>
       </div>
     </div>
 
@@ -656,7 +656,7 @@ const searchLeaders = () => {
   border-radius: 4px;
   cursor: pointer;
   font-size: 12px;
-  margin-left: 10px;
+  margin-right: 10px;
 }
 
 .updateLeaderBtn:hover {
