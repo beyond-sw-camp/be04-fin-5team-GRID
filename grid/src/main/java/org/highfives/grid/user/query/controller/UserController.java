@@ -40,7 +40,6 @@ public class UserController {
         List<UserDTO> resultDTOs = userService.findList();
         List<SimpleInfo> resultList = DTOtoSimpleInfo(resultDTOs);
 
-        System.out.println("resultDTOs = " + resultDTOs);
         ResFindListVO response =
                 new ResFindListVO(200, "Success to find user list", "/users/{id}", resultList);
 
