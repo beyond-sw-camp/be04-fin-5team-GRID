@@ -4,7 +4,6 @@
       <div class="logo">
         <img src="@/assets/logo.png" @click="main()" class="logoimage" style="cursor: pointer;">
       </div>
-
       <div class="icons">
         <div class="tokenArea">
           <span class="token-timer" style="font: 20px;">접속 시간 &nbsp {{ timeLeft }}</span>
@@ -13,16 +12,14 @@
         <button class="icon-button" type="button" data-bs-toggle="offcanvas" data-bs-target="#demo">
           <img src="@/assets/people.png" alt="Button 2" class="icon-image" />
         </button>
-        <div class="dropdown">
-          <img :src="profileUrl" alt="profile" class="profile" @click="toggleDropdown">
-          <ul class="dropdown-menu" ref="dropdownMenu">
-            <li><a class="dropdown-item" href="#" @click="goProfile">개인 정보</a></li>
-            <li><a class="dropdown-item" href="#" @click="logout">로그 아웃</a></li>
-          </ul>
-        </div>
+        <ul class="dropdown-menu" ref="dropdownMenu">
+          <li><a class="dropdown-item" href="#" @click="goProfile">
+              <i class="bi bi-file-person"></i>&nbsp; &nbsp; 내 정보</a></li>
+          <li><a class="dropdown-item" href="#" @click="logout">
+              <i class="bi bi-key"></i>&nbsp; &nbsp;로그 아웃</a></li>
+        </ul>
       </div>
     </header>
-
 
     <div class="offcanvas offcanvas-end" id="demo">
       <div class="offcanvas-header">
@@ -328,8 +325,6 @@ const getNewToken = async () => {
   }
 };
 
-
-
 function isTokenExpired(token) {
   const payload = JSON.parse(atob(token.split('.')[1]));
   const exp = payload.exp * 1000; // Expiration time in milliseconds
@@ -341,8 +336,8 @@ function calculateTimeLeft(token) {
   const exp = payload.exp * 1000; // Expiration time in milliseconds
   const timeLeft = exp - Date.now();
   if (timeLeft > 0) {
-    const minutes = Math.floor(timeLeft / 60000);
-    const seconds = Math.floor((timeLeft % 60000) / 1000);
+    const minutes = Math.floor(timeLeft / 60000).toString().padStart(2, '0'); // 2자리로 패딩
+    const seconds = Math.floor((timeLeft % 60000) / 1000).toString().padStart(2, '0'); // 2자리로 패딩
     return `${minutes} : ${seconds}`;
   }
   return '토큰이 만료되었습니다.';
@@ -414,11 +409,11 @@ onMounted(() => {
 });
 
 function deleteCookie(name, path, domain) {
-    document.cookie = name + '=' +
-        '; expires=Thu, 01 Jan 1970 00:00:01 GMT' +
-        (path ? '; path=' + path : '') +
-        (domain ? '; domain=' + domain : '') +
-        '; secure';
+  document.cookie = name + '=' +
+    '; expires=Thu, 01 Jan 1970 00:00:01 GMT' +
+    (path ? '; path=' + path : '') +
+    (domain ? '; domain=' + domain : '') +
+    '; secure';
 }
 
 const logout = async () => {
@@ -569,7 +564,7 @@ onMounted(fetchDepartments);
   padding: 5px;
 }
 
-.token :hover{
+.token :hover {
   cursor: pointer;
 }
 
