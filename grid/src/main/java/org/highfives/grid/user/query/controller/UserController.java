@@ -40,7 +40,6 @@ public class UserController {
         List<UserDTO> resultDTOs = userService.findList();
         List<SimpleInfo> resultList = DTOtoSimpleInfo(resultDTOs);
 
-        System.out.println("resultDTOs = " + resultDTOs);
         ResFindListVO response =
                 new ResFindListVO(200, "Success to find user list", "/users/{id}", resultList);
 
@@ -51,7 +50,7 @@ public class UserController {
     @GetMapping("/list")
     public ResponseEntity<ResFindListVO> findAllUsers(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "8") int size) {
+            @RequestParam(defaultValue = "12") int size) {
 
         Pageable pageable = PageRequest.of(page, size);
         Page<UserDTO> resultDTOs = userService.findAllUsers(pageable);
@@ -68,7 +67,7 @@ public class UserController {
     public ResponseEntity<ResFindListVO> findUsersByName(
             @PathVariable("name") String name,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "8") int size) {
+            @RequestParam(defaultValue = "12") int size) {
 
         Pageable pageable = PageRequest.of(page, size);
         Page<UserDTO> resultDTOs = userService.findUsersByName(name, pageable);

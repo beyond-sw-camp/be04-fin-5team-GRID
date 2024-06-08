@@ -90,6 +90,7 @@ public class PdfServiceImpl implements PdfService {
 
         Document document = new Document();
 
+
         UserDTO user = userService.findUserById(btApproval.getRequesterId());
 
         String fileName = "business_trip_" + user.getEmployeeNumber() + "_" + btApproval.getId() + ".pdf";
@@ -109,7 +110,9 @@ public class PdfServiceImpl implements PdfService {
             d_img.scaleToFit(60, 100);
             t_img.scaleToFit(60, 100);
 
-            String fontPath = "src/main/resources/fonts/Sejong hospital Light.ttf";
+            String fontPath = "src/main/resources/fonts/NotoSansCJKkr-Regular.otf";
+//            String fontPath = "src/main/resources/fonts/NotoSansKR-Regular.ttf";
+//            String fontPath = "src/main/resources/fonts/malgun.ttf";
             BaseFont bf = BaseFont.createFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
 
             Font titleFont = new Font(bf, 20, Font.BOLD);
@@ -222,7 +225,6 @@ public class PdfServiceImpl implements PdfService {
         String fileName = "overtime_" + user.getEmployeeNumber() + "_" + overtimeApproval.getId() + ".pdf";
 
         String imagePath = imgMapper.getSealImg(approvalChainService.findLeaderByEmployeeId(user.getId(), 3));
-//        String imagePath =  "https://png.pngtree.com/png-clipart/20220113/ourmid/pngtree-cartoon-hand-drawn-default-avatar-png-image_4156500.png";
 
         try {
             PdfWriter.getInstance(document, outputStream);
@@ -231,12 +233,18 @@ public class PdfServiceImpl implements PdfService {
             Image img = com.lowagie.text.Image.getInstance(imagePath);
             img.scaleToFit(60, 100);
 
-            String fontPath = "src/main/resources/fonts/Sejong hospital Light.ttf";
+            String fontPath = "src/main/resources/fonts/NotoSansCJKkr-Regular.otf";
+//            String fontPath = "src/main/resources/fonts/NotoSansKR-Regular.ttf";
+//            String fontPath = "src/main/resources/fonts/malgun.ttf";
             BaseFont bf = BaseFont.createFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
 
             Font titleFont = new Font(bf, 20, Font.BOLD);
             Font headerFont = new Font(bf, 12, Font.BOLD);
             Font font = new Font(bf, 12);
+
+//            Font titleFont = new Font(bf, 20, Font.BOLD);
+//            Font headerFont = new Font(bf, 12, Font.BOLD);
+//            Font font = new Font(bf, 12);
 
             PdfPTable sigTable = new PdfPTable(2);
             PdfPTable table = new PdfPTable(2);
@@ -344,7 +352,9 @@ public class PdfServiceImpl implements PdfService {
             Image img = com.lowagie.text.Image.getInstance(imagePath);
             img.scaleToFit(60, 100);
 
-            String fontPath = "src/main/resources/fonts/Sejong hospital Light.ttf";
+            String fontPath = "src/main/resources/fonts/NotoSansCJKkr-Regular.otf";
+//            String fontPath = "src/main/resources/fonts/NotoSansKR-Regular.ttf";
+//            String fontPath = "src/main/resources/fonts/malgun.ttf"
             BaseFont bf = BaseFont.createFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
 
             Font titleFont = new Font(bf, 20, Font.BOLD);
@@ -457,7 +467,8 @@ public class PdfServiceImpl implements PdfService {
             Image img = com.lowagie.text.Image.getInstance(imagePath);
             img.scaleToFit(60, 100);
 
-            String fontPath = "src/main/resources/fonts/Sejong hospital Light.ttf";
+            String fontPath = "src/main/resources/fonts/NotoSansCJKkr-Regular.otf";
+//            String fontPath = "src/main/resources/fonts/malgun.ttf";
             BaseFont bf = BaseFont.createFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
 
             Font titleFont = new Font(bf, 20, Font.BOLD);
@@ -603,26 +614,43 @@ public class PdfServiceImpl implements PdfService {
         switch (typeId) {
             case 1:
                 BTApproval btApproval = btApprovalRepository.findById(approvalId).orElseThrow();
+                System.out.println("btApproval = " + btApproval);
+
                 fileName = BTexportToPDF(mapper.map(btApproval, BTApprovalDTO.class), outputStream);
+                System.out.println("fileName = " + fileName);
+
                 break;
 
             case 2:
                 OvertimeApproval overtimeApproval = oApprovalRepository.findById(approvalId).orElseThrow();
+                System.out.println("overtimeApproval = " + overtimeApproval);
+
                 fileName = OexportToPDF(mapper.map(overtimeApproval, OvertimeApprovalDTO.class), outputStream);
+                System.out.println("fileName = " + fileName);
+
                 break;
 
             case 3:
                 RWApproval rwApproval = rwApprovalRepository.findById(approvalId).orElseThrow();
+                System.out.println("rwApproval = " + rwApproval);
+
                 fileName = RWexportToPDF(mapper.map(rwApproval, RWApprovalDTO.class), outputStream);
+                System.out.println("fileName = " + fileName);
+
                 break;
 
             case 4:
                 VacationApproval vacationApproval = vApprovalRepository.findById(approvalId).orElseThrow();
+                System.out.println("vacationApproval = " + vacationApproval);
+
                 fileName = VexportToPDF(mapper.map(vacationApproval, VacationApprovalDTO.class), outputStream);
+                System.out.println("fileName = " + fileName);
+
                 break;
         }
 
         ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
+        System.out.println("inputStream: " + inputStream);
 
         try {
             // InputStreamResource로 변환하여 ResponseEntity로 반환
@@ -630,6 +658,9 @@ public class PdfServiceImpl implements PdfService {
 
             HttpHeaders headers = new HttpHeaders();
             headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName);
+
+            System.out.println("resource" + resource);
+            System.out.println(headers);
 
             return ResponseEntity.ok()
                     .headers(headers)

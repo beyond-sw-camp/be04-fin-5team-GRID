@@ -4,6 +4,7 @@ import org.highfives.grid.approval.command.repository.BTApprovalRepository;
 import org.highfives.grid.approval.common.dto.OvertimeApprovalDTO;
 import org.highfives.grid.approval.common.dto.OvertimeInWeekDTO;
 import org.highfives.grid.approval.query.dto.ApprovalEmpDTO;
+import org.highfives.grid.approval.query.dto.EmpStatusDTO;
 import org.highfives.grid.approval.query.repository.ApprovalMapper;
 import org.highfives.grid.user.query.dto.UserDTO;
 import org.highfives.grid.user.query.service.UserService;
@@ -199,5 +200,21 @@ public class ApprovalServiceImpl implements ApprovalService{
         List<ApprovalEmpDTO> approvalEmpList = approvalMapper.findTodayBTandV(params);
 
         return approvalEmpList;
+    }
+
+    @Override
+    public List<EmpStatusDTO> findEmpStatus() {
+
+        List<EmpStatusDTO> todayWork = new ArrayList<>();
+
+        for (ApprovalEmpDTO bt : findTodayBT()) {
+            todayWork.add(new EmpStatusDTO(bt.getEmployeeId(), "출장 중"));
+        }
+
+        for (ApprovalEmpDTO v : findTodayV()) {
+            todayWork.add(new EmpStatusDTO(v.getEmployeeId(), "휴가 중"));
+        }
+
+        return todayWork;
     }
 }

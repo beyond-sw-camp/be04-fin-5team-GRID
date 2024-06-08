@@ -5,6 +5,7 @@ import org.highfives.grid.approval.common.dto.BTApprovalDTO;
 import org.highfives.grid.approval.common.dto.OvertimeInWeekDTO;
 import org.highfives.grid.approval.common.vo.ResApprovalVO;
 import org.highfives.grid.approval.query.dto.ApprovalEmpDTO;
+import org.highfives.grid.approval.query.dto.EmpStatusDTO;
 import org.highfives.grid.approval.query.service.ApprovalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -133,6 +134,21 @@ public class ApprovalController {
                 .message("금일 휴가 조회 성공")
                 .href("")
                 .approvalEmpResultList(result)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping("/today/work")
+    public ResponseEntity<ResApprovalVO> findEmpStatus(){
+
+        List<EmpStatusDTO> result = approvalService.findEmpStatus();
+
+        ResApprovalVO response = ResApprovalVO.builder()
+                .statusCode(200)
+                .message("직원 상태 조회 성공")
+                .href("")
+                .empStatusResultList(result)
                 .build();
 
         return ResponseEntity.status(HttpStatus.OK).body(response);

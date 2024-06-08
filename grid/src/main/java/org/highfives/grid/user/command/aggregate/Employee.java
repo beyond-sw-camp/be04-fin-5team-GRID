@@ -57,8 +57,10 @@ public class Employee {
     private int salary;
     @Column
     @Enumerated(EnumType.STRING)
+    @Setter
     private YN absenceYn;
     @Column
+    @Setter
     private String absenceContent;
     @Column
     @Enumerated(EnumType.STRING)
