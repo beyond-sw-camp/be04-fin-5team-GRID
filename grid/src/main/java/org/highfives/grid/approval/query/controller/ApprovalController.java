@@ -108,10 +108,10 @@ public class ApprovalController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @GetMapping("/today/bt")
-    public ResponseEntity<ResApprovalVO> findTodayBT() {
+    @GetMapping("/bt")
+    public ResponseEntity<ResApprovalVO> findTodayBT(@PathVariable String start, @PathVariable String end) {
 
-        List<ApprovalEmpDTO> result = approvalService.findTodayBT();
+        List<ApprovalEmpDTO> result = approvalService.findTodayBT(start, end);
 
         ResApprovalVO response = ResApprovalVO.builder()
                 .statusCode(200)
@@ -123,7 +123,7 @@ public class ApprovalController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @GetMapping("/today/v")
+    @GetMapping("/v")
     public ResponseEntity<ResApprovalVO> findTodayV() {
 
         List<ApprovalEmpDTO> result = approvalService.findTodayV();
