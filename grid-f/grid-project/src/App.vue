@@ -93,7 +93,7 @@ body {
   font-family: 'IBMPlexSansKR-Regular', sans-serif;
   display: grid;
   grid-template-columns: 250px 1fr;
-  grid-template-rows: 60px auto 35px;
+  grid-template-rows: 50px auto 35px;
   grid-template-areas:
         "header header"
         "side body"

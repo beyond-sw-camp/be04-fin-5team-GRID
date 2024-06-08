@@ -1,20 +1,31 @@
 <template>
     <div class="hr-main">
         <div class="hr-title">
-            <img class="hr-icon" src="@/assets/HR/addMulti.png" alt="인사 정보 메인 이미지">
-            <h1>사원 추가</h1>
+            <nav class="title-nav" style="--bs-breadcrumb-divider: '>'; font-weight: normal;" aria-label="breadcrumb">
+                <ol class="breadcrumb" style="margin-bottom: 0;">
+                    <li class="breadcrumb-item"><a href="http://www.gridhr.site/hr"
+                            style="text-decoration: none; color: grey; font-size: 17px;"><i
+                                class="bi bi-people"></i>&nbsp; 인사
+                            정보</a></li>
+                    <li class="breadcrumb-item active" aria-current="page"><span class="fw-bolder"><i
+                                class="bi bi-pencil-square"></i>&nbsp; 일괄 수정</span></li>
+                </ol>
+            </nav>
+            <div class="title-content">
+                <h1> <i class="bi bi-person-plus"></i>&nbsp 사원 추가</h1>
+                <div class="guide">
+                    <img src="@/assets/buttons/guide.png" alt="guide button" id="guide" @click="openModal">
+                </div>
+            </div>
         </div>
         <div class="search">
-            <div class="guide">
-                <img src="@/assets/buttons/guide.png" alt="guide button" id="guide" @click="openModal">
-            </div>
             <button class="downloadBtn" @click="downloadCSV">
-                <img src="@/assets/buttons/download.png" alt="download button">
-                양식 받기
+                <i class="bi bi-download"></i> &nbsp
+                작성 양식
             </button>
             <button class="uploadBtn" @click="triggerFileUpload">
-                <img src="@/assets/buttons/upload.png" alt="upload button">
-                CSV 업로드
+                <i class="bi bi-upload"></i> &nbsp
+                양식 적용
             </button>
             <input type="file" ref="fileInput" class="d-none" @change="handleFileUpload" accept=".csv" />
         </div>
@@ -55,10 +66,11 @@
                         </td>
                         <td style="width: 140px;">
                             <div class="input-container">
-                                <input v-model="employee.email" type="email" class="no-border" required placeholder="이메일"
-                                    @blur="validateEmail(employee)"
+                                <input v-model="employee.email" type="email" class="no-border" required
+                                    placeholder="이메일" @blur="validateEmail(employee)"
                                     :style="{ color: employee.invalidEmail ? 'red' : '' }" style="width: 90%;">
-                                    <img v-if="employee.invalidEmail && employee.email != ''" src="@/assets/HR/fail.png" alt="실패 이미지" style="width:15px; height:15px;">    
+                                <img v-if="employee.invalidEmail && employee.email != ''" src="@/assets/HR/fail.png"
+                                    alt="실패 이미지" style="width:15px; height:15px;">
                             </div>
                         </td>
                         <td>
@@ -74,7 +86,8 @@
                                 <input v-model="employee.phoneNumber" class="no-border" required placeholder="휴대폰 번호"
                                     @blur="validatePhoneNumber(employee)"
                                     :style="{ color: employee.invalidPhoneNumber ? 'red' : '' }" style="width: 80%;">
-                                <img v-if="employee.invalidPhoneNumber && employee.phoneNumber != ''" src="@/assets/HR/fail.png" alt="실패 이미지" style="width:15px; height:15px;">
+                                <img v-if="employee.invalidPhoneNumber && employee.phoneNumber != ''"
+                                    src="@/assets/HR/fail.png" alt="실패 이미지" style="width:15px; height:15px;">
                             </div>
                         </td>
                         <td>
@@ -161,11 +174,11 @@
                 추가된 사원 수 : {{ employees.length }}명
             </div>
             <button class="plusBtn" @click="addEmployee">
-                <img src="@/assets/buttons/plus.png" alt="add button">
+                <i class="bi bi-plus-circle"></i>&nbsp &nbsp;
                 행 추가
             </button>
             <button class="submitBtn" @click="submitForm">
-                <img src="@/assets/buttons/submit.png" alt="submit button">
+                <i class="bi bi-check2-circle"></i>&nbsp &nbsp;
                 확인
             </button>
         </div>
@@ -274,7 +287,7 @@ const addEmployee = () => {
         zipCode: '',
         address1: '',
         address2: '',
-        invalid: false 
+        invalid: false
     });
 };
 
@@ -372,9 +385,9 @@ const handleFileUpload = (event) => {
         Papa.parse(file, {
             header: true,
             complete: (results) => {
-                console.log('Parsed CSV data:', results.data); 
+                console.log('Parsed CSV data:', results.data);
                 results.data.forEach(row => {
-                    console.log('Processing row:', row); 
+                    console.log('Processing row:', row);
                     employees.push({
                         name: (row['이름'] || '').trim(),
                         employeeNumber: (row['사번'] || '').trim(),
@@ -464,26 +477,18 @@ button {
     margin-top: 2%;
     color: #000000;
     display: grid;
-    grid-template-columns: 3% 97%;
     align-items: center;
 }
 
 .hr-title h1 {
-    margin-left: 1.2%;
     font-weight: bold;
     font-size: 14pt;
-}
-
-.hr-icon {
-    width: 110%;
-    margin: 0 40px 10px 0;
-    filter: invert(0%) sepia(64%) saturate(7%) hue-rotate(334deg) brightness(85%) contrast(101%);
 }
 
 .search {
     grid-row-start: 2;
     grid-column-start: 2;
-    grid-template-columns: auto 5% 0.5% 10% 0.5% 14%;
+    grid-template-columns: auto 5% 0.5% 8% 0.5% 9%;
     display: grid;
     justify-content: flex-end;
     height: 100%;
@@ -497,10 +502,9 @@ button {
 }
 
 .guide img {
-    width: 40%;
-    height: 60%;
-    margin-top: 15%;
-    margin-right: 15%;
+    width: 22px;
+    height: 22px;
+    margin: 0 0 0 20px;
     cursor: pointer;
 }
 
@@ -518,7 +522,7 @@ button {
     grid-column-start: 4;
     margin: 3px;
     height: 100%;
-    min-width: 80px;
+    min-width: 70px;
     background-color: #088A85;
     color: white;
     border: none;
@@ -534,7 +538,7 @@ button {
 .uploadBtn {
     grid-column-start: 6;
     margin: 3px;
-    min-width: 114px;
+    min-width: 70px;
     height: 100%;
     background-color: #088A85;
     color: white;
@@ -629,7 +633,7 @@ thead th {
 .bottom {
     grid-row-start: 5;
     grid-column-start: 2;
-    grid-template-columns: 20% auto 10% 0.5% 10%;
+    grid-template-columns: 20% auto 8% 0.5% 6%;
     display: grid;
 }
 
@@ -653,7 +657,7 @@ thead th {
     font-style: bold;
     justify-self: flex-start;
     width: 100%;
-    min-width: 81.79px;
+    min-width: 70px;
 }
 
 .submitBtn {
@@ -667,8 +671,7 @@ thead th {
     font-size: 70%;
     font-style: bold;
     justify-self: flex-start;
-    width: 100%;
-    min-width: 81.79px;
+    min-width: 55px;
 }
 
 .deleteBtn {
@@ -681,37 +684,6 @@ thead th {
     font-style: bold;
     min-height: 20px;
     min-width: 30px;
-}
-
-.downloadBtn img {
-    width: 20%;
-    height: 80%;
-    margin: 0 6% 4% 0;
-    filter: invert(100%) sepia(65%) saturate(424%) hue-rotate(91deg) brightness(129%) contrast(107%);
-    transition: transform 0.3s ease;
-}
-
-.uploadBtn img {
-    width: 12%;
-    height: 50%;
-    margin: 0 7% 2% 0;
-    filter: invert(100%) sepia(65%) saturate(424%) hue-rotate(91deg) brightness(129%) contrast(107%);
-}
-
-.submitBtn img {
-    width: 20%;
-    height: 80%;
-    margin: 0 6% 0 0;
-    filter: invert(100%) sepia(65%) saturate(424%) hue-rotate(91deg) brightness(129%) contrast(107%);
-    transition: transform 0.3s ease;
-}
-
-.plusBtn img {
-    width: 14%;
-    height: 60%;
-    margin: 1% 3% 1% 0;
-    filter: invert(100%) sepia(65%) saturate(424%) hue-rotate(91deg) brightness(129%) contrast(107%);
-    transition: transform 0.3s ease;
 }
 
 .searchBtn {
@@ -747,5 +719,11 @@ thead th {
 
 .invalid-input::placeholder {
     color: rgb(240, 125, 125);
+}
+
+.title-content {
+    display: flex;
+    align-items: flex-start;
+    height: 90%;
 }
 </style>
