@@ -26,7 +26,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(department, index) in paginatedDepartments" :key="department.sequence">
+        <tr v-for="(department, index) in filteredDepartments" :key="department.sequence">
           <td>
             <input v-if="userRole === 'ROLE_ADMIN'" type="checkbox" @change="toggleDepartmentSelection(department)" :checked="isDepartmentSelected(department)">
           </td>
@@ -41,9 +41,6 @@
         </tr>
       </tbody>
     </table>
-    <div class="pagination">
-      <a href="#" @click.prevent="changePage(page)" :class="{ active: page === currentPage }" v-for="page in totalPages" :key="page">{{ page }}</a>
-    </div>
 
     <!-- 부서 추가 Modal -->
     <div class="modal fade" id="addNewModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -181,8 +178,6 @@ import 'bootstrap';
 
 const departments = ref([]);
 const leaders = ref([]);
-const currentPage = ref(1);
-const itemsPerPage = 10;
 const searchQuery = ref('');
 const selectedDepartments = ref([]);
 const userId = ref('');
@@ -242,7 +237,7 @@ function parseJwt(token) {
         const base64Url = token.split('.')[1];
         const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
         const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
-            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            return '%' + ('00' + c.charCodeAt(16).toString(16)).slice(-2);
         }).join(''));
         return JSON.parse(jsonPayload);
     } catch (error) {
@@ -279,23 +274,6 @@ const search = () => {
     }
     return true; // 다른 경우는 모두 접근 가능
   });
-
-  currentPage.value = 1;
-};
-
-const totalPages = computed(() => {
-  return Math.ceil(filteredDepartments.value.length / itemsPerPage);
-});
-
-const paginatedDepartments = computed(() => {
-  const start = (currentPage.value - 1) * itemsPerPage;
-  return filteredDepartments.value.slice(start, start + itemsPerPage);
-});
-
-const changePage = (page) => {
-  if (page > 0 && page <= totalPages.value) {
-    currentPage.value = page;
-  }
 };
 
 const formatDate = (dateString) => {
@@ -622,28 +600,6 @@ td {
 
 tr:hover {
   background-color: #f1f1f1;
-}
-
-.pagination {
-  grid-row-start: 6;
-  grid-column-start: 2;
-  display: flex;
-  justify-content: center;
-}
-
-.pagination a {
-  margin: 0 5px;
-  padding: 10px 15px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  text-decoration: none;
-  color: #333;
-}
-
-.pagination a.active {
-  background-color: #088A85;
-  color: white;
-  border: none;
 }
 
 .department-pic {
