@@ -208,11 +208,11 @@ public class ApprovalServiceImpl implements ApprovalService{
         List<EmpStatusDTO> todayWork = new ArrayList<>();
 
         for (ApprovalEmpDTO bt : findTodayBT()) {
-            todayWork.add(new EmpStatusDTO(bt.getEmployeeId(), "출장 중"));
+            todayWork.add(new EmpStatusDTO(bt.getEmployeeId(), "출장 중", bt.getStartTime(), bt.getEndTime()));
         }
 
         for (ApprovalEmpDTO v : findTodayV()) {
-            todayWork.add(new EmpStatusDTO(v.getEmployeeId(), "휴가 중"));
+            todayWork.add(new EmpStatusDTO(v.getEmployeeId(), "휴가 중", v.getStartTime(), v.getEndTime()));
         }
 
         return todayWork;
