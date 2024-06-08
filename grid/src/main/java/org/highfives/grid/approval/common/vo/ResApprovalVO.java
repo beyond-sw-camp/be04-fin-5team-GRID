@@ -6,6 +6,7 @@ import org.highfives.grid.approval.common.dto.OvertimeApprovalDTO;
 import org.highfives.grid.approval.common.dto.RWApprovalDTO;
 import org.highfives.grid.approval.common.dto.VacationApprovalDTO;
 import org.highfives.grid.approval.query.dto.ApprovalEmpDTO;
+import org.highfives.grid.approval.query.dto.EmpStatusDTO;
 
 import java.util.List;
 
@@ -43,4 +44,6 @@ public class ResApprovalVO {
     private List<VacationApprovalDTO> vacationResultList;
 
     private List<ApprovalEmpDTO> approvalEmpResultList;
+
+    private List<EmpStatusDTO> empStatusResultList;
 }
