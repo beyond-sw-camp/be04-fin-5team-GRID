@@ -1,8 +1,5 @@
 <template>
   <div class="adTimeAddController">
-    <div class="adList">
-      <button @click="goToAdTimeList()" class="btn btn-primary adBtn">출퇴근</button>
-    </div>
     <div class="adTimeBox">
       <div class="card-deck adCard">
         <div class="card adCardI" style="width: 18rem;">
@@ -21,11 +18,10 @@
         </div>
       </div>
     </div>
-    <!--    <div class="weekCalender" id="app">-->
-    <!--      <div id="calendar"></div>-->
-    <!--    </div>-->
+    <div class="weekCalender">
+      <div id="weekCalendar"></div>
+    </div>
   </div>
-
 
 </template>
 
@@ -88,7 +84,7 @@ const fetchAdTime = async () => {
     today.value = currentDate;
 
     console.log(currentDate);
-    const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/ad-time/${currentDate}/${userId.value}`);
+    const response = await axios.get(`/api/ad-time/${currentDate}/${userId.value}`);
     console.log('출근 조회: ', response.data);
     const data = response.data.adTimeDTO;
     console.log(response.data.adTimeDTO);
@@ -110,7 +106,7 @@ const events = ref([]);
 
 let calendar;
 const initCalendar = async (events) => {
-  let calendarEl = document.getElementById('calendar');
+  let calendarEl = document.getElementById('weekCalendar');
   if (calendarEl) {
     calendar = new Calendar(calendarEl, {
       plugins: [dayGridPlugin, interactionPlugin],
@@ -124,7 +120,7 @@ const initCalendar = async (events) => {
         monthCalendar: {
           text: 'Month',
           click: function () {
-            router.push('/work-calendar');
+            router.push(`/work-calendar/${userId.value}`);
           }
         },
         adTime: {
@@ -135,6 +131,16 @@ const initCalendar = async (events) => {
         }
       },
       events: events.value,
+      eventOrder: 'priority',  // 우선순위 필드에 따라 정렬
+      eventDisplay: 'block',
+      dayMaxEventRows: 5,
+      moreLinkClick: 'popover', // "more" 링크 클릭 시 팝오버로 표시
+      eventDidMount: function (info) {
+        var eventEl = info.el;
+        eventEl.style.overflow = 'hidden';
+        eventEl.style.textOverflow = 'ellipsis';
+        eventEl.style.whiteSpace = 'nowrap';
+      },
       eventClick: function (info) {
         console.log('Event clicked:', info.event.title);
         // 이벤트 클릭 시 실행할 동작을 여기에 추가
@@ -153,7 +159,7 @@ const fetchEmployeeEvent = async () => {
 
   try {
     // 출근 조회
-    const responseAdTime = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/ad-time/${userId.value}`);
+    const responseAdTime = await axios.get(`/api/ad-time/${userId.value}`);
 
     const adTime = responseAdTime.data.adTimeDTOList;
     console.log(adTime);
@@ -163,32 +169,32 @@ const fetchEmployeeEvent = async () => {
     console.log(events.value);
     // updateCalendarEvents(events.value);
     // 출장 조회
-    const responseBt = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval/list/1/1/${userId.value}`);
-    console.log(responseBt.data);
+    const responseBt = await axios.get(`/api/approval/list/1/1/${userId.value}`);
+    console.log('출장', responseBt.data);
 
     const bt = responseBt.data.approvalEmpResultList
-    const btEvents = transformEvents(bt, '출장', 'red');
+    const btEvents = transformEvents(bt, '출장', '#ffd5d5',2);
 
     // 시간외 근무 조회
-    const responseO = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval/list/2/1/${userId.value}`);
-    console.log(responseO.data);
+    const responseO = await axios.get(`/api/approval/list/2/1/${userId.value}`);
+    console.log('시간외', responseO.data);
 
-    const O = responseBt.data.approvalEmpResultList
-    const OEvents = transformEvents(O, '시간외 근무', 'blue');
+    const O = responseO.data.approvalEmpResultList
+    const OEvents = transformEvents(O, '시간외 근무', '#bec8fc',3);
 
     // 단축 근무 조회
-    const responseRw = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval/list/3/1/${userId.value}`);
-    console.log(responseRw.data);
+    const responseRw = await axios.get(`/api/approval/list/3/1/${userId.value}`);
+    console.log('단축', responseRw.data);
 
-    const Rw = responseBt.data.approvalEmpResultList
-    const RwEvents = transformEvents(Rw, '단축 근무', 'green');
+    const Rw = responseRw.data.approvalEmpResultList
+    const RwEvents = transformEvents(Rw, '단축 근무', '#d4ffc1',4);
 
     // 휴가 조회
-    const responseV = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval/list/4/1/${userId.value}`);
+    const responseV = await axios.get(`/api/approval/list/4/1/${userId.value}`);
     console.log(responseV.data);
 
-    const V = responseBt.data.approvalEmpResultList
-    const VEvents = transformEvents(V, '휴가', 'purple');
+    const V = responseV.data.approvalEmpResultList
+    const VEvents = transformEvents(V, '휴가', '#f4d4ff',5);
 
 
     events.value = [...adEvents, ...btEvents, ...OEvents, ...RwEvents, ...VEvents];
@@ -203,7 +209,7 @@ const fetchEmployeeEvent = async () => {
 const fetchAllEvent = async () => {
   try {
     // 출근 조회
-    const responseAdTime = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/ad-time/all`);
+    const responseAdTime = await axios.get(`/api/ad-time/all`);
 
     const adTime = responseAdTime.data.adTimeDTOList;
     console.log(adTime);
@@ -218,20 +224,25 @@ const fetchAllEvent = async () => {
 
 
 function transformAdEvents(list) {
+  console.log(list);
   return list.map(item => ({
     title: `${item.attendanceStatus}`,
     start: item.startTime ? item.startTime.replace(" ", "T") : null,
-    end: item.endTime ? item.endTime.replace(" ", "T") : null
+    end: item.endTime ? item.endTime.replace(" ", "T") : null,
+    color: '#fff1c3',
+    textColor : "#424242",
+    priority:  1
   }));
 }
 
-function transformEvents(list, type, color) {
+function transformEvents(list, type, color, priority) {
   return list.map(item => ({
     title: type,
     start: item.startTime ? item.startTime.replace(" ", "T") : null,
     end: item.endTime ? item.endTime.replace(" ", "T") : null,
-    color: color
-
+    color: color,
+    textColor : "#424242",
+    priority:  priority
   }));
 }
 
@@ -248,33 +259,14 @@ onMounted(async () => {
 
   if (userRole.value === 'ROLE_ADMIN') {
     // fetchAllAdTime();
-    // await fetchAllEvent();
-    // initCalendar(events);
+    await fetchAllEvent();
+    initCalendar(events);
   } else if (userRole.value === 'ROLE_USER') {
     console.log('조회');
     fetchAdTime();
-    // await fetchEmployeeEvent();
-    // initCalendar(events);
+    await fetchEmployeeEvent();
+    initCalendar(events);
   }
-
-
-  // Load Google Charts and draw the chart
-  // google.charts.load('current', { packages: ['corechart'] });
-  // google.charts.setOnLoadCallback(() => {
-  //   nextTick(drawChart);
-  // });
-
-  // google.charts.load('current', { packages: ['corechart'] });
-  // google.charts.setOnLoadCallback(() => {
-  //   nextTick(() => {
-  //     const chartElement = document.querySelector('div[ref="chart"]');
-  //     if (chartElement) {
-  //       drawChart();
-  //     } else {
-  //       console.error("Chart element not found");
-  //     }
-  //   });
-  // });
 
 });
 
@@ -285,7 +277,7 @@ const addArrivalTime = async () => {
     const currentTime = getCurrentDateTimeString();
     console.log(currentTime);
     await axios.post(
-        'http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/ad-time/arrival-time',
+        '/api/ad-time/arrival-time',
         {
           id: null,
           startTime: currentTime,
@@ -312,7 +304,7 @@ const addDepartureTime = async () => {
     const currentTime = getCurrentDateTimeString();
     console.log(currentTime);
     await axios.put(
-        'http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/ad-time/departure-time',
+        '/api/ad-time/departure-time',
         {
           id: null,
           startTime: null,
@@ -341,9 +333,10 @@ const goToAdTimeList = () => {
 </script>
 
 <style>
+
 .adTimeAddController {
   display: grid;
-  grid-template-rows: 30% 70%;
+  grid-template-rows: 33% 62% 5%;
   height: 100%;
 }
 
@@ -352,7 +345,7 @@ const goToAdTimeList = () => {
 }
 
 .adTimeBox {
-  grid-row-start: 2;
+  grid-row-start: 1;
   width: 50%;
   align-items: center;
 }
@@ -376,109 +369,70 @@ const goToAdTimeList = () => {
   grid-row-start: 2;
   width: 100%;
   height: 100%;
+  cursor: pointer;
 }
 
-#calendar {
+#weekCalendar {
   width: 100%;
   height: 100%;
   overflow: auto;
+
 }
 
-#calendar .fc-day-today {
-  background-color: #dfe9ff;
+#weekCalendar .fc-day-today {
+  background-color: #e4fcfc;
 }
 
-#calendar .fc-daygrid-day {
-  height: 100%; /* 날짜 셀의 고정 높이 */
-}
 
-/*#calendar .fc {
-  width: 100%;
-  height: 100%;
-}*/
-
-#calendar .fc-daygrid-day-events {
-  max-height: 100px; /* 날짜 셀의 고정 높이 */
+#weekCalendar .fc-daygrid-day-events {
+  //height: 100%; /* 날짜 셀의 고정 높이 */
   text-align: left;
-  overflow: auto;
+  //overflow: auto;
   text-decoration: none;
+  //background-color: #088A85;
+  color: blue;
 }
 
-#calendar .fc-col-header-cell {
+#weekCalendar .fc-daygrid-more-link {
+  text-decoration: none;
+  color: #333333;
+}
+
+#weekCalendar .fc-col-header-cell {
   background-color: #8ec0c0;
 }
 
-#calendar .fc-col-header-cell-cushion {
+#weekCalendar .fc-col-header-cell-cushion {
   /* 밑줄 제거 */
   text-decoration: none;
 
   /* 기본 커서로 변경 */
   cursor: default;
 
-  background-color: #3fb9b8;
   color: #ffffff;
+  //height: 10%;
+}
+
+#weekCalendar .fc .fc-button {
+  border: none; /* 버튼 테두리 제거 */
+  box-shadow: none; /* 버튼 그림자 제거 */
   height: 10%;
+  font-size: 15px;
+  background-color: rgb(142, 192, 192);
 }
-
-#calendar .fc-col-cell {
-
-}
-
-/* 날짜 칸 크기 고정 */
-#calendar .fc-daygrid-day-frame {
-  display: flex;
-  flex-direction: column;
-  height: 100px; /* 날짜 셀의 고정 높이 설정 */
-  overflow: hidden;
-}
-
-#calendar .fc-daygrid-day-top {
-  flex: 0 0 auto;
-}
-
-#calendar .fc-daygrid-day-events {
-  flex: 1 1 auto;
-  max-height: 60px; /* 이벤트 영역의 최대 높이 설정 */
-  overflow: hidden; /* 넘치는 내용 숨기기 */
-}
-
-/* 날짜 셀의 하이퍼링크를 일반 텍스트로 표시 */
-#calendar .fc-daygrid-day-number {
-  pointer-events: none; /* 클릭 이벤트 제거 */
-  text-decoration: none; /* 밑줄 제거 */
-  color: inherit; /* 기본 텍스트 색상 사용 */
-  cursor: default; /* 기본 커서로 변경 */
-}
-
-/*
-.fc .fc-event {
-  text-align: center;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-}*/
 
 .fc .fc-toolbar-title {
-  color: rgb(6, 6, 31); /* 변경하고자 하는 색상으로 설정 */
+  color: rgb(157, 204, 204); /* 변경하고자 하는 색상으로 설정 */
   font-size: 20px; /* 변경하고자 하는 크기로 설정 */
   font-weight: bold; /* 변경하고자 하는 폰트의 높이로 설정 */
 }
 
-.fc .fc-button {
-  border: none; /* 버튼 테두리 제거 */
-  box-shadow: none; /* 버튼 그림자 제거 */
-  height: 35px;
-  font-size: 15px;
-}
-
 :root {
   --fc-border-color: rgb(187, 187, 187);
-  --fc-daygrid-event-dot-width: 5px;
   --fc-today-bg-color: #fefee9;
   --fc-button-bg-color: rgb(142, 192, 192);
   --fc-button-active-bg-color: rgb(99, 178, 177);
-  --fc-daygrid-day-height: 100px;
+  --fc-button-hover-bg-color: rgb(100, 150, 150);
 }
 
 </style>
