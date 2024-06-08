@@ -2,8 +2,7 @@
   <div class="container">
     <div class="header">
       <div class="header-title">
-        <img src="@/assets/department_icon.png" alt="department_icon" class="department-pic">
-        <h1>부서 정보</h1>
+        <h1 class="mb-1"><i class="bi bi-diagram-2 fs-3"></i>&nbsp; 부서 정보</h1>
       </div>
       <button v-if="userRole === 'ROLE_ADMIN'" class="updateLeaderBtn" @click="showModal('updateLeaderModal')">부서장 수정</button>
       <button v-if="userRole === 'ROLE_ADMIN'" class="addbtn" @click="showModal('addNewModal')">추가하기</button>
@@ -41,9 +40,9 @@
         </tr>
       </tbody>
     </table>
-    <div class="pagination">
+    <!-- <div class="pagination">
       <a href="#" @click.prevent="changePage(page)" :class="{ active: page === currentPage }" v-for="page in totalPages" :key="page">{{ page }}</a>
-    </div>
+    </div> -->
 
     <!-- 부서 추가 Modal -->
     <div class="modal fade" id="addNewModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -86,18 +85,21 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <table>
+            <input type="text" class="form-control mb-3" placeholder="이름, 사원번호 또는 직책 검색" v-model="leaderSearchQuery" @input="searchLeaders">
+            <table class="table">
               <thead>
                 <tr>
                   <th>사원번호</th>
                   <th>이름</th>
+                  <th>직책</th>
                   <th>선택</th>
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="leader in leaders" :key="leader.id">
+                <tr v-for="leader in filteredLeaders" :key="leader.id">
                   <td>{{ leader.employeeNumber }}</td>
                   <td>{{ leader.name }}</td>
+                  <td>{{ leader.position.positionName }}</td>
                   <td><button type="button" class="btn btn-primary" @click="selectLeader(leader)">선택</button></td>
                 </tr>
               </tbody>
@@ -144,16 +146,21 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
+            <input type="text" class="form-control mb-3" placeholder="이름, 사원번호 또는 직책 검색" v-model="leaderSearchQuery" @input="searchLeaders">
             <table class="table">
               <thead>
                 <tr>
-                  <th>부서장 명</th>
+                  <th>사원번호</th>
+                  <th>이름</th>
+                  <th>직책</th>
                   <th>선택</th>
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="leader in leaders" :key="leader.id">
+                <tr v-for="leader in filteredLeaders" :key="leader.id">
+                  <td>{{ leader.employeeNumber }}</td>
                   <td>{{ leader.name }}</td>
+                  <td>{{ leader.position.positionName }}</td>
                   <td><button type="button" class="btn btn-primary" @click="selectLeaderForUpdate(leader)">선택</button></td>
                 </tr>
               </tbody>
@@ -182,6 +189,7 @@ const userRole = ref('');
 const selectedDepartmentId = ref(null);
 const newLeaderName = ref('');
 const newLeaderId = ref(null);
+const leaderSearchQuery = ref('');
 
 const newDepartment = ref({
   departmentName: '',
@@ -196,6 +204,7 @@ const fetchLeaders = async () => {
   try {
     const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/list/all`);
     leaders.value = response.data.result;
+    searchLeaders();
   } catch (error) {
     console.error('직원 정보를 불러오는 중 에러 발생:', error);
   }
@@ -452,6 +461,24 @@ const updateLeader = async () => {
     }
   }
 };
+
+const filteredLeaders = computed(() => {
+  return leaders.value.filter(leader => {
+    return leader.name.includes(leaderSearchQuery.value) || 
+           leader.employeeNumber.includes(leaderSearchQuery.value) || 
+           leader.position.positionName.includes(leaderSearchQuery.value);
+  });
+});
+
+const searchLeaders = () => {
+  // 필터링된 leaders를 재계산합니다.
+  filteredLeaders.value = leaders.value.filter(leader => {
+    return leader.name.includes(leaderSearchQuery.value) || 
+           leader.employeeNumber.includes(leaderSearchQuery.value) || 
+           leader.position.positionName.includes(leaderSearchQuery.value);
+  });
+};
+
 </script>
 
 <style scoped>
@@ -509,21 +536,23 @@ const updateLeader = async () => {
 .header {
   grid-column-start: 2;
   display: grid;
-  grid-template-columns: 84.5% 4.5% 1% 4.5% 1% 4.5%;
+  grid-template-columns: 78.5% 6.5% 1% 6.5% 1% 6.5%;
   align-items: center;
 }
 
 .header-title {
   align-items: center;
   display: grid;
-  grid-template-columns: 3% 97%;
+  margin-top: 2%;
+  margin-left: -0.5%;
+  color: #000000;
 }
 
 .header-title h1 {
+  margin-left: 0.5%;
   font-size: 25px;
   font-weight: 600;
-  margin-left: 0.5%;
-  margin-bottom: 0;
+  font-family: 'IBMPlexSansKR-Regular', sans-serif;
 }
 
 .addbtn {

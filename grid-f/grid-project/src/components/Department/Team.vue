@@ -27,9 +27,9 @@
         <button @click="search" class="searchBtn">검색</button>
       </div>
       <div>
+        <button @click="showModal('updateLeaderModal')" class="updateLeaderBtn" v-if="userRole === 'ROLE_ADMIN'">팀장 수정</button>
         <button @click="showModal('addNewTeamModal')" class="addTeamBtn" v-if="userRole === 'ROLE_ADMIN'">팀 추가</button>
         <button @click="toggleTeamStatus" class="toggleStatusBtn" v-if="userRole === 'ROLE_ADMIN'">활성/비활성화</button>
-        <button @click="showModal('updateLeaderModal')" class="updateLeaderBtn" v-if="userRole === 'ROLE_ADMIN'">팀장 수정</button>
       </div>
     </div>
 
@@ -102,16 +102,21 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
+            <input type="text" class="form-control mb-3" placeholder="이름, 사원번호 또는 직책 검색" v-model="leaderSearchQuery" @input="searchLeaders">
             <table class="table">
               <thead>
                 <tr>
+                  <th>사원번호</th>
                   <th>팀장 명</th>
+                  <th>직책</th>
                   <th>선택</th>
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="leader in leaders" :key="leader.id">
+                <tr v-for="leader in filteredLeaders" :key="leader.id">
+                  <td>{{ leader.employeeNumber }}</td>
                   <td>{{ leader.name }}</td>
+                  <td>{{ leader.position.positionName }}</td>
                   <td><button type="button" class="btn btn-primary" @click="selectLeader(leader)">선택</button></td>
                 </tr>
               </tbody>
@@ -160,16 +165,21 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
+            <input type="text" class="form-control mb-3" placeholder="이름, 사원번호 또는 직책 검색" v-model="leaderSearchQuery" @input="searchLeaders">
             <table class="table">
               <thead>
                 <tr>
+                  <th>사원번호</th>
                   <th>팀장 명</th>
+                  <th>직책</th>
                   <th>선택</th>
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="leader in leaders" :key="leader.id">
+                <tr v-for="leader in filteredLeaders" :key="leader.id">
+                  <td>{{ leader.employeeNumber }}</td>
                   <td>{{ leader.name }}</td>
+                  <td>{{ leader.position.positionName }}</td>
                   <td><button type="button" class="btn btn-primary" @click="selectLeaderForUpdate(leader)">선택</button></td>
                 </tr>
               </tbody>
@@ -180,7 +190,6 @@
     </div>
   </div>
 </template>
-
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
@@ -214,6 +223,7 @@ const newTeam = ref({
 const selectedTeamId = ref(null);
 const newLeaderName = ref('');
 const newLeaderId = ref(null);
+const leaderSearchQuery = ref('');
 
 const fetchTeams = async () => {
   try {
@@ -499,8 +509,24 @@ const checkSelectionLimit = () => {
     alert('두 개 이상의 팀을 선택할 수 없습니다.');
   }
 };
-</script>
 
+const filteredLeaders = computed(() => {
+  return leaders.value.filter(leader => {
+    return leader.name.includes(leaderSearchQuery.value) || 
+           leader.employeeNumber.includes(leaderSearchQuery.value) || 
+           leader.position.positionName.includes(leaderSearchQuery.value);
+  });
+});
+
+const searchLeaders = () => {
+  // 필터링된 leaders를 재계산합니다.
+  filteredLeaders.value = leaders.value.filter(leader => {
+    return leader.name.includes(leaderSearchQuery.value) || 
+           leader.employeeNumber.includes(leaderSearchQuery.value) || 
+           leader.position.positionName.includes(leaderSearchQuery.value);
+  });
+};
+</script>
 <style scoped>
 @font-face {
   font-family: 'IBMPlexSansKR-Regular';
@@ -630,7 +656,7 @@ const checkSelectionLimit = () => {
   border-radius: 4px;
   cursor: pointer;
   font-size: 12px;
-  margin-left: 10px;
+  margin-right: 10px;
 }
 
 .updateLeaderBtn:hover {

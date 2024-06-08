@@ -10,8 +10,6 @@ import AdTime from '@/components/AdTime/AdTimeList.vue';
 
 const router = useRouter();
 
-
-
 </script>
 
 

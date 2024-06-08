@@ -1,8 +1,7 @@
 <template>
   <div class="adTimeListContainer">
     <div class="adTimeListTitle">
-      <img class="adTimeIcon" src="@/assets/icons/ad-time-icon.png">
-      <h1>출퇴근 조회</h1>
+      <h1 class="mb-1"><i class="bi bi-person-add fs-3"></i>&nbsp; 출퇴근 조회</h1>
     </div>
     <div class="workerContainer" v-if="userRole === 'ROLE_ADMIN'">
       <div class="card-deck cnt">
@@ -133,26 +132,26 @@ function getCurrentDateTimeString() {
 // 관리자용
 const fetchAllAdTime = async () => {
   try {
-    const response = await axios.get('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/ad-time/all')
+    const response = await axios.get('/api/ad-time/all')
     adTimeList.value = response.data.adTimeDTOList;
 
     // 오늘 지각 인원 조회
     const currentTime = getCurrentDateTimeString();
     const today = currentTime.slice(0, 10)
 
-    const responseTodayAd = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/ad-time/date/${today}`)
+    const responseTodayAd = await axios.get(`/api/ad-time/date/${today}`)
     todayList.value = responseTodayAd.data.adTimeDTOList;
 
     const lateAttendanceList = todayList.value.filter(item => item.attendanceStatus === "지각");
     cntLate.value = lateAttendanceList.length;
 
     //오늘 출장 인원 조회
-    const responseTodayBt = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval/today/bt`)
+    const responseTodayBt = await axios.get(`/api/approval/today/bt`)
     cntBt.value = responseTodayBt.data.approvalEmpResultList.length;
 
 
     //오늘 휴가 인원 조회
-    const responseTodayVacation = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval/today/v`)
+    const responseTodayVacation = await axios.get(`/api/approval/today/v`)
     cntVacation.value = responseTodayVacation.data.approvalEmpResultList.length;
 
   } catch (error) {
@@ -163,7 +162,7 @@ const fetchAllAdTime = async () => {
 //직원용
 const fetchEmployeeAdTime = async () => {
   try{
-    const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/ad-time/${userId.value}`);
+    const response = await axios.get(`/api/ad-time/${userId.value}`);
     console.log(response.data.adTimeDTOList);
     adTimeList.value = response.data.adTimeDTOList;
 
@@ -262,20 +261,18 @@ const goToLastPage = () => {
 
 .adTimeListTitle {
   grid-column-start: 2;
-  grid-column-end: 3;
-  font-size: 12px;
-  font-weight: 0;
+  align-content: center;
   margin-top: 2%;
+  margin-left: -0.5%;
   color: #000000;
-  display: grid;
-  grid-template-columns: 3% 97%;
-  align-items: center;
 }
 
 .adTimeListTitle h1 {
   margin-left: 0.5%;
-  font-weight: 600;
+  margin-bottom: 0;
   font-size: 25px;
+  font-weight: 600;
+  font-family: 'IBMPlexSansKR-Regular', sans-serif;
 }
 
 .adTimeIcon {

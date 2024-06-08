@@ -13,9 +13,6 @@ import Footer from '@/components/Footer.vue';
 import AdTimeAdd from '@/components/AdTime/AdTimeAdd.vue';
 
 const router = useRouter();
-
-
-
 </script>
 
 

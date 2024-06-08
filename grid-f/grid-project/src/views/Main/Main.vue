@@ -1,20 +1,22 @@
  <template>
   <div class="mainContainer">
     <div class="mainTitle">
-      <img class="mainIcon" src="@/assets/icons/goal_icon.png">
-      <h1>메인</h1>
+      <h1 class="mb-1"><i class="bi bi-house-door fs-3"></i>&nbsp; 메인</h1>
     </div>
-    <div class="content">
+    <div class="content" v-if="userRole ==='ROLE_USER'">
       <AdTime />
     </div>
-    <div class="approvalContent">
-      <b-card title="결재 필요 문서">
+    <div class="approvalContent" v-if="userRole ==='ROLE_USER'">
+      <b-card class="my-5" title="결재 필요 문서">
         <div class="text-end">
           <h6 class="text-muted" style="margin-bottom: 10px; margin-top: -30px;" @click="navigateTo('/required')">상세 <i class="bi bi-chevron-right"></i></h6>
         </div>
         <br>
         <ApprovalList :approvalList="state.sReqApprovalList" :short="1"/>
       </b-card>
+    </div>
+    <div class="allCalendar" v-else>
+      <WorkCalendar />
     </div>
   </div>
 </template>
@@ -24,7 +26,7 @@
   import axios from "axios";
   import {onMounted, provide, reactive, ref} from 'vue';
   import {RouterLink, RouterView, useRouter} from 'vue-router';
-  import WorkCalendar from "@/components/AdTime/WorkCalendar.vue";
+  import WorkCalendar from "@/components/AdTime/AllWorkCalendar.vue";
 
   import ApprovalList from "@/components/Approval/ApprovalList.vue";
 
@@ -59,7 +61,7 @@
 
   const fetchReqApprovalList = async (typeId, approvalStatus, approverId) => {
     try {
-      const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval/approver/${typeId}/${approvalStatus}/${approverId}`);
+      const response = await axios.get(`/api/approval/approver/${typeId}/${approvalStatus}/${approverId}`);
       if (response.status !== 200) {
         throw new Error("response is not ok");
       }
@@ -81,6 +83,7 @@
       userId.value = decodedToken.id || '';
       userRole.value = decodedToken.auth || '';
     }
+    console.log(userRole.value);
 
     if (userRole.value !== 'ROLE_ADMIN') {
       await fetchReqApprovalList(0, 5, userId.value);
@@ -93,31 +96,35 @@
 <style scoped>
 .mainContainer {
   display: grid;
-  grid-template-rows: 18% 30% min-content 13%;
+  grid-template-rows: 18% 40% 29% 13%;
   grid-template-columns: 10% 80% 10%;
   height: 100%;
 }
 
 .mainTitle {
   grid-column-start: 2;
-  grid-column-end: 3;
-  font-size: 12px;
-  font-weight: 0;
+  align-content: center;
   margin-top: 2%;
+  margin-left: -0.5%;
   color: #000000;
-  display: grid;
-  grid-template-columns: 3% 97%;
-  align-items: center;
 }
 
 .mainTitle h1 {
   margin-left: 0.5%;
-  font-weight: 600;
   font-size: 25px;
+  font-weight: 600;
+  font-family: 'IBMPlexSansKR-Regular', sans-serif;
 }
 
 .mainIcon {
   width: 80%;
+}
+
+.allCalendar {
+  grid-row-start: 2;
+  grid-row-end: 4;
+  grid-column-start: 2;
+  grid-column-end: 3;
 }
 
 .content {

@@ -1,20 +1,3 @@
-<script setup>
-  import {reactive} from "vue";
-
-  const props = defineProps({
-    requesterId: 0
-  })
-
-  const postData = reactive({
-    startTime: "",
-    endTime: "",
-    destination: "",
-    content: "",
-    requesterId: props.requesterId      // 작성자 id
-  })
-
-</script>
-
 <template>
   <div>
     <b-card bg-variant="light">
@@ -70,6 +53,23 @@
     </b-card>
   </div>
 </template>
+
+<script setup>
+  import {reactive} from "vue";
+
+  const props = defineProps({
+    requesterId: 0
+  })
+
+  const postData = reactive({
+    startTime: "",
+    endTime: "",
+    destination: "",
+    content: "",
+    requesterId: props.requesterId      // 작성자 id
+  })
+
+</script>
 
 <style scoped>
 

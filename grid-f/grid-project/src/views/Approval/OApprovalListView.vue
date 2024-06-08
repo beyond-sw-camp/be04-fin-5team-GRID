@@ -1,3 +1,31 @@
+<template>
+  <div class="oaAll">
+    <div class="oaHeader">
+      <nav style="--bs-breadcrumb-divider: '>'; margin-top: -35px; margin-bottom: -7px;" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="http://www.gridhr.site/work" style="text-decoration: none; color: grey; font-size: 17px;"><i class="bi bi-list-check"></i>&nbsp; 근무 목록</a></li>
+          <li class="breadcrumb-item active" aria-current="page"><span class="fw-bolder"><i class="bi bi-clock"></i>&nbsp; 시간 외 근무</span></li>
+        </ol>
+      </nav>
+      <h1 class="fw-bolder "><i class="bi bi-clock"></i>&nbsp; 시간 외 근무</h1>
+    </div>
+    <div class="oaContent">
+      <div v-if="isLoading">로딩 중</div>
+      <div v-else>
+        <div class="custom" v-if="userRole !== 'ROLE_ADMIN'">
+          <div class="mb-3">이번 주 시간 외 근무 시간 합계: </div>
+          <b-progress :max="12" height="2rem" show-progress class="mb-5">
+            <b-progress-bar variant="info" :value="state.overtimeInWeek">
+              <span>{{ state.overtimeInWeek }}시간 / 12시간</span>
+            </b-progress-bar>
+          </b-progress>
+        </div>
+        <ApprovalList :approvalList="state.approvalList"/>
+      </div>
+    </div>
+  </div>
+</template>
+
 <script setup>
   import {onMounted, reactive, ref} from "vue";
   import axios from "axios";
@@ -35,10 +63,10 @@
 
   const fetchApprovalList = async(id) => {
     try {
-      let url = `http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval/all/2/5`;
+      let url = `/api/approval/all/2/5`;
 
       if (userRole.value !== 'ROLE_ADMIN') {
-        url = `http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval/list/2/5/${id}`;
+        url = `/api/approval/list/2/5/${id}`;
       }
 
       const response = await axios.get(url);
@@ -57,7 +85,7 @@
 
   const countOvertimeInWeek = async(id) => {
     try {
-      const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval/overtime-count/${id}`);
+      const response = await axios.get(`/api/approval/overtime-count/${id}`);
 
       if (response.status !== 200) {
         throw new Error("response is not ok");
@@ -90,34 +118,6 @@
 
 </script>
 
-<template>
-  <div class="oaAll">
-    <div class="oaHeader">
-      <nav style="--bs-breadcrumb-divider: '>'; margin-top: -35px; margin-bottom: -7px;" aria-label="breadcrumb">
-        <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="http://www.gridhr.site//work" style="text-decoration: none; color: grey; font-size: 17px;"><i class="bi bi-list-check"></i>&nbsp; 근무 목록</a></li>
-          <li class="breadcrumb-item active" aria-current="page"><span class="fw-bolder"><i class="bi bi-clock"></i>&nbsp; 시간 외 근무</span></li>
-        </ol>
-      </nav>
-      <h1 class="fw-bolder pb-5"><i class="bi bi-clock"></i>&nbsp; 시간 외 근무</h1>
-    </div>
-    <div class="oaContent">
-      <div v-if="isLoading">로딩 중</div>
-      <div v-else>
-        <div class="custom" v-if="userRole !== 'ROLE_ADMIN'">
-          <div class="mb-3">이번 주 시간 외 근무 시간 합계: </div>
-          <b-progress :max="12" height="2rem" show-progress class="mb-5">
-            <b-progress-bar variant="info" :value="state.overtimeInWeek">
-              <span>{{ state.overtimeInWeek }}시간 / 12시간</span>
-            </b-progress-bar>
-          </b-progress>
-        </div>
-        <ApprovalList :approvalList="state.approvalList"/>
-      </div>
-    </div>
-  </div>
-</template>
-
 <style scoped>
 .oaAll {
   display: grid;
@@ -129,6 +129,7 @@
 .oaHeader {
   grid-column-start: 2;
   align-content: center;
+  margin-left: -0.5%;
   margin-top: 2%;
 }
 
@@ -139,9 +140,9 @@
 
 .oaHeader h1 {
   margin-left: 0.5%;
-  margin: 0;
   font-size: 25px;
   font-weight: 600;
+  font-family: 'IBMPlexSansKR-Regular', sans-serif;
 }
 
 .custom {
