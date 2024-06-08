@@ -41,9 +41,9 @@
         </tr>
       </tbody>
     </table>
-    <div class="pagination">
+    <!-- <div class="pagination">
       <a href="#" @click.prevent="changePage(page)" :class="{ active: page === currentPage }" v-for="page in totalPages" :key="page">{{ page }}</a>
-    </div>
+    </div> -->
 
     <!-- 부서 추가 Modal -->
     <div class="modal fade" id="addNewModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
