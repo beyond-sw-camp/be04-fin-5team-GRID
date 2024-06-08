@@ -13,6 +13,6 @@ public interface ApprovalService {
     ApprovalEmpDTO findDetailByApprovalId(int typeId, int approvalId);
     List<ApprovalEmpDTO> findAllApprovalByApproverId(int typeId, int isApproval, int approverId);
     double countOvertimeInWeek(OvertimeInWeekDTO overtimeInWeek);
-    List<ApprovalEmpDTO> findTodayBT();
+    List<ApprovalEmpDTO> findTodayBT(String start, String end);
     List<ApprovalEmpDTO> findTodayV();
 }
