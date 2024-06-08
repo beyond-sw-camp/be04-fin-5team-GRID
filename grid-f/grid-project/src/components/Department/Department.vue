@@ -2,8 +2,7 @@
   <div class="container">
     <div class="header">
       <div class="header-title">
-        <img src="@/assets/department_icon.png" alt="department_icon" class="department-pic">
-        <h1>부서 정보</h1>
+        <h1 class="mb-1"><i class="bi bi-diagram-2 fs-3"></i>&nbsp; 부서 정보</h1>
       </div>
       <button v-if="userRole === 'ROLE_ADMIN'" class="updateLeaderBtn" @click="showModal('updateLeaderModal')">부서장 수정</button>
       <button v-if="userRole === 'ROLE_ADMIN'" class="addbtn" @click="showModal('addNewModal')">추가하기</button>
@@ -544,14 +543,16 @@ const searchLeaders = () => {
 .header-title {
   align-items: center;
   display: grid;
-  grid-template-columns: 3% 97%;
+  margin-top: 2%;
+  margin-left: -0.5%;
+  color: #000000;
 }
 
 .header-title h1 {
+  margin-left: 0.5%;
   font-size: 25px;
   font-weight: 600;
-  margin-left: 0.5%;
-  margin-bottom: 0;
+  font-family: 'IBMPlexSansKR-Regular', sans-serif;
 }
 
 .addbtn {

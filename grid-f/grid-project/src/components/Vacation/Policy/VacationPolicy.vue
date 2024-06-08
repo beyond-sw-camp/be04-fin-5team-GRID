@@ -1,9 +1,8 @@
 <template>
   <div class="policyAll">
       <div class="policyTitle">
-          <img class="policyIcon" src="@/assets/buttons/vacation.png">
-          <h1 v-if="userRole === 'ROLE_USER'">휴가 종류/정책</h1>
-          <h1 v-if="userRole === 'ROLE_ADMIN'">휴가 정책</h1>
+        <h1 v-if="userRole === 'ROLE_USER'" class="mb-1"><i class="bi bi-brightness-high fs-3"></i>&nbsp; 휴가 종류/정책</h1>
+        <h1 v-if="userRole === 'ROLE_ADMIN'" class="mb-1"><i class="bi bi-brightness-high fs-3"></i>&nbsp; 휴가 정책</h1>
           <img src="@/assets/buttons/guide.png" v-if="userRole === 'ROLE_ADMIN'" class="guide" @click="showModal('guideManage')"></img>
           <button class="policyRegist" @click="showModal('registPolicy')" v-if="userRole === 'ROLE_ADMIN'"><span>등록하기</span></button>
       </div>
@@ -357,14 +356,10 @@ Array.from(forms).forEach(form => {
 
 .policyTitle {
   grid-column-start: 2;
-  grid-column-end: 3;
-  font-size: 12px;
-  font-weight: 600;
+  align-content: center;
   margin-top: 2%;
+  margin-left: -0.5%;
   color: #000000;
-  display: grid;
-  grid-template-columns: 3% 12% 1% 5% 72% 7%;
-  align-items: center;
 }
 
 .policyTitle h1 {
@@ -372,6 +367,7 @@ Array.from(forms).forEach(form => {
   margin-bottom: 0;
   font-size: 25px;
   font-weight: 600;
+  font-family: 'IBMPlexSansKR-Regular', sans-serif;
 }
 
 .policyIcon {

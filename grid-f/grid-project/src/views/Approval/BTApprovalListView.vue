@@ -1,3 +1,20 @@
+<template>
+  <div class="btAll">
+    <div class="btheader">
+      <nav style="--bs-breadcrumb-divider: '>'; margin-top: -35px; margin-bottom: -7px;" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="http://www.gridhr.site/work" style="text-decoration: none; color: grey; font-size: 17px;"><i class="bi bi-list-check"></i>&nbsp; 근무 목록</a></li>
+          <li class="breadcrumb-item active" aria-current="page"><span class="fw-bolder"><i class="bi bi-briefcase"></i>&nbsp; 출장</span></li>
+        </ol>
+      </nav>
+      <h1 class="fw-bolder "><i class="bi bi-briefcase"></i>&nbsp; 출장</h1>
+    </div>
+    <div class="btContent">
+      <ApprovalList :approvalList="state.approvalList"/>
+    </div>
+  </div>
+</template>
+
 <script setup>
   import {onMounted, reactive, ref} from "vue";
   import axios from "axios";
@@ -33,10 +50,10 @@
 
   const fetchApprovalList = async(id) => {
     try {
-      let url = `http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval/all/1/5`;
+      let url = `/api/approval/all/1/5`;
 
       if (userRole.value !== 'ROLE_ADMIN') {
-        url = `http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval/list/1/5/${id}`;
+        url = `/api/approval/list/1/5/${id}`;
       }
 
       const response = await axios.get(url);
@@ -69,23 +86,6 @@
   })
 </script>
 
-<template>
-  <div class="btAll">
-    <div class="btheader">
-      <nav style="--bs-breadcrumb-divider: '>'; margin-top: -35px; margin-bottom: -7px;" aria-label="breadcrumb">
-        <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="http://www.gridhr.site/work" style="text-decoration: none; color: grey; font-size: 17px;"><i class="bi bi-list-check"></i>&nbsp; 근무 목록</a></li>
-          <li class="breadcrumb-item active" aria-current="page"><span class="fw-bolder"><i class="bi bi-briefcase"></i>&nbsp; 출장</span></li>
-        </ol>
-      </nav>
-      <h1 class="fw-bolder"><i class="bi bi-briefcase"></i>&nbsp; 출장</h1>
-    </div>
-    <div class="btContent">
-      <ApprovalList :approvalList="state.approvalList"/>
-    </div>
-  </div>
-</template>
-
 <style>
 .btAll {
   display: grid;
@@ -98,6 +98,8 @@
   grid-column-start: 2;
   align-content: center;
   margin-top: 2%;
+  margin-left: -0.5%;
+  color: #000000;
 }
 
 .btContent {
@@ -107,8 +109,8 @@
 
 .btheader h1 {
   margin-left: 0.5%;
-  margin: 0;
   font-size: 25px;
   font-weight: 600;
+  font-family: 'IBMPlexSansKR-Regular', sans-serif;
 }
 </style>
