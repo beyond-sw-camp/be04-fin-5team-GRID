@@ -142,6 +142,8 @@ public class UserServiceImpl implements UserService{
             Employee userInfo = userRepository.findByEmployeeNumber(eNum);
             userInfo.setResignYn(Y);
             userInfo.setResignTime(resignTime);
+            userInfo.setAbsenceYn(Y);
+            userInfo.setAbsenceContent("퇴사");
 
             userRepository.save(userInfo);
         } catch(NullPointerException e) {
