@@ -4,6 +4,7 @@
       <div class="logo">
         <img src="@/assets/logo.png" @click="main()" class="logoimage" style="cursor: pointer;">
       </div>
+
       <div class="icons">
         <div class="tokenArea">
           <span class="token-timer" style="font: 20px;">접속 시간 &nbsp {{ timeLeft }}</span>
@@ -12,14 +13,18 @@
         <button class="icon-button" type="button" data-bs-toggle="offcanvas" data-bs-target="#demo">
           <img src="@/assets/people.png" alt="Button 2" class="icon-image" />
         </button>
-        <ul class="dropdown-menu" ref="dropdownMenu">
-          <li><a class="dropdown-item" href="#" @click="goProfile">
-              <i class="bi bi-file-person"></i>&nbsp; &nbsp; 내 정보</a></li>
-          <li><a class="dropdown-item" href="#" @click="logout">
-              <i class="bi bi-key"></i>&nbsp; &nbsp;로그 아웃</a></li>
-        </ul>
+        <div class="dropdown">
+          <img :src="profileUrl" alt="profile" class="profile" @click="toggleDropdown">
+          <ul class="dropdown-menu" ref="dropdownMenu">
+            <li><a class="dropdown-item" href="#" @click="goProfile">
+                <i class="bi bi-file-person"></i>&nbsp; &nbsp; 내 정보</a></li>
+            <li><a class="dropdown-item" href="#" @click="logout">
+                <i class="bi bi-key"></i>&nbsp; &nbsp;로그 아웃</a></li>
+          </ul>
+        </div>
       </div>
     </header>
+
 
     <div class="offcanvas offcanvas-end" id="demo">
       <div class="offcanvas-header">
@@ -325,6 +330,8 @@ const getNewToken = async () => {
   }
 };
 
+
+
 function isTokenExpired(token) {
   const payload = JSON.parse(atob(token.split('.')[1]));
   const exp = payload.exp * 1000; // Expiration time in milliseconds
@@ -522,6 +529,7 @@ onMounted(fetchDepartments);
 
 .dropdown {
   position: relative;
+  display: inline-block;
   height: 35px;
   width: 35px;
 }
@@ -537,6 +545,17 @@ onMounted(fetchDepartments);
   list-style: none;
   padding: 10px 0;
   margin: 0;
+  transform: translateY(0);
+  transition: all 2s ease;
+}
+
+.dropdown-menu a {
+  color: #000;
+  display: block;
+  padding: 10px 20px;
+  text-decoration: none;
+  background: white;
+  transition: background 0.3s;
 }
 
 .dropdown-item {
@@ -562,10 +581,6 @@ onMounted(fetchDepartments);
   justify-content: center;
   margin-right: 20px;
   padding: 5px;
-}
-
-.token :hover {
-  cursor: pointer;
 }
 
 .newToken {

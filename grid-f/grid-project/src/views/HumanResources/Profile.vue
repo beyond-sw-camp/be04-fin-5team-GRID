@@ -39,7 +39,7 @@
             </div>
             <div class="button" v-if="userRole === 'ROLE_ADMIN' || userId == result.id">
                 <div>
-                    <button class="custom-btn" @click="toModify(result.employeeNumber, result)" :userRole="userRole">
+                    <button class="custom-button" @click="toModify(result.employeeNumber, result)" :userRole="userRole">
                         <i class="bi bi-gear"></i>&nbsp;
                         <span>회원 정보 수정</span>
                     </button>
