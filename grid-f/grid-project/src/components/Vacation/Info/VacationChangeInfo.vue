@@ -1,47 +1,48 @@
-
 <template>
     <div class="historyAll">
         <div class="historyTitle">
             <img class="historyIcon" src="@/assets/buttons/vacation.png">
             <h1>휴가 변화 이력</h1>
-            <img src="@/assets/buttons/guide.png" v-if="userRole === 'ROLE_ADMIN'" class="guide" @click="showModal('guideModal')"></img>
+            <img src="@/assets/buttons/guide.png" v-if="userRole === 'ROLE_ADMIN'" class="guide"
+                @click="showModal('guideModal')"></img>
         </div>
         <div class="vacations">
             <div class="annual" v-if="userRole === 'ROLE_ADMIN'">
-                <div class="card" >
+                <div class="card">
                     <div class="card-body">
                         <h3 class="card-title">연 단위 휴가 지급<br> (연차, 정기휴가)</h3>
-                        <button href="#" @click="giveAnnual()" class="btn btn-custom">지급하기</button>
+                        <button href="#" @click="giveAnnual()" class="btn btn-custom-1">
+                            <span>지급하기</span></button>
                     </div>
                 </div>
             </div>
-            <div class="month"  v-if="userRole === 'ROLE_ADMIN'">
-                <div class="card" >
+            <div class="month" v-if="userRole === 'ROLE_ADMIN'">
+                <div class="card">
                     <div class="card-body">
                         <h3 class="card-title">월 단위 휴가 지급 <br> (월차, 보건휴가)</h3>
-                        <button href="#" @click="giveMonth()" class="btn btn-custom">지급하기</button>
+                        <button href="#" @click="giveMonth()" class="btn btn-custom-1"><span>지급하기</span></button>
                     </div>
                 </div>
             </div>
-            <div class="diretly"  v-if="userRole === 'ROLE_ADMIN'">
-                <div class="card" >
+            <div class="diretly" v-if="userRole === 'ROLE_ADMIN'">
+                <div class="card">
                     <div class="card-body">
                         <h3 class="card-title">휴가 직접 지급 <br> (관리자)</h3>
-                        <button href="#" @click="showModal('giveVacation')" class="btn btn-custom">지급하기</button>
+                        <button href="#" @click="showModal('giveVacation')" class="btn btn-custom-1"><span>지급하기</span></button>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="search">  
+        <div class="search">
             <select v-model="searchType" class="searchType">
                 <option value="name">이름</option>
                 <option value="employeeNumber">사번</option>
             </select>
             <input v-model="searchQuery" class="sortBox" type="text" placeholder="검색">
             <button @click="search" class="printBtn">검색</button>
-        </div> 
+        </div>
         <div class="tableContainer">
-            <b-table hover small :fields="fields" :items="paginatedHistories" >
+            <b-table hover small :fields="fields" :items="paginatedHistories">
                 <template #cell(index)="data">
                     {{ (currentPage - 1) * itemsPerPage + data.index + 1 }}
                 </template>
@@ -77,7 +78,8 @@
                         <span aria-hidden="true">&laquo;</span>
                     </a>
                 </li>
-                <li v-for="page in filteredPages" :key="page" class="page-item" :class="{ active: page === currentPage }">
+                <li v-for="page in filteredPages" :key="page" class="page-item"
+                    :class="{ active: page === currentPage }">
                     <a class="page-link" @click.prevent="goToPage(page)">{{ page }}</a>
                 </li>
                 <li class="page-item" :class="{ disabled: currentPage === totalPages }">
@@ -110,12 +112,16 @@
                         <p>1. 전직원의 휴가 변화이력을 확인할 수 있습니다.</p>
                         <p>2. 연 단위 휴가 지급 버튼을 누르면 연차와 정기휴가가 지급됩니다.</p>
                         <p>2-1. 1년 이상의 직원들에게는 15개부터 20개까지 계산되어 연차가 지급됩니다.</p>
-                        <p>2-2. 1년 미만의 직원들에게는 입사일 이후부터 다음 년도 1월1일까지 몇개월 근무했는지를 <br> &nbsp; &nbsp; &nbsp; 계산하여 근무한 달만큼 지급됩니다.</p>
+                        <p>2-2. 1년 미만의 직원들에게는 입사일 이후부터 다음 년도 1월1일까지 몇개월 근무했는지를 <br> &nbsp; &nbsp; &nbsp; 계산하여 근무한 달만큼
+                            지급됩니다.
+                        </p>
                         <p>2-3. 정기휴가는 4개씩 전직원에게 지급됩니다.</p>
                         <p>3. 월 단위 휴가 지급 버튼을 누르면 월차와 보건휴가가 지급됩니다.</p>
                         <p>3-1. 1년 미만의 직원들은 한달에 한개씩 월차가 지급됩니다.</p>
                         <p>3-2. 여성직원들에게는 한달에 한개씩 보건휴가가 지급됩니다.</p>
-                        <p>4. 직접지급 버튼을 누르면 원하는 휴가타입과 휴가일수, 사용기한을 입력한 후에 사번을 통해 <br> &nbsp; &nbsp; &nbsp; 해당직원에게 직접 휴가를 지급할 수 있습니다.</p>
+                        <p>4. 직접지급 버튼을 누르면 원하는 휴가타입과 휴가일수, 사용기한을 입력한 후에 사번을 통해 <br> &nbsp; &nbsp; &nbsp; 해당직원에게 직접 휴가를
+                            지급할 수
+                            있습니다.</p>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -126,57 +132,63 @@
         </div>
     </div>
 
-      <!-- 휴가지급 모달 -->
-      <div class="modal fade" id="giveVacation" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">휴가 정책 등록</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="closeModal('giveVacation')"></button>
-            </div>
-            <div class="modal-body">
-                <form class="needs-validation" @submit.prevent="validateAndRegistContent" novalidate>
-                    <div class="mb-3">
-                        <label for="vacationType" class="form-label">휴가 타입</label>
-                        <select class="form-select" v-model="selectedType" id="vacationType" required>
-                            <option value="" disabled selected>휴가 타입을 선택해주세요</option>
-                            <option v-for="type in filteredTypes" :key="type.id" :value="type.id">{{ type.typeName }}</option>
-                        </select>
-                        <div class="invalid-feedback">
-                            휴가 타입을 선택해주세요.
+    <!-- 휴가지급 모달 -->
+    <div class="modal fade" id="giveVacation" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">휴가 정책 등록</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                        @click="closeModal('giveVacation')"></button>
+                </div>
+                <div class="modal-body">
+                    <form class="needs-validation" @submit.prevent="validateAndRegistContent" novalidate>
+                        <div class="mb-3">
+                            <label for="vacationType" class="form-label">휴가 타입</label>
+                            <select class="form-select" v-model="selectedType" id="vacationType" required>
+                                <option value="" disabled selected>휴가 타입을 선택해주세요</option>
+                                <option v-for="type in filteredTypes" :key="type.id" :value="type.id">{{ type.typeName
+                                    }}
+                                </option>
+                            </select>
+                            <div class="invalid-feedback">
+                                휴가 타입을 선택해주세요.
+                            </div>
                         </div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="vacationNum" class="form-label">휴가 일수</label>
-                        <input class="form-control" id="vacationNum" placeholder="내용을 입력해주세요." type="number" v-model="vacationNum" required>
-                        <div class="invalid-feedback">
-                            휴가 일수를 입력해주세요.
+                        <div class="mb-3">
+                            <label for="vacationNum" class="form-label">휴가 일수</label>
+                            <input class="form-control" id="vacationNum" placeholder="내용을 입력해주세요." type="number"
+                                v-model="vacationNum" required>
+                            <div class="invalid-feedback">
+                                휴가 일수를 입력해주세요.
+                            </div>
                         </div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="employeeNum" class="form-label">직원 사번</label>
-                        <input class="form-control" id="employeeNum" placeholder="내용을 입력해주세요." v-model="employeeNum" required>
-                        <div class="invalid-feedback">
-                            직원 사번을 입력해주세요.
+                        <div class="mb-3">
+                            <label for="employeeNum" class="form-label">직원 사번</label>
+                            <input class="form-control" id="employeeNum" placeholder="내용을 입력해주세요." v-model="employeeNum"
+                                required>
+                            <div class="invalid-feedback">
+                                직원 사번을 입력해주세요.
+                            </div>
                         </div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="dayOfUsing" class="form-label">휴가 사용기한</label>
-                        <b-form-input type="date" id="start" :min="new Date().toISOString().split('T')[0]" v-model="date" required></b-form-input>
-                        <div class="invalid-feedback">
-                            휴가 사용기한을 입력해주세요.
-                        </div>    
-                    </div>
-                    <div class="button-container">
-                        <button type="submit" class="btn btn-primary">지급</button>
-                    </div>
-                </form>
+                        <div class="mb-3">
+                            <label for="dayOfUsing" class="form-label">휴가 사용기한</label>
+                            <b-form-input type="date" id="start" :min="new Date().toISOString().split('T')[0]"
+                                v-model="date" required></b-form-input>
+                            <div class="invalid-feedback">
+                                휴가 사용기한을 입력해주세요.
+                            </div>
+                        </div>
+                        <div class="button-container">
+                            <button type="submit" class="btn btn-primary">지급</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
-    </div>
 
-    
-</div>
+
+    </div>
 
 </template>
 
@@ -219,8 +231,8 @@ const fields = [
 ];
 
 const showModal = (modalId) => {
-  const modal = new bootstrap.Modal(document.getElementById(modalId));
-  modal.show();
+    const modal = new bootstrap.Modal(document.getElementById(modalId));
+    modal.show();
 };
 
 const totalPages = computed(() => {
@@ -341,38 +353,38 @@ const giveMonthVacation = async () => {
 
 const getVacationType = async () => {
     try {
-      const response = await axios.get('/api/vacation/type');
-      types.value = response.data.result;
-      filteredTypes.value = types.value.filter(type => type.typeName !== '반차' && type.typeName !== '반반차');
+        const response = await axios.get('/api/vacation/type');
+        types.value = response.data.result;
+        filteredTypes.value = types.value.filter(type => type.typeName !== '반차' && type.typeName !== '반반차');
     } catch (error) {
-      console.error('Error:', error);
+        console.error('Error:', error);
     }
-  };
+};
 
 const validateAndRegistContent = () => {
     const form = document.querySelector('#giveVacation form');
     if (!form.checkValidity()) {
         form.classList.add('was-validated');
-        
+
     } else {
         giveVacationDirectly();
     }
-    
+
 };
 
 const closeModal = (modalId) => {
-  const modal = new bootstrap.Modal(document.getElementById(modalId));
-  modal.hide();
-  if (modalId === 'giveVacation') {
-    vacationNum.value = '';
-    date.value = '';
-    employeeNum.value = '';
-    selectedType.value = '';
-    const form = document.querySelector(`#${modalId} form`);
-    if (form) {
-      form.classList.remove('was-validated');
+    const modal = new bootstrap.Modal(document.getElementById(modalId));
+    modal.hide();
+    if (modalId === 'giveVacation') {
+        vacationNum.value = '';
+        date.value = '';
+        employeeNum.value = '';
+        selectedType.value = '';
+        const form = document.querySelector(`#${modalId} form`);
+        if (form) {
+            form.classList.remove('was-validated');
+        }
     }
-  }
 };
 
 const allUsers = async () => {
@@ -385,8 +397,8 @@ const allUsers = async () => {
     }
 }
 
-  const giveVacationDirectly = async () => {
-    if(!date.value) {
+const giveVacationDirectly = async () => {
+    if (!date.value) {
         alert('휴가 사용기한을 선택해주세요.')
         return;
     }
@@ -432,7 +444,7 @@ const allUsers = async () => {
 function giveAnnual() {
     try {
         const confirmed = window.confirm('지급하시겠습니까?');
-        if(confirmed) {
+        if (confirmed) {
             giveAnnualVacation();
             giveRegularVacation();
             alert('지급 완료되었습니다!')
@@ -446,7 +458,7 @@ function giveAnnual() {
 function giveMonth() {
     try {
         const confirmed = window.confirm('지급하시겠습니까?');
-        if(confirmed) {
+        if (confirmed) {
             giveHealthVacation();
             giveMonthVacation();
             alert('지급 완료되었습니다!')
@@ -494,209 +506,214 @@ onBeforeMount(() => {
 </script>
 
 <style scoped>
-    .historyAll {
-        display: grid;
-        grid-template-rows: 18% 13% 4% 43% 10% 8%;
-        grid-template-columns: 10% 80% 10%;
-        height: 100%;
-    }
+.historyAll {
+    display: grid;
+    grid-template-rows: 18% 13% 4% 50% 10% 8%;
+    grid-template-columns: 10% 80% 10%;
+    height: 100%;
+}
 
-    .historyTitle {
-        grid-column-start: 2;
-        grid-column-end: 3;
-        font-size: 12px;
-        font-weight: 600;
-        margin-top: 2%;
-        color: #000000;
-        display: grid;
-        grid-template-columns: 3% 18% 1% 5% 73%;
-        align-items: center;
-    }
+.historyTitle {
+    grid-column-start: 2;
+    grid-column-end: 3;
+    font-size: 12px;
+    font-weight: 600;
+    margin-top: 2%;
+    color: #000000;
+    display: grid;
+    grid-template-columns: 3% 18% 1% 5% 73%;
+    align-items: center;
+}
 
-    .historyTitle h1 {
-        margin-left: 0.5%;
-        margin-bottom: 0;
-        font-size: 25px;
-        font-weight: 600;
-    }
+.historyTitle h1 {
+    margin-left: 0.5%;
+    margin-bottom: 0;
+    font-size: 25px;
+    font-weight: 600;
+}
 
-    .historyIcon {
-        width: 80%;
-    }
+.historyIcon {
+    width: 80%;
+}
 
-    .guide {
-        width: 60%;
-        height: 25px;
-        grid-column: 4;
-        margin: 0;
-        cursor: pointer;
-    }
+.guide {
+    width: 60%;
+    height: 25px;
+    grid-column: 4;
+    margin: 0;
+    cursor: pointer;
+}
 
-    .vacations {
-        grid-column-start: 2;
-        grid-column-end: 3;
-        display: grid;
-        grid-template-columns: 20% 5% 20% 5% 20% 30%;
-        align-items: center;
-        margin-bottom: 5%;
-    }
+.vacations {
+    grid-column-start: 2;
+    grid-column-end: 3;
+    display: grid;
+    grid-template-columns: 20% 5% 20% 5% 20% 30%;
+    align-items: center;
+    margin-bottom: 5%;
+}
 
-    .plusBtn {
-        width: 100%;
-        cursor: pointer;
-    }
+.plusBtn {
+    width: 100%;
+    cursor: pointer;
+}
 
-    .annual {
-        width: calc(100% - 20px);
-        background-color: #F2F2F2;
-        font-size: 15px;
-    }
+.annual {
+    width: calc(100% - 20px);
+    background-color: #F2F2F2;
+    font-size: 15px;
+}
 
-    .month {
-        width: calc(100% - 20px);
-        background-color: #F2F2F2;
-        grid-column-start: 3;
-        font-size: 15px;
-    }
+.month {
+    width: calc(100% - 20px);
+    background-color: #F2F2F2;
+    grid-column-start: 3;
+    font-size: 15px;
+}
 
-    .diretly {
-        width: calc(100% - 20px);
-        background-color: #F2F2F2;
-        grid-column-start: 5;
-        font-size: 15px;
-    }
+.diretly {
+    width: calc(100% - 20px);
+    background-color: #F2F2F2;
+    grid-column-start: 5;
+    font-size: 15px;
+}
 
-    .search {
-        grid-row-start: 3;
-        grid-column-start: 2;
-        display: grid;
-        grid-template-columns: 74% 5% 1% 15% 1% 4%;
-        font-size: 12px;
-    }
+.search {
+    grid-row-start: 3;
+    grid-column-start: 2;
+    display: grid;
+    grid-template-columns: 74% 5% 1% 15% 1% 4%;
+    font-size: 12px;
+}
 
-    .searchType {
-        grid-column-start: 2;
-    }
+.searchType {
+    grid-column-start: 2;
+}
 
-    .sortBox {
-        grid-column-start: 4;
-        margin-left: 2%;
-        padding: 5px 5px;
-        border-radius: 4px;
-        font-size: 12px;
-        font-style: bold;
-    }
+.sortBox {
+    grid-column-start: 4;
+    margin-left: 2%;
+    padding: 5px 5px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-style: bold;
+}
 
-    .printBtn {
-        grid-column-start: 6;
-        margin-left: 2%;
-        width: 100%;
-        background-color: #088A85;
-        color: white;
-        padding: 5px 5px;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 12px;
-        font-style: bold;
-    }
+.printBtn {
+    grid-column-start: 6;
+    margin-left: 2%;
+    width: 100%;
+    background-color: #088A85;
+    color: white;
+    padding: 5px 5px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    font-style: bold;
+}
 
-    .tableContainer {
-        grid-column-start: 2;
-        grid-column-end: 3;
-        margin-top: 20px;
-        font-size: 12px;
-    }
+.tableContainer {
+    grid-column-start: 2;
+    grid-column-end: 3;
+    margin-top: 20px;
+    font-size: 12px;
+}
 
 
-    .pg {
-        grid-row-start: 5;
-        grid-column-start: 2;
-        grid-column-end: 3;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-top: 10px;
-    }
+.pg {
+    grid-row-start: 5;
+    grid-column-start: 2;
+    grid-column-end: 3;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+}
 
-    .pagination .page-item.active .page-link {
-    background-color: #088A85; /* 원하는 배경색 */
-    border-color: #088A85; /* 원하는 테두리 색 */
-    color: white; /* 원하는 텍스트 색 */
-    }
+.pagination .page-item.active .page-link {
+    background-color: #088A85;
+    /* 원하는 배경색 */
+    border-color: #088A85;
+    /* 원하는 테두리 색 */
+    color: white;
+    /* 원하는 텍스트 색 */
+}
 
-    .pagination .page-item .page-link {
-        color: #088A85; /* 기본 텍스트 색 */
-    }
+.pagination .page-item .page-link {
+    color: #088A85;
+    /* 기본 텍스트 색 */
+}
 
-    .pagination .page-item.disabled .page-link {
-        color: #088A85; /* 비활성화된 페이지 색 */
-    }
+.pagination .page-item.disabled .page-link {
+    color: #088A85;
+    /* 비활성화된 페이지 색 */
+}
 
-    .registMain {
+.registMain {
     height: 100%;
     width: 100%;
     padding: 10px;
     background-color: #F2F2F2;
-  }
+}
 
-  .registMain h3 {
+.registMain h3 {
     font-size: 15px;
     margin: 0;
     font-weight: 600;
-  }
+}
 
-  .registTitle {
+.registTitle {
     margin-top: 2%;
     display: grid;
     grid-template-columns: 10% 20% 30% 10%;
     font-size: 14px;
     align-items: center;
-  }
+}
 
-  .registTitle h3 {
+.registTitle h3 {
     grid-column-start: 2;
-  }
+}
 
-  .registContent {
+.registContent {
     margin-top: 2%;
     display: grid;
     grid-template-columns: 10% 20% 50% 10%;
     font-size: 14px;
     align-items: center;
-  }
+}
 
-  .employeeNum {
+.employeeNum {
     margin-top: 2%;
     display: grid;
     grid-template-columns: 10% 20% 50% 10%;
     font-size: 14px;
     align-items: center;
-  }
+}
 
-  .employeeNum h3 {
+.employeeNum h3 {
     grid-column-start: 2;
-  }
+}
 
 
-  .vacationNum {
+.vacationNum {
     margin-top: 2%;
     display: grid;
     grid-template-columns: 10% 20% 50% 10%;
     font-size: 14px;
     align-items: center;
-  }
+}
 
-  .vacationNum h3 {
+.vacationNum h3 {
     grid-column-start: 2;
-  }
+}
 
-  .registContent h3 {
+.registContent h3 {
     grid-column-start: 2;
-  }
+}
 
 
-  .registBtn{
+.registBtn {
     width: 100%;
     background-color: #088A85;
     color: white;
@@ -707,49 +724,80 @@ onBeforeMount(() => {
     font-size: 12px;
     font-style: bold;
     grid-column-start: 2;
-  }
+}
 
-  .registBtnArea {
+.registBtnArea {
     display: grid;
     grid-template-columns: 40% 20% 40%;
     place-items: center;
     grid-row-start: 3;
     grid-column-start: 2;
     margin-top: 5%;
-  }
+}
 
-.btn-custom {
-    font-size:11px;
-    font-weight: 600;
-    color:white;
-    background-color: #088A85;
-    border-color:#088A85 ;
+.btn-custom-1 {
+    background-color: white;
+    color: #088A85;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.4s, color 0.4s;
+    position: relative;
+    overflow: hidden;
+    font-size: 11px;
+    font-weight: bold;
     margin-top: 10px;
-  }
+}
 
-  .vacations h3 {
-      font-size: 14px;
-      font-weight: 600;
-      color:black;
-      margin: 0;
-    }
+.btn-custom-1::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background-color: #088A85;
+    transition: left 0.4s;
+    z-index: 1;
+}
 
-  .card-body {
-    width:100%;
-    padding: 0px 0px;
-    display:grid;
-    grid-template-rows: 1fr 1fr;
+.btn-custom-1:hover::before {
+    left: 0;
+}
+
+.btn-custom-1 span {
+    position: relative;
+    z-index: 2;
+    color: #088A85;
+}
+
+.btn-custom-1:hover span {
+    color: white;
+}
+
+.vacations h3 {
+    font-size: 14px;
+    font-weight: 600;
+    color: black;
     margin: 0;
-  }
+}
 
-  .card {
+.card-body {
+    width: 100%;
+    padding: 0px 0px;
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    margin: 0;  
+}
+
+.card {
     padding: 10px 10px;
     border: 2px solid #a0a0a0;
-  }
+}
 
-  .button-container {
+.button-container {
     display: flex;
     justify-content: center;
     margin-top: 20px;
-  }
+}
 </style>

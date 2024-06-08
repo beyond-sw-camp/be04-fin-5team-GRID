@@ -110,7 +110,8 @@ public class PdfServiceImpl implements PdfService {
             d_img.scaleToFit(60, 100);
             t_img.scaleToFit(60, 100);
 
-            String fontPath = "src/main/resources/fonts/malgun.ttf";
+            String fontPath = "src/main/resources/fonts/NotoSansKR-Regular.ttf";
+//            String fontPath = "src/main/resources/fonts/malgun.ttf";
             BaseFont bf = BaseFont.createFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
 
             Font titleFont = new Font(bf, 20, Font.BOLD);
@@ -231,7 +232,8 @@ public class PdfServiceImpl implements PdfService {
             Image img = com.lowagie.text.Image.getInstance(imagePath);
             img.scaleToFit(60, 100);
 
-            String fontPath = "src/main/resources/fonts/malgun.ttf";
+            String fontPath = "src/main/resources/fonts/NotoSansKR-Regular.ttf";
+//            String fontPath = "src/main/resources/fonts/malgun.ttf";
             BaseFont bf = BaseFont.createFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
 
             Font titleFont = new Font(bf, 20, Font.BOLD);
@@ -348,7 +350,8 @@ public class PdfServiceImpl implements PdfService {
             Image img = com.lowagie.text.Image.getInstance(imagePath);
             img.scaleToFit(60, 100);
 
-            String fontPath = "src/main/resources/fonts/malgun.ttf";
+            String fontPath = "src/main/resources/fonts/NotoSansKR-Regular.ttf";
+//            String fontPath = "src/main/resources/fonts/malgun.ttf"
             BaseFont bf = BaseFont.createFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
 
             Font titleFont = new Font(bf, 20, Font.BOLD);
@@ -461,7 +464,8 @@ public class PdfServiceImpl implements PdfService {
             Image img = com.lowagie.text.Image.getInstance(imagePath);
             img.scaleToFit(60, 100);
 
-            String fontPath = "src/main/resources/fonts/malgun.ttf";
+            String fontPath = "src/main/resources/fonts/NotoSansKR-Regular.ttf";
+//            String fontPath = "src/main/resources/fonts/malgun.ttf";
             BaseFont bf = BaseFont.createFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
 
             Font titleFont = new Font(bf, 20, Font.BOLD);
