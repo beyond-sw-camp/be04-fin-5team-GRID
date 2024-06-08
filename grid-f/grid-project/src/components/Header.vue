@@ -16,8 +16,10 @@
         <div class="dropdown">
           <img :src="profileUrl" alt="profile" class="profile" @click="toggleDropdown">
           <ul class="dropdown-menu" ref="dropdownMenu">
-            <li><a class="dropdown-item" href="#" @click="goProfile">개인 정보</a></li>
-            <li><a class="dropdown-item" href="#" @click="logout">로그 아웃</a></li>
+            <li><a class="dropdown-item" href="#" @click="goProfile">
+                <i class="bi bi-file-person"></i>&nbsp; &nbsp; 내 정보</a></li>
+            <li><a class="dropdown-item" href="#" @click="logout">
+                <i class="bi bi-key"></i>&nbsp; &nbsp;로그 아웃</a></li>
           </ul>
         </div>
       </div>
@@ -341,8 +343,8 @@ function calculateTimeLeft(token) {
   const exp = payload.exp * 1000; // Expiration time in milliseconds
   const timeLeft = exp - Date.now();
   if (timeLeft > 0) {
-    const minutes = Math.floor(timeLeft / 60000);
-    const seconds = Math.floor((timeLeft % 60000) / 1000);
+    const minutes = Math.floor(timeLeft / 60000).toString().padStart(2, '0'); // 2자리로 패딩
+    const seconds = Math.floor((timeLeft % 60000) / 1000).toString().padStart(2, '0'); // 2자리로 패딩
     return `${minutes} : ${seconds}`;
   }
   return '토큰이 만료되었습니다.';
@@ -414,11 +416,11 @@ onMounted(() => {
 });
 
 function deleteCookie(name, path, domain) {
-    document.cookie = name + '=' +
-        '; expires=Thu, 01 Jan 1970 00:00:01 GMT' +
-        (path ? '; path=' + path : '') +
-        (domain ? '; domain=' + domain : '') +
-        '; secure';
+  document.cookie = name + '=' +
+    '; expires=Thu, 01 Jan 1970 00:00:01 GMT' +
+    (path ? '; path=' + path : '') +
+    (domain ? '; domain=' + domain : '') +
+    '; secure';
 }
 
 const logout = async () => {
@@ -527,6 +529,7 @@ onMounted(fetchDepartments);
 
 .dropdown {
   position: relative;
+  display: inline-block;
   height: 35px;
   width: 35px;
 }
@@ -542,6 +545,17 @@ onMounted(fetchDepartments);
   list-style: none;
   padding: 10px 0;
   margin: 0;
+  transform: translateY(0);
+  transition: all 2s ease;
+}
+
+.dropdown-menu a {
+  color: #000;
+  display: block;
+  padding: 10px 20px;
+  text-decoration: none;
+  background: white;
+  transition: background 0.3s;
 }
 
 .dropdown-item {
@@ -567,10 +581,6 @@ onMounted(fetchDepartments);
   justify-content: center;
   margin-right: 20px;
   padding: 5px;
-}
-
-.token :hover{
-  cursor: pointer;
 }
 
 .newToken {

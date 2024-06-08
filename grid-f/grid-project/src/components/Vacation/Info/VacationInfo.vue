@@ -6,7 +6,7 @@
         </div>
         <div class="vacations">
             <div class="annual" v-if="userRole === 'ROLE_USER'">
-                <div class="card " >
+                <div class="card ">
                     <div class="card-body">
                         <h3 class="card-title">휴가</h3>
                         <p class="card-text">{{ annualVacationNum }}</p>
@@ -14,7 +14,7 @@
                 </div>
             </div>
             <div class="month" v-if="userRole === 'ROLE_USER'">
-                <div class="card " >
+                <div class="card ">
                     <div class="card-body">
                         <h3 class="card-title">정기 휴가</h3>
                         <p class="card-text">{{ monthVacationNum }}</p>
@@ -22,7 +22,7 @@
                 </div>
             </div>
             <div class="diretly" v-if="userRole === 'ROLE_USER'">
-                <div class="card " >
+                <div class="card ">
                     <div class="card-body">
                         <h3 class="card-title">기타 휴가</h3>
                         <p class="card-text">{{ directlyVacationNum }}</p>
@@ -30,16 +30,16 @@
                 </div>
             </div>
         </div>
-        <div class="search">  
+        <div class="search">
             <select v-model="searchType" class="searchType">
                 <option value="name">이름</option>
                 <option value="employeeNumber">사번</option>
             </select>
             <input v-model="searchQuery" class="sortBox" type="text" placeholder="검색">
             <button @click="search" class="printBtn">검색</button>
-        </div> 
+        </div>
         <div class="tableContainer">
-            <b-table empty-html hover small :fields="fields" :items="paginatedInfo" >
+            <b-table empty-html hover small :fields="fields" :items="paginatedInfo">
                 <template #cell(index)="data">
                     {{ (currentPage - 1) * itemsPerPage + data.index + 1 }}
                 </template>
@@ -63,7 +63,7 @@
                 </template>
             </b-table>
         </div>
-        <nav class="pg" aria-label="Page navigation example" >
+        <nav class="pg" aria-label="Page navigation example">
             <ul class="pagination">
                 <li class="page-item" :class="{ disabled: currentPage === 1 }">
                     <a class="page-link" href="#" aria-label="First" @click.prevent="goToFirstPage">
@@ -75,7 +75,8 @@
                         <span aria-hidden="true">&laquo;</span>
                     </a>
                 </li>
-                <li v-for="page in filteredPages" :key="page" class="page-item" :class="{ active: page === currentPage }">
+                <li v-for="page in filteredPages" :key="page" class="page-item"
+                    :class="{ active: page === currentPage }">
                     <a class="page-link" @click.prevent="goToPage(page)">{{ page }}</a>
                 </li>
                 <li class="page-item" :class="{ disabled: currentPage === totalPages }">
@@ -100,7 +101,7 @@ import axios from "axios";
 const searchType = ref('name');
 const searchQuery = ref('');
 const allInfo = ref([]);
-const vacationNum= ref('');
+const vacationNum = ref('');
 const currentPage = ref(1);
 const itemsPerPage = 10;
 const filteredInfo = ref([]);
@@ -292,7 +293,7 @@ onBeforeMount(() => {
     grid-column-start: 2;
     display: grid;
     grid-template-columns: 20% 5% 20% 5% 20% 5% 25%;
-    margin-bottom:1%;
+    margin-bottom: 1%;
 }
 
 .vacationsTitle {
@@ -306,17 +307,17 @@ onBeforeMount(() => {
 .annual {
     width: calc(100% - 20px);
     background-color: #F2F2F2;
-    
+
 }
 
 .annual h3 {
     font-size: 15px;
     font-weight: 600;
-    color:black;
+    color: black;
 }
 
 .annual p {
-    color:black;
+    color: black;
 }
 
 .month {
@@ -328,27 +329,27 @@ onBeforeMount(() => {
 .month h3 {
     font-size: 15px;
     font-weight: 600;
-    color:black;
+    color: black;
 }
 
 .month p {
-    color:black;
+    color: black;
 }
 
 .diretly {
     width: calc(100% - 20px);
     grid-column-start: 5;
-    
+
 }
 
 .diretly h3 {
     font-size: 15px;
     font-weight: 600;
-    color:black;
+    color: black;
 }
 
 .diretly p {
-    color:black;
+    color: black;
 }
 
 .sortBox {
@@ -387,7 +388,8 @@ table {
     border-collapse: collapse;
 }
 
-th, td {
+th,
+td {
     border: 1px solid #dddddd;
     text-align: left;
     padding: 6px;
@@ -409,60 +411,65 @@ th {
 }
 
 .pagination .page-item.active .page-link {
-    background-color: #088A85; /* 원하는 배경색 */
-    border-color: #088A85; /* 원하는 테두리 색 */
-    color: white; /* 원하는 텍스트 색 */
-    }
+    background-color: #088A85;
+    /* 원하는 배경색 */
+    border-color: #088A85;
+    /* 원하는 테두리 색 */
+    color: white;
+    /* 원하는 텍스트 색 */
+}
 
-    .pagination .page-item .page-link {
-        color: #088A85; /* 기본 텍스트 색 */
-    }
+.pagination .page-item .page-link {
+    color: #088A85;
+    /* 기본 텍스트 색 */
+}
 
-    .pagination .page-item.disabled .page-link {
-        color: #088A85; /* 비활성화된 페이지 색 */
-    }
+.pagination .page-item.disabled .page-link {
+    color: #088A85;
+    /* 비활성화된 페이지 색 */
+}
 
 .vacationsNum {
     grid-column-start: 1;
     display: grid;
-    grid-template-columns:90% 10%;
+    grid-template-columns: 90% 10%;
     font-size: 10px;
 }
 
 .vacationsNum h3 {
-    font-size:13px;
+    font-size: 13px;
     font-weight: 600;
 }
 
 .no-data {
     text-align: center;
     vertical-align: middle;
-}  
+}
 
 .card-text {
-        font-size: 13px;
-      font-weight: 600;
-      color:black;
-      margin: 0;
-      grid-row-start: 3;
-    }
+    font-size: 13px;
+    font-weight: 600;
+    color: black;
+    margin: 0;
+    grid-row-start: 3;
+}
 
-  .card-body {
-    width:100%;
+.card-body {
+    width: 100%;
     padding: 0px 0px;
     margin: 0;
-    display:grid;
+    display: grid;
     grid-template-rows: 1fr 1fr 1fr;
-  }
+}
 
-  .card-title {
-    margin:0;
-  }
+.card-title {
+    margin: 0;
+}
 
-  .card {
+.card {
     padding: 10px 10px;
     border: 2px solid #a0a0a0;
-    margin-bottom:0;
+    margin-bottom: 0;
     height: 100%;
-  }
+}
 </style>
