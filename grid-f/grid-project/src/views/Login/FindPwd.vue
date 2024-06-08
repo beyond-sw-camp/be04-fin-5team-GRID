@@ -105,6 +105,7 @@
             </div>
         </div>
     </div>
+    <Spinner :isLoading="isLoading" :isSuccess="isSuccess" />
 </template>
 
 <script setup>
@@ -112,6 +113,7 @@ import { ref, watch, onMounted } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
 import bootstrap from 'bootstrap/dist/js/bootstrap.bundle.js';
+import Spinner from '@/components/Spinner.vue';
 
 const inputValue = ref('');
 const inputValue2 = ref('');
@@ -122,19 +124,25 @@ const isEmailExistence = ref(false);
 const isWrong = ref(false);
 const router = useRouter();
 const myModal = ref(null);
+const isLoading = ref(false);
+const isSuccess = ref(false);
 
 async function sendMail() {
     isNameExistence.value = false;
     isEmailExistence.value = false;
+    isLoading.value = true;
+    isSuccess.value = false;
     isWrong.value = false;
 
     if (inputValue.value == '') {
         isNameExistence.value = true;
+        isLoading.value = false;
         return false;
     }
 
     if (inputValue2.value == '') {
         isEmailExistence.value = true;
+        isLoading.value = false;
         return false;
     }
 
@@ -150,15 +158,20 @@ async function sendMail() {
                     const modalInstance = new bootstrap.Modal(myModal.value);
                     modalInstance.show();
                 }
+                isLoading.value = false;
+                isSuccess.value = true;
                 return true;
             } catch (e) {
                 console.error(e);
                 isWrong.value = true;
+                isLoading.value = false;
             }
         } else {
             isWrong.value = true;
+            isLoading.value = false;
         }
     } catch (error) {
+        isLoading.value = false;
         if (error.response && error.response.status == 404) {
             console.log(error.response.data.message);
             isWrong.value = true;
@@ -182,7 +195,6 @@ onMounted(() => {
     new bootstrap.Modal(modalElement);
 })
 
-
 watch(inputValue, (newValue) => {
     isExistence.value = newValue !== '';
 });
@@ -190,7 +202,6 @@ watch(inputValue, (newValue) => {
 watch(inputValue2, (newValue) => {
     isExistence2.value = newValue !== '';
 });
-
 </script>
 
 <style scoped>
@@ -205,7 +216,6 @@ body {
     width: 100vh;
     margin: 0;
     padding: 0;
-
 }
 
 * {
@@ -219,7 +229,6 @@ body {
     width: 100%;
     padding: 0;
     display: flex;
-
     margin: 0;
 }
 
@@ -235,7 +244,6 @@ body {
     width: 30%;
     padding: 0;
     margin: 0;
-
 }
 
 .findPwd {
@@ -269,7 +277,6 @@ body {
 .button {
     width: 70.8%;
     margin: 3% auto 0;
-
 }
 
 .btn {
@@ -284,7 +291,6 @@ body {
     display: flex;
     flex-direction: row;
     justify-content: center;
-
 }
 
 h1 {
@@ -391,7 +397,6 @@ hr {
 
 .inputBox input[type="text"] {
     padding: 0 10px;
-
     width: 100%;
     height: 38px;
     font-size: 14px;
