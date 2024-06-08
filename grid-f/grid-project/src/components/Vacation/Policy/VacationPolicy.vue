@@ -4,6 +4,7 @@
             <img class="policyIcon" src="@/assets/buttons/vacation.png">
             <h1 v-if="userRole === 'ROLE_USER'">휴가 종류/정책</h1>
             <h1 v-if="userRole === 'ROLE_ADMIN'">휴가 정책</h1>
+            <img src="@/assets/buttons/guide.png" v-if="userRole === 'ROLE_ADMIN'" class="guide" @click="showModal('guideManage')"></img>
             <button class="policyRegist" @click="showModal('registPolicy')" v-if="userRole === 'ROLE_ADMIN'">등록하기</button>
         </div>
         <div class="vacations">
@@ -83,6 +84,32 @@
               </div>
           </div>
       </div>
+
+      <!-- 가이드 모달 -->
+    <div class="modal fade" id="guideManage" tabindex="-1" aria-labelledby="guideManageLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="guideManageLabel">휴가 정책 가이드</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="example-content">
+                        <p>여러가지 휴가의 정책을 관리할 수 있는 페이지 입니다. </p>
+                        <p>등록하기 버튼과 정책 수정 삭제는 관리자만 가능합니다.</p>
+                        <hr>
+                        <p>1. 현재 표시되어 있는 정책들은 휴가가 활성화되어있는 휴가의 정책들입니다.</p>
+                        <p>2. 새로운 휴가의 정책을 원하시면 <등록하기> 버튼을 통해 등록 가능합니다.</p>
+                        <p>3. 정책을 수정하고 싶으시면 <정책보기>를 통해 해당 휴가의 정책으로 들어간 후에 수정할 수 있습니다.</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
     </div>
   </template>
   
@@ -336,7 +363,7 @@ onMounted(() => {
     margin-top: 2%;
     color: #000000;
     display: grid;
-    grid-template-columns: 3% 92% 5%;
+    grid-template-columns: 3% 12% 1% 5% 74% 5%;
     align-items: center;
   }
   
@@ -361,7 +388,16 @@ onMounted(() => {
     font-size: 11px;
     font-style: bold;
     width: 100%;
+    grid-column-start: 6;
   }
+
+  .guide {
+        width: 60%;
+        height: 25px;
+        grid-column: 4;
+        margin: 0;
+        cursor: pointer;
+    }
   
   .policyHeader {
     display: grid;

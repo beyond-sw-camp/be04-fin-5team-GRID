@@ -3,10 +3,12 @@
         <div class="manageTitle">
             <img class = "manageIcon" src="@/assets/buttons/vacation.png">
             <h1>휴가 종류</h1>
-            <button class="manageRegist" type="button" @click="showModal('registVacation')" v-if="userRole === 'ROLE_ADMIN'">등록하기</button>
+            <img src="@/assets/buttons/guide.png" v-if="userRole === 'ROLE_ADMIN'" class="guide" @click="showModal('guideManage')"></img>
+            <button class="manageRegist" type="button" @click="showModal('registVacation')">등록하기</button>
+            <button class="manageVacation" type="button" @click="showModal('manageVacation')">관리하기</button>
         </div>
         <div class="vacations">
-            <div class="card mb-3" v-for="type in types" :key="type.id" :class="{'inactive-card': type.useYn === 'N'}">
+            <div class="card mb-3" v-for="type in filteredTypes" :key="type.id" >
               <div class="card-body">
                 <h3 class="card-title">{{ type.typeName }}</h3>
                 <p class="card-text">{{ type.vacationExplain }}</p>
@@ -102,20 +104,76 @@
                     </div>
                     <div class="button-container">
                         <button type="submit" class="btn btn-primary" :disabled="modifyType.useYn === 'N'">수정</button>
-                        <button type="button" class="btn btn-danger" @click="deleteVacationType(modifyType.id)" v-if="modifyType.useYn === 'Y'">비활성화</button>
-                        <button type="button" class="btn btn-danger" @click="changeUseYnToY(modifyType.id)" v-if="modifyType.useYn === 'N'">활성화</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 </div>
+
+<!-- 관리 모달 -->
+<div class="modal fade" id="manageVacation" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">휴가 관리(활성/비활성)</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="closeModal('manageVacation')"></button>
+            </div>
+            <div class="modal-body">
+                <form class="needs-validation" novalidate>
+                    <div class="mb-3">
+                        <label class="form-label">휴가 타입 선택</label>
+                        <div v-for="(type, index) in types" :key="type.id" class="form-check">
+                            <input class="form-check-input" type="checkbox" :id="'vacationType' + type.id" v-model="selectedVacationTypes" :value="type.id">
+                            <label class="form-check-label" :for="'vacationType' + type.id">
+                                {{ type.typeName }} <span v-if="type.useYn === 'N'" class="text-muted">(비활성화)</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="button-container d-flex justify-content-center gap-2">
+                        <button type="button" class="btn btn-danger" @click="deactivateVacationTypes">비활성화</button>
+                        <button type="button" class="btn btn-success" @click="activateVacationTypes">활성화</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+    <!-- 가이드 모달 -->
+    <div class="modal fade" id="guideManage" tabindex="-1" aria-labelledby="guideManageLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="guideManageLabel">휴가 종류 가이드</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="example-content">
+                        <p>여러가지 휴가의 종류를 관리할 수 있는 페이지 입니다. </p>
+                        <p>현재페이지는 관리자에게만 보입니다.</p>
+                        <hr>
+                        <p>1. 현재 표시되어 있는 휴가들은 활성화되어있는 휴가들입니다.</p>
+                        <p>2. 새로운 휴가종류를 원하시면 <등록하기> 버튼을 통해 등록 가능합니다.</p>
+                        <p>2-1. 모든 값을 채우고 등록한 후에 정책페이지로 이동하여 정책을 등록해주세요.</p>
+                        <p>2-2. 정책을 등록하면 직원들이 정책을 확인하여 사내에 운영중인 휴가의 종류를 확인할 수 있습니다.</p>
+                        <p>3. 사용을 멈추고싶은 휴가의 종류가 있다면 <관리하기> 버튼을 통하여 활성/비활성 할 수 있습니다.</p>
+                        <p>3-1. 현재 비활성화 되어있는 휴가는 휴가이름옆에 (비활성화)로 표시되어 있습니다.</p>
+                        <p>3-2. 비활성화 하면 휴가정책도 함께 사라집니다.</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
   
     </div>
 </template>
 
 <script setup>
-import { onBeforeMount, ref, onMounted } from 'vue';
+import { onBeforeMount, ref, onMounted, computed } from 'vue';
 import axios from "axios";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap';
@@ -125,6 +183,7 @@ const userRole = ref('');
 const userId =ref('');
 const policies = ref([]);
 const allInfo = ref([]);
+const selectedVacationTypes = ref([]);
 const modifyType = ref({
     id: '',
     typeName: '',
@@ -145,6 +204,10 @@ const showModal = (modalId) => {
   const modal = new bootstrap.Modal(document.getElementById(modalId));
   modal.show();
 };
+
+const filteredTypes = computed(() => {
+    return types.value.filter(type => type.useYn === 'Y');
+});
 
 const openModifyModal = async (id) => {
     await getVacationType(id);
@@ -174,6 +237,12 @@ const closeModal = (modalId) => {
       form.classList.remove('was-validated');
     }
   } else if (modalId === 'modifyVacation') {
+    const form = document.querySelector(`#${modalId} form`);
+    if (form) {
+      form.classList.remove('was-validated');
+    }
+  } else if (modalId === 'manageVacation') {
+    selectedVacationTypes.value = ([]);
     const form = document.querySelector(`#${modalId} form`);
     if (form) {
       form.classList.remove('was-validated');
@@ -335,6 +404,65 @@ const getAllVacationPolicy = async () => {
     }
   };
 
+  const deactivateVacationTypes = async () => {
+    if (selectedVacationTypes.value.length === 0) {
+        alert('비활성화할 항목을 선택해주세요.');
+        return;
+    }
+
+    const confirmed = window.confirm('선택한 휴가 타입을 비활성화하시겠습니까?');
+    if (!confirmed) return;
+
+    for (const id of selectedVacationTypes.value) {
+        try {
+            const vacationType = types.value.find(type => type.id === id);
+            if (vacationType && vacationType.useYn === 'Y') {
+                await axios.put(`/api/vacation/type/${id}`, {
+                    ...vacationType,
+                    useYn: 'N'
+                });
+            } else if (vacationType && vacationType.useYn === 'N') {
+                alert(`${vacationType.typeName}는 이미 비활성화되어 있습니다.`);
+                return;
+            }
+        } catch (error) {
+            console.error("Error:", error);
+        }
+    }
+    alert('비활성화가 완료되었습니다.');
+    window.location.reload();
+};
+
+const activateVacationTypes = async () => {
+    if (selectedVacationTypes.value.length === 0) {
+        alert('활성화할 항목을 선택해주세요.');
+        return;
+    }
+
+    const confirmed = window.confirm('선택한 휴가 타입을 활성화하시겠습니까?');
+    if (!confirmed) return;
+
+    for (const id of selectedVacationTypes.value) {
+        try {
+            const vacationType = types.value.find(type => type.id === id);
+            if (vacationType && vacationType.useYn === 'N') {
+                await axios.put(`/api/vacation/type/${id}`, {
+                    ...vacationType,
+                    useYn: 'Y'
+                });
+            } else if (vacationType && vacationType.useYn === 'Y') {
+                alert(`${vacationType.typeName}는 이미 활성화되어 있습니다.`);
+                return;
+            }
+        } catch (error) {
+            console.error("Error:", error);
+        }
+    }
+    alert('활성화가 완료되었습니다.');
+    window.location.reload();
+};
+
+
 
 
 onBeforeMount(() => {
@@ -379,7 +507,7 @@ onMounted(() => {
         margin-top: 2%;
         color: #000000;
         display: grid;
-        grid-template-columns: 3% 92% 5%;
+        grid-template-columns: 3% 12% 1% 5% 67% 5% 2% 5%;
         align-items: center;
     }
 
@@ -404,7 +532,22 @@ onMounted(() => {
         font-size: 11px;
         font-style: bold;
         width: 100%;
+        grid-column-start: 6;
     }
+
+    .manageVacation {
+        background-color: #088A85;
+        color: white;
+        padding: 5px 5px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 11px;
+        font-style: bold;
+        width: 100%;
+        grid-column-start: 8;
+    }
+
 
     .vacations {
         margin-top: 2%;
@@ -455,6 +598,14 @@ onMounted(() => {
         width: calc(100% - 20px);
         padding: 10px;
         background-color: #F2F2F2;
+    }
+
+    .guide {
+        width: 60%;
+        height: 25px;
+        grid-column: 4;
+        margin: 0;
+        cursor: pointer;
     }
 
     .registMain textarea {
@@ -670,15 +821,14 @@ onMounted(() => {
     border: 2px solid #a0a0a0;
   }
 
-  .inactive-card {
-        background-color: #fc3613 !important; /* Tomato 색상 */
-    }
+.inactive-background {
+    background-color: #fc3613; /* 비활성화된 항목에 적용할 배경색 */
+    color: white;
+}
 
-    .inactive-card-detail {
-        background-color: #f36868 !important; 
-        border: #bd6d6d;
-    }
+.text-muted {
+    color: #6c757d !important; /* 부트스트랩의 muted 색상 */
+}
 
-    
 </style>
         

@@ -110,7 +110,7 @@ public class PdfServiceImpl implements PdfService {
             d_img.scaleToFit(60, 100);
             t_img.scaleToFit(60, 100);
 
-            String fontPath = "src/main/resources/fonts/Sejong hospital Light.ttf";
+            String fontPath = "src/main/resources/fonts/malgun.ttf";
             BaseFont bf = BaseFont.createFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
 
             Font titleFont = new Font(bf, 20, Font.BOLD);
@@ -219,39 +219,28 @@ public class PdfServiceImpl implements PdfService {
         Document document = new Document();
 
         UserDTO user = userService.findUserById(overtimeApproval.getRequesterId());
-        System.out.println("user = " + user);
 
         String fileName = "overtime_" + user.getEmployeeNumber() + "_" + overtimeApproval.getId() + ".pdf";
-        System.out.println("fileName = " + fileName);
 
         String imagePath = imgMapper.getSealImg(approvalChainService.findLeaderByEmployeeId(user.getId(), 3));
-//        String imagePath =  "https://png.pngtree.com/png-clipart/20220113/ourmid/pngtree-cartoon-hand-drawn-default-avatar-png-image_4156500.png";
 
-        System.out.println("imagePath = " + imagePath);
         try {
             PdfWriter.getInstance(document, outputStream);
             document.open();
 
-            System.out.println("outputStream = " + outputStream);
-
             Image img = com.lowagie.text.Image.getInstance(imagePath);
             img.scaleToFit(60, 100);
-            System.out.println("img = " + img);
 
-//            String fontPath = "src/main/resources/fonts/Sejong hospital Light.ttf";
-//            System.out.println("fontPath = " + fontPath);
-//            BaseFont bf = BaseFont.createFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
-//            System.out.println("bf = " + bf);
+            String fontPath = "src/main/resources/fonts/malgun.ttf";
+            BaseFont bf = BaseFont.createFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
 
-            Font titleFont = new Font(Font.HELVETICA, 20, Font.BOLD);
-            Font headerFont = new Font(Font.HELVETICA, 12, Font.BOLD);
-            Font font = new Font(Font.HELVETICA, 12);
+            Font titleFont = new Font(bf, 20, Font.BOLD);
+            Font headerFont = new Font(bf, 12, Font.BOLD);
+            Font font = new Font(bf, 12);
 
 //            Font titleFont = new Font(bf, 20, Font.BOLD);
 //            Font headerFont = new Font(bf, 12, Font.BOLD);
 //            Font font = new Font(bf, 12);
-
-            System.out.println("font = " + font);
 
             PdfPTable sigTable = new PdfPTable(2);
             PdfPTable table = new PdfPTable(2);
@@ -298,8 +287,6 @@ public class PdfServiceImpl implements PdfService {
 
             table.addCell(mergedCell);
 
-            System.out.println("*******3");
-
             PdfPCell mergedCell2 = new PdfPCell(new Paragraph("결\n\n재", font));
             mergedCell2.setRowspan(2);
             mergedCell2.setVerticalAlignment(PdfPCell.ALIGN_MIDDLE);
@@ -314,8 +301,6 @@ public class PdfServiceImpl implements PdfService {
 
             sigTable.addCell(t_leader);
 
-            System.out.println("*******1");
-
             sigTable.setTotalWidth(80);
             sigTable.setLockedWidth(true);
             sigTable.setWidths(new float[]{2f, 7f});
@@ -324,16 +309,12 @@ public class PdfServiceImpl implements PdfService {
             Paragraph title = new Paragraph("시간 외 근무 신청서", titleFont);
             title.setAlignment(Paragraph.ALIGN_CENTER);
 
-            System.out.println("*******2");
-
             document.add(new Paragraph("\n\n", font));
             document.add(sigTable);
             document.add(new Paragraph("\n", font));
             document.add(title);
             document.add(new Paragraph("\n\n\n\n", font));
             document.add(table);
-
-            System.out.println("document = " + document);
 
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
@@ -367,7 +348,7 @@ public class PdfServiceImpl implements PdfService {
             Image img = com.lowagie.text.Image.getInstance(imagePath);
             img.scaleToFit(60, 100);
 
-            String fontPath = "src/main/resources/fonts/Sejong hospital Light.ttf";
+            String fontPath = "src/main/resources/fonts/malgun.ttf";
             BaseFont bf = BaseFont.createFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
 
             Font titleFont = new Font(bf, 20, Font.BOLD);
@@ -480,7 +461,7 @@ public class PdfServiceImpl implements PdfService {
             Image img = com.lowagie.text.Image.getInstance(imagePath);
             img.scaleToFit(60, 100);
 
-            String fontPath = "src/main/resources/fonts/Sejong hospital Light.ttf";
+            String fontPath = "src/main/resources/fonts/malgun.ttf";
             BaseFont bf = BaseFont.createFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
 
             Font titleFont = new Font(bf, 20, Font.BOLD);
