@@ -364,7 +364,7 @@ public class VacationServiceImpl implements VacationService {
         LocalDate today = LocalDate.now();
         String day = today.toString();
         String employeeNum = vacationInfo.getEmployeeNum();
-        int employeeId = userService.findUserByEmployeeNum(employeeNum).getId();
+        int employeeId = userService.findUserByEmployeeNum(employeeNum, null).getId();
 
         VacationInfo inputVacationInfo = VacationInfo.builder()
                 .addTime(day)

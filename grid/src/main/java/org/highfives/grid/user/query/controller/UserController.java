@@ -1,5 +1,7 @@
 package org.highfives.grid.user.query.controller;
 
+import org.highfives.grid.approval.query.dto.EmpStatusDTO;
+import org.highfives.grid.approval.query.service.ApprovalService;
 import org.highfives.grid.user.query.dto.DutiesDTO;
 import org.highfives.grid.user.query.dto.LeaderInfoDTO;
 import org.highfives.grid.user.query.dto.PositionDTO;
@@ -26,11 +28,14 @@ public class UserController {
 
     private final UserService userService;
     private final ModelMapper modelMapper;
+    private final ApprovalService approvalService;
 
     @Autowired
-    public UserController(UserService userService, ModelMapper modelMapper) {
+    public UserController(UserService userService, ModelMapper modelMapper,
+                          ApprovalService approvalService) {
         this.userService = userService;
         this.modelMapper = modelMapper;
+        this.approvalService = approvalService;
     }
 
     // 전체 직원 조회
@@ -53,7 +58,8 @@ public class UserController {
             @RequestParam(defaultValue = "12") int size) {
 
         Pageable pageable = PageRequest.of(page, size);
-        Page<UserDTO> resultDTOs = userService.findAllUsers(pageable);
+        List<EmpStatusDTO> absenceInfo = approvalService.findEmpStatus();
+        Page<UserDTO> resultDTOs = userService.findAllUsers(pageable, absenceInfo);
         List<SimpleInfo> resultList = DTOtoSimpleInfo(resultDTOs.getContent());
 
         ResFindListVO response = new ResFindListVO(200, "Success to find user list", "/users/{id}", resultList,
@@ -70,7 +76,8 @@ public class UserController {
             @RequestParam(defaultValue = "12") int size) {
 
         Pageable pageable = PageRequest.of(page, size);
-        Page<UserDTO> resultDTOs = userService.findUsersByName(name, pageable);
+        List<EmpStatusDTO> absenceInfo = approvalService.findEmpStatus();
+        Page<UserDTO> resultDTOs = userService.findUsersByName(name, pageable, absenceInfo);
         List<SimpleInfo> resultList = DTOtoSimpleInfo(resultDTOs.getContent());
 
         ResFindListVO response = new ResFindListVO(200, "Success to find user list", "/users/{id}", resultList,
@@ -84,11 +91,12 @@ public class UserController {
     @GetMapping("/{employeeNumber}")
     public ResponseEntity<ResFindUserVO> findUserByEmployeeNum(@PathVariable("employeeNumber") String eNum) {
 
-        UserDTO userDTO = userService.findUserByEmployeeNum(eNum);
+        List<EmpStatusDTO> absenceInfo = approvalService.findEmpStatus();
+        UserDTO userDTO = userService.findUserByEmployeeNum(eNum, absenceInfo);
 
         if(userDTO != null){
             ResFindUserVO response =
-                new ResFindUserVO(200, "Success to find user", "/users/list", userDTO);
+                    new ResFindUserVO(200, "Success to find user", "/users/list", userDTO);
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } else {
             ResFindUserVO response =
@@ -164,7 +172,7 @@ public class UserController {
     // 팀 id로 해당 팀 직원들 조회
     @GetMapping("/team-list/{teamId}")
     public ResponseEntity<ResFindListVO> findTeamList(@PathVariable int teamId) {
-         List<UserDTO> userDTOList = userService.findTeamList(teamId);
+        List<UserDTO> userDTOList = userService.findTeamList(teamId);
 
         List<SimpleInfo> simpleInfos = DTOtoSimpleInfo(userDTOList);
 

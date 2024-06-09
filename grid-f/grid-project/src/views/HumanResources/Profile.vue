@@ -34,9 +34,15 @@
                     <div id="absenceInfo">
                         <b-badge v-if="isAbsence" variant="danger">부재중</b-badge>
                         <b-badge v-else variant="success">재실중</b-badge>
+                    </div> 
+                </div>
+                <div style="display: flex;">
+                    <div>
+                        <b-badge v-if="result.absenceStartTime" variant="light">{{ result.absenceContent }} : &nbsp; {{ result.absenceStartTime }} - {{ result.absenceEndTime }} </b-badge>
                     </div>
                 </div>
             </div>
+
             <div class="button" v-if="userRole === 'ROLE_ADMIN' || userId == result.id">
                 <div>
                     <button class="custom-button" @click="toModify(result.employeeNumber, result)" :userRole="userRole">
@@ -84,6 +90,8 @@ const userRole = ref('');
 const userId = ref('');
 const givenEmail = ref('');
 const router = useRouter();
+const startTime = ref('');
+const endTime = ref('');
 
 const profileUrl = computed(() => {
     return result.value.profilePath ? result.value.profilePath : defaultProfileImage;
@@ -113,6 +121,16 @@ function parseJwt(token) {
         console.error('Invalid token', error);
         return null;
     }
+}
+
+function formatDateString(dateString) {
+
+    const date = new Date(dateString);
+    const year = date.getFullYear().toString().slice(2); 
+    const month = String(date.getMonth() + 1).padStart(2, '0'); 
+    const day = String(date.getDate()).padStart(2, '0'); 
+    
+    return `${year}.${month}.${day}`;
 }
 
 function toModify(employeeNumber, user) {
@@ -363,6 +381,7 @@ body {
     align-items: flex-end;
     width: 100%;
 }
+
 .title-content {
     display: grid;
     align-items: flex-start;

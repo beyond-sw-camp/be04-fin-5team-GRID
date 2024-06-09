@@ -43,11 +43,13 @@
                     <span>{{ data.item.duties.dutiesName }}</span>
                 </template>
                 <template #cell(absenceStatus)="data">
-                    <b-badge variant="warning" v-if="data.item.absenceYn === 'Y'">부재중</b-badge>
+                    <b-badge variant="danger" v-if="data.item.absenceYn === 'Y'">부재중</b-badge>
                     <b-badge variant="success" v-else>재실중</b-badge>
                 </template>
                 <template #cell(absenceContent)="data">
-                    <span>{{ data.item.absenceContent }}</span>
+                    <b-badge variant="warning" v-if="data.item.absenceContent === '휴가'">휴가</b-badge>
+                    <b-badge variant="warning" v-if="data.item.absenceContent === '출장'">출장</b-badge>
+                    <!-- <span>{{ data.item.absenceContent }}</span> -->
                 </template>
             </b-table>
         </div>

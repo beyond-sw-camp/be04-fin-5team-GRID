@@ -1,11 +1,12 @@
 <template>
   <div class="reviewAll">
     <div class="reviewHeader">
-      <h1 class="mb-1"><i class="bi bi-person-check fs-3"></i>&nbsp; 동료 평가 생성</h1>
+      <img class="reviewIcon" src="@/assets/list-check.png" alt="list-check" />
+      <h1>평가 생성</h1>
     </div>
     <div class="buttonContainer">
-      <button type="button" class="deleteBtn" @click="deleteSelectedReviews">선택 항목 삭제</button>
-      <button type="button" class="addBtn" data-bs-toggle="modal" data-bs-target="#addQuestionModal">항목 추가</button>
+      <button type="button" class="deleteBtn btn-custom-1" @click="deleteSelectedReviews"><span>선택 항목 삭제</span></button>
+      <button type="button" class="addBtn btn-custom-1" data-bs-toggle="modal" data-bs-target="#addQuestionModal"><span>항목 추가</span></button>
     </div>
     <div class="reviewBox">
       <table>
@@ -32,7 +33,6 @@
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="addQuestionModalLabel">항목 추가</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
             <div class="mb-3">
@@ -161,7 +161,7 @@ const addReview = async () => {
 
 .reviewAll {
   display: grid;
-  grid-template-rows: 18% 13% 4% 53% 8%;
+  grid-template-rows: 18% 11% 6% 53% 8%;
   grid-template-columns: 10% 80% 10%;
   height:100%;
   padding: 0;
@@ -170,10 +170,10 @@ const addReview = async () => {
 
 .reviewHeader {
   grid-column-start: 2;
-  align-content: center;
-  margin-top: 2%;
-  margin-left: -0.5%;
-  color: #000000;
+  grid-row-start: 1;
+  display:grid;
+  grid-template-columns: 3% 97%;
+  align-items: center;
 }
 
 .reviewHeader img {
@@ -182,9 +182,9 @@ const addReview = async () => {
 
 .reviewHeader h1 {
   margin-left: 0.5%;
+  margin-bottom: 0;
   font-size: 25px;
   font-weight: 600;
-  font-family: 'IBMPlexSansKR-Regular', sans-serif;
 }
 
 .reviewContent {
@@ -308,5 +308,44 @@ tr:hover {
 
 .btn-close:hover {
   background-color: #555;
+}
+
+.btn-custom-1 {
+    background-color: white;
+    color: #088A85;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.4s, color 0.4s;
+    position: relative;
+    overflow: hidden;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+.btn-custom-1::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background-color: #088A85;
+    transition: left 0.4s;
+    z-index: 1;
+}
+
+.btn-custom-1:hover::before {
+    left: 0;
+}
+
+.btn-custom-1 span {
+    position: relative;
+    z-index: 2;
+    color: #088A85;
+}
+
+.btn-custom-1:hover span {
+    color: white;
 }
 </style>
