@@ -1,8 +1,8 @@
 <template>
     <div class="manageAll">
         <div class="manageTitle">
-            <img class="manageIcon" src="@/assets/buttons/vacation.png">
-            <h1>휴가 종류</h1>
+            <i class="bi bi-brightness-high fs-3"></i>
+            <h1 class="mb-1">휴가 종류</h1>
             <img src="@/assets/buttons/guide.png" v-if="userRole === 'ROLE_ADMIN'" class="guide"
                 @click="showModal('guideManage')"></img>
             <button class="manageRegist" type="button" @click="showModal('registVacation')">등록하기</button>
@@ -527,6 +527,7 @@ onMounted(() => {
     font-size: 12px;
     font-weight: 600;
     margin-top: 2%;
+    margin-left: -0.5%;
     color: #000000;
     display: grid;
     grid-template-columns: 3% 12% 1% 5% 63% 7% 2% 7%;
@@ -538,6 +539,7 @@ onMounted(() => {
     margin-bottom: 0;
     font-size: 25px;
     font-weight: 600;
+    font-family: 'IBMPlexSansKR-Regular', sans-serif;
 }
 
 .manageIcon {
