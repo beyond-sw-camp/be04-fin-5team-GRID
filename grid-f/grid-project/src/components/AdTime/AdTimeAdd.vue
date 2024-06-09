@@ -176,22 +176,15 @@ const fetchEmployeeEvent = async () => {
     const O = responseO.data.approvalEmpResultList
     const OEvents = transformEvents(O, '시간외 근무', '#bec8fc',3);
 
-    // 단축 근무 조회
-    const responseRw = await axios.get(`/api/approval/list/3/1/${userId.value}`);
-    console.log('단축', responseRw.data);
-
-    const Rw = responseRw.data.approvalEmpResultList
-    const RwEvents = transformEvents(Rw, '단축 근무', '#d4ffc1',4);
-
     // 휴가 조회
     const responseV = await axios.get(`/api/approval/list/4/1/${userId.value}`);
     console.log(responseV.data);
 
     const V = responseV.data.approvalEmpResultList
-    const VEvents = transformEvents(V, '휴가', '#f4d4ff',5);
+    const VEvents = transformEvents(V, '휴가', '#f4d4ff',4);
 
 
-    events.value = [...adEvents, ...btEvents, ...OEvents, ...RwEvents, ...VEvents];
+    events.value = [...adEvents, ...btEvents, ...OEvents, ...VEvents];
     console.log(events.value);
 
   } catch (error) {
@@ -251,12 +244,7 @@ onMounted(async () => {
     userId.value = decodedToken?.id || '';
   }
 
-  if (userRole.value === 'ROLE_ADMIN') {
-    // fetchAllAdTime();
-    await fetchAllEvent();
-    initCalendar(events);
-  } else if (userRole.value === 'ROLE_USER') {
-    console.log('조회');
+  if (userRole.value === 'ROLE_USER') {
     fetchAdTime();
     await fetchEmployeeEvent();
     initCalendar(events);
