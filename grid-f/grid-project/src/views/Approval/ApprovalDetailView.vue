@@ -5,6 +5,7 @@
 
   import ApprovalCard from "@/components/Approval/ApprovalCard.vue";
   import ApprovalChain from "@/components/Approval/ApprovalChain.vue";
+  import defaultProfileImage from '@/assets/defaultProfile.jpg';
 
   const route = useRoute();
   const typeId = route.params.typeId;
@@ -59,7 +60,8 @@
         <div class="text-secondary mb-4">{{ state.approval['writeTime'] }} &nbsp;작성</div>
         <div v-if="state.approval && state.approval.user && state.approval.user.duties">
           <div href="#" class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true" style="margin-bottom: -10px;">
-            <img :src="state.user['profilePath']" alt="profile" width="50" height="50" class="rounded-circle flex-shrink-0">
+            <template v-if="state.user['profilePath'] === null"><img :src="defaultProfileImage" alt="profile" width="50" height="50" class="rounded-circle flex-shrink-0"></template>
+            <template v-else><img :src="state.user['profilePath']" alt="profile" width="50" height="50" class="rounded-circle flex-shrink-0"/></template>
             <div class="d-flex gap-2 w-100 justify-content-between">
               <div class="mt-1">
                 <h5 class="fw-bolder mb-0">&nbsp;&nbsp;&nbsp;{{ state.user['name'] }}</h5>
@@ -74,7 +76,7 @@
           </div>
           <hr style="border-top: 2px dotted #000; margin-top: 20px; margin-bottom: 30px;">
         </div>
-        <ApprovalCard :approval="state.approval"/>
+        <ApprovalCard :approval="state.approval" :typeId="typeId"/>
       </b-card>
     </div>
     <ApprovalChain :typeId="typeId" :approvalId="approvalId" :approvalStatus="state.approval['approvalStatus']" :requesterId="state.approval['employeeId']" :cancelStatus="state.approval['cancelYn']" :cancelDoc="state.approval['cancelDocId']"/>

@@ -672,4 +672,30 @@ public class PdfServiceImpl implements PdfService {
             return ResponseEntity.badRequest().build();
         }
     }
+
+    @Override
+    public ResponseEntity<InputStreamResource> downloadRW(int approvalId) {
+
+        RWApproval rwApproval = rwApprovalRepository.findById(approvalId).orElseThrow();
+
+        S3Object s3Object = amazonS3.getObject(new GetObjectRequest(bucketName, rwApproval.getRenameName()));
+        InputStream inputStream = s3Object.getObjectContent();
+
+        try {
+            // InputStreamResource로 변환하여 ResponseEntity로 반환
+            InputStreamResource resource = new InputStreamResource(inputStream);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + rwApproval.getRenameName());
+
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .contentType(MediaType.APPLICATION_PDF)
+                    .body(resource);
+        } catch (Exception e) {
+            // 예외 처리
+            e.printStackTrace();
+            return ResponseEntity.badRequest().build();
+        }
+    }
 }

@@ -15,7 +15,8 @@
       </div>
       <div v-for="chain in state.approvalChainList" :key="chain.id">
         <div href="#" class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
-          <img :src="chain.user['profilePath']" alt="profile" width="50" height="50" class="rounded-circle flex-shrink-0">
+          <template v-if="chain.user['profilePath'] === null"><img :src="defaultProfileImage" alt="profile" width="50" height="50" class="rounded-circle flex-shrink-0"></template>
+          <template v-else><img :src="chain.user['profilePath']" alt="profile" width="50" height="50" class="rounded-circle flex-shrink-0"/></template>
           <div class="d-flex gap-2 w-100 justify-content-between">
             <div class="mt-1">
               <h5 class="fw-bolder mb-0">&nbsp;&nbsp;&nbsp;&nbsp;{{ chain.user['name'] }}</h5>
@@ -75,6 +76,8 @@
   import axios from "axios";
   import {onMounted, reactive, ref} from "vue";
   import {useRouter} from "vue-router";
+
+  import defaultProfileImage from "@/assets/defaultProfile.jpg";
 
   const userId = ref();
   const userRole = ref();

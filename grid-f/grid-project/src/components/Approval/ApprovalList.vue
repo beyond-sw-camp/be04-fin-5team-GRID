@@ -124,7 +124,7 @@
 
 <script setup>
   import {useRouter} from "vue-router";
-  import {onMounted, reactive, ref} from "vue";
+  import {computed, onMounted, reactive, ref} from "vue";
   import axios from "axios";
 
   const props = defineProps({
@@ -165,6 +165,8 @@
   const userId = ref();
 
   const isLoading = ref(true);
+
+  const filterByStatus = ref('');
 
   function parseJwt(token) {
     try {
