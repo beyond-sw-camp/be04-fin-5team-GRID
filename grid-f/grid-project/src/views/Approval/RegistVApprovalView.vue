@@ -1,3 +1,70 @@
+<template>
+  <div class="vAll">
+    <div class="vHeader">
+      <nav style="--bs-breadcrumb-divider: '>'; margin-top: -35px; margin-bottom: -7px;" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="http://www.gridhr.site/regist/main" style="text-decoration: none; color: grey; font-size: 17px;"><i class="bi bi-pencil-square"></i>&nbsp; 결재 작성</a></li>
+          <li class="breadcrumb-item active" aria-current="page"><span class="fw-bolder"><i class="bi bi-brightness-high"></i>&nbsp; 휴가</span></li>
+        </ol>
+      </nav>
+      <div><h1 class="fw-bolder"><i class="bi bi-brightness-high"></i>&nbsp; 휴가 신청</h1></div>
+    </div>
+    <div class="vContent">
+      <b-card class="mt-3" bg-variant="light">
+        <b-form-group
+            label-cols-lg="3"
+            label="휴가 결재"
+            label-size="lg"
+            label-class="font-weight-bold pt-0"
+            class="mb-0"
+        >
+          <b-form-group
+              label="휴가 종류:"
+              label-cols-sm="3"
+              label-align-sm="right"
+          >
+            <b-form-select v-model="postData.infoId" :options="state.vacationType"></b-form-select>
+          </b-form-group>
+          <b-form-group
+              label="시작 일자:"
+              label-cols-sm="3"
+              label-align-sm="right"
+          >
+            <b-form-input type="date" v-model="postData.s_date"></b-form-input>
+            <b-form-input type="time" v-model="postData.s_time" :disabled="state.isTimeDisabled"></b-form-input>
+          </b-form-group>
+
+          <b-form-group
+              label="종료 일자:"
+              label-cols-sm="3"
+              label-align-sm="right"
+          >
+            <b-form-input type="date" v-model="postData.e_date" :min="postData.s_date" :disabled="state.isEndDateDisabled"></b-form-input>
+            <b-form-input type="time" v-model="postData.e_time" :disabled="state.isEndDateDisabled || state.isTimeDisabled"></b-form-input>
+          </b-form-group>
+
+          <b-form-group
+              label="내용:"
+              label-cols-sm="3"
+              label-align-sm="right"
+          >
+            <b-form-textarea
+                id="textarea-auto-height"
+                v-model="postData.content"
+                placeholder="내용을 입력하세요."
+                rows="3"
+                max-rows="8"
+            ></b-form-textarea>
+          </b-form-group>
+        </b-form-group>
+      </b-card>
+    </div>
+    <div class="btnArea">
+      <b-button block variant="primary" @click="registApproval()">제출</b-button>
+    </div>
+  </div>
+</template>
+
 <script setup>
 import {onMounted, reactive, ref, watch} from "vue";
 import {useRoute} from "vue-router";
@@ -77,7 +144,7 @@ const updateDateTime = () => {
 
 const fetchVacationType = async() => {
   try {
-    const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/vacation/type`);
+    const response = await axios.get(`/api/vacation/type`);
 
     if (response.status !== 200) {
       throw new Error("response is not ok");
@@ -127,7 +194,7 @@ const registApproval = async () => {
       console.log(postData.startTime, postData.endTime);
       if (postData.content !== '' && postData.startTime !== ' 00:00:00' && postData.endTime !== ' 00:00:00' && postData.infoId !== 0) {
         if (vacationNum.value >= daysBetween) {
-          const response = await axios.post(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval/vacation`, postData, {
+          const response = await axios.post(`/api/approval/vacation`, postData, {
             headers: {
               'Content-Type': "application/json"
             }
@@ -188,73 +255,6 @@ onMounted(async() => {
 })
 </script>
 
-<template>
-  <div class="vAll">
-    <div class="vHeader">
-  <nav style="--bs-breadcrumb-divider: '>'; margin-top: -35px; margin-bottom: -7px;" aria-label="breadcrumb">
-  <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="http://www.gridhr.site//regist/main" style="text-decoration: none; color: grey; font-size: 17px;"><i class="bi bi-pencil-square"></i>&nbsp; 결재 작성</a></li>
-    <li class="breadcrumb-item active" aria-current="page"><span class="fw-bolder"><i class="bi bi-brightness-high"></i>&nbsp; 휴가</span></li>
-  </ol>
-  </nav>
-  <div><h1 class="fw-bolder"><i class="bi bi-brightness-high"></i>&nbsp; 휴가 신청</h1></div>
-  </div>
-  <div class="vContent">
-    <b-card class="mt-3" bg-variant="light">
-      <b-form-group
-          label-cols-lg="3"
-          label="휴가 결재"
-          label-size="lg"
-          label-class="font-weight-bold pt-0"
-          class="mb-0"
-      >
-        <b-form-group
-            label="휴가 종류:"
-            label-cols-sm="3"
-            label-align-sm="right"
-        >
-          <b-form-select v-model="postData.infoId" :options="state.vacationType"></b-form-select>
-        </b-form-group>
-        <b-form-group
-            label="시작 일자:"
-            label-cols-sm="3"
-            label-align-sm="right"
-        >
-          <b-form-input type="date" v-model="postData.s_date"></b-form-input>
-          <b-form-input type="time" v-model="postData.s_time" :disabled="state.isTimeDisabled"></b-form-input>
-        </b-form-group>
-
-        <b-form-group
-            label="종료 일자:"
-            label-cols-sm="3"
-            label-align-sm="right"
-        >
-          <b-form-input type="date" v-model="postData.e_date" :min="postData.s_date" :disabled="state.isEndDateDisabled"></b-form-input>
-          <b-form-input type="time" v-model="postData.e_time" :disabled="state.isEndDateDisabled || state.isTimeDisabled"></b-form-input>
-        </b-form-group>
-
-        <b-form-group
-            label="내용:"
-            label-cols-sm="3"
-            label-align-sm="right"
-        >
-          <b-form-textarea
-              id="textarea-auto-height"
-              v-model="postData.content"
-              placeholder="내용을 입력하세요."
-              rows="3"
-              max-rows="8"
-          ></b-form-textarea>
-        </b-form-group>
-      </b-form-group>
-    </b-card>
-  </div>
-  <div class="btnArea">
-    <b-button block variant="primary" @click="registApproval()">제출</b-button>
-  </div>
-</div>
-</template>
-
 <style scoped>
 .vAll {
 display: grid;
@@ -264,16 +264,18 @@ height: 100%;
 }
 
 .vHeader {
-grid-column-start: 2;
-align-content: center;
-margin-top: 2%;
+  grid-column-start: 2;
+  align-content: center;
+  margin-top: 2%;
+  margin-left: -0.5%;
+  color: #000000;
 }
 
 .vHeader h1 {
-margin-left: 0.5%;
-margin: 0;
-font-size: 25px;
-font-weight: 600;
+  margin-left: 0.5%;
+  font-size: 25px;
+  font-weight: 600;
+  font-family: 'IBMPlexSansKR-Regular', sans-serif;
 }
 
 .vContent {

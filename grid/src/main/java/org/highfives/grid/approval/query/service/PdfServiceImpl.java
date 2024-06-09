@@ -110,7 +110,7 @@ public class PdfServiceImpl implements PdfService {
             d_img.scaleToFit(60, 100);
             t_img.scaleToFit(60, 100);
 
-            String fontPath = "src/main/resources/fonts/NotoSansCJKkr-Regular.otf";
+            String fontPath = "/usr/share/fonts/truetype/noto/NotoSansCJK-Regular.ttc";
 //            String fontPath = "src/main/resources/fonts/NotoSansKR-Regular.ttf";
 //            String fontPath = "src/main/resources/fonts/malgun.ttf";
             BaseFont bf = BaseFont.createFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);

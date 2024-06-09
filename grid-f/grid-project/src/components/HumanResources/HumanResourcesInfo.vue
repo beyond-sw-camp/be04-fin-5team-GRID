@@ -11,8 +11,7 @@
         <hr id="hr-1">
         <div class="hr-info-name">
             <div id="hr-info-name1" style="color: rgb(180, 177, 177);">
-                <img src="@/assets/HR/info-team.png" alt="부서 아이콘" class="info-img">
-                부서 / 팀
+              <i class="bi bi-people fs-3"></i> &nbsp; 부서 / 팀
             </div>
             <div id="hr-info-name2" style="color: rgb(180, 177, 177);">
                 <img src="@/assets/HR/assignedTask.png" alt="담당 업무" class="info-img">

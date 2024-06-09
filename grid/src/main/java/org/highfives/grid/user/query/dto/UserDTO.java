@@ -7,6 +7,7 @@ import org.highfives.grid.user.command.aggregate.*;
 @Setter
 @ToString
 @RequiredArgsConstructor
+@Builder
 public class UserDTO {
 
     private int id;
@@ -30,6 +31,8 @@ public class UserDTO {
     private int salary;
     private YN absenceYn;
     private String absenceContent;
+    private String absenceStartTime;
+    private String absenceEndTime;
     private Role role;
     private DepartmentDTO department;
     private TeamDTO team;
@@ -38,13 +41,12 @@ public class UserDTO {
     private String profilePath;
     private String sealPath;
 
-    @Builder
-
     public UserDTO(int id, String email, String pwd, String name, String employeeNumber, Gender gender,
                    String phoneNumber, String callNumber, int zipCode, String address, String assignedTask,
                    String joinTime, JoinType joinType, String resignTime, YN resignYn, WorkType workType,
-                   String contractStartTime, String contractEndTime, int salary, YN absenceYn, String absenceContent,
-                   Role role, DepartmentDTO department, TeamDTO team, PositionDTO position, DutiesDTO duties,
+                   String contractStartTime, String contractEndTime, int salary, YN absenceYn,
+                   String absenceContent, String absenceStartTime, String absenceEndTime, Role role,
+                   DepartmentDTO department, TeamDTO team, PositionDTO position, DutiesDTO duties,
                    String profilePath, String sealPath) {
         this.id = id;
         this.email = email;
@@ -67,6 +69,8 @@ public class UserDTO {
         this.salary = salary;
         this.absenceYn = absenceYn;
         this.absenceContent = absenceContent;
+        this.absenceStartTime = absenceStartTime;
+        this.absenceEndTime = absenceEndTime;
         this.role = role;
         this.department = department;
         this.team = team;

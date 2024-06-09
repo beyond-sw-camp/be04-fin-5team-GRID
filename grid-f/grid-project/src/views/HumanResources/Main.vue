@@ -1,7 +1,7 @@
 <template>
     <div class="hr-main">
         <div class="hr-title">
-            <h1> <i class="bi bi-people"></i>&nbsp;인사 정보</h1>
+            <h1 class="mb-1"><i class="bi bi-people"></i>&nbsp; 인사 정보</h1>
         </div>
         <div class="search">
             <button class="printBtn" @click="downloadCSV">
@@ -43,11 +43,13 @@
                     <span>{{ data.item.duties.dutiesName }}</span>
                 </template>
                 <template #cell(absenceStatus)="data">
-                    <b-badge variant="warning" v-if="data.item.absenceYn === 'Y'">부재중</b-badge>
+                    <b-badge variant="danger" v-if="data.item.absenceYn === 'Y'">부재중</b-badge>
                     <b-badge variant="success" v-else>재실중</b-badge>
                 </template>
                 <template #cell(absenceContent)="data">
-                    <span>{{ data.item.absenceContent }}</span>
+                    <b-badge variant="warning" v-if="data.item.absenceContent === '휴가'">휴가</b-badge>
+                    <b-badge variant="warning" v-if="data.item.absenceContent === '출장'">출장</b-badge>
+                    <!-- <span>{{ data.item.absenceContent }}</span> -->
                 </template>
             </b-table>
         </div>
@@ -254,18 +256,18 @@ button {
 .hr-title {
     grid-column-start: 2;
     grid-column-end: 3;
-    font-weight: 600;
     margin-top: 2%;
+    margin-left: -0.5%;
     color: #000000;
     display: grid;
     align-items: center;
 }
 
 .hr-title h1 {
-    margin-left: 0.5%;
-    margin-bottom: 0;
-    font-size: 25px;
-    font-weight: 600;
+  margin-left: 0.5%;
+  font-size: 25px;
+  font-weight: 600;
+  font-family: 'IBMPlexSansKR-Regular', sans-serif;
 }
 
 .hr-icon {

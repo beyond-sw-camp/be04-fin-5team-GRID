@@ -12,4 +12,8 @@ public class EmpStatusDTO {
     int employeeId;
 
     String status;
+
+    String startTime;
+
+    String endTime;
 }

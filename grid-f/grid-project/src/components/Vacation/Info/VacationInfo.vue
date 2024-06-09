@@ -1,8 +1,7 @@
 <template>
     <div class="historyAll">
         <div class="historyTitle">
-            <img class="historyIcon" src="@/assets/buttons/vacation.png">
-            <h1>휴가 보유 정보</h1>
+            <h1 class="mb-1"><i class="bi bi-brightness-high fs-3"></i>&nbsp; 휴가 보유 정보</h1>
         </div>
         <div class="vacations">
             <div class="annual" v-if="userRole === 'ROLE_USER'">
@@ -254,22 +253,19 @@ onBeforeMount(() => {
 }
 
 .historyTitle {
-    grid-column-start: 2;
-    grid-column-end: 3;
-    font-size: 12px;
-    font-weight: 600;
-    margin-top: 2%;
-    color: #000000;
-    display: grid;
-    grid-template-columns: 3% 97%;
-    align-items: center;
+  grid-column-start: 2;
+  align-content: center;
+  margin-top: 2%;
+  margin-left: -0.5%;
+  color: #000000;
 }
 
 .historyTitle h1 {
-    margin-left: 0.5%;
-    margin-bottom: 0;
-    font-size: 25px;
-    font-weight: 600;
+  margin-left: 0.5%;
+  margin-bottom: 0;
+  font-size: 25px;
+  font-weight: 600;
+  font-family: 'IBMPlexSansKR-Regular', sans-serif;
 }
 
 .historyIcon {
