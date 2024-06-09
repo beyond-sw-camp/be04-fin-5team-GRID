@@ -202,7 +202,7 @@ const newDepartment = ref({
 
 const fetchLeaders = async () => {
   try {
-    const response = await axios.get(`http://localhost:10000/users/list/all`);
+    const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/list/all`);
     leaders.value = response.data.result;
     searchLeaders();
   } catch (error) {
@@ -213,7 +213,7 @@ const fetchLeaders = async () => {
 // Fetch department list
 const fetchDepartments = async () => {
   try {
-    const response = await axios.get('http://localhost:10000/department/find-all');
+    const response = await axios.get('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/department/find-all');
     const departmentsData = response.data.result;
     for (const department of departmentsData) {
       department.leaderName = await fetchLeaderName(department.leaderId);
@@ -228,7 +228,7 @@ const fetchDepartments = async () => {
 // Fetch leader name by ID
 const fetchLeaderName = async (leaderId) => {
   try {
-    const response = await axios.get(`http://localhost:10000/users/id/${leaderId}`);
+    const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/id/${leaderId}`);
     return response.data.result.name;
   } catch (error) {
     console.error('부서장 이름을 불러오는 중 에러 발생:', error);
@@ -339,7 +339,7 @@ const addNewDepartment = async () => {
   }
 
   try {
-    await axios.post('http://localhost:10000/department', newDepartment.value);
+    await axios.post('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/department', newDepartment.value);
     await fetchDepartments();
     const modal = bootstrap.Modal.getInstance(document.getElementById('addNewModal'));
     modal.hide();
@@ -394,7 +394,7 @@ const modifyDepartmentsStatus = async () => {
   }
 
   try {
-    const response = await axios.put('http://localhost:10000/department/status', selectedDepartments.value);
+    const response = await axios.put('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/department/status', selectedDepartments.value);
     if (response.status === 200) {
       alert('수정되었습니다.');
       await fetchDepartments();
@@ -439,7 +439,7 @@ const updateLeader = async () => {
   }
 
   try {
-    const response = await axios.put('http://localhost:10000/department/department-leader', {
+    const response = await axios.put('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/department/department-leader', {
       id: selectedDepartmentId.value,
       leaderId: newLeaderId.value
     });

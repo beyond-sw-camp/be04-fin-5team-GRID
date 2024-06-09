@@ -158,17 +158,17 @@ const showModal = (modalId) => {
 
 const fetchReviews = async () => {
   try {
-    const response = await axios.get('http://localhost:10000/review/history-list');
+    const response = await axios.get('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/review/history-list');
     const reviewList = response.data.result;
 
     await Promise.all(reviewList.map(async review => {
-      const reviewerResponse = await axios.get(`http://localhost:10000/users/id/${review.reviewerId}`);
-      const revieweeResponse = await axios.get(`http://localhost:10000/users/id/${review.revieweeId}`);
+      const reviewerResponse = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/id/${review.reviewerId}`);
+      const revieweeResponse = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/id/${review.revieweeId}`);
       review.reviewerName = reviewerResponse.data.result.name;
       review.departmentId = reviewerResponse.data.result.department.id;
       review.revieweeName = revieweeResponse.data.result.name;
 
-      const departmentResponse = await axios.get(`http://localhost:10000/department/${review.departmentId}`);
+      const departmentResponse = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/department/${review.departmentId}`);
       review.departmentName = departmentResponse.data.result.departmentName;
     }));
     reviews.value = reviewList;
@@ -180,7 +180,7 @@ const fetchReviews = async () => {
 
 const fetchEmployees = async () => {
   try {
-    const response = await axios.get('http://localhost:10000/users/list/all');
+    const response = await axios.get('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/list/all');
     employees.value = response.data.result;
   } catch (error) {
     console.error('Error fetching employees:', error);
@@ -339,7 +339,7 @@ const addNewReview = async () => {
 
     const confirmed = window.confirm('생성하시겠습니까?');
     if (confirmed) {
-      await axios.post('http://localhost:10000/review/history', newReview);
+      await axios.post('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/review/history', newReview);
       alert('생성 완료되었습니다!');
       await fetchReviews();
       closeModal('addReview');

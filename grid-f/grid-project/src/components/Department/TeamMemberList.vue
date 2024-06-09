@@ -84,11 +84,11 @@ const teams = ref([]); // API로부터 가져올 팀 목록
 
 const fetchEmployees = async (teamId) => {
   try {
-    const response = await axios.get(`http://localhost:10000/users/team-list/${teamId}`);
+    const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/team-list/${teamId}`);
     const employeeIds = response.data.result.map(emp => emp.id);
     
     // 모든 직원의 상세 정보를 가져옴
-    const employeeDetailsPromises = employeeIds.map(id => axios.get(`http://localhost:10000/users/id/${id}`));
+    const employeeDetailsPromises = employeeIds.map(id => axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/id/${id}`));
     const employeeDetailsResponses = await Promise.all(employeeDetailsPromises);
     
     // 상세 정보를 employees에 저장
@@ -101,7 +101,7 @@ const fetchEmployees = async (teamId) => {
 
 const getTeamName = async (teamId) => {
   try {
-    const response = await axios.get(`http://localhost:10000/team/${teamId}`);
+    const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/team/${teamId}`);
     teamName.value = response.data.result.teamName;
   } catch (error) {
     console.error('팀 이름을 가져오는 중 오류 발생:', error);
