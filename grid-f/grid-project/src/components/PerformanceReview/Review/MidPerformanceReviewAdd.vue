@@ -2,6 +2,8 @@
   <div class="reviewAddContainer">
     <div class="reviewTitle">
       <h1 class="mb-1"><i class="bi bi-award fs-3"></i>&nbsp; 중간 업적 평가 작성</h1>
+      <img src="@/assets/buttons/guide.png" class="guide"
+           @click="showModal('guideReview')"></img>
     </div>
     <div class="titleTableContainer">
       <table>
@@ -128,6 +130,44 @@
         </table>
       </div>
     </div>
+
+    <!-- 가이드 모달 -->
+    <div class="modal fade" id="guideReview" tabindex="-1" aria-labelledby="guideManageLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title" id="guideManageLabel">업적 평가 목표 가이드</h4>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div class="example-content">
+              <p>중간 업적 평가를 작성하는 페이지 입니다. </p>
+              <hr>
+              <p>
+                팀원은 1년에 한 번 중간 평가를 작성할 수 있습니다.<br>
+                중간 업적 평가는 팀원인 직원만 6월에 작성 가능합니다.<br>
+                평가 목표가 승인되어야 중간 평가를 작성할 수 있습니다.
+                업적 평가의 점수는 가중치와 등급을 계산하여 부여됩니다.
+                (현재는 모든 기간 작성할 수 있도록 열어두었습니다.)
+              </p>
+              <p>1. 승인 상태</p>
+              <p>&nbsp;1-1. 작성 중: 팀원이 목표를 작성하고 있는 상태</p>
+              <p>&nbsp;1-2. 상신: 팀원이 목표를 작성하고 결재를 올린 상태</p>
+              <p>&nbsp;1-3. 확인 중: 팀장이 목표를 보고 확정을 판단 중인 상태</p>
+              <p>&nbsp;1-4. 확정: 팀장이 팀원의 평가를 확정한 상태 </p>
+              <p>2. 저장 버튼</p>
+              <p>&nbsp;2-1. 작성한 평가를 저장할 수 있습니다..</p>
+              <p>3. 상신 버튼</p>
+              <p>&nbsp;3-1. 모든 내용을 필수로 작성해야 상신 가능합니다.</p>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </template>
 
@@ -158,6 +198,10 @@ const reviewDetail = ref({
 
 const isReadOnly = ref(true);
 
+const showModal = (modalId) => {
+  const modal = new bootstrap.Modal(document.getElementById(modalId));
+  modal.show();
+};
 
 // 현재 시간
 function getCurrentDateTimeString() {
@@ -178,7 +222,7 @@ const fetchReviewAdd = async () => {
     const currentYear = new Date().getFullYear();   // 올해 년도
     const currentTime = getCurrentDateTimeString()  // 현재 시간
 
-    const responseGoal = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/review-goal/${currentYear}/${user.value.id}`);
+    const responseGoal = await axios.get(`/api/review-goal/${currentYear}/${user.value.id}`);
 
     console.log(responseGoal.data.findGoal.approvalStatus);
 
@@ -187,7 +231,7 @@ const fetchReviewAdd = async () => {
       throw new Error('평가 목표가 승인되지 않았습니다.');
     }
 
-    const responseReview = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/performance-review/mid/${currentYear}/${user.value.id}`)
+    const responseReview = await axios.get(`/api/performance-review/mid/${currentYear}/${user.value.id}`)
 
 
     console.log(responseReview);
@@ -202,12 +246,12 @@ const fetchReviewAdd = async () => {
       }
 
       const responseAdd = await axios.post(
-          `http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/performance-review`,
+          `/api/performance-review`,
           sendData
       );
 
       const id = responseAdd.data.performanceReview.id
-      const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/performance-review/detail/${id}`);
+      const response = await axios.get(`/api/performance-review/detail/${id}`);
 
       const review = response.data.findDetailReview;
       reviewItemList.value = review.reviewItemList;
@@ -226,7 +270,7 @@ const fetchReviewAdd = async () => {
     } else {
       // 생성된 평가 있을 때
       const id = responseReview.data.findReview.id
-      const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/performance-review/detail/${id}`);
+      const response = await axios.get(`/api/performance-review/detail/${id}`);
 
       const review = response.data.findDetailReview;
       reviewItemList.value = review.reviewItemList;
@@ -344,7 +388,7 @@ async function memberSave() {
       console.log(sendData);
       try {
         await axios.put(
-            `http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/performance-review/in-progress`,
+            `/api/performance-review/in-progress`,
             sendData
         );
 
@@ -399,7 +443,7 @@ async function submit() {
       console.log(sendData);
       try {
         await axios.put(
-            `http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/performance-review/submit`,
+            `/api/performance-review/submit`,
             sendData
         );
 
@@ -432,6 +476,9 @@ async function submit() {
   margin-top: 2%;
   margin-left: -0.5%;
   color: #000000;
+  display: grid;
+  grid-template-columns: 3% 22% 4%;
+  align-items: center;
 }
 
 .reviewTitle h1 {
@@ -443,6 +490,14 @@ async function submit() {
 
 .reviewIcon {
   width: 80%;
+}
+
+.guide {
+  width: 60%;
+  height: 25px;
+  grid-column: 3;
+  margin: 0;
+  cursor: pointer;
 }
 
 .titleTableContainer {

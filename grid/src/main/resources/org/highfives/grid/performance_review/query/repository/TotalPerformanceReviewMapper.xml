@@ -18,12 +18,14 @@
             <result property="score" column="SCORE"/>
         </association>
         <association property="reviewee" javaType="org.highfives.grid.performance_review.query.dto.WriterDTO">
-            <id property="id" column="REViEWEE_ID"/>
-            <result property="employeeName" column="REViEWEE_NAME"/>
+            <id property="id" column="REVIEWEE_ID"/>
+            <result property="employeeName" column="REVIEWEE_NAME"/>
+            <result property="employeeNumber" column="REVIEWEE_NUMBER"/>
         </association>
         <association property="reviewer" javaType="org.highfives.grid.performance_review.query.dto.ApproverDTO">
-            <id property="id" column="REViEWER_ID"/>
-            <result property="employeeName" column="REViEWER_NAME"/>
+            <id property="id" column="REVIEWER_ID"/>
+            <result property="employeeName" column="REVIEWER_NAME"/>
+            <result property="employeeNumber" column="REVIEWER_NUMBER"/>
         </association>
     </resultMap>
 
@@ -35,10 +37,12 @@
         grade.id as 'GRADE_ID',
         grade.grade as 'GRADE',
         A.total_score as 'SCORE',
-        reviewee.id as 'REViEWEE_ID',
-        reviewee.employee_name as 'REViEWEE_NAME',
-        reviewer.id as 'REViEWER_ID',
-        reviewer.employee_name as 'REViEWER_NAME'
+        reviewee.id as 'REVIEWEE_ID',
+        reviewee.employee_name as 'REVIEWEE_NAME',
+        reviewee.employee_number as 'REVIEWEE_NUMBER',
+        reviewer.id as 'REVIEWER_ID',
+        reviewer.employee_name as 'REVIEWER_NAME',
+        reviewer.employee_number as 'REVIEWER_NUMBER'
         FROM total_performance_review as A
         JOIN (SELECT * FROM employee WHERE duties_id = 4) as reviewee
         ON A.reviewee_id = reviewee.id
@@ -58,10 +62,12 @@
         grade.id as 'GRADE_ID',
         grade.grade as 'GRADE',
         A.total_score as 'SCORE',
-        reviewee.id as 'REViEWEE_ID',
-        reviewee.employee_name as 'REViEWEE_NAME',
-        reviewer.id as 'REViEWER_ID',
-        reviewer.employee_name as 'REViEWER_NAME'
+        reviewee.id as 'REVIEWEE_ID',
+        reviewee.employee_name as 'REVIEWEE_NAME',
+        reviewee.employee_number as 'REVIEWEE_NUMBER',
+        reviewer.id as 'REVIEWER_ID',
+        reviewer.employee_name as 'REVIEWER_NAME',
+        reviewer.employee_number as 'REVIEWER_NUMBER'
         FROM total_performance_review as A
         JOIN (SELECT * FROM employee WHERE duties_id = 4) as reviewee
         ON A.reviewee_id = reviewee.id
@@ -83,8 +89,10 @@
         A.total_score as 'SCORE',
         reviewee.id as 'REViEWEE_ID',
         reviewee.employee_name as 'REViEWEE_NAME',
+        reviewee.employee_number as 'REViEWEE_NUMBER',
         reviewer.id as 'REViEWER_ID',
-        reviewer.employee_name as 'REViEWER_NAME'
+        reviewer.employee_name as 'REViEWER_NAME',
+        reviewer.employee_number as 'REViEWER_NUMBER'
         FROM total_performance_review as A
         JOIN (SELECT * FROM employee WHERE duties_id = 4) as reviewee
         ON A.reviewee_id = reviewee.id

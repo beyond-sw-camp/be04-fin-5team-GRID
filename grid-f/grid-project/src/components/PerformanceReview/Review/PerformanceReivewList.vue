@@ -2,9 +2,11 @@
   <div class="PerformanceReviewListContainer">
     <div class="PerformanceReviewListTitle">
       <h1 class="mb-1"><i class="bi bi-award fs-3"></i>&nbsp; 업적 평가 조회</h1>
+      <img src="@/assets/buttons/guide.png" class="guide"
+           @click="showModal('guideReview')"></img>
     </div>
     <div class="PerformanceTableContainer">
-      <table class="table">
+      <table class="table table-hover">
         <thead>
         <tr>
           <th>No</th>
@@ -12,7 +14,9 @@
           <th>종류</th>
           <th>평가명</th>
           <th>승인상태</th>
+          <th>작성자 사번</th>
           <th>작성자</th>
+          <th>결재자 사번</th>
           <th>결재자</th>
           <th>세부정보</th>
         </tr>
@@ -30,13 +34,60 @@
             <b-badge variant="primary" v-else-if="item.approvalStatus === 'C'">확인 중</b-badge>
             <b-badge variant="success" v-else-if="item.approvalStatus === 'V'">확정</b-badge>
           </td>
+          <td>{{ getEmployeeNumber(item.writer) }}</td>
           <td>{{ getEmployeeName(item.writer) }}</td>
+          <td>{{ getEmployeeNumber(item.approver) }}</td>
           <td>{{ getEmployeeName(item.approver) }}</td>
-          <td><button @click="goToDetailPage(item.id)"><img class="more" src="@/assets/buttons/zoom.png"></button></td>
+          <td>
+            <b-badge @click="goToDetailPage(item.id)">
+              &#x2139;
+            </b-badge>
+<!--            <button @click="goToDetailPage(item.id)"><img class="more" src="@/assets/buttons/zoom.png"></button>-->
+          </td>
         </tr>
         </tbody>
       </table>
     </div>
+
+    <!-- 가이드 모달 -->
+    <div class="modal fade" id="guideReview" tabindex="-1" aria-labelledby="guideManageLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title" id="guideManageLabel">업적 평가 목표 가이드</h4>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div class="example-content">
+              <p>업적 평가를 볼 수 있는 페이지 입니다. </p>
+              <hr>
+              <p>
+                팀원은 1년에 2번 업적 평가를 작성할 수 있습니다.<br>
+                업적 평가는 팀원인 직원이 6월과 12월에 작성 가능합니다.<br>
+                업적 평가 목표가 승인되어야 중간 평가를 작성할 수 있습니다.<br>
+                중간 평가가 확정되어야 연말 평가를 작성할 수 있습니다.<br>
+                업적 평가의 점수는 가중치와 등급을 계산하여 부여됩니다.<br>
+                (현재는 모든 기간 작성할 수 있도록 열어두었습니다.)
+              </p>
+              <p>팀장</p>
+              <p>&nbsp;자신이 결재 요청 받은 업적 평가를 조회할 수 있습니다.</p>
+              <p>팀원</p>
+              <p>&nbsp;자신이 작성한 업적 평가를 조회할 수 있습니다</p>
+              <p>1. 승인 상태</p>
+              <p>&nbsp;1-1. 작성 중: 팀원이 목표를 작성하고 있는 상태</p>
+              <p>&nbsp;1-2. 상신: 팀원이 목표를 작성하고 결재를 올린 상태</p>
+              <p>&nbsp;1-3. 확인 중: 팀장이 목표를 보고 확정을 판단 중인 상태</p>
+              <p>&nbsp;1-4. 확정: 팀장이 팀원의 평가를 확정한 상태 </p>
+              <p>2. 세부 정보를 통해 자세한 평가 내용을 볼 수 있습니다.</p>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <nav class="pg" aria-label="Page navigation example" >
       <ul class="pagination">
         <li class="page-item" :class="{ disabled: currentPage === 1 }">
@@ -82,10 +133,15 @@ const reviewList = ref([]);
 const currentPage = ref(1);
 const itemsPerPage = 10;
 
+const showModal = (modalId) => {
+  const modal = new bootstrap.Modal(document.getElementById(modalId));
+  modal.show();
+};
+
 const fetchMemberReview = async () => {
   try {
     // 팀원일때
-    const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/performance-review/member/${user.value.id}`);
+    const response = await axios.get(`/api/performance-review/member/${user.value.id}`);
 
     console.log(response.data.findReviewList);
     reviewList.value = response.data.findReviewList;
@@ -97,7 +153,7 @@ const fetchMemberReview = async () => {
 const fetchLeaderReview = async () => {
   try {
     // 팀장일 때
-    const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/performance-review/leader/${user.value.id}`);
+    const response = await axios.get(`/api/performance-review/leader/${user.value.id}`);
     console.log(response.data.findReviewList);
     reviewList.value = response.data.findReviewList;
   } catch (error) {
@@ -199,6 +255,10 @@ const getEmployeeName = (employee) => {
   return employee ? employee.employeeName : '';
 };
 
+const getEmployeeNumber = (employee) => {
+  return employee ? employee.employeeNumber : '';
+};
+
 const goToDetailPage = (id) => {
   console.log(id);
   router.push(`/performance-review/detail/${id}`);
@@ -219,6 +279,9 @@ const goToDetailPage = (id) => {
   margin-top: 2%;
   margin-left: -0.5%;
   color: #000000;
+  display: grid;
+  grid-template-columns: 3% 18% 4%;
+  align-items: center;
 }
 
 .PerformanceReviewListTitle h1 {
@@ -230,6 +293,14 @@ const goToDetailPage = (id) => {
 
 .PerformanceIcon {
   width: 80%;
+}
+
+.guide {
+  width: 60%;
+  height: 25px;
+  grid-column: 3;
+  margin: 0;
+  cursor: pointer;
 }
 
 .more {
