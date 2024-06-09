@@ -26,6 +26,8 @@ public interface UserService extends UserDetailsService {
 
     boolean deleteUser(String employeeNumber);
 
+    boolean rejoinUser(String employeeNumber);
+
     boolean resetPwd(Map<String, String> infos);
 
     boolean changeGender(int userId);

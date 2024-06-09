@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import static org.highfives.grid.user.command.aggregate.YN.N;
 import static org.highfives.grid.user.command.aggregate.YN.Y;
 
 @Service("UserCommandService")
@@ -144,6 +145,23 @@ public class UserServiceImpl implements UserService{
             userInfo.setResignTime(resignTime);
             userInfo.setAbsenceYn(Y);
             userInfo.setAbsenceContent("퇴사");
+
+            userRepository.save(userInfo);
+        } catch(NullPointerException e) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean rejoinUser(String eNum) {
+
+        try {
+            Employee userInfo = userRepository.findByEmployeeNumber(eNum);
+            userInfo.setResignYn(N);
+            userInfo.setResignTime(null);
+            userInfo.setAbsenceYn(N);
+            userInfo.setAbsenceContent(null);
 
             userRepository.save(userInfo);
         } catch(NullPointerException e) {

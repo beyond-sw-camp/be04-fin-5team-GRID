@@ -12,9 +12,9 @@ import java.util.List;
 import java.util.Map;
 
 public interface UserService {
-    Page<UserDTO> findAllUsers(Pageable pageable, List<EmpStatusDTO> absenceInfo);
+    Page<UserDTO> findAllUsers(Pageable pageable, List<EmpStatusDTO> absenceInfo, String auth);
 
-    Page<UserDTO> findUsersByName(String name, Pageable pageable, List<EmpStatusDTO> absenceInfo);
+    Page<UserDTO> findUsersByName(String name, Pageable pageable, List<EmpStatusDTO> absenceInfo, String auth);
 
     LeaderInfoDTO findLeaderInfo(int id);
 
