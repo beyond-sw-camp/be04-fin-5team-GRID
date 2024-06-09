@@ -76,7 +76,7 @@
           </div>
           <hr style="border-top: 2px dotted #000; margin-top: 20px; margin-bottom: 30px;">
         </div>
-        <ApprovalCard :approval="state.approval"/>
+        <ApprovalCard :approval="state.approval" :typeId="typeId"/>
       </b-card>
     </div>
     <ApprovalChain :typeId="typeId" :approvalId="approvalId" :approvalStatus="state.approval['approvalStatus']" :requesterId="state.approval['employeeId']" :cancelStatus="state.approval['cancelYn']" :cancelDoc="state.approval['cancelDocId']"/>
