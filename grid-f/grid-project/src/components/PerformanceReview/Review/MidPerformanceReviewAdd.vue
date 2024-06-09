@@ -477,7 +477,7 @@ async function submit() {
   margin-left: -0.5%;
   color: #000000;
   display: grid;
-  grid-template-columns: 3% 22% 4%;
+  grid-template-columns: 24% 4%;
   align-items: center;
 }
 
@@ -495,7 +495,7 @@ async function submit() {
 .guide {
   width: 60%;
   height: 25px;
-  grid-column: 3;
+  grid-column: 2;
   margin: 0;
   cursor: pointer;
 }

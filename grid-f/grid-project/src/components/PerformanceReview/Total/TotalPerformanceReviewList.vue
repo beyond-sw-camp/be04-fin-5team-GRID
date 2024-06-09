@@ -271,7 +271,7 @@ const goToDetailPage = (id) => {
   margin-left: -0.5%;
   color: #000000;
   display: grid;
-  grid-template-columns: 3% 23% 4%;
+  grid-template-columns: 25% 4%;
   align-items: center;
 }
 
@@ -289,7 +289,7 @@ const goToDetailPage = (id) => {
 .guide {
   width: 60%;
   height: 25px;
-  grid-column: 3;
+  grid-column: 2;
   margin: 0;
   cursor: pointer;
 }
