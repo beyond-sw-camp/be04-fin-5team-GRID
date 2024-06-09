@@ -1,5 +1,6 @@
 package org.highfives.grid.user.query.service;
 
+import org.highfives.grid.approval.query.dto.EmpStatusDTO;
 import org.highfives.grid.user.query.dto.DutiesDTO;
 import org.highfives.grid.user.query.dto.LeaderInfoDTO;
 import org.highfives.grid.user.query.dto.PositionDTO;
@@ -11,13 +12,13 @@ import java.util.List;
 import java.util.Map;
 
 public interface UserService {
-    Page<UserDTO> findAllUsers(Pageable pageable);
+    Page<UserDTO> findAllUsers(Pageable pageable, List<EmpStatusDTO> absenceInfo);
 
-    Page<UserDTO> findUsersByName(String name, Pageable pageable);
+    Page<UserDTO> findUsersByName(String name, Pageable pageable, List<EmpStatusDTO> absenceInfo);
 
     LeaderInfoDTO findLeaderInfo(int id);
 
-    UserDTO findUserByEmployeeNum(String eNum);
+    UserDTO findUserByEmployeeNum(String eNum, List<EmpStatusDTO> absenceInfo);
 
     UserDTO findUserById(int id);
 

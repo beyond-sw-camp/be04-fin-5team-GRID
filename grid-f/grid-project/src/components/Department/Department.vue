@@ -4,9 +4,9 @@
       <div class="header-title">
         <h1 class="mb-1"><i class="bi bi-diagram-2 fs-3"></i>&nbsp; 부서 정보</h1>
       </div>
-      <button v-if="userRole === 'ROLE_ADMIN'" class="updateLeaderBtn" @click="showModal('updateLeaderModal')">부서장 수정</button>
-      <button v-if="userRole === 'ROLE_ADMIN'" class="addbtn" @click="showModal('addNewModal')">추가하기</button>
-      <button v-if="userRole === 'ROLE_ADMIN'" class="modifybtn" @click="modifyDepartmentsStatus">활성/비활성</button>
+      <button v-if="userRole === 'ROLE_ADMIN'" class="updateLeaderBtn btn-custom-1" @click="showModal('updateLeaderModal')"><span>부서장 수정</span></button>
+      <button v-if="userRole === 'ROLE_ADMIN'" class="addbtn btn-custom-1" @click="showModal('addNewModal')"><span>추가하기</span></button>
+      <button v-if="userRole === 'ROLE_ADMIN'" class="modifybtn btn-custom-1" @click="modifyDepartmentsStatus"><span>활성/비활성</span></button>
     </div>
     <div class="search">
       <input type="text" class="searchBox" placeholder="부서명 검색" v-model="searchQuery">
@@ -35,7 +35,7 @@
           <td>{{ formatDate(department.endTime) }}</td>
           <td>{{ department.leaderName }}</td>
           <td>
-            <button class="view-details-btn" @click="goToDepartmentTeams(department.id)">소속팀 목록</button>
+            <button class="view-details-btn btn-custom-1" @click="goToDepartmentTeams(department.id)"><span>소속팀 목록</span></button>
           </td>
         </tr>
       </tbody>
@@ -202,7 +202,7 @@ const newDepartment = ref({
 
 const fetchLeaders = async () => {
   try {
-    const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/list/all`);
+    const response = await axios.get(`http://localhost:10000/users/list/all`);
     leaders.value = response.data.result;
     searchLeaders();
   } catch (error) {
@@ -213,7 +213,7 @@ const fetchLeaders = async () => {
 // Fetch department list
 const fetchDepartments = async () => {
   try {
-    const response = await axios.get('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/department/find-all');
+    const response = await axios.get('http://localhost:10000/department/find-all');
     const departmentsData = response.data.result;
     for (const department of departmentsData) {
       department.leaderName = await fetchLeaderName(department.leaderId);
@@ -228,7 +228,7 @@ const fetchDepartments = async () => {
 // Fetch leader name by ID
 const fetchLeaderName = async (leaderId) => {
   try {
-    const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/id/${leaderId}`);
+    const response = await axios.get(`http://localhost:10000/users/id/${leaderId}`);
     return response.data.result.name;
   } catch (error) {
     console.error('부서장 이름을 불러오는 중 에러 발생:', error);
@@ -339,7 +339,7 @@ const addNewDepartment = async () => {
   }
 
   try {
-    await axios.post('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/department', newDepartment.value);
+    await axios.post('http://localhost:10000/department', newDepartment.value);
     await fetchDepartments();
     const modal = bootstrap.Modal.getInstance(document.getElementById('addNewModal'));
     modal.hide();
@@ -394,7 +394,7 @@ const modifyDepartmentsStatus = async () => {
   }
 
   try {
-    const response = await axios.put('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/department/status', selectedDepartments.value);
+    const response = await axios.put('http://localhost:10000/department/status', selectedDepartments.value);
     if (response.status === 200) {
       alert('수정되었습니다.');
       await fetchDepartments();
@@ -439,7 +439,7 @@ const updateLeader = async () => {
   }
 
   try {
-    const response = await axios.put('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/department/department-leader', {
+    const response = await axios.put('http://localhost:10000/department/department-leader', {
       id: selectedDepartmentId.value,
       leaderId: newLeaderId.value
     });
@@ -511,9 +511,9 @@ const searchLeaders = () => {
   padding: 5px 5px;
   border-radius: 4px;
   font-size: 12px;
-  font-style: bold;
+  border: 0.5px solid #ddd;
 }
-
+  
 .searchBtn {
   grid-column-start: 6;
   margin-left: 2%;
@@ -671,7 +671,42 @@ tr:hover {
   font-size: 12px;
 }
 
-.view-details-btn:hover {
-  background-color: #065f5b;
+.btn-custom-1 {
+    background-color: white;
+    color: #088A85;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.4s, color 0.4s;
+    position: relative;
+    overflow: hidden;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+.btn-custom-1::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background-color: #088A85;
+    transition: left 0.4s;
+    z-index: 1;
+}
+
+.btn-custom-1:hover::before {
+    left: 0;
+}
+
+.btn-custom-1 span {
+    position: relative;
+    z-index: 2;
+    color: #088A85;
+}
+
+.btn-custom-1:hover span {
+    color: white;
 }
 </style>
