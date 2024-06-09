@@ -67,8 +67,7 @@
       }
 
       state.sReqApprovalList = response.data.approvalEmpResultList.slice(0, 5);
-      console.log(state.sReqApprovalList);
-      state.sReqApprovalList.type = 1;
+      state.sReqApprovalList.type = 0;
 
     } catch (error) {
       console.error('Fetch error: ' + error.message);
