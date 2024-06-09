@@ -145,4 +145,8 @@
   grid-column-start: 2;
   grid-column-end: 3;
 }
+
+.text-muted {
+  cursor: pointer;
+}
 </style>
