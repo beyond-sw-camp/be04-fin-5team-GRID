@@ -1,5 +1,6 @@
 package org.highfives.grid.user.query.controller;
 
+import io.jsonwebtoken.Claims;
 import org.highfives.grid.approval.query.dto.EmpStatusDTO;
 import org.highfives.grid.approval.query.service.ApprovalService;
 import org.highfives.grid.user.query.dto.DutiesDTO;
@@ -18,7 +19,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -55,11 +55,15 @@ public class UserController {
     @GetMapping("/list")
     public ResponseEntity<ResFindListVO> findAllUsers(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "12") int size) {
+            @RequestParam(defaultValue = "12") int size,
+            @RequestAttribute("claims") Claims token) {
 
+        System.out.println(" 여기까지 들어오나? " + token.get("auth"));
+        String auth = (String) token.get("auth");
         Pageable pageable = PageRequest.of(page, size);
         List<EmpStatusDTO> absenceInfo = approvalService.findEmpStatus();
-        Page<UserDTO> resultDTOs = userService.findAllUsers(pageable, absenceInfo);
+
+        Page<UserDTO> resultDTOs = userService.findAllUsers(pageable, absenceInfo, auth);
         List<SimpleInfo> resultList = DTOtoSimpleInfo(resultDTOs.getContent());
 
         ResFindListVO response = new ResFindListVO(200, "Success to find user list", "/users/{id}", resultList,
@@ -73,11 +77,14 @@ public class UserController {
     public ResponseEntity<ResFindListVO> findUsersByName(
             @PathVariable("name") String name,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "12") int size) {
+            @RequestParam(defaultValue = "12") int size,
+            @RequestAttribute("claims") Claims token) {
 
+        System.out.println(" 여기까지 들어오나? ");
+        String auth = (String) token.get("auth");
         Pageable pageable = PageRequest.of(page, size);
         List<EmpStatusDTO> absenceInfo = approvalService.findEmpStatus();
-        Page<UserDTO> resultDTOs = userService.findUsersByName(name, pageable, absenceInfo);
+        Page<UserDTO> resultDTOs = userService.findUsersByName(name, pageable, absenceInfo, auth);
         List<SimpleInfo> resultList = DTOtoSimpleInfo(resultDTOs.getContent());
 
         ResFindListVO response = new ResFindListVO(200, "Success to find user list", "/users/{id}", resultList,

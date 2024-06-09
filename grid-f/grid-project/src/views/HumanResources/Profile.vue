@@ -39,6 +39,7 @@
                 <div style="display: flex;">
                     <div>
                         <b-badge v-if="result.absenceStartTime" variant="light">{{ result.absenceContent }} : &nbsp; {{ result.absenceStartTime }} - {{ result.absenceEndTime }} </b-badge>
+                        <b-badge v-if="result.resignYn === 'Y'" variant="danger"> 퇴사 </b-badge>
                     </div>
                 </div>
             </div>
@@ -90,8 +91,6 @@ const userRole = ref('');
 const userId = ref('');
 const givenEmail = ref('');
 const router = useRouter();
-const startTime = ref('');
-const endTime = ref('');
 
 const profileUrl = computed(() => {
     return result.value.profilePath ? result.value.profilePath : defaultProfileImage;
