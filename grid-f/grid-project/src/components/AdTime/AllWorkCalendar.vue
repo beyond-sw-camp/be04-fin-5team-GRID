@@ -113,22 +113,15 @@ const fetchAllEvent = async () => {
     const o = responseO.data.approvalEmpResultList
     const oEvents = transformEvents(o, '시간외 근무', '#c0caff', 3);
 
-    // 단축 근무 조회
-    const responseRw = await axios.get(`/api/approval/all/3/1`);
-    console.log(responseRw.data);
-
-    const rw = responseRw.data.approvalEmpResultList
-    const rwEvents = transformEvents(rw, '단축 근무', '#cbffb6', 4);
-
     // 휴가 조회
     const responseV = await axios.get(`/api/approval/all/4/1`);
     console.log(responseV.data);
 
     const v = responseV.data.approvalEmpResultList
-    const vEvents = transformEvents(v, '휴가', '#ffdbf7', 5);
+    const vEvents = transformEvents(v, '휴가', '#ffdbf7', 4);
 
 
-    events.value = [...btEvents, ...oEvents, ...rwEvents, ...vEvents];
+    events.value = [...btEvents, ...oEvents, ...vEvents];
     console.log(events.value);
 
   } catch (error) {

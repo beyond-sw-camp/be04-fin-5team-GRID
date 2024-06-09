@@ -6,4 +6,5 @@ import lombok.Data;
 public class WriterDTO {
     private int id;
     private String employeeName;
+    private String employeeNumber;
 }

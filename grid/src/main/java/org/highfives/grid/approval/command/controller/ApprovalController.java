@@ -357,4 +357,10 @@ public class ApprovalController {
 
          return pdfService.downloadFile(typeId, approvalId);
     }
+
+    @GetMapping("/downloadRW/{approvalId}")
+    public ResponseEntity<InputStreamResource> downloadRW(@PathVariable int approvalId) {
+
+        return pdfService.downloadRW(approvalId);
+    }
 }

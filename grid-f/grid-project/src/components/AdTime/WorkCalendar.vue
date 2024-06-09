@@ -65,7 +65,7 @@ const initCalendar = async (events) => {
       },
       customButtons: {
         mainCalendar: {
-          text: '메인',
+          text: 'main',
           click: function () {
             router.push('/main');
           }
@@ -114,77 +114,23 @@ const fetchEmployeeEvent = async () => {
     const responseBt = await axios.get(`/api/approval/list/1/1/${route.params.id}`);
 
     const bt = responseBt.data.approvalEmpResultList
-    const btEvents = transformEvents(bt, '출장', '#fad7d7');
+    const btEvents = transformEvents(bt, '출장', '#fad7d7', 2);
 
 
     // 시간외 근무 조회
     const responseO = await axios.get(`/api/approval/list/2/1/${route.params.id}`);
 
     const o = responseO.data.approvalEmpResultList
-    const oEvents = transformEvents(o, '시간외 근무', '#c0caff');
-
-    // 단축 근무 조회
-    const responseRw = await axios.get(`/api/approval/list/3/1/${route.params.id}`);
-
-    const rw = responseRw.data.approvalEmpResultList
-    const rwEvents = transformEvents(rw, '단축 근무', '#cbffb6');
+    const oEvents = transformEvents(o, '시간외 근무', '#c0caff', 3);
 
     // 휴가 조회
     const responseV = await axios.get(`/api/approval/list/4/1/${route.params.id}`);
 
     const v = responseV.data.approvalEmpResultList
-    const vEvents = transformEvents(v, '휴가', '#ffdbf7');
+    const vEvents = transformEvents(v, '휴가', '#ffdbf7',4);
 
 
-    events.value = [...adEvents, ...btEvents, ...oEvents, ...rwEvents, ...vEvents];
-
-  } catch (error) {
-    console.error('에러 발생:', error);
-  }
-};
-
-const fetchAllEvent = async () => {
-  try {
-    // 출근 조회
-    const responseAdTime = await axios.get(`/api/ad-time/${userId.value}`);
-
-    const adTime = responseAdTime.data.adTimeDTOList;
-
-    const adEvents = transformAdEvents(adTime);
-
-    // updateCalendarEvents(events.value);
-    // 출장 조회
-    const responseBt = await axios.get(`/api/approval/list/1/1/${userId.value}`);
-    console.log(responseBt.data);
-
-    const bt = responseBt.data.approvalEmpResultList
-    const btEvents = transformEvents(bt, '출장', '#fad7d7', 2);
-
-
-    // 시간외 근무 조회
-    const responseO = await axios.get(`/api/approval/list/2/1/${userId.value}`);
-    console.log(responseO.data);
-
-    const o = responseO.data.approvalEmpResultList
-    const oEvents = transformEvents(o, '시간외 근무', '#c0caff', 3);
-
-    // 단축 근무 조회
-    const responseRw = await axios.get(`/api/approval/list/3/1/${userId.value}`);
-    console.log(responseRw.data);
-
-    const rw = responseRw.data.approvalEmpResultList
-    const rwEvents = transformEvents(rw, '단축 근무', '#cbffb6', 4);
-
-    // 휴가 조회
-    const responseV = await axios.get(`/api/approval/list/4/1/${userId.value}`);
-    console.log(responseV.data);
-
-    const v = responseV.data.approvalEmpResultList
-    const vEvents = transformEvents(v, '휴가', '#ffdbf7', 5);
-
-
-    events.value = [...adEvents, ...btEvents, ...oEvents, ...rwEvents, ...vEvents];
-    console.log(events.value);
+    events.value = [...adEvents, ...btEvents, ...oEvents, ...vEvents];
 
   } catch (error) {
     console.error('에러 발생:', error);
@@ -224,13 +170,9 @@ onMounted(async () => {
     userId.value = decodedToken?.id || '';
   }
 
-  if (userRole.value === 'ROLE_ADMIN') {
-    await fetchAllEvent();
-    initCalendar(events);
-  } else if (userRole.value === 'ROLE_USER') {
-    await fetchEmployeeEvent();
-    initCalendar(events);
-  }
+  await fetchEmployeeEvent();
+  initCalendar(events);
+
 });
 
 

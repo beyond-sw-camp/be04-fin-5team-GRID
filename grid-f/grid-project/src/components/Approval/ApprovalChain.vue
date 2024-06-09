@@ -3,25 +3,26 @@
     로딩 중
   </div>
   <div v-else>
-    <h3 class="fw-bolder mb-3"><i class="bi bi-link-45deg"></i>&nbsp; 결재 라인</h3>
+    <h3 class="fw-bolder mb-3" style="font-family: 'IBMPlexSansKR-Regular', sans-serif;"><i class="bi bi-link-45deg"></i>&nbsp; 결재 라인</h3>
     <b-card class="container shadow">
       <div class="list-group-item list-group-item-action d-flex" aria-current="true">
-        <div class=" mb-3 pt-2 d-flex gap-2 w-100 justify-content-between">
+        <div class=" mb-3 pt-2 d-flex gap-2 w-100 justify-content-between" style="font-family: 'IBMPlexSansKR-Regular', sans-serif;">
           <h6 class="opacity-50"></h6>
           <h6 class="mb-0 opacity-75 fw-bolder">이름</h6>
           <h6 class="mb-0 opacity-75 fw-bolder">&nbsp;&nbsp;&nbsp; 단계</h6>
           <h6 class="mb-0 opacity-75 fw-bolder">상태&nbsp;</h6>
         </div>
       </div>
-      <div v-for="chain in state.approvalChainList" :key="chain.id">
+      <div v-for="chain in state.approvalChainList" :key="chain.id" class="chain">
         <div href="#" class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
-          <img :src="chain.user['profilePath']" alt="profile" width="50" height="50" class="rounded-circle flex-shrink-0">
+          <template v-if="chain.user['profilePath'] === null"><img :src="defaultProfileImage" alt="profile" width="50" height="50" class="rounded-circle flex-shrink-0"></template>
+          <template v-else><img :src="chain.user['profilePath']" alt="profile" width="50" height="50" class="rounded-circle flex-shrink-0"/></template>
           <div class="d-flex gap-2 w-100 justify-content-between">
             <div class="mt-1">
               <h5 class="fw-bolder mb-0">&nbsp;&nbsp;&nbsp;&nbsp;{{ chain.user['name'] }}</h5>
               <p class="mb-0 opacity-75">&nbsp;&nbsp;&nbsp;&nbsp;{{ chain.user['team'].teamName }} / {{ chain.user['duties'].dutiesName }}</p>
             </div>
-            <h6 class="mt-3">{{ chain.stage }}단계</h6>
+            <h6 class="mt-3" style="font-family: 'IBMPlexSansKR-Regular', sans-serif;">{{ chain.stage }}단계</h6>
             <div>
               <b-badge class="mt-3" variant="success" v-if="chain.chainStatus === 'A'">승인</b-badge>
               <b-badge class="mt-3" variant="danger" v-if="chain.chainStatus === 'D'">반려</b-badge>
@@ -32,7 +33,7 @@
       </div>
     </b-card>
     <b-card class="shadow mt-3">
-      <h5 class="fw-bolder">댓글</h5>
+      <h5 class="fw-bolder" style="font-family: 'IBMPlexSansKR-Regular', sans-serif;">댓글</h5>
       <div v-for="chain in state.approvalChainList" :key="chain.id">
         <template v-if="chain.comment !== null">
           <div class="d-flex text-body-secondary pt-3">
@@ -75,6 +76,8 @@
   import axios from "axios";
   import {onMounted, reactive, ref} from "vue";
   import {useRouter} from "vue-router";
+
+  import defaultProfileImage from "@/assets/defaultProfile.jpg";
 
   const userId = ref();
   const userRole = ref();
@@ -312,6 +315,9 @@
   font-weight: 600;
 }
 
+.chain {
+  font-family: 'IBMPlexSansKR-Regular', sans-serif;
+}
 .buttons {
   display:grid;
   grid-template-columns: 10% 18% 2% 18% 2% 18% 2% 18% 2% 10%;

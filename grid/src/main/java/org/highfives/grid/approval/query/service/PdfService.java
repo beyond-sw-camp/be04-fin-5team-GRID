@@ -19,4 +19,5 @@ public interface PdfService {
     String VexportToPDF(VacationApprovalDTO vacationApproval, ByteArrayOutputStream outputStream);
     Map<String, String> pdfS3Upload(ByteArrayOutputStream outputStream);
     ResponseEntity<InputStreamResource> downloadFile(int typeId, int approvalId);
+    ResponseEntity<InputStreamResource> downloadRW(int approvalId);
 }
