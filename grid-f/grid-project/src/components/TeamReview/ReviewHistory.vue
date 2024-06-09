@@ -104,13 +104,13 @@
                 </div>
               </div>
               <div class="mb-3">
-                <label for="dayOfUsing" class="form-label">평가 대상자</label>
+                <!-- <label for="dayOfUsing" class="form-label">평가 대상자</label>
                 <select class="form-select" id="newRevieweeId" v-model="newRevieweeId" required>
                   <option value="" disabled selected>평가 대상자를 선택해주세요.</option>
                   <option v-for="employee in employees" :key="employee.id" :value="employee.id">
                     {{ employee.name }}
                   </option>
-                </select>
+                </select> -->
               </div>
               <div class="button-container">
                 <button type="submit" class="btn btn-primary">생성</button>
