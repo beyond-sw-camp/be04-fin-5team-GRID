@@ -136,7 +136,7 @@
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header">
-            <h4 class="modal-title" id="guideManageLabel">업적 평가 목표 가이드</h4>
+            <h4 class="modal-title" id="guideManageLabel">중간 업적 평가 가이드</h4>
             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
           </div>
           <div class="modal-body">
