@@ -221,4 +221,8 @@ onMounted(async () => {
   font-weight: 300;
   font-family: 'IBMPlexSansKR-Regular', sans-serif;
 }
+
+.text-end {
+  cursor: pointer;
+}
 </style>
