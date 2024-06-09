@@ -1,5 +1,8 @@
 package org.highfives.grid.user.query.service;
 
+import org.highfives.grid.approval.query.dto.EmpStatusDTO;
+import org.highfives.grid.approval.query.service.ApprovalService;
+import org.highfives.grid.user.command.aggregate.YN;
 import org.highfives.grid.user.query.dto.DutiesDTO;
 import org.highfives.grid.user.query.dto.LeaderInfoDTO;
 import org.highfives.grid.user.query.dto.PositionDTO;
@@ -15,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service("QueryUserService")
 public class UserServiceImpl implements UserService{
@@ -30,23 +34,34 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public UserDTO findUserByEmployeeNum(String eNum) {
-
+    public UserDTO findUserByEmployeeNum(String eNum, List<EmpStatusDTO> absenceInfo) {
         Map<String, Object> info = new HashMap<>();
         info.put("eNum", eNum);
 
-        try {
-            UserDTO result = userMapper.getUserInfo(info);
-            result.setProfilePath(imgMapper.getProfileImg(result.getId()));
-            result.setSealPath(imgMapper.getSealImg(result.getId()));
+        Map<Integer, EmpStatusDTO> absenceInfoMap = absenceInfo.stream()
+                .collect(Collectors.toMap(EmpStatusDTO::getEmployeeId, empStatusDTO -> empStatusDTO));
 
-            System.out.println("result = " + result);
-            return result;
-
-        } catch (NullPointerException e) {
+        UserDTO result = userMapper.getUserInfo(info);
+        if (result == null) {
             return null;
         }
+
+        if( result.getResignYn() == YN.N) {
+            EmpStatusDTO absence = absenceInfoMap.get(result.getId());
+            if (absence != null) {
+                result.setAbsenceYn(YN.Y);
+                result.setAbsenceContent(absence.getStatus());
+                result.setAbsenceStartTime(absence.getStartTime());
+                result.setAbsenceEndTime(absence.getEndTime());
+            }
+        }
+
+        result.setProfilePath(imgMapper.getProfileImg(result.getId()));
+        result.setSealPath(imgMapper.getSealImg(result.getId()));
+
+        return result;
     }
+
 
     @Override
     public UserDTO findUserById(int id) {
@@ -98,28 +113,50 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public Page<UserDTO> findAllUsers(Pageable pageable) {
+    public Page<UserDTO> findAllUsers(Pageable pageable, List<EmpStatusDTO> absenceInfo, String auth) {
         long offset = pageable.getOffset();
         int pageSize = pageable.getPageSize();
-        List<UserDTO> userList = userMapper.getUserList(offset, pageSize);
+        List<UserDTO> userList = userMapper.getUserList(offset, pageSize, auth);
 
-        userList.forEach(userDTO -> {
-            userDTO.setProfilePath(imgMapper.getProfileImg(userDTO.getId()));
+        Map<Integer, EmpStatusDTO> absenceInfoMap = absenceInfo.stream()
+                .collect(Collectors.toMap(EmpStatusDTO::getEmployeeId, empStatusDTO -> empStatusDTO));
+
+        userList.forEach(user -> {
+            System.out.println("user.getId() + user.getResignYn() = " + user.getId() + user.getResignYn());
+            if(user.getResignYn().equals(YN.N)) {
+                EmpStatusDTO empStatusDTO = absenceInfoMap.get(user.getId());
+                if (empStatusDTO != null) {
+                    user.setAbsenceYn(YN.Y);
+                    user.setAbsenceContent(empStatusDTO.getStatus());
+                }
+            }
+            user.setProfilePath(imgMapper.getProfileImg(user.getId()));
         });
 
-        long total = userMapper.countAllUsers(); // 총 사용자 수를 계산하는 메소드가 필요합니다.
+        long total = userMapper.countAllUsers();
 
         return new PageImpl<>(userList, pageable, total);
     }
 
     @Override
-    public Page<UserDTO> findUsersByName(String name, Pageable pageable) {
+    public Page<UserDTO> findUsersByName(String name, Pageable pageable, List<EmpStatusDTO> absenceInfo,
+                                         String auth) {
         long offset = pageable.getOffset();
         int pageSize = pageable.getPageSize();
-        List<UserDTO> userList = userMapper.getUserListByName(name, offset, pageSize);
+        List<UserDTO> userList = userMapper.getUserListByName(name, offset, pageSize, auth);
 
-        userList.forEach(userDTO -> {
-            userDTO.setProfilePath(imgMapper.getProfileImg(userDTO.getId()));
+        Map<Integer, EmpStatusDTO> absenceInfoMap = absenceInfo.stream()
+                .collect(Collectors.toMap(EmpStatusDTO::getEmployeeId, empStatusDTO -> empStatusDTO));
+
+        userList.forEach(user -> {
+            if(user.getResignYn() == YN.N) {
+                EmpStatusDTO empStatusDTO = absenceInfoMap.get(user.getId());
+                if (empStatusDTO != null) {
+                    user.setAbsenceYn(YN.Y);
+                    user.setAbsenceContent(empStatusDTO.getStatus());
+                }
+            }
+            user.setProfilePath(imgMapper.getProfileImg(user.getId()));
         });
 
         long total = userMapper.countUsersByName(name); // 총 이름 검색 결과 수를 계산하는 메소드가 필요합니다.

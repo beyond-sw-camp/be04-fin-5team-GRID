@@ -1,5 +1,8 @@
 package org.highfives.grid.user.query.controller;
 
+import io.jsonwebtoken.Claims;
+import org.highfives.grid.approval.query.dto.EmpStatusDTO;
+import org.highfives.grid.approval.query.service.ApprovalService;
 import org.highfives.grid.user.query.dto.DutiesDTO;
 import org.highfives.grid.user.query.dto.LeaderInfoDTO;
 import org.highfives.grid.user.query.dto.PositionDTO;
@@ -16,7 +19,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -26,11 +28,14 @@ public class UserController {
 
     private final UserService userService;
     private final ModelMapper modelMapper;
+    private final ApprovalService approvalService;
 
     @Autowired
-    public UserController(UserService userService, ModelMapper modelMapper) {
+    public UserController(UserService userService, ModelMapper modelMapper,
+                          ApprovalService approvalService) {
         this.userService = userService;
         this.modelMapper = modelMapper;
+        this.approvalService = approvalService;
     }
 
     // 전체 직원 조회
@@ -50,10 +55,15 @@ public class UserController {
     @GetMapping("/list")
     public ResponseEntity<ResFindListVO> findAllUsers(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "12") int size) {
+            @RequestParam(defaultValue = "12") int size,
+            @RequestAttribute("claims") Claims token) {
 
+        System.out.println(" 여기까지 들어오나? " + token.get("auth"));
+        String auth = (String) token.get("auth");
         Pageable pageable = PageRequest.of(page, size);
-        Page<UserDTO> resultDTOs = userService.findAllUsers(pageable);
+        List<EmpStatusDTO> absenceInfo = approvalService.findEmpStatus();
+
+        Page<UserDTO> resultDTOs = userService.findAllUsers(pageable, absenceInfo, auth);
         List<SimpleInfo> resultList = DTOtoSimpleInfo(resultDTOs.getContent());
 
         ResFindListVO response = new ResFindListVO(200, "Success to find user list", "/users/{id}", resultList,
@@ -67,10 +77,14 @@ public class UserController {
     public ResponseEntity<ResFindListVO> findUsersByName(
             @PathVariable("name") String name,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "12") int size) {
+            @RequestParam(defaultValue = "12") int size,
+            @RequestAttribute("claims") Claims token) {
 
+        System.out.println(" 여기까지 들어오나? ");
+        String auth = (String) token.get("auth");
         Pageable pageable = PageRequest.of(page, size);
-        Page<UserDTO> resultDTOs = userService.findUsersByName(name, pageable);
+        List<EmpStatusDTO> absenceInfo = approvalService.findEmpStatus();
+        Page<UserDTO> resultDTOs = userService.findUsersByName(name, pageable, absenceInfo, auth);
         List<SimpleInfo> resultList = DTOtoSimpleInfo(resultDTOs.getContent());
 
         ResFindListVO response = new ResFindListVO(200, "Success to find user list", "/users/{id}", resultList,
@@ -84,11 +98,12 @@ public class UserController {
     @GetMapping("/{employeeNumber}")
     public ResponseEntity<ResFindUserVO> findUserByEmployeeNum(@PathVariable("employeeNumber") String eNum) {
 
-        UserDTO userDTO = userService.findUserByEmployeeNum(eNum);
+        List<EmpStatusDTO> absenceInfo = approvalService.findEmpStatus();
+        UserDTO userDTO = userService.findUserByEmployeeNum(eNum, absenceInfo);
 
         if(userDTO != null){
             ResFindUserVO response =
-                new ResFindUserVO(200, "Success to find user", "/users/list", userDTO);
+                    new ResFindUserVO(200, "Success to find user", "/users/list", userDTO);
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } else {
             ResFindUserVO response =
@@ -164,7 +179,7 @@ public class UserController {
     // 팀 id로 해당 팀 직원들 조회
     @GetMapping("/team-list/{teamId}")
     public ResponseEntity<ResFindListVO> findTeamList(@PathVariable int teamId) {
-         List<UserDTO> userDTOList = userService.findTeamList(teamId);
+        List<UserDTO> userDTOList = userService.findTeamList(teamId);
 
         List<SimpleInfo> simpleInfos = DTOtoSimpleInfo(userDTOList);
 

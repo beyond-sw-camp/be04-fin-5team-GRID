@@ -1,98 +1,3 @@
-<script setup>
-  import {useRouter} from "vue-router";
-  import {onMounted, reactive, ref} from "vue";
-  import axios from "axios";
-
-  const props = defineProps({
-    approvalList: Array,
-    short: 0
-  })
-
-  const state = reactive({
-    type: props.approvalList.type,
-    short: props.short
-  })
-
-  let pathList = [
-    'bt', 'overtime', 'rw', 'vacation'
-  ]
-
-  const fields = [
-    { key: 'index', label: '번호', sortable: false },
-    { key: 'content', label: '내용', sortable: false },
-    { key: 'employeeNumber', label: '사번', sortable: true },
-    { key: 'employeeName', label: '작성자', sortable: false },
-    { key: 'writeTime', label: '작성일자', sortable: true },
-    { key: 'approvalStatuscancelYncancelDocId', label: '결재 상태', sortable: false }
-  ]
-
-  const approvalFields = [
-    { key: 'index', label: '번호', sortable: false },
-    { key: 'content', label: '내용', sortable: false },
-    { key: 'employeeNumber', label: '사번', sortable: true },
-    { key: 'employeeName', label: '작성자', sortable: false },
-    { key: 'startTimeendTIme', label: '기간', sortable: false },
-    { key: 'details', label: '상세보기', sortable: false }
-  ]
-
-  const router = useRouter();
-
-  const userRole = ref('');
-  const userId = ref();
-
-  const isLoading = ref(true);
-
-  function parseJwt(token) {
-    try {
-      const base64Url = token.split('.')[1];
-      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-      const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
-        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-      }).join(''));
-      return JSON.parse(jsonPayload);
-    } catch (error) {
-      console.error('Invalid token', error);
-      return null;
-    }
-  }
-
-  const registStatus = async (status, approvalId) => {
-
-    try {
-      const response = await axios.put("http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval/" + pathList[props.approvalList.type - 1] + `-status/${approvalId}`, {
-        headers: {
-          'Content-Type': "application/json"
-        }
-      })
-      if (response.status !== 200) {
-        throw new Error("response is not ok");
-
-      }
-    } catch (error) {
-      console.error('Fail to post: ', error.message);
-    }
-  }
-
-  const approvalDetail = (typeId, approvalId, employeeId, approvalStatus) => {
-    if (approvalStatus === 'N' && userRole.value !== 'ROLE_ADMIN' && userId.value !== employeeId) {
-      registStatus('V', approvalId);
-    }
-    router.push(`/approval/detail/${typeId}/${approvalId}`);    // 추후에 모달로 변경
-  }
-
-  onMounted(async () => {
-    const token = localStorage.getItem('access');
-    if (token) {
-      const decodedToken = parseJwt(token);
-
-      userRole.value = decodedToken.auth || '';
-      userId.value = decodedToken.id || '';
-    }
-
-    isLoading.value = false;
-  })
-</script>
-
 <template>
   <div v-if="props.approvalList.length === 0">
     문서가 없습니다.
@@ -216,6 +121,101 @@
     </template>
   </div>
 </template>
+
+<script setup>
+  import {useRouter} from "vue-router";
+  import {onMounted, reactive, ref} from "vue";
+  import axios from "axios";
+
+  const props = defineProps({
+    approvalList: Array,
+    short: 0
+  })
+
+  const state = reactive({
+    type: props.approvalList.type,
+    short: props.short
+  })
+
+  let pathList = [
+    'bt', 'overtime', 'rw', 'vacation'
+  ]
+
+  const fields = [
+    { key: 'index', label: '번호', sortable: false },
+    { key: 'content', label: '내용', sortable: false },
+    { key: 'employeeNumber', label: '사번', sortable: true },
+    { key: 'employeeName', label: '작성자', sortable: false },
+    { key: 'writeTime', label: '작성일자', sortable: true },
+    { key: 'approvalStatuscancelYncancelDocId', label: '결재 상태', sortable: false }
+  ]
+
+  const approvalFields = [
+    { key: 'index', label: '번호', sortable: false },
+    { key: 'content', label: '내용', sortable: false },
+    { key: 'employeeNumber', label: '사번', sortable: true },
+    { key: 'employeeName', label: '작성자', sortable: false },
+    { key: 'startTimeendTIme', label: '기간', sortable: false },
+    { key: 'details', label: '상세보기', sortable: false }
+  ]
+
+  const router = useRouter();
+
+  const userRole = ref('');
+  const userId = ref();
+
+  const isLoading = ref(true);
+
+  function parseJwt(token) {
+    try {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      }).join(''));
+      return JSON.parse(jsonPayload);
+    } catch (error) {
+      console.error('Invalid token', error);
+      return null;
+    }
+  }
+
+  const registStatus = async (status, approvalId) => {
+
+    try {
+      const response = await axios.put("/api/approval/" + pathList[props.approvalList.type - 1] + `-status/${approvalId}`, {
+        headers: {
+          'Content-Type': "application/json"
+        }
+      })
+      if (response.status !== 200) {
+        throw new Error("response is not ok");
+
+      }
+    } catch (error) {
+      console.error('Fail to post: ', error.message);
+    }
+  }
+
+  const approvalDetail = (typeId, approvalId, employeeId, approvalStatus) => {
+    if (approvalStatus === 'N' && userRole.value !== 'ROLE_ADMIN' && userId.value !== employeeId) {
+      registStatus('V', approvalId);
+    }
+    router.push(`/approval/detail/${typeId}/${approvalId}`);    // 추후에 모달로 변경
+  }
+
+  onMounted(async () => {
+    const token = localStorage.getItem('access');
+    if (token) {
+      const decodedToken = parseJwt(token);
+
+      userRole.value = decodedToken.auth || '';
+      userId.value = decodedToken.id || '';
+    }
+
+    isLoading.value = false;
+  })
+</script>
 
 <style scoped>
 .detail {

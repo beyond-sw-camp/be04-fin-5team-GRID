@@ -27,9 +27,9 @@
         <button @click="search" class="searchBtn">검색</button>
       </div>
       <div>
-        <button @click="showModal('updateLeaderModal')" class="updateLeaderBtn" v-if="userRole === 'ROLE_ADMIN'">팀장 수정</button>
-        <button @click="showModal('addNewTeamModal')" class="addTeamBtn" v-if="userRole === 'ROLE_ADMIN'">팀 추가</button>
-        <button @click="toggleTeamStatus" class="toggleStatusBtn" v-if="userRole === 'ROLE_ADMIN'">활성/비활성화</button>
+        <button @click="showModal('updateLeaderModal')" class="updateLeaderBtn btn-custom-1" v-if="userRole === 'ROLE_ADMIN'"><span>팀장 수정</span></button>
+        <button @click="showModal('addNewTeamModal')" class="addTeamBtn btn-custom-1" v-if="userRole === 'ROLE_ADMIN'"><span>팀 추가</span></button>
+        <button @click="toggleTeamStatus" class="toggleStatusBtn btn-custom-1" v-if="userRole === 'ROLE_ADMIN'"><span>활성/비활성화</span></button>
       </div>
     </div>
 
@@ -44,7 +44,7 @@
         {{ formatDate(data.item.endTime) }}
       </template>
       <template #cell(actions)="data">
-        <button class="view-details-btn" @click="goToTeamMembers(data.item.id)">팀원 목록</button>
+        <button class="view-details-btn btn-custom-1" id="listBtn" @click="goToTeamMembers(data.item.id)"><span>팀원 목록</span></button>
       </template>
     </b-table>
 
@@ -596,7 +596,7 @@ const searchLeaders = () => {
 }
 
 .searchBox {
-  padding: 10px;
+  padding: 5px;
   font-size: 14px;
   border-radius: 4px;
   border: 1px solid #ddd;
@@ -607,7 +607,7 @@ const searchLeaders = () => {
 .searchBtn {
   background-color: #088A85;
   color: white;
-  padding: 10px;
+  padding: 5px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -715,5 +715,48 @@ const searchLeaders = () => {
 
 .view-details-btn:hover {
   background-color: #065f5b;
+}
+
+.btn-custom-1 {
+    background-color: white;
+    color: #088A85;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.4s, color 0.4s;
+    position: relative;
+    overflow: hidden;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+.btn-custom-1::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background-color: #088A85;
+    transition: left 0.4s;
+    z-index: 1;
+}
+
+.btn-custom-1:hover::before {
+    left: 0;
+}
+
+.btn-custom-1 span {
+    position: relative;
+    z-index: 2;
+    color: #088A85;
+}
+
+.btn-custom-1:hover span {
+    color: white;
+}
+
+.listBtn {
+  margin-top: 0;
 }
 </style>

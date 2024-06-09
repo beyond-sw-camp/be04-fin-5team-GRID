@@ -1,14 +1,13 @@
  <template>
   <div class="mainContainer">
     <div class="mainTitle">
-      <img class="mainIcon" src="@/assets/icons/goal_icon.png">
-      <h1>메인</h1>
+      <h1 class="mb-1"><i class="bi bi-house-door fs-3"></i>&nbsp; 메인</h1>
     </div>
     <div class="content" v-if="userRole ==='ROLE_USER'">
       <AdTime />
     </div>
     <div class="approvalContent" v-if="userRole ==='ROLE_USER'">
-      <b-card title="결재 필요 문서">
+      <b-card class="my-5" title="결재 필요 문서">
         <div class="text-end">
           <h6 class="text-muted" style="margin-bottom: 10px; margin-top: -30px;" @click="navigateTo('/required')">상세 <i class="bi bi-chevron-right"></i></h6>
         </div>
@@ -68,8 +67,7 @@
       }
 
       state.sReqApprovalList = response.data.approvalEmpResultList.slice(0, 5);
-      console.log(state.sReqApprovalList);
-      state.sReqApprovalList.type = 1;
+      state.sReqApprovalList.type = 0;
 
     } catch (error) {
       console.error('Fetch error: ' + error.message);
@@ -104,20 +102,17 @@
 
 .mainTitle {
   grid-column-start: 2;
-  grid-column-end: 3;
-  font-size: 12px;
-  font-weight: 0;
+  align-content: center;
   margin-top: 2%;
+  margin-left: -0.5%;
   color: #000000;
-  display: grid;
-  grid-template-columns: 3% 97%;
-  align-items: center;
 }
 
 .mainTitle h1 {
   margin-left: 0.5%;
-  font-weight: 600;
   font-size: 25px;
+  font-weight: 600;
+  font-family: 'IBMPlexSansKR-Regular', sans-serif;
 }
 
 .mainIcon {
@@ -149,5 +144,9 @@
   grid-row-end: 4;
   grid-column-start: 2;
   grid-column-end: 3;
+}
+
+.text-muted {
+  cursor: pointer;
 }
 </style>

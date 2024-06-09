@@ -269,6 +269,7 @@ public class DepartmentServiceImpl implements DepartmentService {
             if (leader != null) {
             leader.setDepartmentId(departmentDTO.getId());
             leader.setDutiesId(2);
+            leader.setTeamId(previousLeader.getTeamId());
                 userRepository.save(leader);
             }
 

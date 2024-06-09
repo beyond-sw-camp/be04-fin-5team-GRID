@@ -1,9 +1,8 @@
 <template>
   <div class="TotalPerformanceReviewListContainer">
     <div class="TotalPerformanceReviewListTitle">
-      <img class="PerformanceIcon" src="@/assets/icons/goal_icon.png">
-      <h1>종합 업적 평가 조회</h1>
-      <img src="@/assets/buttons/guide.png" class="guide"
+      <h1 class="mb-1"><i class="bi bi-award fs-3"></i>&nbsp; 종합 업적 평가 조회</h1>
+       <img src="@/assets/buttons/guide.png" class="guide"
            @click="showModal('guideReview')"></img>
     </div>
     <div class="TotalPerformanceTableContainer">
@@ -267,10 +266,9 @@ const goToDetailPage = (id) => {
 
 .TotalPerformanceReviewListTitle {
   grid-column-start: 2;
-  grid-column-end: 3;
-  font-size: 12px;
-  font-weight: 0;
+  align-content: center;
   margin-top: 2%;
+  margin-left: -0.5%;
   color: #000000;
   display: grid;
   grid-template-columns: 3% 23% 4%;
@@ -279,8 +277,9 @@ const goToDetailPage = (id) => {
 
 .TotalPerformanceReviewListTitle h1 {
   margin-left: 0.5%;
-  font-weight: 600;
   font-size: 25px;
+  font-weight: 600;
+  font-family: 'IBMPlexSansKR-Regular', sans-serif;
 }
 
 .PerformanceIcon {

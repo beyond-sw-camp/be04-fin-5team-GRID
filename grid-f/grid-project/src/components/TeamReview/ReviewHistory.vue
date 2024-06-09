@@ -2,8 +2,8 @@
   <div class="container">
     <div class="header-title">
       <img class="reviewIcon" src="@/assets/list-check.png" alt="list-check" />
-      <h1>전체 평가 목록</h1>
-      <button href="#" class="addNewBtn" @click="showModal('addReview')">생성</button>
+      <h1>동료 평가 목록</h1>
+      <button href="#" class="addNewBtn btn-custom-1" @click="showModal('addReview')"><span>생성</span></button>
     </div>
     <div class="search-and-add">
       <div class="search-group">
@@ -104,13 +104,13 @@
                 </div>
               </div>
               <div class="mb-3">
-                <label for="dayOfUsing" class="form-label">평가 대상자</label>
+                <!-- <label for="dayOfUsing" class="form-label">평가 대상자</label>
                 <select class="form-select" id="newRevieweeId" v-model="newRevieweeId" required>
                   <option value="" disabled selected>평가 대상자를 선택해주세요.</option>
                   <option v-for="employee in employees" :key="employee.id" :value="employee.id">
                     {{ employee.name }}
                   </option>
-                </select>
+                </select> -->
               </div>
               <div class="button-container">
                 <button type="submit" class="btn btn-primary">생성</button>
@@ -362,7 +362,7 @@ const addNewReview = async () => {
 
 .container {
   display: grid;
-  grid-template-rows: 18% 13% 4% 53% 8%;
+  grid-template-rows: 18% 13% 4% 68% 8%;
   grid-template-columns: 10% 80% 10%;
   padding: 0;
   font-family: 'IBMPlexSansKR-Regular';
@@ -419,7 +419,7 @@ const addNewReview = async () => {
 }
 
 .searchBox {
-  padding: 10px;
+  padding: 5px;
   font-size: 14px;
   border-radius: 4px;
   border: 1px solid #ddd;
@@ -430,7 +430,7 @@ const addNewReview = async () => {
 .searchBtn {
   background-color: #088A85;
   color: white;
-  padding: 10px;
+  padding: 5px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -506,5 +506,44 @@ tr:hover {
 
 .view-review-btn:hover {
   background-color: #065f5b;
+}
+
+.btn-custom-1 {
+    background-color: white;
+    color: #088A85;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.4s, color 0.4s;
+    position: relative;
+    overflow: hidden;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+.btn-custom-1::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background-color: #088A85;
+    transition: left 0.4s;
+    z-index: 1;
+}
+
+.btn-custom-1:hover::before {
+    left: 0;
+}
+
+.btn-custom-1 span {
+    position: relative;
+    z-index: 2;
+    color: #088A85;
+}
+
+.btn-custom-1:hover span {
+    color: white;
 }
 </style>

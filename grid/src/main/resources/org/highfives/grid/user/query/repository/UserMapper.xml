@@ -162,33 +162,6 @@
         ORDER BY E.employee_name ASC;
     </select>
 
-<!--    <select id="getUserListByName" resultMap="userInfo" parameterType="string">-->
-<!--        SELECT-->
-<!--        E.id,-->
-<!--        E.employee_name,-->
-<!--        E.employee_number,-->
-<!--        DEP.id dep_id,-->
-<!--        DEP.department_name,-->
-<!--        T.id t_id,-->
-<!--        T.team_name,-->
-<!--        P.id p_id,-->
-<!--        P.position_name,-->
-<!--        D.id d_id,-->
-<!--        D.duties_name,-->
-<!--        E.phone_number,-->
-<!--        E.absence_yn,-->
-<!--        E.absence_content,-->
-<!--        E.join_time-->
-<!--        FROM Employee E-->
-<!--        JOIN Team T ON E.team_id = T.id-->
-<!--        JOIN Department DEP ON E.department_id = DEP.id-->
-<!--        JOIN e_Position P ON E.position_id = P.id-->
-<!--        JOIN Duties D ON E.duties_id = D.id-->
-<!--        WHERE E.resign_yn = 'N'-->
-<!--        AND E.id > 1-->
-<!--        AND E.employee_name LIKE CONCAT('%', #{name}, '%')-->
-<!--    </select>-->
-
     <sql id="Base_Column_List">
         E.id, E.employee_name, E.gender, E.employee_number,
         DEP.id AS dep_id, DEP.department_name,
@@ -196,7 +169,8 @@
         P.id AS p_id, P.position_name,
         D.id AS d_id, D.duties_name,
         E.phone_number, E.absence_yn, E.absence_content,
-        E.join_time
+        E.join_time,
+        E.resign_yn
     </sql>
 
     <select id="getUserList" resultMap="userInfo">
@@ -206,8 +180,13 @@
         JOIN department DEP ON E.department_id = DEP.id
         JOIN e_position P ON E.position_id = P.id
         JOIN duties D ON E.duties_id = D.id
-        WHERE E.resign_yn = 'N'
-        AND E.id > 1
+        <where>
+            (E.resign_yn = 'N'
+            <if test="auth == 'ROLE_ADMIN'">
+                OR E.resign_yn = 'Y'
+            </if>)
+            AND E.id > 1
+        </where>
         ORDER BY E.employee_name ASC
         LIMIT #{offset}, #{pageSize}
     </select>
@@ -219,9 +198,14 @@
         JOIN department DEP ON E.department_id = DEP.id
         JOIN e_position P ON E.position_id = P.id
         JOIN duties D ON E.duties_id = D.id
-        WHERE E.resign_yn = 'N'
-        AND E.id > 1
-        AND E.employee_name LIKE CONCAT('%', #{name}, '%')
+        <where>
+            (E.resign_yn = 'N'
+            <if test="auth == 'ROLE_ADMIN'">
+                OR E.resign_yn = 'Y'
+            </if>)
+            AND E.id > 1
+            AND E.employee_name LIKE CONCAT('%', #{name}, '%')
+        </where>
         ORDER BY E.employee_name ASC
         LIMIT #{offset}, #{pageSize}
     </select>

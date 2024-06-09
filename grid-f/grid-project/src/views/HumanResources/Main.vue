@@ -1,7 +1,7 @@
 <template>
     <div class="hr-main">
         <div class="hr-title">
-            <h1> <i class="bi bi-people"></i>&nbsp;인사 정보</h1>
+            <h1 class="mb-1"><i class="bi bi-people"></i>&nbsp; 인사 정보</h1>
         </div>
         <div class="search">
             <button class="printBtn" @click="downloadCSV">
@@ -43,11 +43,14 @@
                     <span>{{ data.item.duties.dutiesName }}</span>
                 </template>
                 <template #cell(absenceStatus)="data">
-                    <b-badge variant="warning" v-if="data.item.absenceYn === 'Y'">부재중</b-badge>
+                    <b-badge variant="danger" v-if="data.item.absenceYn === 'Y'">부재중</b-badge>
                     <b-badge variant="success" v-else>재실중</b-badge>
                 </template>
                 <template #cell(absenceContent)="data">
-                    <span>{{ data.item.absenceContent }}</span>
+                    <b-badge variant="warning" v-if="data.item.absenceContent === '휴가'">휴가</b-badge>
+                    <b-badge variant="warning" v-if="data.item.absenceContent === '출장'">출장</b-badge>
+                    <b-badge variant="danger" v-if="data.item.absenceContent === '퇴사'">퇴사</b-badge>
+                    <!-- <span>{{ data.item.absenceContent }}</span> -->
                 </template>
             </b-table>
         </div>
@@ -116,11 +119,14 @@ const getProfileUrl = (profilePath) => {
 
 const findUser = async () => {
     let response = null;
+    const token = localStorage.getItem('access');
+    const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+
     const url = searchCondition.value.trim() === ''
         ? `http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/list?page=${currentPage.value}&size=${pageSize.value}`
         : `http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/list/${encodeURIComponent(searchCondition.value)}?page=${currentPage.value}&size=${pageSize.value}`;
 
-    response = await axios.get(url);
+    response = await axios.get(url, { headers });
     employeeList.value = response.data.result;
     totalPages.value = response.data.totalPages;
     updateVisiblePages();
@@ -254,8 +260,8 @@ button {
 .hr-title {
     grid-column-start: 2;
     grid-column-end: 3;
-    font-weight: 600;
     margin-top: 2%;
+    margin-left: -0.5%;
     color: #000000;
     display: grid;
     align-items: center;
@@ -263,9 +269,9 @@ button {
 
 .hr-title h1 {
     margin-left: 0.5%;
-    margin-bottom: 0;
     font-size: 25px;
     font-weight: 600;
+    font-family: 'IBMPlexSansKR-Regular', sans-serif;
 }
 
 .hr-icon {
@@ -303,20 +309,24 @@ button::before {
     height: 100%;
     background-color: #088A85;
     transition: left 0.4s;
-    z-index: 1; /* 기본 z-index로 설정 */
+    z-index: 1;
+    /* 기본 z-index로 설정 */
 }
 
 button:hover::before {
     left: 0;
 }
 
-button span, button i {
+button span,
+button i {
     position: relative;
-    z-index: 2; /* 기본 z-index로 설정 */
+    z-index: 2;
+    /* 기본 z-index로 설정 */
     color: #088A85;
 }
 
-button:hover span, button:hover i {
+button:hover span,
+button:hover i {
     color: white;
 }
 
@@ -324,7 +334,9 @@ button:hover {
     color: white;
 }
 
-.printBtn, .modifyBtn, .addBtn {
+.printBtn,
+.modifyBtn,
+.addBtn {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -407,12 +419,15 @@ button:hover {
     height: 100%;
     background-color: #088A85;
     transition: left 0.4s;
-    z-index: 1; /* 기본 z-index로 설정 */
+    z-index: 1;
+    /* 기본 z-index로 설정 */
 }
 
-.searchBtn span, .searchBtn i {
+.searchBtn span,
+.searchBtn i {
     position: relative;
-    z-index: 2; /* 기본 z-index로 설정 */
+    z-index: 2;
+    /* 기본 z-index로 설정 */
     color: #088A85;
 }
 
@@ -420,7 +435,8 @@ button:hover {
     left: -100%;
 }
 
-.searchBtn:hover span, .searchBtn:hover i {
+.searchBtn:hover span,
+.searchBtn:hover i {
     color: #088A85;
 }
 
@@ -433,7 +449,8 @@ button:hover {
     grid-column-start: 2;
     grid-column-end: 3;
     margin-top: 30px;
-    font-size: 12pt; /* 전체 폰트 크기를 15pt로 설정 */
+    font-size: 12pt;
+    /* 전체 폰트 크기를 15pt로 설정 */
     overflow: auto;
     cursor: pointer;
 }
@@ -454,13 +471,16 @@ button:hover {
     background-color: #f2f2f2;
     color: #a7a4a4;
     border: 1px solid #dddddd;
-    text-align: center; /* th의 내용을 가운데 정렬 */
+    text-align: center;
+    /* th의 내용을 가운데 정렬 */
 }
 
 .tableContainer .table td {
-    font-size: 13pt; /* td의 폰트 크기를 13pt로 설정 */
+    font-size: 13pt;
+    /* td의 폰트 크기를 13pt로 설정 */
     text-align: center;
-    vertical-align: middle; /* 각 내용물의 세로 가운데 정렬 */
+    vertical-align: middle;
+    /* 각 내용물의 세로 가운데 정렬 */
     padding: 1rem;
     border: 1px solid #dddddd;
 }

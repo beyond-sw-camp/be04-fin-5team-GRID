@@ -1,3 +1,76 @@
+<template>
+  <div v-if="isLoading">
+    로딩 중
+  </div>
+  <div v-else>
+    <h3 class="fw-bolder mb-3"><i class="bi bi-link-45deg"></i>&nbsp; 결재 라인</h3>
+    <b-card class="container shadow">
+      <div class="list-group-item list-group-item-action d-flex" aria-current="true">
+        <div class=" mb-3 pt-2 d-flex gap-2 w-100 justify-content-between">
+          <h6 class="opacity-50"></h6>
+          <h6 class="mb-0 opacity-75 fw-bolder">이름</h6>
+          <h6 class="mb-0 opacity-75 fw-bolder">&nbsp;&nbsp;&nbsp; 단계</h6>
+          <h6 class="mb-0 opacity-75 fw-bolder">상태&nbsp;</h6>
+        </div>
+      </div>
+      <div v-for="chain in state.approvalChainList" :key="chain.id">
+        <div href="#" class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
+          <img :src="chain.user['profilePath']" alt="profile" width="50" height="50" class="rounded-circle flex-shrink-0">
+          <div class="d-flex gap-2 w-100 justify-content-between">
+            <div class="mt-1">
+              <h5 class="fw-bolder mb-0">&nbsp;&nbsp;&nbsp;&nbsp;{{ chain.user['name'] }}</h5>
+              <p class="mb-0 opacity-75">&nbsp;&nbsp;&nbsp;&nbsp;{{ chain.user['team'].teamName }} / {{ chain.user['duties'].dutiesName }}</p>
+            </div>
+            <h6 class="mt-3">{{ chain.stage }}단계</h6>
+            <div>
+              <b-badge class="mt-3" variant="success" v-if="chain.chainStatus === 'A'">승인</b-badge>
+              <b-badge class="mt-3" variant="danger" v-if="chain.chainStatus === 'D'">반려</b-badge>
+              <b-badge class="mt-3" variant="warning" v-if="chain.chainStatus === 'W'">진행중</b-badge>
+            </div>
+          </div>
+        </div>
+      </div>
+    </b-card>
+    <b-card class="shadow mt-3">
+      <h5 class="fw-bolder">댓글</h5>
+      <div v-for="chain in state.approvalChainList" :key="chain.id">
+        <template v-if="chain.comment !== null">
+          <div class="d-flex text-body-secondary pt-3">
+            <h4 class="mt-2" ><i class="bi bi-person flex-shrink-0 me-2 rounded"></i></h4>
+            <div class="pb-3 small lh-sm border-bottom w-100">
+              <div class="d-flex justify-content-between">
+                <strong class="text-gray-dark fs-6 mb-1">&nbsp;&nbsp;&nbsp;{{ chain.user['name'] }}</strong>
+                <div v-if="chain.approvalTime !== null">&nbsp;{{ chain.approvalTime.substring(0, 10) }}</div>
+              </div>
+              <span class="d-block fs-6">&nbsp; {{ chain.comment }}</span>
+            </div>
+          </div>
+        </template>
+      </div>
+      <div style="margin-top: 30px;">
+        <b-input-group>
+          <b-form-input v-model="putCommentData.comment"></b-form-input>
+          <b-input-group-append>
+            <b-button v-if="userId === props.requesterId || props.approvalStatus === 'A' || props.approvalStatus === 'D'" variant="outline-success" @click="registComment" disabled>등록</b-button>
+            <b-button v-else variant="outline-success" @click="registComment">등록</b-button>
+          </b-input-group-append>
+        </b-input-group>
+      </div>
+    </b-card>
+    <div>
+      <!-- 중복 취소 불가하는 코드 추가 -->
+      <div class="d-flex justify-content-center mt-3">
+        <b-button v-if="props.requesterId === userId && props.approvalStatus !== 'D' && props.cancelStatus === 'N' && props.cancelDoc === 0" @click="cancelApproval" class="mx-2">취소</b-button>
+        <b-button v-if="(props.requesterId === userId || userRole === 'ROLE_ADMIN') && props.approvalStatus === 'A'" @click="printApproval" class="mx-2">출력</b-button>
+      </div>
+      <div v-if="state.show && props.cancelStatus === 'N'" class="d-flex justify-content-center mt-3">
+        <b-button variant="success" @click="registStatus('A')" class="mx-2">승인</b-button>
+        <b-button variant="danger" @click="registStatus('D')" class="mx-2">반려</b-button>
+      </div>
+    </div>
+  </div>
+</template>
+
 <script setup>
   import axios from "axios";
   import {onMounted, reactive, ref} from "vue";
@@ -59,7 +132,7 @@
 
   const fetchApprovalChain = async (typeId, approvalId) => {
     try {
-      const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval-chain/list/${typeId}/${approvalId}`);
+      const response = await axios.get(`/api/approval-chain/list/${typeId}/${approvalId}`);
 
       if (response.status !== 200) {
         throw new Error("response is not ok");
@@ -118,7 +191,7 @@
         const confirmed = window.confirm('댓글을 작성하시겠습니까?');
 
         if(confirmed) {
-          const response = await axios.put(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval-chain/${pathList[props.typeId - 1]}`, putCommentData, {
+          const response = await axios.put(`/api/approval-chain/${pathList[props.typeId - 1]}`, putCommentData, {
             headers: {
               'Content-Type': "application/json"
             }
@@ -157,7 +230,7 @@
       const confirmed = window.confirm(msg + '하시겠습니까?');
 
       if(confirmed) {
-        const response = await axios.put(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval-chain/status`, putStatusData, {
+        const response = await axios.put(`/api/approval-chain/status`, putStatusData, {
           headers: {
             'Content-Type': "application/json"
           }
@@ -180,7 +253,7 @@
       const confirmed = window.confirm('결재를 취소하시겠습니까?');
 
       if(confirmed) {
-        const response = await axios.post(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval/${pathList[props.typeId - 1]}/${props.approvalId}`);
+        const response = await axios.post(`/api/approval/${pathList[props.typeId - 1]}/${props.approvalId}`);
 
         if (response.status !== 201) {
           throw new Error("response is not ok");
@@ -202,7 +275,7 @@
       const confirmed = window.confirm('pdf 파일을 다운로드 하시겠습니까?');
 
       if(confirmed) {
-        var url = `http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval/downloadPdf/${props.typeId}/${props.approvalId}`;
+        var url = `/api/approval/downloadPdf/${props.typeId}/${props.approvalId}`;
 
         // 새 창 열기
         window.open(url, "_blank");
@@ -230,78 +303,6 @@
     isLoading.value = false;
   })
 </script>
-  <template>
-    <div v-if="isLoading">
-      로딩 중
-    </div>
-    <div v-else>
-      <h3 class="fw-bolder mb-3"><i class="bi bi-link-45deg"></i>&nbsp; 결재 라인</h3>
-      <b-card class="container shadow">
-        <div class="list-group-item list-group-item-action d-flex" aria-current="true">
-          <div class=" mb-3 pt-2 d-flex gap-2 w-100 justify-content-between">
-            <h6 class="opacity-50"></h6>
-            <h6 class="mb-0 opacity-75 fw-bolder">이름</h6>
-            <h6 class="mb-0 opacity-75 fw-bolder">&nbsp;&nbsp;&nbsp; 단계</h6>
-            <h6 class="mb-0 opacity-75 fw-bolder">상태&nbsp;</h6>
-          </div>
-        </div>
-        <div v-for="chain in state.approvalChainList" :key="chain.id">
-          <div href="#" class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
-            <img :src="chain.user['profilePath']" alt="profile" width="50" height="50" class="rounded-circle flex-shrink-0">
-            <div class="d-flex gap-2 w-100 justify-content-between">
-              <div class="mt-1">
-                <h5 class="fw-bolder mb-0">&nbsp;&nbsp;&nbsp;&nbsp;{{ chain.user['name'] }}</h5>
-                <p class="mb-0 opacity-75">&nbsp;&nbsp;&nbsp;&nbsp;{{ chain.user['team'].teamName }} / {{ chain.user['duties'].dutiesName }}</p>
-              </div>
-              <h6 class="mt-3">{{ chain.stage }}단계</h6>
-              <div>
-                <b-badge class="mt-3" variant="success" v-if="chain.chainStatus === 'A'">승인</b-badge>
-                <b-badge class="mt-3" variant="danger" v-if="chain.chainStatus === 'D'">반려</b-badge>
-                <b-badge class="mt-3" variant="warning" v-if="chain.chainStatus === 'W'">진행중</b-badge>
-              </div>
-            </div>
-          </div>
-        </div>
-      </b-card>
-      <b-card class="shadow mt-3">
-        <h5 class="fw-bolder">댓글</h5>
-        <div v-for="chain in state.approvalChainList" :key="chain.id">
-          <template v-if="chain.comment !== null">
-            <div class="d-flex text-body-secondary pt-3">
-              <h4 class="mt-2" ><i class="bi bi-person flex-shrink-0 me-2 rounded"></i></h4>
-              <div class="pb-3 small lh-sm border-bottom w-100">
-                <div class="d-flex justify-content-between">
-                  <strong class="text-gray-dark fs-6 mb-1">&nbsp;&nbsp;&nbsp;{{ chain.user['name'] }}</strong>
-                  <div v-if="chain.approvalTime !== null">&nbsp;{{ chain.approvalTime.substring(0, 10) }}</div>
-                </div>
-                <span class="d-block fs-6">&nbsp; {{ chain.comment }}</span>
-              </div>
-            </div>
-          </template>
-        </div>
-        <div style="margin-top: 30px;">
-          <b-input-group>
-            <b-form-input v-model="putCommentData.comment"></b-form-input>
-            <b-input-group-append>
-                <b-button v-if="userId === props.requesterId || props.approvalStatus === 'A' || props.approvalStatus === 'D'" variant="outline-success" @click="registComment" disabled>등록</b-button>
-                <b-button v-else variant="outline-success" @click="registComment">등록</b-button>
-            </b-input-group-append>
-          </b-input-group>
-        </div>
-      </b-card>
-      <div>
-          <!-- 중복 취소 불가하는 코드 추가 -->
-          <div class="d-flex justify-content-center mt-3">
-            <b-button v-if="props.requesterId === userId && props.cancelStatus === 'N' && props.cancelDoc === 0" @click="cancelApproval" class="mx-2">취소</b-button>
-            <b-button v-if="(props.requesterId === userId || userRole === 'ROLE_ADMIN') && props.approvalStatus === 'A'" @click="printApproval" class="mx-2">출력</b-button>
-          </div>
-          <div v-if="state.show && props.cancelStatus === 'N'" class="d-flex justify-content-center mt-3">
-            <b-button variant="success" @click="registStatus('A')" class="mx-2">승인</b-button>
-            <b-button variant="danger" @click="registStatus('D')" class="mx-2">반려</b-button>
-          </div>
-      </div>
-    </div>
-  </template>
 
 <style scoped>
 .lineAll h3{

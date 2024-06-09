@@ -1,11 +1,11 @@
 <template>
   <div class="policyAll">
       <div class="policyTitle">
-          <img class="policyIcon" src="@/assets/buttons/vacation.png">
-          <h1 v-if="userRole === 'ROLE_USER'">휴가 종류/정책</h1>
-          <h1 v-if="userRole === 'ROLE_ADMIN'">휴가 정책</h1>
-          <img src="@/assets/buttons/guide.png" v-if="userRole === 'ROLE_ADMIN'" class="guide" @click="showModal('guideManage')"></img>
-          <button class="policyRegist" @click="showModal('registPolicy')" v-if="userRole === 'ROLE_ADMIN'"><span>등록하기</span></button>
+        <i class="bi bi-brightness-high fs-3"></i>
+        <h1 v-if="userRole === 'ROLE_USER'" class="mb-1">휴가 종류/정책</h1>
+        <h1 v-if="userRole === 'ROLE_ADMIN'" class="mb-1">휴가 정책</h1>
+        <img src="@/assets/buttons/guide.png" v-if="userRole === 'ROLE_ADMIN'" class="guide" @click="showModal('guideManage')"></img>
+        <button class="policyRegist" @click="showModal('registPolicy')" v-if="userRole === 'ROLE_ADMIN'"><span>등록하기</span></button>
       </div>
       <div class="vacations">
           <div class="card mb-3" v-for="policy in policies" :key="policy.id">
@@ -363,7 +363,7 @@ Array.from(forms).forEach(form => {
   margin-top: 2%;
   color: #000000;
   display: grid;
-  grid-template-columns: 3% 12% 1% 5% 72% 7%;
+  grid-template-columns: 3% 12% 1% 5% 63% 7% 2% 7%;
   align-items: center;
 }
 
@@ -372,6 +372,7 @@ Array.from(forms).forEach(form => {
   margin-bottom: 0;
   font-size: 25px;
   font-weight: 600;
+  font-family: 'IBMPlexSansKR-Regular', sans-serif;
 }
 
 .policyIcon {
@@ -381,16 +382,14 @@ Array.from(forms).forEach(form => {
 .policyRegist {
   background-color: #088A85;
   color: white;
-  border: solid 1px #088A85;
-  min-width: 51.4px;
+  padding: 5px 5px;
+  border: none;
   border-radius: 4px;
   cursor: pointer;
-  transition: background-color 0.4s, color 0.4s;
-  position: relative;
-  overflow: hidden;
   font-size: 11px;
-  font-weight: bold;
+  font-style: bold;
   width: 100%;
+  min-width: 51.4px;
   grid-column-start: 6;
 }
 

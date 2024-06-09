@@ -2,12 +2,11 @@
   <div class="container">
     <div class="header">
       <div class="header-title">
-        <img src="@/assets/department_icon.png" alt="department_icon" class="department-pic">
-        <h1>부서 정보</h1>
+        <h1 class="mb-1"><i class="bi bi-diagram-2 fs-3"></i>&nbsp; 부서 정보</h1>
       </div>
-      <button v-if="userRole === 'ROLE_ADMIN'" class="updateLeaderBtn" @click="showModal('updateLeaderModal')">부서장 수정</button>
-      <button v-if="userRole === 'ROLE_ADMIN'" class="addbtn" @click="showModal('addNewModal')">추가하기</button>
-      <button v-if="userRole === 'ROLE_ADMIN'" class="modifybtn" @click="modifyDepartmentsStatus">활성/비활성</button>
+      <button v-if="userRole === 'ROLE_ADMIN'" class="updateLeaderBtn btn-custom-1" @click="showModal('updateLeaderModal')"><span>부서장 수정</span></button>
+      <button v-if="userRole === 'ROLE_ADMIN'" class="addbtn btn-custom-1" @click="showModal('addNewModal')"><span>추가하기</span></button>
+      <button v-if="userRole === 'ROLE_ADMIN'" class="modifybtn btn-custom-1" @click="modifyDepartmentsStatus"><span>활성/비활성</span></button>
     </div>
     <div class="search">
       <input type="text" class="searchBox" placeholder="부서명 검색" v-model="searchQuery">
@@ -36,7 +35,7 @@
           <td>{{ formatDate(department.endTime) }}</td>
           <td>{{ department.leaderName }}</td>
           <td>
-            <button class="view-details-btn" @click="goToDepartmentTeams(department.id)">소속팀 목록</button>
+            <button class="view-details-btn btn-custom-1" @click="goToDepartmentTeams(department.id)"><span>소속팀 목록</span></button>
           </td>
         </tr>
       </tbody>
@@ -512,9 +511,9 @@ const searchLeaders = () => {
   padding: 5px 5px;
   border-radius: 4px;
   font-size: 12px;
-  font-style: bold;
+  border: 0.5px solid #ddd;
 }
-
+  
 .searchBtn {
   grid-column-start: 6;
   margin-left: 2%;
@@ -544,14 +543,16 @@ const searchLeaders = () => {
 .header-title {
   align-items: center;
   display: grid;
-  grid-template-columns: 3% 97%;
+  margin-top: 2%;
+  margin-left: -0.5%;
+  color: #000000;
 }
 
 .header-title h1 {
+  margin-left: 0.5%;
   font-size: 25px;
   font-weight: 600;
-  margin-left: 0.5%;
-  margin-bottom: 0;
+  font-family: 'IBMPlexSansKR-Regular', sans-serif;
 }
 
 .addbtn {
@@ -670,7 +671,42 @@ tr:hover {
   font-size: 12px;
 }
 
-.view-details-btn:hover {
-  background-color: #065f5b;
+.btn-custom-1 {
+    background-color: white;
+    color: #088A85;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.4s, color 0.4s;
+    position: relative;
+    overflow: hidden;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+.btn-custom-1::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background-color: #088A85;
+    transition: left 0.4s;
+    z-index: 1;
+}
+
+.btn-custom-1:hover::before {
+    left: 0;
+}
+
+.btn-custom-1 span {
+    position: relative;
+    z-index: 2;
+    color: #088A85;
+}
+
+.btn-custom-1:hover span {
+    color: white;
 }
 </style>

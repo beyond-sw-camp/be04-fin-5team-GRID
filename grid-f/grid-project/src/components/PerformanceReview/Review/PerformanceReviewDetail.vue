@@ -1,8 +1,7 @@
 <template>
   <div class="reviewDetailContainer">
     <div class="reviewTitle">
-      <img class="reviewIcon" src="@/assets/icons/goal_icon.png">
-      <h1>업적 평가 조회</h1>
+      <h1 class="mb-1"><i class="bi bi-award fs-3"></i>&nbsp; 업적 평가 상세 조회</h1>
       <img src="@/assets/buttons/guide.png" class="guide"
            @click="showModal('guideReview')"></img>
     </div>
@@ -693,10 +692,9 @@ async function valid() {
 
 .reviewTitle {
   grid-column-start: 2;
-  grid-column-end: 3;
-  font-size: 12px;
-  font-weight: 0;
+  align-content: center;
   margin-top: 2%;
+  margin-left: -0.5%;
   color: #000000;
   display: grid;
   grid-template-columns: 3% 18% 4%;
@@ -705,8 +703,9 @@ async function valid() {
 
 .reviewTitle h1 {
   margin-left: 0.5%;
-  font-weight: 600;
   font-size: 25px;
+  font-weight: 600;
+  font-family: 'IBMPlexSansKR-Regular', sans-serif;
 }
 
 .reviewIcon {

@@ -1,15 +1,15 @@
 <template>
   <div class="allWork">
     <div class="allWorkTitle">
-      <h1><i class="bi bi-list-check"></i>&nbsp; 근무 목록</h1>
+      <h1 class="mb-1"><i class="bi bi-clipboard-check"></i>&nbsp; 근무 목록</h1>
     </div>
     <div class="cards">
       <div v-if="isLoading">로딩 중</div>
       <div v-else>
         <div v-if="userRole !== 'ROLE_ADMIN'">
           <div v-if="state.rwApprovalList.length > 0">
-            <div class="text-center mb-4"> <!-- 가운데 정렬 스타일 -->
-              <h5 class="text-primary fw-bolder"> <!-- 타이틀 스타일 -->
+            <div class="text-center mb-5"> <!-- 가운데 정렬 스타일 -->
+              <h5 class="text-primary fw-bolder" style="font-family: 'IBMPlexSansKR-Regular', sans-serif;"> <!-- 타이틀 스타일 -->
                 <span><i class="bi bi-heart-pulse"></i>&nbsp; 단축 근무 기간 &nbsp;</span>
                 <span class="text-secondary">( {{ state.startTime }} ~ {{ state.endTime }} )</span>
               </h5>
@@ -104,10 +104,10 @@ function parseJwt(token) {
 const fetchApprovalList = async (typeId, approvalStatus, employeeId) => {
 
   try {
-    let url = `http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval/all/${typeId}/${approvalStatus}`;
+    let url = `/api/approval/all/${typeId}/${approvalStatus}`;
 
     if (userRole.value !== 'ROLE_ADMIN') {
-      url = `http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/approval/list/${typeId}/${approvalStatus}/${employeeId}`;
+      url = `/api/approval/list/${typeId}/${approvalStatus}/${employeeId}`;
     }
 
     const response = await axios.get(url);
@@ -182,6 +182,8 @@ onMounted(async () => {
   grid-column-start: 2;
   align-content: center;
   margin-top: 2%;
+  margin-left: -0.5%;
+  color: #000000;
 }
 
 .cards {
@@ -191,9 +193,9 @@ onMounted(async () => {
 
 .allWorkTitle h1 {
   margin-left: 0.5%;
-  margin: 0;
   font-size: 25px;
   font-weight: 600;
+  font-family: 'IBMPlexSansKR-Regular', sans-serif;
 }
 
 .cardTitle {
