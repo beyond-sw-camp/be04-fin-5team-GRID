@@ -13,16 +13,60 @@
       <b-card no-body>
         <b-tabs card>
           <b-tab title="출장" @click="fetchReqApprovalList(1, 0, userId)" active>
-            <b-card-text><ApprovalList :approvalList="state.approvalList"/></b-card-text>
+            <b-form-group v-slot="{ ariaDescribedby }" class="d-flex justify-content-end my-3 pb-3">
+              <b-form-radio-group
+                  id="btn-radios-1"
+                  v-model="filterStatus"
+                  :options="statusOptions"
+                  :aria-describedby="ariaDescribedby"
+                  button-variant="outline-secondary"
+                  name="radios-btn-default"
+                  buttons
+              ></b-form-radio-group>
+            </b-form-group>
+            <b-card-text><ApprovalList :approvalList="filteredItems"/></b-card-text>
           </b-tab>
           <b-tab title="시간 외 근무" @click="fetchReqApprovalList(2, 0, userId)">
-            <ApprovalList :approvalList="state.approvalList"/>
+            <b-form-group v-slot="{ ariaDescribedby }" class="d-flex justify-content-end my-3 pb-3">
+              <b-form-radio-group
+                  id="btn-radios-2"
+                  v-model="filterStatus"
+                  :options="statusOptions"
+                  :aria-describedby="ariaDescribedby"
+                  button-variant="outline-secondary"
+                  name="radios-btn-default"
+                  buttons
+              ></b-form-radio-group>
+            </b-form-group>
+            <ApprovalList :approvalList="filteredItems"/>
           </b-tab>
           <b-tab title="단축 근무" @click="fetchReqApprovalList(3, 0, userId)">
-            <ApprovalList :approvalList="state.approvalList"/>
+            <b-form-group v-slot="{ ariaDescribedby }" class="d-flex justify-content-end my-3 pb-3">
+              <b-form-radio-group
+                  id="btn-radios-3"
+                  v-model="filterStatus"
+                  :options="statusOptions"
+                  :aria-describedby="ariaDescribedby"
+                  button-variant="outline-secondary"
+                  name="radios-btn-default"
+                  buttons
+              ></b-form-radio-group>
+            </b-form-group>
+            <ApprovalList :approvalList="filteredItems"/>
           </b-tab>
           <b-tab title="휴가" @click="fetchReqApprovalList(4, 0, userId)">
-            <ApprovalList :approvalList="state.approvalList"/>
+            <b-form-group v-slot="{ ariaDescribedby }" class="d-flex justify-content-end my-3 pb-3">
+              <b-form-radio-group
+                  id="btn-radios-4"
+                  v-model="filterStatus"
+                  :options="statusOptions"
+                  :aria-describedby="ariaDescribedby"
+                  button-variant="outline-secondary"
+                  name="radios-btn-default"
+                  buttons
+              ></b-form-radio-group>
+            </b-form-group>
+            <ApprovalList :approvalList="filteredItems"/>
           </b-tab>
         </b-tabs>
       </b-card>
@@ -31,7 +75,7 @@
 </template>
 
 <script setup>
-  import {onMounted, reactive, ref} from "vue";
+import {computed, onMounted, reactive, ref} from "vue";
   import axios from "axios";
   import ApprovalList from "@/components/Approval/ApprovalList.vue";
 
@@ -39,9 +83,20 @@
 
   const isLoading = ref(true);
 
+  const currentTab = ref(1);
+  const filterStatus = ref('');
+
   const state = reactive({
     approvalList: []
   })
+
+  const statusOptions = [
+    { value: '', text: '전체' },
+    { value: 'A', text: '승인' },
+    { value: 'D', text: '반려' },
+    { value: 'V', text: '열람' },
+    { value: 'N', text: '미열람/취소' }
+  ];
 
   function parseJwt(token) {
     try {
@@ -71,6 +126,20 @@
     } catch (error) {
       console.error('Fetch error: ' + error.message);
     }
+  }
+
+  const filteredItems = computed(() => {
+    if (!filterStatus.value) {
+      return state.approvalList;
+    } else {
+      return state.approvalList.filter(item => item.approvalStatus === filterStatus.value);
+    }
+  });
+
+  const setTab = async (tabIndex) => {
+    currentTab.value = tabIndex;
+    filterStatus.value = ''; // 필터 상태 초기화
+    await fetchApprovalList(currentTab.value, 0, userId.value); // 해당 탭의 데이터를 불러오기
   }
 
   onMounted(async() => {

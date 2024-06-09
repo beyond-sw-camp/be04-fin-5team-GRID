@@ -1,8 +1,7 @@
 <template>
   <div class="container">
     <div class="header-title">
-      <img class="reviewIcon" src="@/assets/list-check.png" alt="list-check" />
-      <h1>동료 평가 목록</h1>
+      <h1 class="mb-1"><i class="bi bi-person-check fs-3"></i>&nbsp; 동료 평가 목록</h1>
       <button href="#" class="addNewBtn btn-custom-1" @click="showModal('addReview')"><span>생성</span></button>
     </div>
     <div class="search-and-add">
@@ -370,18 +369,20 @@ const addNewReview = async () => {
 
 .header-title {
   grid-column-start: 2;
-  grid-row-start: 1;
+  align-content: center;
+  margin-top: 2%;
+  margin-left: -0.5%;
+  color: #000000;
+  display: grid;
+  grid-template-columns: 24% 65% 4%;
   align-items: center;
-  display:grid;
-  grid-template-columns: 3% 92% 5%;
-  grid-column-start:2;
 }
 
 .header-title h1 {
   margin-left: 0.5%;
-  margin-bottom: 0;
   font-size: 25px;
   font-weight: 600;
+  font-family: 'IBMPlexSansKR-Regular', sans-serif;
 }
 
 .reviewIcon {
@@ -389,7 +390,7 @@ const addNewReview = async () => {
 }
 
 .addNewBtn {
-  grid-column-start: 3;
+  grid-column-start: 4;
   grid-row-start: 1;
   background-color: #088A85;
   color: white;
