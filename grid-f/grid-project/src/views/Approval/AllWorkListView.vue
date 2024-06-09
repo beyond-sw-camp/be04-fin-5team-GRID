@@ -213,10 +213,12 @@ onMounted(async () => {
   margin: 0;
   font-size: 20px;
   font-weight: 600;
+  font-family: 'IBMPlexSansKR-Regular', sans-serif;
 }
 
 .cardTitle h6 {
   font-size: 12px;
   font-weight: 300;
+  font-family: 'IBMPlexSansKR-Regular', sans-serif;
 }
 </style>
