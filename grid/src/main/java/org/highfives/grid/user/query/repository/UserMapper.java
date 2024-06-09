@@ -27,9 +27,11 @@ public interface UserMapper {
 //
 //    List<UserDTO> getUserListByName(String name);
 
-    List<UserDTO> getUserList(@Param("offset") long offset, @Param("pageSize") int pageSize);
+    List<UserDTO> getUserList(@Param("offset") long offset, @Param("pageSize") int pageSize,
+                              @Param("auth") String auth);
 
-    List<UserDTO> getUserListByName(@Param("name") String name, @Param("offset") long offset, @Param("pageSize") int pageSize);
+    List<UserDTO> getUserListByName(@Param("name") String name, @Param("offset") long offset,
+                                    @Param("pageSize") int pageSize, @Param("auth") String auth);
 
     long countAllUsers(); // 총 사용자 수를 계산하는 메소드
 

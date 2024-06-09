@@ -46,12 +46,14 @@ public class UserServiceImpl implements UserService{
             return null;
         }
 
-        EmpStatusDTO absence = absenceInfoMap.get(result.getId());
-        if (absence != null) {
-            result.setAbsenceYn(YN.Y);
-            result.setAbsenceContent(absence.getStatus());
-            result.setAbsenceStartTime(absence.getStartTime());
-            result.setAbsenceEndTime(absence.getEndTime());
+        if( result.getResignYn() == YN.N) {
+            EmpStatusDTO absence = absenceInfoMap.get(result.getId());
+            if (absence != null) {
+                result.setAbsenceYn(YN.Y);
+                result.setAbsenceContent(absence.getStatus());
+                result.setAbsenceStartTime(absence.getStartTime());
+                result.setAbsenceEndTime(absence.getEndTime());
+            }
         }
 
         result.setProfilePath(imgMapper.getProfileImg(result.getId()));
@@ -111,19 +113,22 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public Page<UserDTO> findAllUsers(Pageable pageable, List<EmpStatusDTO> absenceInfo) {
+    public Page<UserDTO> findAllUsers(Pageable pageable, List<EmpStatusDTO> absenceInfo, String auth) {
         long offset = pageable.getOffset();
         int pageSize = pageable.getPageSize();
-        List<UserDTO> userList = userMapper.getUserList(offset, pageSize);
+        List<UserDTO> userList = userMapper.getUserList(offset, pageSize, auth);
 
         Map<Integer, EmpStatusDTO> absenceInfoMap = absenceInfo.stream()
                 .collect(Collectors.toMap(EmpStatusDTO::getEmployeeId, empStatusDTO -> empStatusDTO));
 
         userList.forEach(user -> {
-            EmpStatusDTO empStatusDTO = absenceInfoMap.get(user.getId());
-            if (empStatusDTO != null) {
-                user.setAbsenceYn(YN.Y);
-                user.setAbsenceContent(empStatusDTO.getStatus());
+            System.out.println("user.getId() + user.getResignYn() = " + user.getId() + user.getResignYn());
+            if(user.getResignYn().equals(YN.N)) {
+                EmpStatusDTO empStatusDTO = absenceInfoMap.get(user.getId());
+                if (empStatusDTO != null) {
+                    user.setAbsenceYn(YN.Y);
+                    user.setAbsenceContent(empStatusDTO.getStatus());
+                }
             }
             user.setProfilePath(imgMapper.getProfileImg(user.getId()));
         });
@@ -134,19 +139,22 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public Page<UserDTO> findUsersByName(String name, Pageable pageable, List<EmpStatusDTO> absenceInfo) {
+    public Page<UserDTO> findUsersByName(String name, Pageable pageable, List<EmpStatusDTO> absenceInfo,
+                                         String auth) {
         long offset = pageable.getOffset();
         int pageSize = pageable.getPageSize();
-        List<UserDTO> userList = userMapper.getUserListByName(name, offset, pageSize);
+        List<UserDTO> userList = userMapper.getUserListByName(name, offset, pageSize, auth);
 
         Map<Integer, EmpStatusDTO> absenceInfoMap = absenceInfo.stream()
                 .collect(Collectors.toMap(EmpStatusDTO::getEmployeeId, empStatusDTO -> empStatusDTO));
 
         userList.forEach(user -> {
-            EmpStatusDTO empStatusDTO = absenceInfoMap.get(user.getId());
-            if (empStatusDTO != null) {
-                user.setAbsenceYn(YN.Y);
-                user.setAbsenceContent(empStatusDTO.getStatus());
+            if(user.getResignYn() == YN.N) {
+                EmpStatusDTO empStatusDTO = absenceInfoMap.get(user.getId());
+                if (empStatusDTO != null) {
+                    user.setAbsenceYn(YN.Y);
+                    user.setAbsenceContent(empStatusDTO.getStatus());
+                }
             }
             user.setProfilePath(imgMapper.getProfileImg(user.getId()));
         });
