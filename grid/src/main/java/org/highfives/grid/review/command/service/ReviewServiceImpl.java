@@ -171,34 +171,61 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     @Transactional
     public List<ReviewHistoryDTO> addReviewHistory(ReviewHistoryDTO historyDTO) {
+//
+//        Employee employees = userRepository.findById(historyDTO.getRevieweeId()).orElseThrow(() -> new IllegalArgumentException("Employee not found"));
+//
+//        List<Employee> teamEmployees = userRepository.findByTeamId(employees.getTeamId());
+//
+//        List<ReviewHistoryDTO> reviewHistoryDTOList = new ArrayList<>();
+//        for (Employee teamInEmployee : teamEmployees) {
+//            if (teamInEmployee.getId() == (historyDTO.getRevieweeId())) {
+//                continue;
+//            }
+//
+//            ReviewHistory reviewHistory = ReviewHistory.builder()
+//                    .content(historyDTO.getContent())
+//                    .year(historyDTO.getYear())
+//                    .quarter(historyDTO.getQuarter())
+//                    .reviewStatus(ReviewStatus.N)
+//                    .writeTime(null)
+//                    .reviewerId(teamInEmployee.getId())
+//                    .revieweeId(historyDTO.getRevieweeId())
+//                    .build();
+//
+//            reviewHistoryRepository.save(reviewHistory);
+//            reviewHistoryDTOList.add(mapper.map(reviewHistory, ReviewHistoryDTO.class));
+//        }
+//
+//
+//
+//
+//        return reviewHistoryDTOList;
 
-        Employee employees = userRepository.findById(historyDTO.getRevieweeId()).orElseThrow(() -> new IllegalArgumentException("Employee not found"));
+        List<Employee> employeeList = userRepository.findAll();
 
-        List<Employee> teamEmployees = userRepository.findByTeamId(employees.getTeamId());
+                List<ReviewHistoryDTO> reviewHistoryDTOList = new ArrayList<>();
 
-        List<ReviewHistoryDTO> reviewHistoryDTOList = new ArrayList<>();
-        for (Employee teamInEmployee : teamEmployees) {
-            if (teamInEmployee.getId() == (historyDTO.getRevieweeId())) {
-                continue;
-            }
-
-            ReviewHistory reviewHistory = ReviewHistory.builder()
+        for (Employee employee : employeeList) {
+            List<Employee> employeesInTeam = userRepository.findByTeamId(employee.getTeamId());
+            for (Employee teamEmployee : employeesInTeam) {
+                if (teamEmployee.getId() == (employee.getId())) {
+                    continue;
+                }
+                ReviewHistory reviewHistory = ReviewHistory.builder()
                     .content(historyDTO.getContent())
                     .year(historyDTO.getYear())
                     .quarter(historyDTO.getQuarter())
                     .reviewStatus(ReviewStatus.N)
                     .writeTime(null)
-                    .reviewerId(teamInEmployee.getId())
-                    .revieweeId(historyDTO.getRevieweeId())
+                    .reviewerId(teamEmployee.getId())
+                    .revieweeId(employee.getId())
                     .build();
 
-            reviewHistoryRepository.save(reviewHistory);
-            reviewHistoryDTOList.add(mapper.map(reviewHistory, ReviewHistoryDTO.class));
+                reviewHistoryRepository.save(reviewHistory);
+                reviewHistoryDTOList.add(mapper.map(reviewHistory, ReviewHistoryDTO.class));
+
+            }
         }
-
-
-
-
         return reviewHistoryDTOList;
     }
 
