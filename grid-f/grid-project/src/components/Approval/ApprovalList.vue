@@ -85,8 +85,7 @@
     </template>
 
     <template v-else>
-      <button v-for="status in statusList" :key="status" @click="setFilterStatus(status)">{{ status }}</button>
-      <b-table id="table" :fields="fields" :items="filteredItems" hover small
+      <b-table id="table" :fields="fields" :items="props.approvalList" hover small
                :per-page=10 :current-page="currentPage" :sort-by.sync='employeeNumber' :sort-desc.sync="false">
         <template #cell(index)="data">
           {{ data.index + 1 }}
@@ -140,10 +139,6 @@
 
   let pathList = [
     'bt', 'overtime', 'rw', 'vacation'
-  ]
-
-  const statusList = [
-    'A', 'D', 'V', 'N'
   ]
 
   const fields = [
@@ -210,18 +205,6 @@
     }
     router.push(`/approval/detail/${typeId}/${approvalId}`);    // 추후에 모달로 변경
   }
-
-  const filteredItems = computed(() => {
-    if (!filterByStatus.value) {
-      return props.approvalList;
-    } else {
-      return props.approvalList.filter(item => item.approvalStatus === filterByStatus.value);
-    }
-  });
-
-  const setFilterStatus = (status) => {
-    filterByStatus.value = status;
-  };
 
   onMounted(async () => {
     const token = localStorage.getItem('access');
