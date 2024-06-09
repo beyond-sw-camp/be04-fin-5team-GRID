@@ -1,8 +1,7 @@
 <template>
   <div class="reviewAll">
     <div class="reviewHeader">
-      <img class="reviewIcon" src="@/assets/list-check.png" alt="list-check" />
-      <h1>평가 생성</h1>
+      <h1 class="mb-1"><i class="bi bi-person-check fs-3"></i>&nbsp; 동료 평가 생성</h1>
     </div>
     <div class="buttonContainer">
       <button type="button" class="deleteBtn" @click="deleteSelectedReviews">선택 항목 삭제</button>
@@ -171,10 +170,10 @@ const addReview = async () => {
 
 .reviewHeader {
   grid-column-start: 2;
-  grid-row-start: 1;
-  display:grid;
-  grid-template-columns: 3% 97%;
-  align-items: center;
+  align-content: center;
+  margin-top: 2%;
+  margin-left: -0.5%;
+  color: #000000;
 }
 
 .reviewHeader img {
@@ -183,9 +182,9 @@ const addReview = async () => {
 
 .reviewHeader h1 {
   margin-left: 0.5%;
-  margin-bottom: 0;
   font-size: 25px;
   font-weight: 600;
+  font-family: 'IBMPlexSansKR-Regular', sans-serif;
 }
 
 .reviewContent {

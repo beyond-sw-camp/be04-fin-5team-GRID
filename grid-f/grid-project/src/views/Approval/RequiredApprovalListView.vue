@@ -7,7 +7,7 @@
           <li class="breadcrumb-item active" aria-current="page"><span class="fw-bolder"><i class="bi bi-briefcase"></i>&nbsp; 나의 결재 문서</span></li>
         </ol>
       </nav>
-      <h1 class="fw-bolder "><i class="bi bi-briefcase"></i>&nbsp; 나의 결재 문서</h1>
+      <h1 class="fw-bolder"><i class="bi bi-briefcase"></i>&nbsp; 나의 결재 문서</h1>
     </div>
     <div class="requiredContent">
       <b-card no-body>

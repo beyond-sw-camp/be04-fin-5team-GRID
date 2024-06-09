@@ -177,4 +177,8 @@
   grid-row-start: 2;
   font-family: 'IBMPlexSansKR-Regular', sans-serif;
 }
+
+.text-muted {
+  cursor: pointer;
+}
 </style>
