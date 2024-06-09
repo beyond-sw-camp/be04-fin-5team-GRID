@@ -15,10 +15,12 @@
         <association property="writer" javaType="org.highfives.grid.performance_review.query.dto.WriterDTO">
             <id property="id" column="WRITER_ID"/>
             <result property="employeeName" column="WRITER_NAME"/>
+            <result property="employeeNumber" column="WRITER_NUMBER"/>
         </association>
         <association property="approver" javaType="org.highfives.grid.performance_review.query.dto.ApproverDTO">
             <id property="id" column="APPROVER_ID"/>
             <result property="employeeName" column="APPROVER_NAME"/>
+            <result property="employeeNumber" column="APPROVER_NUMBER"/>
         </association>
     </resultMap>
 
@@ -33,10 +35,12 @@
         <association property="writer" javaType="org.highfives.grid.performance_review.query.dto.WriterDTO">
             <id property="id" column="WRITER_ID"/>
             <result property="employeeName" column="WRITER_NAME"/>
+            <result property="employeeNumber" column="WRITER_NUMBER"/>
         </association>
         <association property="approver" javaType="org.highfives.grid.performance_review.query.dto.ApproverDTO">
             <id property="id" column="APPROVER_ID"/>
             <result property="employeeName" column="APPROVER_NAME"/>
+            <result property="employeeNumber" column="APPROVER_NUMBER"/>
         </association>
     </resultMap>
 
@@ -61,9 +65,11 @@
         , A.approval_status as 'APPROVAL_STATUS'
         , writer.id as 'WRITER_ID'
         , writer.employee_name as 'WRITER_NAME'
+        , writer.employee_number as 'WRITER_NUMBER'
         , A.write_time as 'WRITE_TIME'
         , approver.id as 'APPROVER_ID'
         , approver.employee_name as 'APPROVER_NAME'
+        , approver.employee_number as 'APPROVER_NUMBER'
         , A.approval_time as 'APPROVAL_TIME'
         FROM performance_review_goal as A
         JOIN (SELECT * FROM employee WHERE duties_id = 4) as writer
@@ -83,9 +89,11 @@
         , A.approval_status as 'APPROVAL_STATUS'
         , writer.id as 'WRITER_ID'
         , writer.employee_name as 'WRITER_NAME'
+        , writer.employee_number as 'WRITER_NUMBER'
         , A.write_time as 'WRITE_TIME'
         , approver.id as 'APPROVER_ID'
         , approver.employee_name as 'APPROVER_NAME'
+        , approver.employee_number as 'APPROVER_NUMBER'
         , A.approval_time as 'APPROVAL_TIME'
         FROM performance_review_goal as A
         JOIN (SELECT * FROM employee WHERE duties_id = 4) as writer
@@ -106,9 +114,11 @@
         , A.approval_status as 'APPROVAL_STATUS'
         , writer.id as 'WRITER_ID'
         , writer.employee_name as 'WRITER_NAME'
+        , writer.employee_number as 'WRITER_NUMBER'
         , A.write_time as 'WRITE_TIME'
         , approver.id as 'APPROVER_ID'
         , approver.employee_name as 'APPROVER_NAME'
+        , approver.employee_number as 'APPROVER_NUMBER'
         , A.approval_time as 'APPROVAL_TIME'
         FROM performance_review_goal as A
         JOIN (SELECT * FROM employee WHERE duties_id = 4) as writer
@@ -141,9 +151,11 @@
         , A.approval_status as 'APPROVAL_STATUS'
         , writer.id as 'WRITER_ID'
         , writer.employee_name as 'WRITER_NAME'
+        , writer.employee_number as 'WRITER_NUMBER'
         , A.write_time as 'WRITE_TIME'
         , approver.id as 'APPROVER_ID'
         , approver.employee_name as 'APPROVER_NAME'
+        , approver.employee_number as 'APPROVER_NUMBER'
         , A.approval_time as 'APPROVAL_TIME'
         FROM performance_review_goal as A
         JOIN (SELECT * FROM employee WHERE duties_id = 4) as writer
