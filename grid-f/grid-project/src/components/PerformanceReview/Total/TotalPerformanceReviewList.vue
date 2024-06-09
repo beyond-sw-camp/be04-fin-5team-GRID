@@ -3,15 +3,19 @@
     <div class="TotalPerformanceReviewListTitle">
       <img class="PerformanceIcon" src="@/assets/icons/goal_icon.png">
       <h1>종합 업적 평가 조회</h1>
+      <img src="@/assets/buttons/guide.png" class="guide"
+           @click="showModal('guideReview')"></img>
     </div>
     <div class="TotalPerformanceTableContainer">
-      <table class="table">
+      <table class="table table-hover">
         <thead>
         <tr>
           <th>No</th>
           <th>연도</th>
           <th>평가명</th>
+          <th>평가 대상자 사번</th>
           <th>평가 대상자</th>
+          <th>평가자 사번</th>
           <th>평가자</th>
           <th>세부정보</th>
         </tr>
@@ -21,13 +25,49 @@
           <td>{{ (currentPage - 1) * itemsPerPage + index + 1 }}</td>
           <td>{{ item.year }}</td>
           <td>{{ item.reviewName }}</td>
+          <td>{{ getEmployeeNumber(item.reviewee) }}</td>
           <td>{{ getEmployeeName(item.reviewee) }}</td>
+          <td>{{ getEmployeeNumber(item.reviewer) }}</td>
           <td>{{ getEmployeeName(item.reviewer) }}</td>
-          <td><button @click="goToDetailPage(item.id)"><img class="more" src="@/assets/buttons/zoom.png"></button></td>
+          <td>
+            <b-badge @click="goToDetailPage(item.id)">
+              &#x2139;
+            </b-badge>
+<!--            <button @click="goToDetailPage(item.id)"><img class="more" src="@/assets/buttons/zoom.png"></button>-->
+          </td>
         </tr>
         </tbody>
       </table>
     </div>
+
+    <!-- 가이드 모달 -->
+    <div class="modal fade" id="guideReview" tabindex="-1" aria-labelledby="guideManageLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title" id="guideManageLabel">종합 업적 평가 가이드</h4>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div class="example-content">
+              <p>종합 업적 평가를 볼 수 있는 페이지 입니다. </p>
+              <hr>
+              <p>
+                해당연도 확정된 중간 평가와 연말 평가를 합산한 결과를 볼 수 있습니다.
+              </p>
+              <p>팀장</p>
+              <p>&nbsp;자신이 평가한 종합 업적 평가를 조회할 수 있습니다.</p>
+              <p>팀원</p>
+              <p>&nbsp;자신이 평가 받은 종합 업적 평가를 조회할 수 있습니다</p>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <nav class="pg" aria-label="Page navigation example">
       <ul class="pagination">
         <li class="page-item" :class="{ disabled: currentPage === 1 }">
@@ -76,10 +116,15 @@ const totalList = ref([]);
 const currentPage = ref(1);
 const itemsPerPage = 10;
 
+const showModal = (modalId) => {
+  const modal = new bootstrap.Modal(document.getElementById(modalId));
+  modal.show();
+};
+
 const fetchMemberTotal = async () => {
   try {
     // 팀원일때
-    const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/total-performance-review/reviewee/${user.value.id}`);
+    const response = await axios.get(`/api/total-performance-review/reviewee/${user.value.id}`);
     console.log(response.data.findTotalList);
     totalList.value = response.data.findTotalList;
   } catch (error) {
@@ -90,7 +135,7 @@ const fetchMemberTotal = async () => {
 const fetchLeaderTotal = async () => {
   try {
     // 팀장일 때
-    const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/total-performance-review/reviewer/${user.value.id}`);
+    const response = await axios.get(`/api/total-performance-review/reviewer/${user.value.id}`);
     console.log(response.data.findTotalList);
     totalList.value = response.data.findTotalList;
   } catch (error) {
@@ -101,7 +146,7 @@ const fetchLeaderTotal = async () => {
 const fetchAllTotal = async () => {
   try {
     // 관리자
-    const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/total-performance-review`);
+    const response = await axios.get(`/api/total-performance-review`);
     console.log(response.data.findTotalList);
     totalList.value = response.data.findTotalList;
   } catch (error) {
@@ -202,6 +247,10 @@ const getEmployeeName = (employee) => {
   return employee ? employee.employeeName : '';
 };
 
+const getEmployeeNumber = (employee) => {
+  return employee ? employee.employeeNumber : '';
+};
+
 const goToDetailPage = (id) => {
   console.log(id);
   router.push(`/performance-review/total/detail/${id}`);
@@ -224,7 +273,7 @@ const goToDetailPage = (id) => {
   margin-top: 2%;
   color: #000000;
   display: grid;
-  grid-template-columns: 3% 97%;
+  grid-template-columns: 3% 23% 4%;
   align-items: center;
 }
 
@@ -236,6 +285,14 @@ const goToDetailPage = (id) => {
 
 .PerformanceIcon {
   width: 80%;
+}
+
+.guide {
+  width: 60%;
+  height: 25px;
+  grid-column: 3;
+  margin: 0;
+  cursor: pointer;
 }
 
 .more {

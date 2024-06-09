@@ -3,6 +3,8 @@
     <div class="goalTitle">
       <img class="goalIcon" src="@/assets/icons/goal_icon.png">
       <h1>업적 평가 목표 작성</h1>
+      <img src="@/assets/buttons/guide.png" class="guide"
+           @click="showModal('guideGoal')"></img>
     </div>
     <div class="titleTableContainer">
       <table>
@@ -111,6 +113,49 @@
         </div>
       </div>
     </div>
+
+    <!-- 가이드 모달 -->
+    <div class="modal fade" id="guideGoal" tabindex="-1" aria-labelledby="guideManageLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title" id="guideManageLabel">업적 평가 목표 가이드</h4>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div class="example-content">
+              <p>업적 평가 목표를 작성하는 페이지 입니다. </p>
+              <hr>
+              <p>
+                팀원은 1년에 한 번 자신의 업무 목표를 설정할 수 있습니다.<br>
+                업적 평가 목표는 팀원인 직원들만 3월에 작성 가능합니다.<br>
+                (현재는 모든 기간 작성할 수 있도록 열어두었습니다.)
+              </p>
+              <p>1. 승인 상태</p>
+              <p>&nbsp;1-1. 작성 중: 팀원이 목표를 작성하고 있는 상태</p>
+              <p>&nbsp;1-2. 상신: 팀원이 목표를 작성하고 결재를 올린 상태</p>
+              <p>&nbsp;1-3. 확인 중: 팀장이 목표를 보고 승인여부를 판단 중인 상태</p>
+              <p>&nbsp;1-4. 승인: 팀장이 팀원의 목표를 승인한 상태 </p>
+              <p>&nbsp;1-5. 반려: 팀장이 팀원의 목표를 반려한 상태, 팀원은 목표 재설정 가능</p>
+              <p>2. 저장 버튼</p>
+              <p>&nbsp;2-1. 업무명과 목표는 필수로 작성해야 저장 가능합니다.</p>
+              <p>3. 상신 버튼</p>
+              <p>&nbsp;3-1. 모든 내용을 필수로 작성해야 상신 가능합니다.</p>
+              <p>&nbsp;3-2. 모든 항목의 가중치의 합계를 100으로 맞춰야 상신 가능합니다.</p>
+              <p>4. + 버튼</p>
+              <p>&nbsp;4-1. 목표 항목을 추가할 수 있습니다.</p>
+              <p>&nbsp;4-2. 업무명과 목표가 채워져야 새로 추가 가능합니다.</p>
+              <p>5. 삭제 버튼</p>
+              <p>&nbsp;5-1. 작성한 목표 항목을 삭제할 수 있습니다.</p>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </template>
 
@@ -140,6 +185,11 @@ const goalDetail = ref({
 
 const isReadOnly = ref(true);
 
+const showModal = (modalId) => {
+  const modal = new bootstrap.Modal(document.getElementById(modalId));
+  modal.show();
+};
+
 // 현재 시간
 function getCurrentDateTimeString() {
   const now = new Date();
@@ -163,14 +213,14 @@ const fetchGoalAdd = async () => {
     console.log(currentTime);
 
     // 올해 생성된 목표 평가가 있는지 확인
-    const responseGoal = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/review-goal/${currentYear}/${user.value.id}`);
+    const responseGoal = await axios.get(`/api/review-goal/${currentYear}/${user.value.id}`);
 
     console.log('목표 조회', responseGoal.data);
     // 생성된 목표 없으면
     if (!responseGoal.data.findGoal) {
 
       // 팀장 조회
-      const leader = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/${user.value.id}/leaders`);
+      const leader = await axios.get(`/api/users/${user.value.id}/leaders`);
 
       const sandData = {
         "year": currentYear,
@@ -182,12 +232,12 @@ const fetchGoalAdd = async () => {
       }
 
       const responseAdd = await axios.post(
-          `http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/review-goal`,
+          `/api/review-goal`,
           sandData
       );
 
       const id = responseAdd.data.goal.id;
-      const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/review-goal/detail/${id}`);
+      const response = await axios.get(`/api/review-goal/detail/${id}`);
       console.log(response.data);
       const goal = response.data.findDetailGoal;
       goalItemList.value = goal.goalItemList;
@@ -207,7 +257,7 @@ const fetchGoalAdd = async () => {
     } else {
       // 생성된 목표가 있을 때
       const id = responseGoal.data.findGoal.id;
-      const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/review-goal/detail/${id}`);
+      const response = await axios.get(`/api/review-goal/detail/${id}`);
       console.log(response.data);
       const goal = response.data.findDetailGoal;
       goalItemList.value = goal.goalItemList;
@@ -304,7 +354,7 @@ async function deleteItem(index) {
       console.log(id);
 
       if (id != null) {
-        await axios.delete(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/goal-item/${id}`);
+        await axios.delete(`/api/goal-item/${id}`);
       }
       goalItemList.value.splice(index, 1);
       // 삭제 후 인덱스 값 업데이트
@@ -361,7 +411,7 @@ async function memberSave() {
 
       try {
         await axios.put(
-            `http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/review-goal/in-progress`,
+            `/api/review-goal/in-progress`,
             sendData
         );
 
@@ -431,7 +481,7 @@ async function submit() {
 
       try {
         const response = await axios.put(
-            `http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/review-goal/submit`,
+            `/api/review-goal/submit`,
             sendData
         );
 
@@ -464,7 +514,7 @@ async function submit() {
   margin-top: 2%;
   color: #000000;
   display: grid;
-  grid-template-columns: 3% 97%;
+  grid-template-columns: 3% 23% 4%;
   align-items: center;
 }
 
@@ -476,6 +526,14 @@ async function submit() {
 
 .goalIcon {
   width: 80%;
+}
+
+.guide {
+  width: 60%;
+  height: 25px;
+  grid-column: 3;
+  margin: 0;
+  cursor: pointer;
 }
 
 .titleTableContainer {

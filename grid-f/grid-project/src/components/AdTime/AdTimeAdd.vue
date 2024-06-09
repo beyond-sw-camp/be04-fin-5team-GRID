@@ -114,21 +114,15 @@ const initCalendar = async (events) => {
       headerToolbar: {
         left: 'prev,next today',
         center: '',
-        right: 'monthCalendar adTime'
+        right: 'monthCalendar'
       },
       customButtons: {
         monthCalendar: {
-          text: 'Month',
+          text: 'month',
           click: function () {
             router.push(`/work-calendar/${userId.value}`);
           }
         },
-        adTime: {
-          text: '출퇴근',
-          click: function () {
-            router.push('/ad-time');
-          }
-        }
       },
       events: events.value,
       eventOrder: 'priority',  // 우선순위 필드에 따라 정렬
@@ -336,7 +330,7 @@ const goToAdTimeList = () => {
 
 .adTimeAddController {
   display: grid;
-  grid-template-rows: 33% 62% 5%;
+  grid-template-rows: 36% 59% 5%;
   height: 100%;
 }
 

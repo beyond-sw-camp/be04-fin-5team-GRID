@@ -3,6 +3,8 @@
     <div class="reviewTitle">
       <img class="reviewIcon" src="@/assets/icons/goal_icon.png">
       <h1>종합 업적 평가 조회</h1>
+      <img src="@/assets/buttons/guide.png" class="guide"
+           @click="showModal('guideReview')"></img>
     </div>
     <div class="titleTableContainer">
       <table>
@@ -87,6 +89,35 @@
         </table>
       </div>
     </div>
+
+    <!-- 가이드 모달 -->
+    <div class="modal fade" id="guideReview" tabindex="-1" aria-labelledby="guideManageLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title" id="guideManageLabel">종합 업적 평가 가이드</h4>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div class="example-content">
+              <p>종합 업적 평가를 볼 수 있는 페이지 입니다. </p>
+              <hr>
+              <p>
+                해당연도 확정된 중간 평가와 연말 평가를 합산한 결과를 볼 수 있습니다.
+              </p>
+              <p>
+                종합 업적 평가의 점수는<br>
+                중간 업적 평가의 점수 0.3, 연말 업적 평가의 점수 0.7 비율로 계산됩니다.
+              </p>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </template>
 
@@ -120,13 +151,18 @@ const totalDetail = ref({
 // member, leader, manager
 const userRole = ref(null);
 
+const showModal = (modalId) => {
+  const modal = new bootstrap.Modal(document.getElementById(modalId));
+  modal.show();
+};
+
 const fetchReviewDetail = async () => {
   try {
     const route = router.currentRoute.value;
     const id = route.params.id;
 
     // 종합평가 먼저 조회해서 넣기
-    const responseTotalReview = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/total-performance-review/${id}`)
+    const responseTotalReview = await axios.get(`/api/total-performance-review/${id}`)
     console.log(responseTotalReview.data.findTotal);
 
     const total = responseTotalReview.data.findTotal;
@@ -147,7 +183,7 @@ const fetchReviewDetail = async () => {
 
     // 중간 평가 조회하기
     const midtermId = totalDetail.value.midtermId;
-    const responseMid = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/performance-review/detail/${midtermId}`);
+    const responseMid = await axios.get(`/api/performance-review/detail/${midtermId}`);
     console.log(responseMid.data);
     if (responseMid.data.findDetailReview) {
       const reviewMid = responseMid.data.findDetailReview;
@@ -167,7 +203,7 @@ const fetchReviewDetail = async () => {
 
     // 연말 평가 조회하기
     const finalId = totalDetail.value.finalId;
-    const responseFin = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/performance-review/detail/${finalId}`);
+    const responseFin = await axios.get(`/api/performance-review/detail/${finalId}`);
     if (responseFin.data.findDetailReview) {
       const reviewFin = responseFin.data.findDetailReview;
       finReviewItemList.value = reviewFin.reviewItemList;
@@ -226,7 +262,7 @@ const mappingScoreGrade = (score) => {
   margin-top: 2%;
   color: #000000;
   display: grid;
-  grid-template-columns: 3% 97%;
+  grid-template-columns: 3% 21% 4%;
   align-items: center;
 }
 
@@ -238,6 +274,14 @@ const mappingScoreGrade = (score) => {
 
 .reviewIcon {
   width: 80%;
+}
+
+.guide {
+  width: 60%;
+  height: 25px;
+  grid-column: 3;
+  margin: 0;
+  cursor: pointer;
 }
 
 .titleTableContainer {

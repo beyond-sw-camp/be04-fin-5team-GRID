@@ -3,6 +3,8 @@
     <div class="adTimeListTitle">
       <img class="adTimeIcon" src="@/assets/icons/ad-time-icon.png">
       <h1>출퇴근 조회</h1>
+      <img src="@/assets/buttons/guide.png" class="guide"
+           @click="showModal('guideAdTime')"></img>
     </div>
     <div class="workerContainer" v-if="userRole === 'ROLE_ADMIN'">
       <div class="card-deck cnt">
@@ -27,7 +29,7 @@
       </div>
     </div>
     <div class="adTableContainer">
-      <table class="table">
+      <table class="table table-hover">
         <thead>
         <tr>
           <th>No</th>
@@ -52,6 +54,56 @@
         </tr>
         </tbody>
       </table>
+    </div>
+
+    <!-- 관리자용 가이드 모달 -->
+    <div class="modal fade" id="guideAdTime" tabindex="-1" aria-labelledby="guideManageLabel" aria-hidden="true"
+         v-if="userRole === 'ROLE_ADMIN'">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title" id="guideManageLabel">출퇴근 조회 가이드</h4>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div class="example-content">
+              <p>전체 직원 출퇴근 목록을 볼 수 있는 페이지 입니다. </p>
+              <hr>
+              <p>1. 전체 직원의 출근, 퇴근 시간을 볼 있습니다.</p>
+              <p>2. 출근 상태로 직원의 출결을 확인 할 수 있습니다.</p>
+              <p>2-1. 오전 9시 이전 출근 시 정시 출근, 이후엔 지각으로 표시됩니다.</p>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 직원용 가이드 모달 -->
+    <div class="modal fade" id="guideAdTime" tabindex="-1" aria-labelledby="guideManageLabel" aria-hidden="true"
+         v-if="userRole === 'ROLE_USER'">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title" id="guideManageLabel">출퇴근 조회 가이드</h4>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div class="example-content">
+              <p>사용자의 출퇴근 목록을 볼 수 있는 페이지 입니다. </p>
+              <hr>
+              <p>1. 본인의 출근, 퇴근 시간을 볼 수 있습니다.</p>
+              <p>2. 출근 상태로 출결을 확인 할 수 있습니다.</p>
+              <p>2-1. 오전 9시 이전 출근 시 정시 출근, 이후엔 지각으로 표시됩니다.</p>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
     </div>
     <nav class="pg" aria-label="Page navigation example">
       <ul class="pagination">
@@ -117,6 +169,11 @@ function parseJwt(token) {
     return null;
   }
 }
+
+const showModal = (modalId) => {
+  const modal = new bootstrap.Modal(document.getElementById(modalId));
+  modal.show();
+};
 
 // 현재 시간
 function getCurrentDateTimeString() {
@@ -268,7 +325,7 @@ const goToLastPage = () => {
   margin-top: 2%;
   color: #000000;
   display: grid;
-  grid-template-columns: 3% 97%;
+  grid-template-columns: 3% 14% 4%;
   align-items: center;
 }
 
@@ -280,6 +337,14 @@ const goToLastPage = () => {
 
 .adTimeIcon {
   width: 80%;
+}
+
+.guide {
+  width: 60%;
+  height: 25px;
+  grid-column: 3;
+  margin: 0;
+  cursor: pointer;
 }
 
 .cnt {
