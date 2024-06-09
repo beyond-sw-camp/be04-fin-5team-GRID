@@ -39,7 +39,7 @@
                       buttons
                   ></b-form-radio-group>
                 </b-form-group>
-                <ApprovalList :approvalList="filteredItems" />
+                <b-card-text><ApprovalList :approvalList="filteredItems" /></b-card-text>
               </b-tab>
               <b-tab title="단축 근무" @click="setTab(3)">
                 <b-form-group v-slot="{ ariaDescribedby }" class="d-flex justify-content-end my-3 pb-3">
@@ -121,7 +121,7 @@ const state = reactive({
 const statusOptions = [
   { value: '', text: '전체' },
   { value: 'A', text: '승인' },
-  { value: 'D', text: '거절' },
+  { value: 'D', text: '반려' },
   { value: 'V', text: '열람' },
   { value: 'N', text: '미열람/취소' }
 ];
@@ -250,6 +250,10 @@ onMounted(async () => {
 
 .text-muted {
   cursor: pointer;
+}
+
+.b-card title {
+  font-family: 'IBMPlexSansKR-Regular', sans-serif;
 }
 
 .form-check {
