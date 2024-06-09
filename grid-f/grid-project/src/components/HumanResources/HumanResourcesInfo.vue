@@ -139,7 +139,8 @@
                 {{ contractEndTime }}
             </div>
             <div id="admin-info-content6">
-                {{ isResigned }} {{ resignTime }}
+                <b-badge v-if="isResigned === '퇴사'" variant="danger"> 퇴사:&nbsp; {{ resignTime }} </b-badge>
+                <b-badge v-else variant="success"> 재직중 </b-badge>
             </div>
         </div>
     </div>

@@ -3,10 +3,7 @@ package org.highfives.grid.user.command.controller;
 import org.highfives.grid.user.command.dto.UserDTO;
 import org.highfives.grid.user.command.service.ImgService;
 import org.highfives.grid.user.command.service.UserService;
-import org.highfives.grid.user.command.vo.ReqResetPwdVO;
-import org.highfives.grid.user.command.vo.ResImgUploadVO;
-import org.highfives.grid.user.command.vo.ResUserListVO;
-import org.highfives.grid.user.command.vo.ResUserVO;
+import org.highfives.grid.user.command.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,7 +47,7 @@ public class UserController {
         UserDTO result = userService.addNewUser(givenInfo, uploadResult);
 
         ResUserVO response = new ResUserVO(
-            201, "Success to add new user", "/user", result);
+                201, "Success to add new user", "/user", result);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -73,7 +70,7 @@ public class UserController {
             if( duplicateInfoCheck(info) != null ){
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body(new ResUserListVO (
-                        400, duplicateInfoCheck(info).getBody().getMessage(),"/users", null));
+                                400, duplicateInfoCheck(info).getBody().getMessage(),"/users", null));
             }
             givenInfo.add(info);
         }
@@ -114,7 +111,7 @@ public class UserController {
         try {
             result = imgService.imgS3Upload(file);
 
-            } catch (Exception e) {
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
                     new ResImgUploadVO(400, "Failed to upload image",
                             "/users/profile/{id}", null));
@@ -151,16 +148,33 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    //퇴사/재입사
     @PutMapping("/{eNum}/status")
-    public ResponseEntity<ResUserVO> resignUser(@PathVariable("eNum") String employeeNumber) {
+    public ResponseEntity<ResUserVO> modifyResignStatus(@PathVariable("eNum") String employeeNumber,
+                                                        @RequestBody ReqResignStatusVO resign ) {
 
-        if(!userService.deleteUser(employeeNumber))
+        //퇴사(Y)일 경우 처리 로직
+        if(resign.getResignYn().equals("Y")){
+            if(!userService.deleteUser(employeeNumber))
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                        new ResUserVO(400, "No matched user", "/users/list", null)
+                );
+
+            ResUserVO response =
+                    new ResUserVO(200, "Success to resign " + employeeNumber + " user",
+                            "/users/list", null);
+
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }
+
+        //재입사(N)일 경우 처리 로직
+        if(!userService.rejoinUser(employeeNumber))
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
                     new ResUserVO(400, "No matched user", "/users/list", null)
             );
 
         ResUserVO response =
-                new ResUserVO(200, "Success to resign " + employeeNumber + " user",
+                new ResUserVO(200, "Success to rejoin " + employeeNumber + " user",
                         "/users/list", null);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);

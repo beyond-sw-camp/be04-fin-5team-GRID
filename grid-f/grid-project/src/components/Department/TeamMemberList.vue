@@ -208,7 +208,7 @@ const goBack = () => {
 }
 
 .searchBox {
-  padding: 10px;
+  padding: 5px;
   font-size: 14px;
   border-radius: 4px;
   border: 1px solid #ddd;
@@ -219,7 +219,7 @@ const goBack = () => {
 .searchBtn {
   background-color: #088A85;
   color: white;
-  padding: 10px;
+  padding: 5px;
   border: none;
   border-radius: 4px;
   cursor: pointer;

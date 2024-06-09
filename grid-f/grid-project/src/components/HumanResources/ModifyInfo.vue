@@ -45,25 +45,32 @@
         </div>
         <div class="modify-hr-info">
             <div id="modify-hr-info1">
-                <select v-if="userRole === 'ROLE_ADMIN'" v-model="newDepartmentId" :class="{ modified: newDepartmentId !== user.department.id }">
-                    <option v-for="dept in departmentInfo" :key="dept.id" :value="dept.id">{{ dept.departmentName }}</option>
+                <select v-if="userRole === 'ROLE_ADMIN'" v-model="newDepartmentId"
+                    :class="{ modified: newDepartmentId !== user.department.id }">
+                    <option v-for="dept in departmentInfo" :key="dept.id" :value="dept.id">{{ dept.departmentName }}
+                    </option>
                 </select>
             </div>
             <div id="modify-hr-info2">
-                <select v-if="userRole === 'ROLE_ADMIN'" v-model="newTeamId" :class="{ modified: newTeamId !== user.team.id }">
+                <select v-if="userRole === 'ROLE_ADMIN'" v-model="newTeamId"
+                    :class="{ modified: newTeamId !== user.team.id }">
                     <option v-for="team in teamInfo" :key="team.id" :value="team.id">{{ team.teamName }}</option>
                 </select>
             </div>
             <div id="modify-hr-info3">
-                <input type="text" v-model="newAssignedTask" :class="{ modified: newAssignedTask !== user.assignedTask }">
+                <input type="text" v-model="newAssignedTask"
+                    :class="{ modified: newAssignedTask !== user.assignedTask }">
             </div>
             <div id="modify-hr-info4">
-                <select v-if="userRole === 'ROLE_ADMIN'" v-model="newPositionId" :class="{ modified: newPositionId !== user.position.id }">
-                    <option v-for="position in positionInfo" :key="position.id" :value="position.id">{{ position.positionName }}</option>
+                <select v-if="userRole === 'ROLE_ADMIN'" v-model="newPositionId"
+                    :class="{ modified: newPositionId !== user.position.id }">
+                    <option v-for="position in positionInfo" :key="position.id" :value="position.id">{{
+        position.positionName }}</option>
                 </select>
             </div>
             <div id="modify-hr-info5">
-                <select v-if="userRole === 'ROLE_ADMIN'" v-model="newDutiesId" :class="{ modified: newDutiesId !== user.duties.id }">
+                <select v-if="userRole === 'ROLE_ADMIN'" v-model="newDutiesId"
+                    :class="{ modified: newDutiesId !== user.duties.id }">
                     <option v-for="duty in dutiesInfo" :key="duty.id" :value="duty.id">{{ duty.dutiesName }}</option>
                 </select>
             </div>
@@ -120,26 +127,36 @@
         </div>
         <div class="modify-basic-info">
             <div id="modify-basic-info1">
-                <input type="text" v-if="userRole === 'ROLE_ADMIN'" v-model="newName" :class="{ modified: newName !== user.name }">
+                <input type="text" v-if="userRole === 'ROLE_ADMIN'" v-model="newName"
+                    :class="{ modified: newName !== user.name }">
             </div>
             <div id="modify-basic-info2">
-                <input v-if="userRole === 'ROLE_ADMIN'" type="text" v-model="newEmployeeNumber" @blur="checkDuplicate('employeeNumber')" :class="{ modified: newEmployeeNumber !== user.employeeNumber }">
+                <input v-if="userRole === 'ROLE_ADMIN'" type="text" v-model="newEmployeeNumber"
+                    @blur="checkDuplicate('employeeNumber')"
+                    :class="{ modified: newEmployeeNumber !== user.employeeNumber }">
                 <span v-if="duplicateWarning.employeeNumber" class="warning">중복된 사번입니다.</span>
             </div>
             <div id="modify-basic-info3">
-                <input v-if="userRole === 'ROLE_ADMIN'" type="text" v-model="newEmail" @blur="checkEmailValidity" :class="{ modified: newEmail !== user.email }">
-                <img v-if="duplicateWarning.email && newEmail != ''" src="@/assets/HR/fail.png" alt="실패 이미지" style="width: 15px; height: 15px; margin: 0 0 1px 10px;">
+                <input v-if="userRole === 'ROLE_ADMIN'" type="text" v-model="newEmail" @blur="checkEmailValidity"
+                    :class="{ modified: newEmail !== user.email }">
+                <img v-if="duplicateWarning.email && newEmail != ''" src="@/assets/HR/fail.png" alt="실패 이미지"
+                    style="width: 15px; height: 15px; margin: 0 0 1px 10px;">
             </div>
             <div id="modify-basic-info4">
-                <input v-if="userRole === 'ROLE_ADMIN'" type="text" v-model="newPhoneNumber" @blur="checkPhoneValidity" :class="{ modified: newPhoneNumber !== user.phoneNumber }">
-                <img v-if="duplicateWarning.phoneNumber && newPhoneNumber != ''" src="@/assets/HR/fail.png" alt="실패 이미지" style="width: 15px; height: 15px; margin: 0 0 1px 10px;">
+                <input v-if="userRole === 'ROLE_ADMIN'" type="text" v-model="newPhoneNumber" @blur="checkPhoneValidity"
+                    :class="{ modified: newPhoneNumber !== user.phoneNumber }">
+                <img v-if="duplicateWarning.phoneNumber && newPhoneNumber != ''" src="@/assets/HR/fail.png" alt="실패 이미지"
+                    style="width: 15px; height: 15px; margin: 0 0 1px 10px;">
             </div>
             <div id="modify-basic-info5">
-                <input v-if="userRole === 'ROLE_ADMIN'" type="text" v-model="newCallNum" @blur="checkLandlineValidity" :class="{ modified: newCallNum !== user.callNumber }">
-                <img v-if="duplicateWarning.callNumber && newCallNum != ''" src="@/assets/HR/fail.png" alt="실패 이미지" style="width: 15px; height: 15px; margin: 0 0 1px 10px;">
+                <input v-if="userRole === 'ROLE_ADMIN'" type="text" v-model="newCallNum" @blur="checkLandlineValidity"
+                    :class="{ modified: newCallNum !== user.callNumber }">
+                <img v-if="duplicateWarning.callNumber && newCallNum != ''" src="@/assets/HR/fail.png" alt="실패 이미지"
+                    style="width: 15px; height: 15px; margin: 0 0 1px 10px;">
             </div>
             <div id="modify-admin-info6">
-                <input v-if="userRole === 'ROLE_ADMIN'" v-model="newJoinTime" :class="{ modified: newJoinTime !== user.joinTime }" type="date" required>
+                <input v-if="userRole === 'ROLE_ADMIN'" v-model="newJoinTime"
+                    :class="{ modified: newJoinTime !== user.joinTime }" type="date" required>
             </div>
         </div>
         <div class="admin-info-title">
@@ -172,7 +189,7 @@
                 퇴사 여부
             </div>
         </div>
-        <div class="admin-info-content" >
+        <div class="admin-info-content">
             <div id="admin-info-content1" style="padding: 0 15px 0 0">
                 {{ user.zipCode }} <br>
                 {{ address }}
@@ -190,28 +207,34 @@
                 {{ contractEndTime }}
             </div>
             <div id="admin-info-content6">
-                {{ isResigned ? '퇴사' : '재직' }} &nbsp {{ resignTime }}
+                <b-badge v-if="user.resignYn === 'Y'" variant="danger"> 퇴사:&nbsp; {{ resignTime }} </b-badge>
+                <b-badge v-else variant="light"> 재직 </b-badge>
             </div>
         </div>
         <div class="modify-admin-info">
             <div id="modify-admin-info1">
                 <div id="modify-admin-info-sub1">
-                    <button @click="execDaumPostcode" v-if="userRole === 'ROLE_ADMIN'" >검색</button><br>
-                    <input v-if="userRole === 'ROLE_ADMIN'" type="text" v-model="newZipCode" readonly :class="{ modified: newZipCode !== user.zipCode }" placeholder="우편 번호" id="sub-1-1">
-                    <input v-if="userRole === 'ROLE_ADMIN'" type="text" v-model="newAddress" readonly :class="{ modified: newAddress !== user.address }" placeholder="기본 주소" id="sub-1-2">
+                    <button @click="execDaumPostcode" v-if="userRole === 'ROLE_ADMIN'">검색</button><br>
+                    <input v-if="userRole === 'ROLE_ADMIN'" type="text" v-model="newZipCode" readonly
+                        :class="{ modified: newZipCode !== user.zipCode }" placeholder="우편 번호" id="sub-1-1">
+                    <input v-if="userRole === 'ROLE_ADMIN'" type="text" v-model="newAddress" readonly
+                        :class="{ modified: newAddress !== user.address }" placeholder="기본 주소" id="sub-1-2">
                 </div>
                 <div id="modify-admin-info-sub2">
-                    <input v-if="userRole === 'ROLE_ADMIN'" type="text" v-model="newAddressDetail" placeholder="상세 주소" :class="{ modified: newAddressDetail !== '' }">
+                    <input v-if="userRole === 'ROLE_ADMIN'" type="text" v-model="newAddressDetail" placeholder="상세 주소"
+                        :class="{ modified: newAddressDetail !== '' }">
                 </div>
             </div>
             <div id="modify-admin-info2">
-                <select v-if="userRole === 'ROLE_ADMIN'" v-model="newJoinType" :class="{ modified: newJoinType !== user.joinType }">
+                <select v-if="userRole === 'ROLE_ADMIN'" v-model="newJoinType"
+                    :class="{ modified: newJoinType !== user.joinType }">
                     <option value="NEW">신입</option>
                     <option value="EXPERIENCED">경력</option>
                 </select>
             </div>
             <div id="modify-admin-info3">
-                <select v-if="userRole === 'ROLE_ADMIN'" v-model="newWorkType" :class="{ modified: newWorkType !== user.workType }">
+                <select v-if="userRole === 'ROLE_ADMIN'" v-model="newWorkType"
+                    :class="{ modified: newWorkType !== user.workType }">
                     <option value="R">정규직</option>
                     <option value="C">계약직</option>
                 </select>
@@ -223,7 +246,10 @@
                 <input v-if="userRole === 'ROLE_ADMIN'" v-model="newContractEndTime" type="date" required>
             </div>
             <div id="modify-admin-info6">
-                <button v-if="userRole === 'ROLE_ADMIN'" @click="confirmResignation">퇴사</button>
+                <button v-if="userRole === 'ROLE_ADMIN' && user.resignYn === 'N'"
+                    @click="confirmResignation">퇴사</button>
+                <button v-if="userRole === 'ROLE_ADMIN' && user.resignYn === 'Y'" @click="rejoin"
+                    style="min-width: 50px; background-color: #088A85;">재입사</button>
             </div>
         </div>
     </div>
@@ -289,10 +315,6 @@ const newIsResigned = ref('N');
 const resignedTime = ref('');
 const newContractEndTime = ref('');
 const newContractStartTime = ref('');
-
-const isValidEmail = ref(true);
-const isValidPhoneNumber = ref(true);
-const isValidCallNumber = ref(true);
 
 const resultAddress = computed(() => `${newAddress.value} ${newAddressDetail.value}`);
 
@@ -398,7 +420,13 @@ const confirmResignation = () => {
         resignUser();
     }
 };
-// 테스트
+
+const rejoin = () => {
+    if (confirm('재입사 처리 하시겠습니까?')) {
+        rejoinUser();
+    }
+}
+
 const resignUser = async () => {
     try {
         const response = await axios.put(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/${props.user.employeeNumber}/status`, {
@@ -408,11 +436,24 @@ const resignUser = async () => {
         alert('퇴사 처리 되었습니다.');
         console.log('퇴사 처리 완료:', response.data);
         router.push(`/hr/profile/${props.user.employeeNumber}`);
-        
+
     } catch (error) {
         console.error("퇴사 처리 중 오류 발생: ", error);
     }
 };
+
+const rejoinUser = async () => {
+    try {
+        const response = await axios.put(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/${props.user.employeeNumber}/status`, {
+            resignYn: 'N',
+            resignedTime: null
+        });
+        alert('재입사 처리 되었습니다.');
+        router.push(`/hr/profile/${props.user.employeeNumber}`);
+    } catch (error) {
+        console.error("재입사 처리 중 오류 발생: ", error);
+    }
+}
 
 const emailRegExp = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
 const phoneRegExp = /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/;
@@ -567,7 +608,7 @@ hr {
     width: 100%;
 }
 
-#hr-info-name1, 
+#hr-info-name1,
 #hr-info-content1,
 #modify-hr-info1,
 #basic-info-name1,
@@ -673,7 +714,7 @@ hr {
 .modify-hr-info input,
 .modify-admin-info select,
 .modify-basic-info select,
-.modify-hr-info select{
+.modify-hr-info select {
     border: 0.5px solid;
     font-size: 13px;
 }
@@ -720,7 +761,7 @@ hr {
 
 .modify-admin-info button {
     width: 10%;
-    min-width: 36.8px;
+    min-width: 38.8px;
     background-color: #df2517;
     color: white;
     padding: 5px 5px;
@@ -764,7 +805,7 @@ hr {
 
 #modify-admin-info-sub2 input {
     width: 100%;
-    min-width: 300px; 
+    min-width: 300px;
 }
 
 .basic-info-title {
@@ -853,7 +894,8 @@ hr {
     border: 2px solid #088A85;
 }
 
-input, select {
+input,
+select {
     border: solid 0.5px;
     border-radius: 4px;
 }

@@ -206,13 +206,23 @@ public class ApprovalServiceImpl implements ApprovalService{
     public List<EmpStatusDTO> findEmpStatus() {
 
         List<EmpStatusDTO> todayWork = new ArrayList<>();
+        DateTimeFormatter inputFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        DateTimeFormatter outputFormat = DateTimeFormatter.ofPattern("yy.MM.dd");
 
         for (ApprovalEmpDTO bt : findTodayBT()) {
-            todayWork.add(new EmpStatusDTO(bt.getEmployeeId(), "출장 중", bt.getStartTime(), bt.getEndTime()));
+            LocalDateTime startDateTime = LocalDateTime.parse(bt.getStartTime(), inputFormat);
+            LocalDateTime endDateTime = LocalDateTime.parse(bt.getEndTime(), inputFormat);
+            String startTime = startDateTime.format(outputFormat);
+            String endTime = endDateTime.format(outputFormat);
+            todayWork.add(new EmpStatusDTO(bt.getEmployeeId(), "출장", startTime, endTime));
         }
 
         for (ApprovalEmpDTO v : findTodayV()) {
-            todayWork.add(new EmpStatusDTO(v.getEmployeeId(), "휴가 중", v.getStartTime(), v.getEndTime()));
+            LocalDateTime startDateTime = LocalDateTime.parse(v.getStartTime(), inputFormat);
+            LocalDateTime endDateTime = LocalDateTime.parse(v.getEndTime(), inputFormat);
+            String startTime = startDateTime.format(outputFormat);
+            String endTime = endDateTime.format(outputFormat);
+            todayWork.add(new EmpStatusDTO(v.getEmployeeId(), "휴가", startTime, endTime));
         }
 
         return todayWork;

@@ -77,7 +77,8 @@ const userId = ref();
 
 const allInfo = ref([]);
 const vacationNum = ref(0);
-
+const userVacationEndTime = ref('');
+ 
 const state = reactive({
   vacationType: [],
   isEndDateDisabled: false,
@@ -114,14 +115,15 @@ const getUserVacationInfo = async (id) => {
 
     allInfo.value = response.data.result;
 
+    let vacationInfo;
     if(id === 5 || id === 6) {
-      const vacationInfo = allInfo.value.find(info => info.typeId === 1);
-      vacationNum.value = vacationInfo ? vacationInfo.vacationNum : 0;
+      vacationInfo = allInfo.value.find(info => info.typeId === 1);
     } else {
-      const vacationInfo = allInfo.value.find(info => info.typeId === id);
-      vacationNum.value = vacationInfo ? vacationInfo.vacationNum : 0;
+      vacationInfo = allInfo.value.find(info => info.typeId === id);
     }
 
+    vacationNum.value = vacationInfo ? vacationInfo.vacationNum : 0;
+    userVacationEndTime.endTime = vacationInfo ? vacationInfo.endTime : '00:00:00';
 
   } catch (error) {
     console.error("Error:", error);
@@ -174,6 +176,21 @@ const differenceInDays = differenceInTime / (1000 * 3600 * 24);
 return differenceInDays;
 }
 
+const calculateBusinessDays = (startDate, endDate) => {
+  let count = 0;
+  const curDate = new Date(startDate);
+
+  while (curDate <= new Date(endDate)) {
+    const dayOfWeek = curDate.getDay();
+    if (dayOfWeek !== 0 && dayOfWeek !== 6) { // 0 = Sunday, 6 = Saturday
+      count++;
+    }
+    curDate.setDate(curDate.getDate() + 1);
+  }
+  
+  return count;
+}
+
 const registApproval = async () => {
   postData.requesterId = userId.value;
 
@@ -184,8 +201,15 @@ const registApproval = async () => {
 
   await getUserVacationInfo(postData.infoId);
 
-  const daysBetween = calculateDaysBetweenDates(postData.s_date, postData.e_date);
-  console.log(daysBetween)
+  // 휴가 사용 종료 날짜가 지난 경우 신청을 막음
+  if (userVacationEndTime.endTime < postData.e_date || userVacationEndTime.endTime < postData.s_date) {
+    alert('휴가 사용기한 안에서만 신청 가능합니다.');
+    return;
+  }
+
+  // 주말을 제외한 일수 계산
+  const businessDaysBetween = calculateBusinessDays(postData.s_date, postData.e_date);
+  console.log(businessDaysBetween);
 
   try {
     const confirmed = window.confirm('휴가를 사용하시겠습니까?');
