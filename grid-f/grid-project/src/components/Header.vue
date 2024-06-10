@@ -597,7 +597,5 @@ onMounted(fetchDepartments);
 
 .icon-image:hover, .profile:hover {
   opacity: 0.8;
-  border: 2px solid #088A85;
-  transition: border 0.2s;
 }
 </style>
