@@ -1,19 +1,18 @@
-package org.highfives.grid.review.query.dto;
+package org.highfives.grid.review.query.aggregate;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.highfives.grid.review.query.aggregate.ReviewStatus;
 import org.highfives.grid.user.command.aggregate.Employee;
 
 import java.util.List;
 
 @Getter
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 @ToString
-@Setter
-public class ReviewEmployeesHistoryDTO {
+public class ReviewEmployeeHistory {
     private int id;
 
     private String content;
@@ -35,7 +34,5 @@ public class ReviewEmployeesHistoryDTO {
     private String reviewerName;
 
     private String departmentName;
-
-
 
 }

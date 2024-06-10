@@ -1,5 +1,6 @@
 package org.highfives.grid.review.query.service;
 
+import com.github.pagehelper.PageInfo;
 import org.highfives.grid.review.query.dto.ReviewEmployeesHistoryDTO;
 import org.highfives.grid.review.query.dto.ReviewHistoryAndScoreDTO;
 import org.highfives.grid.review.query.dto.ReviewHistoryDTO;
@@ -21,6 +22,6 @@ public interface ReviewService {
 
     ReviewListDTO findReviewList(int id);
 
-    List<ReviewEmployeesHistoryDTO> findEmployeesHistory();
 
+    PageInfo<ReviewEmployeesHistoryDTO> findEmployeesHistory(int page, int size);
 }

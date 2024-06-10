@@ -1,5 +1,6 @@
 package org.highfives.grid.review.query.controller;
 
+import com.github.pagehelper.PageInfo;
 import org.highfives.grid.review.query.dto.ReviewEmployeesHistoryDTO;
 import org.highfives.grid.review.query.vo.ResponseReviewListVO;
 import org.highfives.grid.review.query.dto.ReviewHistoryDTO;
@@ -9,12 +10,10 @@ import org.highfives.grid.review.query.dto.ReviewHistoryAndScoreDTO;
 import org.highfives.grid.review.query.vo.ResponseReviewHistoryAndScoreVO;
 import org.highfives.grid.review.query.vo.ResponseReviewHistoryVO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -111,11 +110,13 @@ public class ReviewController {
         return ResponseEntity.status(HttpStatus.OK).body(responseReviewListVO);
     }
 
+
     @GetMapping("/employees-history")
-    public ResponseEntity<List<ReviewEmployeesHistoryDTO>> findEmployeesHistory() {
+    public ResponseEntity<PageInfo<ReviewEmployeesHistoryDTO>> findEmployeesHistory(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size) {
 
-        List<ReviewEmployeesHistoryDTO> employeesHistoryDTOList = reviewService.findEmployeesHistory();
-
-        return ResponseEntity.status(HttpStatus.OK).body(employeesHistoryDTOList);
+        PageInfo<ReviewEmployeesHistoryDTO> employeesHistoryDTOPage = reviewService.findEmployeesHistory(page, size);
+        return ResponseEntity.status(HttpStatus.OK).body(employeesHistoryDTOPage);
     }
 }

@@ -20,7 +20,6 @@
           <th style="width: 10%;">연도</th>
           <th style="width: 10%;">분기</th>
           <th style="width: 10%;">대상자</th>
-          <!-- <th style="width: 10%;">평가 보기</th> -->
         </tr>
       </thead>
       <tbody>
@@ -31,41 +30,31 @@
           <td>{{ formatDate(review.writeTime) }}</td>
           <td>{{ review.year }}</td>
           <td>{{ review.quarter }}</td>
-          <td>{{ review.revieweeName }}</td>
-          <!-- <td>
-            <button class="view-review-btn" @click="openModal(review.id)">평가 보기</button>
-          </td> -->
+          <td>{{ review.revieweeName}}</td>
         </tr>
       </tbody>
     </table>
 
-    <nav class="pg" aria-label="Page navigation example" v-if="totalPages > 1">
+    <div class="pagination-container">
       <ul class="pagination">
         <li class="page-item" :class="{ disabled: currentPage === 1 }">
-          <a class="page-link" href="#" aria-label="First" @click.prevent="goToFirstPage">
-            <span aria-hidden="true">&laquo;&laquo;</span>
-          </a>
+          <a class="page-link" @click.prevent="goToFirstPage">««</a>
         </li>
         <li class="page-item" :class="{ disabled: currentPage === 1 }">
-          <a class="page-link" href="#" aria-label="Previous" @click.prevent="prevPage">
-            <span aria-hidden="true">&laquo;</span>
-          </a>
+          <a class="page-link" @click.prevent="prevPage">«</a>
         </li>
-        <li v-for="page in filteredPages" :key="page" class="page-item" :class="{ active: page === currentPage }">
+        <li class="page-item" v-for="page in visiblePages" :key="page" :class="{ active: currentPage === page }">
           <a class="page-link" @click.prevent="goToPage(page)">{{ page }}</a>
         </li>
         <li class="page-item" :class="{ disabled: currentPage === totalPages }">
-          <a class="page-link" aria-label="Next" @click.prevent="nextPage">
-            <span aria-hidden="true">&raquo;</span>
-          </a>
+          <a class="page-link" @click.prevent="nextPage">»</a>
         </li>
         <li class="page-item" :class="{ disabled: currentPage === totalPages }">
-          <a class="page-link" href="#" aria-label="Last" @click.prevent="goToLastPage">
-            <span aria-hidden="true">&raquo;&raquo;</span>
-          </a>
+          <a class="page-link" @click.prevent="goToLastPage">»»</a>
         </li>
+
       </ul>
-    </nav>
+    </div>
 
     <!-- Add New Modal -->
     <div class="modal fade" id="addReview" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -103,13 +92,6 @@
                 </div>
               </div>
               <div class="mb-3">
-                <!-- <label for="dayOfUsing" class="form-label">평가 대상자</label>
-                <select class="form-select" id="newRevieweeId" v-model="newRevieweeId" required>
-                  <option value="" disabled selected>평가 대상자를 선택해주세요.</option>
-                  <option v-for="employee in employees" :key="employee.id" :value="employee.id">
-                    {{ employee.name }}
-                  </option>
-                </select> -->
               </div>
               <div class="button-container">
                 <button type="submit" class="btn btn-primary">생성</button>
@@ -131,16 +113,16 @@ import router from '@/router/router';
 
 const searchQuery = ref('');
 const reviews = ref([]);
-const filteredReviews = ref([]);
 const currentPage = ref(1);
-const itemsPerPage = 10;
+const itemsPerPage = ref(10); // 페이지당 항목 수
+const totalPages = ref(1);
 
 const employees = ref([]);
 const newReviewContent = ref('');
 const currentYear = new Date().getFullYear();
 const newReviewYear = ref(currentYear);
 const newReviewQuarter = ref(1);
-const newRevieweeId = ref('');
+const newRevieweeId = ref(null);
 const userRole = ref('');
 const user = ref({});
 const selectedReviews = ref([]);
@@ -156,38 +138,13 @@ const showModal = (modalId) => {
 
 const fetchReviews = async () => {
   try {
-    const response = await axios.get('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/review/history-list');
-    const reviewList = response.data.result;
-
-    const reviewDetails = await Promise.all(reviewList.map(async review => {
-      const [reviewerResponse, revieweeResponse] = await Promise.all([
-        axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/id/${review.reviewerId}`),
-        axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/id/${review.revieweeId}`)
-      ]);
-
-      review.reviewerName = reviewerResponse.data.result.name;
-      review.departmentId = reviewerResponse.data.result.department.id;
-      review.revieweeName = revieweeResponse.data.result.name;
-
-      const departmentResponse = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/department/${review.departmentId}`);
-      review.departmentName = departmentResponse.data.result.departmentName;
-
-      return review;
-    }));
-
-    reviews.value = reviewDetails;
-    filteredReviews.value = reviewDetails;
+    const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/review/employees-history?page=${currentPage.value}&size=${itemsPerPage.value}`);
+    const reviewPage = response.data;
+    reviews.value = reviewPage.list;
+    console.log(reviews.value)
+    totalPages.value = Math.ceil(reviewPage.total / itemsPerPage.value); // 총 페이지 수를 계산합니다.
   } catch (error) {
     console.error('평가 내역을 가져오는 중 오류 발생:', error);
-  }
-};
-
-const fetchEmployees = async () => {
-  try {
-    const response = await axios.get('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/list/all');
-    employees.value = response.data.result;
-  } catch (error) {
-    console.error('Error fetching employees:', error);
   }
 };
 
@@ -218,54 +175,47 @@ onMounted(() => {
     router.go(-1);
   } else {
     fetchReviews();
-    fetchEmployees();
   }
 });
 
-const totalPages = computed(() => {
-  return Math.ceil(filteredReviews.value.length / itemsPerPage);
-});
-
 const paginatedReviews = computed(() => {
-  const start = (currentPage.value - 1) * itemsPerPage;
-  const end = start + itemsPerPage;
-  return filteredReviews.value.slice(start, start + itemsPerPage);
+  const start = (currentPage.value - 1) * itemsPerPage.value;
+  const end = start + itemsPerPage.value;
+  return reviews.value.slice(start, end);
 });
 
 const changePage = (page) => {
   currentPage.value = page;
+  fetchReviews(); // 페이지 변경 시 새로운 데이터 요청
 };
 
-const filteredPages = computed(() => {
-  const maxPages = 5; // 페이지당 최대 표시할 페이지 수
-  const startPage = Math.max(1, currentPage.value - Math.floor(maxPages / 2));
-  const endPage = Math.min(totalPages.value, startPage + maxPages - 1);
-
-  const pages = [];
-  for (let i = startPage; i <= endPage; i++) {
-    pages.push(i);
-  }
-  return pages;
-});
-
 const prevPage = () => {
-  if (currentPage.value > 1) currentPage.value--;
+  if (currentPage.value > 1) {
+    currentPage.value--;
+    fetchReviews();
+  }
 };
 
 const nextPage = () => {
-  if (currentPage.value < totalPages.value) currentPage.value++;
+  if (currentPage.value < totalPages.value) {
+    currentPage.value++;
+    fetchReviews();
+  }
 };
 
 const goToPage = (page) => {
   currentPage.value = page;
+  fetchReviews();
 };
 
 const goToFirstPage = () => {
   currentPage.value = 1;
+  fetchReviews();
 };
 
 const goToLastPage = () => {
   currentPage.value = totalPages.value;
+  fetchReviews();
 };
 
 const formatDate = (datetime) => {
@@ -279,10 +229,8 @@ const search = () => {
     alert('검색어를 입력해주세요.');
     return;
   }
-  filteredReviews.value = reviews.value.filter(review =>
-    review.reviewerName.toLowerCase().includes(searchQuery.value.toLowerCase())
-  );
   currentPage.value = 1;
+  fetchReviews();
 };
 
 const closeModal = (modalId) => {
@@ -290,9 +238,9 @@ const closeModal = (modalId) => {
   modal.hide();
   if (modalId === 'addReview') {
     newReviewContent.value = '';
-    newReviewYear.value = '';
-    newReviewQuarter.value = '';
-    newRevieweeId.value = '';
+    newReviewYear.value = currentYear;
+    newReviewQuarter.value = 1;
+    newRevieweeId.value = null;
     const form = document.querySelector(`#${modalId} form`);
     if (form) {
       form.classList.remove('was-validated');
@@ -350,8 +298,24 @@ const addNewReview = async () => {
     console.error('Error adding new review:', error);
   }
 };
-</script>
 
+const visiblePages = computed(() => {
+  const totalVisible = 5;
+  let startPage = currentPage.value - Math.floor(totalVisible / 2);
+  if (startPage < 1) startPage = 1;
+  let endPage = startPage + totalVisible - 1;
+  if (endPage > totalPages.value) {
+    endPage = totalPages.value;
+    startPage = endPage - totalVisible + 1;
+    if (startPage < 1) startPage = 1;
+  }
+  const pages = [];
+  for (let i = startPage; i <= endPage; i++) {
+    pages.push(i);
+  }
+  return pages;
+});
+</script>
 
 <style scoped>
 @font-face {
@@ -557,5 +521,11 @@ tr:hover {
 
 .btn-custom-1:hover span {
     color: white;
+}
+
+.pagination-container {
+  grid-row-start: 5;
+  grid-column-start: 2;
+  justify-self: center;
 }
 </style>
