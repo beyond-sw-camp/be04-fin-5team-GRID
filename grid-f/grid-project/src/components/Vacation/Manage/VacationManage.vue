@@ -41,6 +41,28 @@
                                 </div>
                             </div>
                             <div class="mb-3">
+                                <label for="modifyVacationYes" class="form-label custom-label">시간체크</label>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="timeCheck" id="modifyVacationYes" v-model="registVacationType.timeCheck" value="Y" required>
+                                    <label class="form-check-label" for="modifyVacationYes">Y</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="timeCheck" id="modifyVacationNo" v-model="registVacationType.timeCheck" value="N" required>
+                                    <label class="form-check-label" for="modifyVacationNo">N</label>
+                                </div>
+                                <div class="invalid-feedback">
+                                    시간체크 여부를 선택해주세요.
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="modifyVacationNum" class="form-label">휴가 제공시간</label>
+                                <input type="text" class="form-control" id="modifyVacationNum" :disabled="registVacationType.timeCheck !== 'Y'"
+                                    v-model="registVacationType.vacationTime" required>
+                                <div class="invalid-feedback">
+                                    휴가 제공시간을 입력해주세요.
+                                </div>
+                            </div>
+                            <div class="mb-3">
                                 <label for="vacationNum" class="form-label">휴가 제공일수</label>
                                 <input type="text" class="form-control" id="vacationNum"
                                     v-model="registVacationType.vacationNum" required>
@@ -91,6 +113,28 @@
                                     v-model="modifyType.typeName" required>
                                 <div class="invalid-feedback">
                                     휴가 이름을 입력해주세요.
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="modifyVacationYes" class="form-label custom-label">시간체크</label>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="timeCheck" id="modifyVacationYes" v-model="modifyType.timeCheck" value="Y" required>
+                                    <label class="form-check-label" for="modifyVacationYes">Y</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="timeCheck" id="modifyVacationNo" v-model="modifyType.timeCheck" value="N" required>
+                                    <label class="form-check-label" for="modifyVacationNo">N</label>
+                                </div>
+                                <div class="invalid-feedback">
+                                    시간체크 여부를 선택해주세요.
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="modifyVacationNum" class="form-label">휴가 제공시간</label>
+                                <input type="text" class="form-control" id="modifyVacationNum" :disabled="modifyType.timeCheck !== 'Y'"
+                                    v-model="modifyType.vacationTime" required>
+                                <div class="invalid-feedback">
+                                    휴가 제공시간을 입력해주세요.
                                 </div>
                             </div>
                             <div class="mb-3">
@@ -209,6 +253,8 @@ const selectedVacationTypes = ref([]);
 const modifyType = ref({
     id: '',
     typeName: '',
+    timeCheck:'',
+    vacationTime:'',
     vacationNum: '',
     dateOfUse: '',
     vacationExplain: '',
@@ -217,6 +263,8 @@ const modifyType = ref({
 const registVacationType = ref({
     id: '',
     typeName: '',
+    timeCheck:'',
+    vacationTime:'',
     vacationNum: '',
     dateOfUse: '',
     vacationExplain: ''
@@ -241,6 +289,7 @@ const getVacationType = async (id) => {
     try {
         const response = await axios.get(`/api/vacation/type/${id}`);
         modifyType.value = response.data.result;
+        console.log(modifyType.value);
     } catch (error) {
         console.error("Error:", error);
     }
@@ -251,6 +300,8 @@ const closeModal = (modalId) => {
     modal.hide();
     if (modalId === 'registVacation') {
         registVacationType.value.typeName = '';
+        registVacationType.value.timeCheck = '';
+        registVacationType.value.vacationTime = '';
         registVacationType.value.vacationNum = '';
         registVacationType.value.dateOfUse = '';
         registVacationType.value.vacationExplain = '';
@@ -283,6 +334,8 @@ const registType = async () => {
         return;
     }
 
+    console.log(registVacationType.value.timeCheck);
+
     try {
         const confirmed = window.confirm('등록하시겠습니까?');
         if (confirmed) {
@@ -291,6 +344,8 @@ const registType = async () => {
             const response = await axios.post("/api/vacation/type",
                 {
                     typeName: registVacationType.value.typeName,
+                    timeCheck: registVacationType.value.timeCheck,
+                    vacationTime:registVacationType.value.vacationTime,
                     vacationNum: registVacationType.value.vacationNum,
                     dateOfUse: registVacationType.value.dateOfUse,
                     vacationExplain: registVacationType.value.vacationExplain
@@ -316,6 +371,8 @@ const modifyVacationType = async (id) => {
                 {
                     id: modifyType.value.id,
                     typeName: modifyType.value.typeName,
+                    timeCheck: modifyType.value.timeCheck,
+                    vacationTime:modifyType.value.vacationTime,
                     vacationNum: modifyType.value.vacationNum,
                     dateOfUse: modifyType.value.dateOfUse,
                     vacationExplain: modifyType.value.vacationExplain,
@@ -891,5 +948,9 @@ onMounted(() => {
 .text-muted {
     color: #6c757d !important;
     /* 부트스트랩의 muted 색상 */
+}
+
+.custom-label {
+    margin-right: 10px;
 }
 </style>
