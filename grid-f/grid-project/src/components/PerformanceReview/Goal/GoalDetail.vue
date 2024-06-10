@@ -699,7 +699,7 @@ async function denied() {
   display: grid;
   grid-template-columns: 29% 4%;
   align-items: center;
-  min-width: 1000px;
+  min-width: 1200px;
 }
 
 .goalTitle h1 {
