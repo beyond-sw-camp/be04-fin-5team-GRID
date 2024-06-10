@@ -81,6 +81,7 @@ import defaultProfileImage from '@/assets/defaultProfile.jpg';
 
 import { ref, computed, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
+import { useStore } from 'vuex';
 import axios from 'axios';
 
 const currentTab = ref('');
@@ -92,6 +93,9 @@ const userId = ref('');
 const givenEmail = ref('');
 const router = useRouter();
 const profileId = ref('');
+const store = useStore();
+
+const user = computed(() => store.state.user);
 
 const profileUrl = computed(() => {
     return result.value.profilePath ? result.value.profilePath : defaultProfileImage;
@@ -164,13 +168,14 @@ onMounted(async () => {
         userId.value = decodedToken?.id || '';
     }
 
+    profileId.value = user.value.id;
+
     const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/${route.params.employeeNumber}`);
     result.value = response.data.result;
     if (result.value.absenceYn === 'Y') {
         isAbsence.value = true;
     }
     console.log('받아오는 유저: ', result.value);
-    profileId.value = result.value.id;
     givenEmail.value = result.value.email;
 
     currentTab.value = route.query.tab || 'human-resources';
