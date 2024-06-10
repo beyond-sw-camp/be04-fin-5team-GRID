@@ -23,6 +23,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service(value = "CommandReviewService")
 @Slf4j
@@ -171,59 +173,35 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     @Transactional
     public List<ReviewHistoryDTO> addReviewHistory(ReviewHistoryDTO historyDTO) {
-//
-//        Employee employees = userRepository.findById(historyDTO.getRevieweeId()).orElseThrow(() -> new IllegalArgumentException("Employee not found"));
-//
-//        List<Employee> teamEmployees = userRepository.findByTeamId(employees.getTeamId());
-//
-//        List<ReviewHistoryDTO> reviewHistoryDTOList = new ArrayList<>();
-//        for (Employee teamInEmployee : teamEmployees) {
-//            if (teamInEmployee.getId() == (historyDTO.getRevieweeId())) {
-//                continue;
-//            }
-//
-//            ReviewHistory reviewHistory = ReviewHistory.builder()
-//                    .content(historyDTO.getContent())
-//                    .year(historyDTO.getYear())
-//                    .quarter(historyDTO.getQuarter())
-//                    .reviewStatus(ReviewStatus.N)
-//                    .writeTime(null)
-//                    .reviewerId(teamInEmployee.getId())
-//                    .revieweeId(historyDTO.getRevieweeId())
-//                    .build();
-//
-//            reviewHistoryRepository.save(reviewHistory);
-//            reviewHistoryDTOList.add(mapper.map(reviewHistory, ReviewHistoryDTO.class));
-//        }
-//
-//
-//
-//
-//        return reviewHistoryDTOList;
 
         List<Employee> employeeList = userRepository.findAll();
+        Map<Integer, List<Employee>> teamEmployeeMap = employeeList.stream()
+                .collect(Collectors.groupingBy(Employee::getTeamId));
 
-                List<ReviewHistoryDTO> reviewHistoryDTOList = new ArrayList<>();
+        List<ReviewHistoryDTO> reviewHistoryDTOList = new ArrayList<>();
 
-        for (Employee employee : employeeList) {
-            List<Employee> employeesInTeam = userRepository.findByTeamId(employee.getTeamId());
-            for (Employee teamEmployee : employeesInTeam) {
-                if (teamEmployee.getId() == (employee.getId())) {
-                    continue;
+        for (Map.Entry<Integer, List<Employee>> entry : teamEmployeeMap.entrySet()) {
+            List<Employee> teamEmployees = entry.getValue();
+
+            // 팀 내 동료 평가 생성
+            for (Employee reviewer : teamEmployees) {
+                for (Employee reviewee : teamEmployees) {
+                    if (reviewer.getId() == reviewee.getId()) {
+                        continue;
+                    }
+                    ReviewHistory reviewHistory = ReviewHistory.builder()
+                            .content(historyDTO.getContent())
+                            .year(historyDTO.getYear())
+                            .quarter(historyDTO.getQuarter())
+                            .reviewStatus(ReviewStatus.N)
+                            .writeTime(null)
+                            .reviewerId(reviewer.getId())
+                            .revieweeId(reviewee.getId())
+                            .build();
+
+                    reviewHistoryRepository.save(reviewHistory);
+                    reviewHistoryDTOList.add(mapper.map(reviewHistory, ReviewHistoryDTO.class));
                 }
-                ReviewHistory reviewHistory = ReviewHistory.builder()
-                    .content(historyDTO.getContent())
-                    .year(historyDTO.getYear())
-                    .quarter(historyDTO.getQuarter())
-                    .reviewStatus(ReviewStatus.N)
-                    .writeTime(null)
-                    .reviewerId(teamEmployee.getId())
-                    .revieweeId(employee.getId())
-                    .build();
-
-                reviewHistoryRepository.save(reviewHistory);
-                reviewHistoryDTOList.add(mapper.map(reviewHistory, ReviewHistoryDTO.class));
-
             }
         }
         return reviewHistoryDTOList;
