@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.highfives.grid.performance_review.query.repository.PerformanceReviewGoalMapper">
+
+    <!--  평가 목표 목록  -->
+    <resultMap id="goalResultMap" type="org.highfives.grid.performance_review.query.dto.PerformanceReviewGoalDTO">
+        <id property="id" column="ID"/>
+        <result property="year" column="YEAR"/>
+        <result property="reviewName" column="REVIEW_NAME"/>
+        <result property="approvalStatus" column="APPROVAL_STATUS"/>
+        <result property="writeTime" column="WRITE_TIME"/>
+        <result property="approvalTime" column="APPROVAL_TIME"/>
+        <association property="writer" javaType="org.highfives.grid.performance_review.query.dto.WriterDTO">
+            <id property="id" column="WRITER_ID"/>
+            <result property="employeeName" column="WRITER_NAME"/>
+            <result property="employeeNumber" column="WRITER_NUMBER"/>
+        </association>
+        <association property="approver" javaType="org.highfives.grid.performance_review.query.dto.ApproverDTO">
+            <id property="id" column="APPROVER_ID"/>
+            <result property="employeeName" column="APPROVER_NAME"/>
+            <result property="employeeNumber" column="APPROVER_NUMBER"/>
+        </association>
+    </resultMap>
+
+    <!--  평가 목표 상세-->
+    <resultMap id="detailGoalResultMap" type="org.highfives.grid.performance_review.query.dto.DetailGoalDTO">
+        <id property="id" column="ID"/>
+        <result property="year" column="YEAR"/>
+        <result property="reviewName" column="REVIEW_NAME"/>
+        <result property="approvalStatus" column="APPROVAL_STATUS"/>
+        <result property="writeTime" column="WRITE_TIME"/>
+        <result property="approvalTime" column="APPROVAL_TIME"/>
+        <association property="writer" javaType="org.highfives.grid.performance_review.query.dto.WriterDTO">
+            <id property="id" column="WRITER_ID"/>
+            <result property="employeeName" column="WRITER_NAME"/>
+            <result property="employeeNumber" column="WRITER_NUMBER"/>
+        </association>
+        <association property="approver" javaType="org.highfives.grid.performance_review.query.dto.ApproverDTO">
+            <id property="id" column="APPROVER_ID"/>
+            <result property="employeeName" column="APPROVER_NAME"/>
+            <result property="employeeNumber" column="APPROVER_NUMBER"/>
+        </association>
+    </resultMap>
+
+    <!--  평가 목표 항목-->
+    <resultMap id="goalItemResultMap" type="org.highfives.grid.performance_review.query.dto.GoalItemDTO">
+        <id property="id" column="ID"/>
+        <result property="jobName" column="JOB_NAME"/>
+        <result property="goal" column="GOAL"/>
+        <result property="metric" column="METRIC"/>
+        <result property="weight" column="WEIGHT"/>
+        <result property="plan" column="PLAN"/>
+        <result property="objection" column="OBJECTION"/>
+        <result property="goalId" column="GOAL_ID"/>
+    </resultMap>
+
+    <!--  팀원 평가 목표 목록 조회  -->
+    <select id="selectAllGoalByWriterId" resultMap="goalResultMap" parameterType="int">
+        SELECT
+        A.id as 'ID'
+        , A.year as 'YEAR'
+        , A.review_name as 'REVIEW_NAME'
+        , A.approval_status as 'APPROVAL_STATUS'
+        , writer.id as 'WRITER_ID'
+        , writer.employee_name as 'WRITER_NAME'
+        , writer.employee_number as 'WRITER_NUMBER'
+        , A.write_time as 'WRITE_TIME'
+        , approver.id as 'APPROVER_ID'
+        , approver.employee_name as 'APPROVER_NAME'
+        , approver.employee_number as 'APPROVER_NUMBER'
+        , A.approval_time as 'APPROVAL_TIME'
+        FROM performance_review_goal as A
+        JOIN (SELECT * FROM employee WHERE duties_id = 4) as writer
+        ON A.writer_id = writer.id
+        JOIN (SELECT * FROM employee WHERE duties_id = 3) as approver
+        ON A.approver_id = approver.id
+        WHERE A.writer_id = #{employeeId}
+        ORDER BY A.write_time DESC
+    </select>
+
+    <!--  팀장 평가 목표 목록 조회  -->
+    <select id="selectAllGoalByApproverId" resultMap="goalResultMap" parameterType="int">
+        SELECT
+        A.id as 'ID'
+        , A.year as 'YEAR'
+        , A.review_name as 'REVIEW_NAME'
+        , A.approval_status as 'APPROVAL_STATUS'
+        , writer.id as 'WRITER_ID'
+        , writer.employee_name as 'WRITER_NAME'
+        , writer.employee_number as 'WRITER_NUMBER'
+        , A.write_time as 'WRITE_TIME'
+        , approver.id as 'APPROVER_ID'
+        , approver.employee_name as 'APPROVER_NAME'
+        , approver.employee_number as 'APPROVER_NUMBER'
+        , A.approval_time as 'APPROVAL_TIME'
+        FROM performance_review_goal as A
+        JOIN (SELECT * FROM employee WHERE duties_id = 4) as writer
+        ON A.writer_id = writer.id
+        JOIN (SELECT * FROM employee WHERE duties_id = 3) as approver
+        ON A.approver_id = approver.id
+        WHERE A.approver_id = #{employeeId}
+          AND A.approval_status IN ('S', 'R', 'A', 'D')
+        ORDER BY A.write_time DESC
+    </select>
+
+    <!--  평가 목표 상세 조회  -->
+    <select id="selectDetailGoalById" resultMap="detailGoalResultMap" parameterType="int">
+        SELECT
+        A.id as 'ID'
+        , A.year as 'YEAR'
+        , A.review_name as 'REVIEW_NAME'
+        , A.approval_status as 'APPROVAL_STATUS'
+        , writer.id as 'WRITER_ID'
+        , writer.employee_name as 'WRITER_NAME'
+        , writer.employee_number as 'WRITER_NUMBER'
+        , A.write_time as 'WRITE_TIME'
+        , approver.id as 'APPROVER_ID'
+        , approver.employee_name as 'APPROVER_NAME'
+        , approver.employee_number as 'APPROVER_NUMBER'
+        , A.approval_time as 'APPROVAL_TIME'
+        FROM performance_review_goal as A
+        JOIN (SELECT * FROM employee WHERE duties_id = 4) as writer
+        ON A.writer_id = writer.id
+        JOIN (SELECT * FROM employee WHERE duties_id = 3) as approver
+        ON A.approver_id = approver.id
+        WHERE A.id = #{id}
+    </select>
+
+    <!--  평가 목표 항목 조회  -->
+    <select id="selectAllGoalItemByGoalId" resultMap="goalItemResultMap" parameterType="int">
+        SELECT
+        id
+        , job_name
+        , goal
+        , metric
+        , weight
+        , plan
+        , objection
+        FROM goal_item
+        WHERE goal_id = #{goal_id};
+    </select>
+
+<!--    평가 년도 조회-->
+    <select id="selectGoalByWriterIdAndYear" resultMap="goalResultMap" parameterType="hashmap">
+        SELECT
+        A.id as 'ID'
+        , A.year as 'YEAR'
+        , A.review_name as 'REVIEW_NAME'
+        , A.approval_status as 'APPROVAL_STATUS'
+        , writer.id as 'WRITER_ID'
+        , writer.employee_name as 'WRITER_NAME'
+        , writer.employee_number as 'WRITER_NUMBER'
+        , A.write_time as 'WRITE_TIME'
+        , approver.id as 'APPROVER_ID'
+        , approver.employee_name as 'APPROVER_NAME'
+        , approver.employee_number as 'APPROVER_NUMBER'
+        , A.approval_time as 'APPROVAL_TIME'
+        FROM performance_review_goal as A
+        JOIN (SELECT * FROM employee WHERE duties_id = 4) as writer
+        ON A.writer_id = writer.id
+        JOIN (SELECT * FROM employee WHERE duties_id = 3) as approver
+        ON A.approver_id = approver.id
+        WHERE A.writer_id = #{writerId}
+        AND A.year = #{year};
+    </select>
+</mapper>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.highfives.grid.work.query.repository.AdTimeMapper">
+
+    <resultMap id="adTimeResultMap" type="org.highfives.grid.work.common.dto.AdTimeDTO">
+        <id property="id" column="ID"/>
+        <result property="startTime" column="START_TIME"/>
+        <result property="endTime" column="END_TIME"/>
+        <result property="employeeId" column="EMPLOYEE_ID"/>
+        <result property="employeeName" column="EMPLOYEE_NAME"/>
+        <result property="employeeNumber" column="EMPLOYEE_NUMBER"/>
+        <result property="attendanceStatus" column="ATTENDANCE_STATUS"/>
+    </resultMap>
+
+    <select id="selectAdTimeByEmployee" resultMap="adTimeResultMap" parameterType="int">
+        <![CDATA[
+        SELECT
+        A.ID,
+        A.START_TIME,
+        A.END_TIME,
+        A.EMPLOYEE_ID,
+        B.EMPLOYEE_NAME,
+        B.EMPLOYEE_NUMBER,
+        CASE
+        WHEN SUBSTRING(A.START_TIME, 12, 8) < '09:00:00' THEN '정시 출근'
+        ELSE '지각'
+        END AS ATTENDANCE_STATUS
+        FROM ad_time A
+        JOIN employee B ON A.EMPLOYEE_ID = B.ID
+        WHERE EMPLOYEE_ID = #{employeeId}
+        ORDER BY A.START_TIME DESC
+        ]]>
+    </select>
+
+<!--    <select id="selectAdTimeAll" resultMap="adTimeResultMap">-->
+<!--        SELECT-->
+<!--        A.ID-->
+<!--        , A.START_TIME-->
+<!--        , A.END_TIME-->
+<!--        , A.EMPLOYEE_ID-->
+<!--        , B.EMPLOYEE_NAME-->
+<!--        , B.EMPLOYEE_NUMBER-->
+<!--        FROM AD_TIME A-->
+<!--        JOIN EMPLOYEE B ON A.EMPLOYEE_ID = B.ID-->
+<!--    </select>-->
+
+    <select id="selectAdTimeAll" resultMap="adTimeResultMap">
+        <![CDATA[
+        SELECT
+        A.ID,
+        A.START_TIME,
+        A.END_TIME,
+        A.EMPLOYEE_ID,
+        B.EMPLOYEE_NAME,
+        B.EMPLOYEE_NUMBER,
+        CASE
+        WHEN SUBSTRING(A.START_TIME, 12, 8) < '09:00:00' THEN '정시 출근'
+        ELSE '지각'
+        END AS ATTENDANCE_STATUS
+        FROM ad_time A
+        JOIN employee B ON A.EMPLOYEE_ID = B.ID
+        ORDER BY A.START_TIME DESC
+        ]]>
+    </select>
+    <select id="selectAdTimeByStartTime" resultMap="adTimeResultMap" parameterType="String">
+        <![CDATA[
+        SELECT A.ID,
+        A.START_TIME,
+        A.END_TIME,
+        A.EMPLOYEE_ID,
+        B.EMPLOYEE_NAME,
+        B.EMPLOYEE_NUMBER,
+        CASE WHEN SUBSTRING(A.START_TIME, 12, 8) < '09:00:00' THEN '정시 출근'
+        ELSE '지각'
+        END AS ATTENDANCE_STATUS
+        FROM ad_time A
+        JOIN employee B ON A.EMPLOYEE_ID = B.ID
+        WHERE DATE_FORMAT(A.start_time, '%Y-%m-%d') = #{startTime};
+        ]]>
+    </select>
+
+
+</mapper>

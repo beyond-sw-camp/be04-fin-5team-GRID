@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.highfives.grid.performance_review.query.repository.TotalPerformanceReviewMapper">
+
+
+    <!--  종합 평가  -->
+    <resultMap id="totalResultMap" type="org.highfives.grid.performance_review.query.dto.TotalPerformanceReviewDTO">
+        <id property="id" column="ID"/>
+        <result property="year" column="YEAR"/>
+        <result property="reviewName" column="REVIEW_NAME"/>
+        <result property="midtermId" column="MIDTERM_ID"/>
+        <result property="finalId" column="FINAL_ID"/>
+        <association property="totalGrade" javaType="org.highfives.grid.performance_review.query.dto.ReviewGradeDTO">
+            <id property="id" column="GRADE_ID"/>
+            <result property="grade" column="GRADE"/>
+            <result property="score" column="SCORE"/>
+        </association>
+        <association property="reviewee" javaType="org.highfives.grid.performance_review.query.dto.WriterDTO">
+            <id property="id" column="REVIEWEE_ID"/>
+            <result property="employeeName" column="REVIEWEE_NAME"/>
+            <result property="employeeNumber" column="REVIEWEE_NUMBER"/>
+        </association>
+        <association property="reviewer" javaType="org.highfives.grid.performance_review.query.dto.ApproverDTO">
+            <id property="id" column="REVIEWER_ID"/>
+            <result property="employeeName" column="REVIEWER_NAME"/>
+            <result property="employeeNumber" column="REVIEWER_NUMBER"/>
+        </association>
+    </resultMap>
+
+    <select id="selectTotalByRevieweeId" resultMap="totalResultMap" parameterType="int">
+        SELECT
+        A.id as 'ID',
+        A.year as 'YEAR',
+        A.review_name as 'REVIEW_NAME',
+        grade.id as 'GRADE_ID',
+        grade.grade as 'GRADE',
+        A.total_score as 'SCORE',
+        reviewee.id as 'REVIEWEE_ID',
+        reviewee.employee_name as 'REVIEWEE_NAME',
+        reviewee.employee_number as 'REVIEWEE_NUMBER',
+        reviewer.id as 'REVIEWER_ID',
+        reviewer.employee_name as 'REVIEWER_NAME',
+        reviewer.employee_number as 'REVIEWER_NUMBER'
+        FROM total_performance_review as A
+        JOIN (SELECT * FROM employee WHERE duties_id = 4) as reviewee
+        ON A.reviewee_id = reviewee.id
+        JOIN (SELECT * FROM employee WHERE duties_id = 3) as reviewer
+        ON A.reviewer_id = reviewer.id
+        JOIN review_grade as grade
+        ON A.total_id = grade.id
+        WHERE A.reviewee_id = #{employeeId}
+        ORDER BY A.year DESC
+    </select>
+
+    <select id="selectTotalByReviewerId" resultMap="totalResultMap" parameterType="int">
+        SELECT
+        A.id as 'ID',
+        A.year as 'YEAR',
+        A.review_name as 'REVIEW_NAME',
+        grade.id as 'GRADE_ID',
+        grade.grade as 'GRADE',
+        A.total_score as 'SCORE',
+        reviewee.id as 'REVIEWEE_ID',
+        reviewee.employee_name as 'REVIEWEE_NAME',
+        reviewee.employee_number as 'REVIEWEE_NUMBER',
+        reviewer.id as 'REVIEWER_ID',
+        reviewer.employee_name as 'REVIEWER_NAME',
+        reviewer.employee_number as 'REVIEWER_NUMBER'
+        FROM total_performance_review as A
+        JOIN (SELECT * FROM employee WHERE duties_id = 4) as reviewee
+        ON A.reviewee_id = reviewee.id
+        JOIN (SELECT * FROM employee WHERE duties_id = 3) as reviewer
+        ON A.reviewer_id = reviewer.id
+        JOIN review_grade as grade
+        ON A.total_id = grade.id
+        WHERE A.reviewer_id = #{employeeId}
+        ORDER BY A.year DESC
+    </select>
+
+    <select id="selectAllTotal" resultMap="totalResultMap">
+        SELECT
+        A.id as 'ID',
+        A.year as 'YEAR',
+        A.review_name as 'REVIEW_NAME',
+        grade.id as 'GRADE_ID',
+        grade.grade as 'GRADE',
+        A.total_score as 'SCORE',
+        reviewee.id as 'REViEWEE_ID',
+        reviewee.employee_name as 'REViEWEE_NAME',
+        reviewee.employee_number as 'REViEWEE_NUMBER',
+        reviewer.id as 'REViEWER_ID',
+        reviewer.employee_name as 'REViEWER_NAME',
+        reviewer.employee_number as 'REViEWER_NUMBER'
+        FROM total_performance_review as A
+        JOIN (SELECT * FROM employee WHERE duties_id = 4) as reviewee
+        ON A.reviewee_id = reviewee.id
+        JOIN (SELECT * FROM employee WHERE duties_id = 3) as reviewer
+        ON A.reviewer_id = reviewer.id
+        JOIN review_grade as grade
+        ON A.total_id = grade.id
+        ORDER BY A.year DESC
+    </select>
+
+    <select id="selectTotalById" resultMap="totalResultMap" parameterType="int">
+        SELECT
+        A.id as 'ID',
+        A.year as 'YEAR',
+        A.review_name as 'REVIEW_NAME',
+        grade.id as 'GRADE_ID',
+        grade.grade as 'GRADE',
+        A.total_score as 'SCORE',
+        A.midterm_id as 'MIDTERM_ID',
+        A.final_id as 'FINAL_ID',
+        reviewee.id as 'REViEWEE_ID',
+        reviewee.employee_name as 'REViEWEE_NAME',
+        reviewer.id as 'REViEWER_ID',
+        reviewer.employee_name as 'REViEWER_NAME'
+        FROM total_performance_review as A
+        JOIN (SELECT * FROM employee WHERE duties_id = 4) as reviewee
+        ON A.reviewee_id = reviewee.id
+        JOIN (SELECT * FROM employee WHERE duties_id = 3) as reviewer
+        ON A.reviewer_id = reviewer.id
+        JOIN review_grade as grade
+        ON A.total_id = grade.id
+        WHERE A.id = #{id};
+    </select>
+
+</mapper>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.highfives.grid.department.query.repository.TeamMapper">
+
+    <resultMap id="TeamResultMap" type="org.highfives.grid.department.query.aggregate.Team">
+        <id column="id" property="id"/>
+        <result column="team_name" property="teamName"/>
+        <result column="member_cnt" property="memberCnt"/>
+        <result column="team_status" property="teamStatus" />
+        <result column="start_time" property="startTime"/>
+        <result column="end_time" property="endTime"/>
+        <result column="sequence" property="sequence"/>
+        <result column="department_id" property="departmentId"/>
+        <result column="leader_id" property="leaderId"/>
+    </resultMap>
+
+    <select id="findTeamById" resultMap="TeamResultMap">
+        SELECT
+        id
+        , team_name
+        , member_cnt
+        , team_status
+        , start_time
+        , end_time
+        , department_id
+        , leader_id
+        , sequence
+        FROM team
+        WHERE id = #{id}
+    </select>
+
+    <select id="findTeamList" resultMap="TeamResultMap">
+        SELECT
+        id
+        , team_name
+        , member_cnt
+        , team_status
+        , start_time
+        , end_time
+        , department_id
+        , leader_id
+        , sequence
+        FROM team
+    </select>
+
+    <select id="findSubDepartmentByDepartmentId" resultMap="TeamResultMap">
+        SELECT
+        id
+        , team_name
+        , member_cnt
+        , team_status
+        , start_time
+        , end_time
+        , department_id
+        , leader_id
+        , sequence
+        FROM team
+        WHERE department_id = #{departmentId}
+    </select>
+
+
+
+</mapper>

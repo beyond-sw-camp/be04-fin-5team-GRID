@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.highfives.grid.user.query.repository.UserMapper">
+
+    <!-- 부서 정보 불러오는 쿼리 -->
+    <resultMap id="depInfo" type="org.highfives.grid.user.query.dto.LeaderInfoDTO">
+        <id property="depName" column="department_name"/>
+        <result property="depLeaderId" column="leader_id"/>
+    </resultMap>
+
+    <select id="getDepInfo" parameterType="_int" resultMap="depInfo">
+        SELECT
+        D.department_name,
+        D.leader_id
+        FROM department D
+        JOIN employee E ON D.id = E.department_id
+        WHERE E.id = #{id}
+    </select>
+
+    <!-- 팀 정보 불러오는 쿼리  -->
+    <resultMap id="teamInfo" type="org.highfives.grid.user.query.dto.LeaderInfoDTO">
+        <id property="teamName" column="team_name"/>
+        <result property="teamLeaderId" column="leader_id"/>
+    </resultMap>
+    <select id="getTeamInfo" parameterType="_int" resultMap="teamInfo">
+        SELECT
+        T.team_name,
+        T.leader_id
+        FROM team T
+        JOIN employee E ON T.id = E.team_id
+        WHERE E.id = #{id}
+    </select>
+
+    <!--   직위 정보 불러오는 쿼리   -->
+    <resultMap id="positionInfo" type="org.highfives.grid.user.query.dto.PositionDTO">
+        <id property="id" column="id"/>
+        <result property="positionName" column="position_name"/>
+    </resultMap>
+    <select id="findPositions" resultMap="positionInfo">
+        SELECT
+        P.id,
+        P.position_name
+        FROM e_position P
+        ORDER BY P.id ASC;
+    </select>
+
+    <!--   직책 정보 불러오는 쿼리   -->
+    <resultMap id="dutiesInfo" type="org.highfives.grid.user.query.dto.DutiesDTO">
+        <id property="id" column="id"/>
+        <result property="dutiesName" column="duties_name"/>
+    </resultMap>
+    <select id="findDuties" resultMap="dutiesInfo">
+        SELECT
+        D.id,
+        D.duties_name
+        FROM duties D
+        ORDER By D.id DESC;
+    </select>
+
+    <!--  부서장 정보 조회  -->
+    <resultMap id="depLeaderInfo" type="org.highfives.grid.user.query.dto.LeaderInfoDTO">
+        <id property="depLeaderName" column="employee_name"/>
+        <result property="depLeaderPosition" column="position_name"/>
+    </resultMap>
+
+    <select id="getDepLeaderInfo" parameterType="_int" resultMap="depLeaderInfo">
+        SELECT
+        E.employee_name,
+        P.position_name
+        FROM employee E
+        JOIN e_position P ON E.position_id = P.id
+        WHERE E.id = #{id}
+    </select>
+
+    <!--  팀장 정보 조회  -->
+    <resultMap id="teamLeaderInfo" type="org.highfives.grid.user.query.dto.LeaderInfoDTO">
+        <id property="teamLeaderName" column="employee_name"/>
+        <result property="teamLeaderPosition" column="duties_name"/>
+    </resultMap>
+
+    <select id="getTeamLeaderInfo" parameterType="_int" resultMap="teamLeaderInfo">
+        SELECT
+        E.employee_name,
+        D.duties_name
+        FROM employee E
+        JOIN duties D ON E.duties_id = D.id
+        WHERE E.id = #{id}
+    </select>
+
+    <!--  유저 정보 조회 관련  -->
+    <resultMap id="userInfo" type="org.highfives.grid.user.query.dto.UserDTO">
+        <id property="id" column="id"/>
+        <result property="email" column="email"/>
+        <result property="name" column="employee_name"/>
+        <result property="employeeNumber" column="employee_number"/>
+        <result property="gender" column="gender"/>
+        <result property="phoneNumber" column="phone_number"/>
+        <result property="callNumber" column="call_number"/>
+        <result property="zipCode" column="zip_code"/>
+        <result property="address" column="address"/>
+        <result property="assignedTask" column="assigned_task"/>
+        <result property="joinTime" column="join_time"/>
+        <result property="joinType" column="join_type"/>
+        <result property="resignTime" column="resign_time"/>
+        <result property="resignYn" column="resign_yn"/>
+        <result property="workType" column="work_type"/>
+        <result property="contractStartTime" column="contract_start_time"/>
+        <result property="contractEndTime" column="contract_end_time"/>
+        <result property="salary" column="salary"/>
+        <result property="absenceYn" column="absence_yn"/>
+        <result property="absenceContent" column="absence_content"/>
+        <result property="role" column="role"/>
+        <result property="dutiesId" column="duties_id"/>
+        <result property="positionId" column="position_id"/>
+        <result property="teamId" column="team_id"/>
+        <result property="departmentId" column="department_id"/>
+        <association property="department" javaType="org.highfives.grid.user.query.dto.DepartmentDTO">
+            <id property="id" column="dep_id"/>
+            <result property="departmentName" column="department_name"/>
+        </association>
+        <association property="team" javaType="org.highfives.grid.user.query.dto.TeamDTO">
+            <id property="id" column="t_id"/>
+            <result property="teamName" column="team_name"/>
+        </association>
+        <association property="position" javaType="org.highfives.grid.user.query.dto.PositionDTO">
+            <id property="id" column="p_id"/>
+            <result property="positionName" column="position_name"/>
+        </association>
+        <association property="duties" javaType="org.highfives.grid.user.query.dto.DutiesDTO">
+            <id property="id" column="d_id"/>
+            <result property="dutiesName" column="duties_name"/>
+        </association>
+    </resultMap>
+
+    <select id="getList" resultMap="userInfo" parameterType="string">
+        SELECT
+        E.id,
+        E.employee_name,
+        E.gender,
+        E.employee_number,
+        DEP.id dep_id,
+        DEP.department_name,
+        T.id t_id,
+        T.team_name,
+        P.id p_id,
+        P.position_name,
+        D.id d_id,
+        D.duties_name,
+        E.phone_number,
+        E.absence_yn,
+        E.absence_content,
+        E.join_time
+        FROM employee E
+        JOIN team T ON E.team_id = T.id
+        JOIN department DEP ON E.department_id = DEP.id
+        JOIN e_position P ON E.position_id = P.id
+        JOIN duties D ON E.duties_id = D.id
+        WHERE E.resign_yn = 'N'
+        AND E.id > 1
+        ORDER BY E.employee_name ASC;
+    </select>
+
+    <sql id="Base_Column_List">
+        E.id, E.employee_name, E.gender, E.employee_number,
+        DEP.id AS dep_id, DEP.department_name,
+        T.id AS t_id, T.team_name,
+        P.id AS p_id, P.position_name,
+        D.id AS d_id, D.duties_name,
+        E.phone_number, E.absence_yn, E.absence_content,
+        E.join_time,
+        E.resign_yn
+    </sql>
+
+    <select id="getUserList" resultMap="userInfo">
+        SELECT <include refid="Base_Column_List"/>
+        FROM employee E
+        JOIN team T ON E.team_id = T.id
+        JOIN department DEP ON E.department_id = DEP.id
+        JOIN e_position P ON E.position_id = P.id
+        JOIN duties D ON E.duties_id = D.id
+        <where>
+            (E.resign_yn = 'N'
+            <if test="auth == 'ROLE_ADMIN'">
+                OR E.resign_yn = 'Y'
+            </if>)
+            AND E.id > 1
+        </where>
+        ORDER BY E.employee_name ASC
+        LIMIT #{offset}, #{pageSize}
+    </select>
+
+    <select id="getUserListByName" resultMap="userInfo">
+        SELECT <include refid="Base_Column_List"/>
+        FROM employee E
+        JOIN team T ON E.team_id = T.id
+        JOIN department DEP ON E.department_id = DEP.id
+        JOIN e_position P ON E.position_id = P.id
+        JOIN duties D ON E.duties_id = D.id
+        <where>
+            (E.resign_yn = 'N'
+            <if test="auth == 'ROLE_ADMIN'">
+                OR E.resign_yn = 'Y'
+            </if>)
+            AND E.id > 1
+            AND E.employee_name LIKE CONCAT('%', #{name}, '%')
+        </where>
+        ORDER BY E.employee_name ASC
+        LIMIT #{offset}, #{pageSize}
+    </select>
+
+    <select id="countAllUsers" resultType="long">
+        SELECT COUNT(*)
+        FROM employee E
+        WHERE E.resign_yn = 'N'
+        AND E.id > 1
+    </select>
+
+    <select id="countUsersByName" resultType="long">
+        SELECT COUNT(*)
+        FROM employee E
+        WHERE E.resign_yn = 'N'
+        AND E.id > 1
+        AND E.employee_name LIKE CONCAT('%', #{name}, '%')
+    </select>
+
+    <select id="getUserInfo" parameterType="_int" resultMap="userInfo">
+        SELECT
+        E.id,
+        E.email,
+        E.employee_name,
+        E.employee_number,
+        E.gender,
+        E.phone_number,
+        E.call_number,
+        E.zip_code,
+        E.address,
+        E.assigned_task,
+        E.join_time,
+        E.join_type,
+        E.resign_time,
+        E.resign_yn,
+        E.work_type,
+        E.contract_start_time,
+        E.contract_end_time,
+        E.salary,
+        E.absence_yn,
+        E.absence_content,
+        DEP.id dep_id,
+        DEP.department_name,
+        T.id t_id,
+        T.team_name,
+        P.id p_id,
+        P.position_name,
+        D.id d_id,
+        D.duties_name
+        FROM employee E
+        JOIN team T ON E.team_id = T.id
+        JOIN department DEP ON E.department_id = DEP.id
+        JOIN e_position P ON E.position_id = P.id
+        JOIN duties D ON E.duties_id = D.id
+        <if test="id != null and eNum == null and email == null">
+            WHERE E.id = #{id}
+        </if>
+        <if test="id == null and eNum != null and email == null" >
+            WHERE E.employee_number = #{eNum}
+        </if>
+        <if test="id == null and eNum == null and email != null" >
+            WHERE E.email = #{email}
+        </if>
+    </select>
+
+    <!-- email로 유저 조회 쿼리    -->
+    <select id="getUserInfoByEmail" parameterType="string" resultType="map">
+        SELECT
+        E.email,
+        E.employee_name
+        FROM employee E
+        WHERE E.email = #{id}
+    </select>
+
+    <!-- id로 유저 조회 쿼리    -->
+    <select id="getUserInfoById" parameterType="_int" resultMap="userInfo">
+        SELECT
+        E.id,
+        E.email,
+        E.employee_name,
+        E.employee_number,
+        E.gender,
+        E.phone_number,
+        E.call_number,
+        E.zip_code,
+        E.address,
+        E.assigned_task,
+        E.join_time,
+        E.join_type,
+        E.resign_time,
+        E.resign_yn,
+        E.work_type,
+        E.contract_start_time,
+        E.contract_end_time,
+        E.salary,
+        E.absence_yn,
+        E.absence_content,
+        E.position_id,
+        E.duties_id,
+        E.team_id,
+        E.department_id
+        FROM employee E
+        WHERE E.id = #{id}
+    </select>
+
+    <select id="findTeamList" parameterType="_int" resultMap="userInfo">
+        SELECT
+        E.id,
+        E.employee_name,
+        E.email,
+        E.employee_number,
+        P.id p_id,
+        P.position_name,
+        D.id d_id,
+        D.duties_name,
+        T.id t_id
+        FROM employee E
+        JOIN team T ON E.team_id = T.id
+        JOIN e_position P ON E.position_id = P.id
+        JOIN duties D ON E.duties_id = D.id
+        WHERE E.team_id = #{teamId}
+    </select>
+
+</mapper>
