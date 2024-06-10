@@ -157,6 +157,10 @@ hr {
     align-self: center;
 }
 
+#title h1 {
+  font-family: 'IBMPlexSansKR-Regular';
+}
+
 #toLogin1 {
     width: 50%;
     display: flex;

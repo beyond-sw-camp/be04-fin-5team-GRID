@@ -21,6 +21,12 @@ public class VacationType {
     @Column(nullable = false, name = "type_name")
     private String typeName;
 
+    @Column(nullable = false, name = "time_check")
+    private String timeCheck;
+
+    @Column(nullable = false, name = "vacation_time")
+    private int vacationTime;
+
     @Column(name = "vacation_num")
     private String vacationNum;
 
@@ -49,10 +55,20 @@ public class VacationType {
         this.useYn = useYn;
     }
 
+    public void setTimeCheck(String timeCheck) {
+        this.timeCheck = timeCheck;
+    }
+
+    public void setVacationTime(int vacationTime) {
+        this.vacationTime = vacationTime;
+    }
+
     @Builder
-    public VacationType(int id, String typeName, String vacationNum, String dateOfUse, String vacationExplain, String useYn) {
+    public VacationType(int id, String typeName, String timeCheck, int vacationTime, String vacationNum, String dateOfUse, String vacationExplain, String useYn) {
         this.id = id;
         this.typeName = typeName;
+        this.timeCheck = timeCheck;
+        this.vacationTime = vacationTime;
         this.vacationNum = vacationNum;
         this.dateOfUse = dateOfUse;
         this.vacationExplain = vacationExplain;

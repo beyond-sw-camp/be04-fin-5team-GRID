@@ -48,6 +48,8 @@
     <resultMap id="vacationTypeResultMap" type="org.highfives.grid.vacation.query.dto.VacationTypeDTO">
         <id property="id" column="ID"/>
         <result property="typeName" column="TYPE_NAME"/>
+        <result property="timeCheck" column="TIME_CHECK"/>
+        <result property="vacationTime" column="VACATION_TIME"/>
         <result property="vacationNum" column="VACATION_NUM"/>
         <result property="dateOfUse" column="DATE_OF_USE"/>
         <result property="vacationExplain" column="VACATION_EXPLAIN"/>
@@ -239,6 +241,8 @@
         SELECT
         ID,
         TYPE_NAME,
+        TIME_CHECK,
+        VACATION_TIME,
         VACATION_NUM,
         DATE_OF_USE,
         VACATION_EXPLAIN,
@@ -251,6 +255,8 @@
         SELECT
         ID,
         TYPE_NAME,
+        TIME_CHECK,
+        VACATION_TIME,
         VACATION_NUM,
         DATE_OF_USE,
         VACATION_EXPLAIN,
@@ -262,6 +268,8 @@
         SELECT
         ID,
         TYPE_NAME,
+        TIME_CHECK,
+        VACATION_TIME,
         VACATION_NUM,
         DATE_OF_USE,
         VACATION_EXPLAIN,
