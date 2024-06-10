@@ -390,7 +390,7 @@ Array.from(forms).forEach(form => {
   font-style: bold;
   width: 100%;
   min-width: 51.4px;
-  grid-column-start: 6;
+  grid-column-start: 7;
 }
 
 .guide {
