@@ -1,7 +1,7 @@
 <template>
     <div class="historyAll">
         <div class="historyTitle">
-            <h1 class="mb-1"><i class="bi bi-brightness-high fs-3"></i>&nbsp; 휴가 보유 정보</h1>
+            <h1 class="mb-1"><i class="bi bi-brightness-high fs-3"></i> 휴가 보유 정보</h1>
         </div>
         <div class="vacations">
             <div class="annual" v-if="userRole === 'ROLE_USER'">

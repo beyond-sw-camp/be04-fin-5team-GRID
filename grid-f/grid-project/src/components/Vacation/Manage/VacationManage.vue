@@ -527,10 +527,9 @@ onMounted(() => {
     font-size: 12px;
     font-weight: 600;
     margin-top: 2%;
-    margin-left: -0.5%;
     color: #000000;
     display: grid;
-    grid-template-columns: 3% 12% 1% 5% 63% 7% 2% 7%;
+    grid-template-columns: 3% 11% 5% 1% 64% 7% 2% 7%;
     align-items: center;
 }
 
@@ -633,7 +632,7 @@ onMounted(() => {
 .guide {
     width: 60%;
     height: 25px;
-    grid-column: 4;
+    grid-column: 3;
     margin: 0;
     cursor: pointer;
 }

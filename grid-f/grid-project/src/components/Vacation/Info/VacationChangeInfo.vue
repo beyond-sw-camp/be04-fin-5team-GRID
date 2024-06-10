@@ -2,7 +2,7 @@
   <div class="historyAll">
     <div class="historyTitle">
       <i class="bi bi-brightness-high fs-3"></i>
-      <h1 class="mb-1">휴가 변화 이력</h1>
+      <h1>휴가 변화 이력</h1>
       <img src="@/assets/buttons/guide.png" v-if="userRole === 'ROLE_ADMIN'" class="guide"
            @click="showModal('guideModal')"></img>
     </div>
@@ -514,13 +514,11 @@ onBeforeMount(() => {
 
 .historyTitle {
   grid-column-start: 2;
-  align-content: center;
+  align-items: center;
   font-size: 12px;
   font-weight: 600;
-  margin-top: 2%;
-  margin-left: -0.5%;
   display: grid;
-  grid-template-columns: 3% 15% 1% 5% 63% 7% 2% 7%;
+  grid-template-columns: 3% 16% 5% 64% 7% 2% 7%;
   color: #000000;
 }
 
@@ -528,17 +526,14 @@ onBeforeMount(() => {
   margin-left: 0.5%;
   font-size: 25px;
   font-weight: 600;
+  margin: 0;
   font-family: 'IBMPlexSansKR-Regular', sans-serif;
-}
-
-.historyIcon {
-  width: 80%;
 }
 
 .guide {
   width: 60%;
   height: 25px;
-  grid-column: 4;
+  grid-column: 3;
   margin: 0;
   cursor: pointer;
 }
