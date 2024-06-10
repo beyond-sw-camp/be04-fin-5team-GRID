@@ -29,7 +29,7 @@
           <td>{{ getEmployeeNumber(item.reviewer) }}</td>
           <td>{{ getEmployeeName(item.reviewer) }}</td>
           <td>
-            <b-badge @click="goToDetailPage(item.id)">
+            <b-badge @click="goToDetailPage(item.id)" class="detailIcon">
               &#x2139;
             </b-badge>
 <!--            <button @click="goToDetailPage(item.id)"><img class="more" src="@/assets/buttons/zoom.png"></button>-->
@@ -283,8 +283,8 @@ const goToDetailPage = (id) => {
   font-family: 'IBMPlexSansKR-Regular', sans-serif;
 }
 
-.PerformanceIcon {
-  width: 80%;
+.detailIcon {
+  cursor: pointer;
 }
 
 .guide {
