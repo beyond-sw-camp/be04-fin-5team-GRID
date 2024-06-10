@@ -50,10 +50,10 @@
           <thead>
           <tr>
             <th>No</th>
+            <th>업무명</th>
             <th>목표</th>
-            <th>실행과제</th>
             <th>측정지표</th>
-            <th>세부계획</th>
+            <th>계획</th>
             <th>가중치</th>
             <th>추진실적</th>
             <th>자기 평가</th>
@@ -70,23 +70,13 @@
               {{ item.goal }}
             </td>
             <td>
-              <input
-                  v-if="!isReadOnly"
-                  v-model="item.actionItem"
-                  type="text"
-              />
-              <span v-else>{{ item.actionItem }}</span>
+              <span>{{ item.actionItem }}</span>
             </td>
             <td>
               {{ item.metric }}
             </td>
             <td>
-              <input
-                  v-if="!isReadOnly"
-                  v-model="item.detailPlan"
-                  type="text"
-              />
-              <span v-else>{{ item.detailPlan }}</span>
+              <span>{{ item.detailPlan }}</span>
             </td>
             <td>
               {{ item.weight }}
@@ -120,10 +110,14 @@
               <span v-else>{{ item.selfComment }}</span>
             </td>
             <td>
-              {{ gradeMapping[item.superiorId] || 0 }}
+              <span>
+                {{ gradeMapping[3] || 0 }}
+              </span>
             </td>
             <td>
-              {{ item.superiorScore }}
+              <span>
+                {{ item.weight * 75 * 0.01 }}
+              </span>
             </td>
           </tr>
           </tbody>

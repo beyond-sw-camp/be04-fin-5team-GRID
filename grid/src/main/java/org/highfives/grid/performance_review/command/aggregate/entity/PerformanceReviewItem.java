@@ -60,9 +60,11 @@ public class PerformanceReviewItem {
     @Column(name = "review_id")
     private int reviewId;
 
-    public PerformanceReviewItem(String goal, String metric, int weight, int selfId, double selfScore, int superiorId, double superiorScore, int reviewId) {
+    public PerformanceReviewItem(String goal, String actionItem, String metric, String detailPlan, int weight, int selfId, double selfScore, int superiorId, double superiorScore, int reviewId) {
         this.goal = goal;
+        this.actionItem = actionItem;
         this.metric = metric;
+        this.detailPlan = detailPlan;
         this.weight = weight;
         this.selfId = selfId;
         this.selfScore = selfScore;
@@ -70,4 +72,15 @@ public class PerformanceReviewItem {
         this.superiorScore = superiorScore;
         this.reviewId = reviewId;
     }
+
+    //    public PerformanceReviewItem(String goal, String actionItem,String metric, int weight, int selfId, double selfScore, int superiorId, double superiorScore, int reviewId) {
+//        this.goal = goal;
+//        this.metric = metric;
+//        this.weight = weight;
+//        this.selfId = selfId;
+//        this.selfScore = selfScore;
+//        this.superiorId = superiorId;
+//        this.superiorScore = superiorScore;
+//        this.reviewId = reviewId;
+//    }
 }
