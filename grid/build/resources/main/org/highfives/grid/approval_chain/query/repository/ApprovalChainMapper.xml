@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.highfives.grid.approval_chain.query.repository.ApprovalChainMapper">
+    <resultMap id="approvalChainMap" type="org.highfives.grid.approval_chain.common.dto.ApprovalChainDTO">
+        <id property="id" column="id"/>
+        <id property="duty" column="duty"/>
+        <id property="stage" column="stage"/>
+        <id property="typeId" column="type_id"/>
+    </resultMap>
+
+    <resultMap id="chainMap" type="org.highfives.grid.approval_chain.common.dto.ChainDTO">
+        <id property="stage" column="stage"/>
+        <result property="id" column="id"/>
+        <result property="approvalTime" column="approval_time"/>
+        <result property="chainStatus" column="approval_status"/>
+        <result property="comment" column="comment"/>
+        <result property="approvalId" column="approval_id"/>
+        <result property="employeeId" column="employee_id"/>
+        <result property="chainId" column="chain_id"/>
+    </resultMap>
+
+    <select id="findChainListByTypeId" resultMap="approvalChainMap" parameterType="int">
+        SELECT
+        id
+        , duty
+        , stage
+        , type_id
+        FROM approval_chain
+        WHERE type_id = #{typeId}
+    </select>
+
+    <select id="findTeamLeaderByEmployeeId" resultType="java.lang.Integer" parameterType="int">
+        SELECT
+        leader_id
+        FROM team
+        WHERE id = (SELECT
+        team_id
+        FROM employee
+        WHERE id = #{employeeId});
+    </select>
+
+    <select id="findDeptLeaderByEmployeeId" resultType="java.lang.Integer" parameterType="int">
+        SELECT
+        leader_id
+        FROM department
+        WHERE id = (SELECT
+        department_id
+        FROM employee
+        WHERE id = #{employeeId});
+    </select>
+
+
+    <select id="findBTChainByApprovalAndChainId" resultMap="chainMap" parameterType="map">
+        SELECT
+        a.stage,
+        b.id,
+        b.approval_time,
+        b.approval_status,
+        b.comment,
+        b.approval_id,
+        b.employee_id,
+        b.chain_id
+        FROM  approval_chain a
+        <if test="typeId == 1">
+            JOIN  bt_approval_chain b
+        </if>
+        <if test="typeId == 2">
+            JOIN  o_approval_chain b
+        </if>
+        <if test="typeId == 3">
+            JOIN  rw_approval_chain b
+        </if>
+        <if test="typeId == 4">
+            JOIN  v_approval_chain b
+        </if>
+        ON  a.id = b.chain_id
+        WHERE  b.chain_id = #{chainId} and b.approval_id = #{approvalId};
+    </select>
+
+    <select id="findChainByApprovalId" resultMap="chainMap" parameterType="map">
+        SELECT
+        a.stage,
+        b.id,
+        b.approval_time,
+        b.approval_status,
+        b.comment,
+        b.approval_id,
+        b.employee_id,
+        b.chain_id
+        FROM
+        <if test="typeId == 1">
+            bt_approval_chain b
+        </if>
+        <if test="typeId == 2">
+            o_approval_chain b
+        </if>
+        <if test="typeId == 3">
+            rw_approval_chain b
+        </if>
+        <if test="typeId == 4">
+            v_approval_chain b
+        </if>
+        JOIN  approval_chain a
+        ON  a.id = b.chain_id
+        WHERE  b.approval_id = #{approvalId}
+        ORDER BY a.stage
+    </select>
+</mapper>
