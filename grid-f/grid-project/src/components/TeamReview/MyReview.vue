@@ -254,7 +254,7 @@ const search = () => {
 
 .container {
   display: grid;
-  grid-template-rows: 18% 13% 4% 53% 8%;
+  grid-template-rows: 18% 5% 4% 75% 8%;
   grid-template-columns: 10% 80% 10%;
   padding: 0;
   font-family: 'IBMPlexSansKR-Regular';
@@ -294,7 +294,7 @@ const search = () => {
 }
 
 .searchBox {
-  padding: 10px;
+  padding: 5px;
   font-size: 14px;
   border-radius: 4px;
   border: 1px solid #ddd;
@@ -305,7 +305,7 @@ const search = () => {
 .searchBtn {
   background-color: #088A85;
   color: white;
-  padding: 10px;
+  padding: 5px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -431,5 +431,9 @@ tr:hover {
 .view-details-btn:disabled {
   background-color: grey;
   cursor: not-allowed;
+}
+
+td, th {
+  text-align : center;  
 }
 </style>

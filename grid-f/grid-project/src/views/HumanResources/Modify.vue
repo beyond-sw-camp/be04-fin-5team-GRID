@@ -17,6 +17,9 @@
             </nav>
             <div class="title-content">
                 <h1> <i class="bi bi-pencil-square"></i>&nbsp;인사 정보 수정 </h1>
+                <div class="guide" v-if="userRole === 'ROLE_ADMIN'">
+                    <img src="@/assets/buttons/guide.png" alt="guide button" id="guide" @click="openGuideModal">
+                </div>
             </div>
         </div>
         <div class="first" v-if="user">
@@ -43,11 +46,11 @@
         </div>
         <div class="half">
             <div style="margin: auto" id="profileInput">
-                <button class="pwdBtn" @click="triggerFileUpload('fileInput')">프로필 업로드</button>
+                <button class="pwdBtn" @click="triggerFileUpload('fileInput')"><span>프로필 업로드</span></button>
                 <input type="file" ref="fileInput" @change="uploadProfileImage" style="display: none;">
             </div>
             <div style="margin: auto" id="sealInput">
-                <button class="pwdBtn" @click="triggerFileUpload('sealFileInput')">인감 업로드</button>
+                <button class="pwdBtn" @click="triggerFileUpload('sealFileInput')"><span>인감 업로드</span></button>
                 <input type="file" ref="sealFileInput" @change="uploadSealImage" style="display: none;">
             </div>
         </div>
@@ -76,6 +79,37 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="guideModal" tabindex="-1" aria-labelledby="guideModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title" id="guideModalLabel">인사 정보 수정 가이드</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="example">
+                        <img src="@/assets/HR/modify.png" alt="hr modify example">
+                    </div>
+                    <div class="example-content">
+                        <hr>
+                        <p>1. <프로필 업로드>를 통해 프로필을 업로드 할 수 있습니다.</p>
+                        <p>1-1. 프로필을 업로드 하는 경우 <수정>버튼을 누를 필요 없이 바로 적용됩니다.</p>
+                        <p>2. <인감 업로드>를 통해 인감 이미지를 업로드 할 수 있습니다.</p>
+                        <p>2-1. 인감 이미지를 업로드 하는 경우 <수정>버튼을 누를 필요 없이 바로 적용됩니다.</p>
+                        <p>3. <비밀번호 변경>을 통해 비밀번호를 변경할 수 있습니다.</p>
+                        <p>3-1. 비밀번호를 변경 하는 경우 <수정>버튼을 누를 필요 없이 바로 적용됩니다.</p>
+                        <p>4. 인사 정보를 수정한 뒤, <수정>버튼을 눌러 정보를 수정할 수 있습니다.</p>
+                    </div>
+                </div>
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script setup>
@@ -86,6 +120,7 @@ import { useRouter, useRoute } from 'vue-router';
 import axios from 'axios';
 import defaultProfileImage from '@/assets/defaultProfile.jpg';
 import defaultSealImage from '@/assets/defaultSeal.png';
+import { Modal } from 'bootstrap';
 
 const router = useRouter();
 const route = useRoute();
@@ -107,6 +142,7 @@ const sealUrl = computed(() => {
 
 const fileInput = ref(null);
 const sealFileInput = ref(null);
+const guideModal = ref(null);
 
 const cleanUserData = (userData) => {
     return {
@@ -232,6 +268,13 @@ const closeModal = () => {
     document.body.style = '';
 
     window.location.reload();
+};
+
+const openGuideModal = () => {
+    if (!guideModal.value) {
+        guideModal.value = new Modal(document.getElementById('guideModal'));
+    }
+    guideModal.value.show();
 };
 
 const updateUser = (newData) => {
@@ -510,7 +553,29 @@ body {
 
 .title-content {
     display: grid;
+    grid-template-columns: 150px auto;
     align-items: flex-start;
     height: 80%;
+}
+
+.guide img {
+    width: 21px;
+    height: 21px;
+    margin: 0 0 0 20px;
+    cursor: pointer;
+}
+
+.example img {
+    width: 100%;
+}
+
+.modal-footer .btn {
+    background-color: #dc3545; /* 기본 모달 닫기 버튼 색상 */
+    color: white; /* 닫기 버튼 글자 색상 */
+}
+
+.modal-footer .btn:hover {
+    background-color: #c82333; /* 닫기 버튼 hover 색상 */
+    color: white; /* 닫기 버튼 글자 색상 */
 }
 </style>

@@ -4,32 +4,33 @@
             인사 정보
         </div>
         <div class="time">
-            <img src="@/assets/HR/time.png" alt="시간 표시" class="hr-img">
+            <i class="bi bi-clock" style="width: 12px; height: 12px; margin-bottom: 8px;"></i> &nbsp;
             {{ currentTime }}
             <div class="time-script" style="color: rgb(180, 177, 177);">현재</div>
         </div>
         <hr id="hr-1">
         <div class="hr-info-name">
             <div id="hr-info-name1" style="color: rgb(180, 177, 177);">
-              <i class="bi bi-people fs-3"></i> &nbsp; 부서 / 팀
+                <i class="bi bi-people " style="width: 12px; height: 12px;"></i> &nbsp; 
+                부서 / 팀
             </div>
             <div id="hr-info-name2" style="color: rgb(180, 177, 177);">
-                <img src="@/assets/HR/assignedTask.png" alt="담당 업무" class="info-img">
+                <i class="bi bi-briefcase-fill" style="width: 12px; height: 12px;"></i> &nbsp;
                 담당 업무
             </div>
             <div id="hr-info-name3" style="color: rgb(180, 177, 177);">
-                <img src="@/assets/HR/position.png" alt="직위" class="info-img">
+                <i class="bi bi-grid" style="width: 12px; height: 12px;"></i> &nbsp;
                 직위
             </div>
             <div id="hr-info-name4" style="color: rgb(180, 177, 177);">
-                <img src="@/assets/HR/duties.png" alt="직책" class="info-img">
+                <i class="bi bi-grid" style="width: 12px; height: 12px;"></i> &nbsp;
                 직책
             </div>
         </div>
         <div class="hr-info-content">
             <div id="hr-info-content1">
                 {{ result.department ? result.department.departmentName : 'N/A' }} / {{ result.team ?
-                result.team.teamName : 'N/A' }}
+                    result.team.teamName : 'N/A' }}
             </div>
             <div id="hr-info-content2">
                 {{ assignedTask }}
@@ -45,29 +46,29 @@
             기본 정보
         </div>
         <hr id="hr-2">
-        <div class="basic-info-name" style="color: rgb(180, 177, 177);" >
+        <div class="basic-info-name" style="color: rgb(180, 177, 177);">
             <div id="basic-info-name1">
-                <img src="@/assets/HR/name.png" alt="이름" class="info-img">
+                <i class="bi bi-file-person " style="width: 12px; height: 12px;"></i> &nbsp;
                 이름
             </div>
             <div id="basic-info-name2">
-                <img src="@/assets/HR/employeeNumber.png" alt="사번" class="info-img">
+                <i class="bi bi-circle-square" style="width: 12px; height: 12px;"></i> &nbsp;
                 사번
             </div>
             <div id="basic-info-name3">
-                <img src="@/assets/HR/email.png" alt="이메일" class="info-img">
+                <i class="bi bi-mailbox" style="width: 12px; height: 12px;"></i> &nbsp;
                 이메일
             </div>
             <div id="basic-info-name4">
-                <img src="@/assets/HR/smartPhone.png" alt="휴대폰" class="info-img">
+                <i class="bi bi-phone-vibrate" style="width: 12px; height: 12px;"></i> &nbsp;
                 휴대전화번호
             </div>
             <div id="basic-info-name5">
-                <img src="@/assets/HR/oldPhone.png" alt="전화" class="info-img">
+                <i class="bi bi-telephone-inbound " style="width: 12px; height: 12px;"></i> &nbsp;
                 전화번호
             </div>
             <div id="basic-info-name6">
-                <img src="@/assets/HR/date.png" alt="입사일" class="info-img">
+                <i class="bi bi-calendar2-date " style="width: 12px; height: 12px;"></i> &nbsp;
                 입사일
             </div>
         </div>
@@ -91,37 +92,38 @@
                 {{ result.joinTime }}
             </div>
         </div>
-        <div class="admin-info-title" v-if="userRole === 'ROLE_ADMIN' || userId == result.id">
+        <div class="admin-info-title" v-if="userRole === 'ROLE_ADMIN' || profileId == result.id">
             관리 정보
         </div>
-        <hr id="hr-3" v-if="userRole === 'ROLE_ADMIN' || userId == result.id">
-        <div class="admin-info-name" v-if="userRole === 'ROLE_ADMIN' || userId == result.id" style="color: rgb(180, 177, 177);">
+        <hr id="hr-3" v-if="userRole === 'ROLE_ADMIN' || profileId == result.id">
+        <div class="admin-info-name" v-if="userRole === 'ROLE_ADMIN' || profileId == result.id"
+            style="color: rgb(180, 177, 177);">
             <div id="admin-info-name1" style="min-height: 48px;">
-                <img src="@/assets/HR/address.png" alt="주소" class="info-img">
+                <i class="bi bi-pin-map" style="width: 12px; height: 12px;"></i> &nbsp;
                 주소
             </div>
             <div id="admin-info-name2" style="margin-top: 15%;">
-                <img src="@/assets/HR/type.png" alt="입사" class="info-img">
+                <i class="bi bi-command " style="width: 12px; height: 12px;"></i> &nbsp;
                 입사 유형
             </div>
             <div id="admin-info-name3">
-                <img src="@/assets/HR/type.png" alt="고용" class="info-img">
+                <i class="bi bi-command " style="width: 12px; height: 12px;"></i> &nbsp;
                 고용 유형
             </div>
             <div id="admin-info-name4">
-                <img src="@/assets/HR/date.png" alt="계약 시작일" class="info-img">
+                <i class="bi bi-calendar2-date " style="width: 12px; height: 12px;"></i> &nbsp;
                 계약 시작일
             </div>
             <div id="admin-info-name5">
-                <img src="@/assets/HR/date.png" alt="계약 종료일" class="info-img">
+                <i class="bi bi-calendar2-date " style="width: 12px; height: 12px;"></i> &nbsp;
                 계약 종료일
             </div>
             <div id="admin-info-name6">
-                <img src="@/assets/HR/resign.png" alt="퇴사" class="info-img">
+                <i class="bi bi-door-open " style="width: 12px; height: 12px;"></i> &nbsp;
                 퇴사 여부
             </div>
         </div>
-        <div class="admin-info-content" v-if="userRole === 'ROLE_ADMIN'|| userId == result.id">
+        <div class="admin-info-content" v-if="userRole === 'ROLE_ADMIN' || profileId == result.id">
             <div id="admin-info-content1" style="min-height: 48px;">
                 {{ result.zipCode }} <br>
                 {{ result.address }}
@@ -153,12 +155,12 @@ const props = defineProps({
     result: {
         type: Object,
         required: true
-    }, 
-    userRole:{
+    },
+    userRole: {
         type: String,
         required: true
     },
-    userId:{
+    profileId: {
         type: String,
         required: true
     }
@@ -167,21 +169,22 @@ const props = defineProps({
 const updateValues = () => {
     console.log("Updated result:", props.result);
     console.log("Updated userRole:", props.userRole);
+    console.log("updated id:", props.profileId);
     console.log('퇴사 여부:', props.result.resignYn);
-    
+
     joinType.value = props.result.joinType === 'NEW' ? '신입' : '경력';
     workType.value = props.result.workType === 'R' ? '정규직' : '계약직';
     isResigned.value = props.result.resignYn === 'N' ? '재직' : '퇴사';
     callNumber.value = props.result.callNumber != null ? props.result.callNumber : '-';
     assignedTask.value = props.result.assignedTask != null ? props.result.assignedTask : '-';
     resignTime.value = props.result.resignTime != null ? props.result.resignTime : '';
-    contractStartTime.value = props.result.contractStartTime!= null ? props.result.contractStartTime : '';
-    contractEndTime.value = props.result.contractEndTime!= null ? props.result.contractEndTime : '-';
+    contractStartTime.value = props.result.contractStartTime != null ? props.result.contractStartTime : '';
+    contractEndTime.value = props.result.contractEndTime != null ? props.result.contractEndTime : '-';
 };
 
 const today = new Date();
 const year = today.getFullYear();
-const month = String(today.getMonth() + 1).padStart(2, '0'); 
+const month = String(today.getMonth() + 1).padStart(2, '0');
 const day = String(today.getDate()).padStart(2, '0');
 const joinType = ref('');
 const workType = ref('');
@@ -216,12 +219,15 @@ hr {
 }
 
 .hr-main::-webkit-scrollbar {
-  display: none; /* Hide scrollbar for webkit browsers */
+    display: none;
+    /* Hide scrollbar for webkit browsers */
 }
 
 .hr-main {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
 }
 
 .hr-info-title {
@@ -244,15 +250,6 @@ hr {
     align-items: flex-end;
     justify-content: end;
     color: rgb(180, 177, 177);
-}
-
-.time img {
-    width: 14px;
-    height: 14px;
-    margin-top: 1%;
-    margin-right: 1%;
-    margin-bottom: 1%;
-    filter: invert(73%) sepia(0%) saturate(377%) hue-rotate(189deg) brightness(101%) contrast(84%);
 }
 
 .time-script {
@@ -319,7 +316,7 @@ hr {
 }
 
 #admin-info-name1,
-#admin-info-content1{
+#admin-info-content1 {
     grid-row-start: 1;
     grid-row-end: 2;
     min-height: 80px;
@@ -338,7 +335,7 @@ hr {
 }
 
 #admin-info-name4,
-#admin-info-content4{
+#admin-info-content4 {
     grid-row-start: 5;
     min-height: 47.76px;
 }
@@ -355,6 +352,7 @@ hr {
     min-height: 47.76px;
     margin-bottom: 20px;
 }
+
 .hr-info-content {
     display: grid;
     grid-template-rows: auto auto auto auto;

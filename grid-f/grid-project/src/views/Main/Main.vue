@@ -1,7 +1,8 @@
- <template>
+<template>
   <div class="mainContainer">
     <div class="mainTitle">
-      <h1 class="mb-1"><i class="bi bi-house-door fs-3"></i>&nbsp; 메인</h1>
+      <h1 class="mb-1"v-if="userRole === 'ROLE_ADMIN'"><i class="bi bi-house-door fs-3"></i>&nbsp; 근태 확인</h1>
+      <h1 class="mb-1" v-else><i class="bi bi-house-door fs-3" ></i>&nbsp; 대시보드</h1>
     </div>
     <div class="content" v-if="userRole ==='ROLE_USER'">
       <AdTime />
