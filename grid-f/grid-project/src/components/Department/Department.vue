@@ -709,4 +709,6 @@ tr:hover {
 .btn-custom-1:hover span {
     color: white;
 }
+
+td, th { text-align: center;}
 </style>

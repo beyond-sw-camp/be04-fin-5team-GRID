@@ -6,23 +6,23 @@
         <hr id="hr-1">
         <div class="hr-info-name">
             <div id="hr-info-name1" style="color: rgb(180, 177, 177);">
-                <img src="@/assets/HR/info-team.png" alt="부서 아이콘" class="info-img">
+                <i class="bi bi-people " style="width: 12px; height: 12px;"></i> &nbsp;
                 부서
             </div>
             <div id="hr-info-name2" style="color: rgb(180, 177, 177);">
-                <img src="@/assets/HR/info-team.png" alt="부서 아이콘" class="info-img">
+                <i class="bi bi-people " style="width: 12px; height: 12px;"></i> &nbsp;
                 팀
             </div>
             <div id="hr-info-name3" style="color: rgb(180, 177, 177);">
-                <img src="@/assets/HR/assignedTask.png" alt="담당 업무" class="info-img">
+                <i class="bi bi-briefcase-fill" style="width: 12px; height: 12px;"></i> &nbsp;
                 담당 업무
             </div>
             <div id="hr-info-name4" style="color: rgb(180, 177, 177);">
-                <img src="@/assets/HR/position.png" alt="직위" class="info-img">
+                <i class="bi bi-grid" style="width: 12px; height: 12px;"></i> &nbsp;
                 직위
             </div>
             <div id="hr-info-name5" style="color: rgb(180, 177, 177);">
-                <img src="@/assets/HR/duties.png" alt="직책" class="info-img">
+                <i class="bi bi-grid" style="width: 12px; height: 12px;"></i> &nbsp;
                 직책
             </div>
         </div>
@@ -81,27 +81,27 @@
         <hr id="hr-2">
         <div class="basic-info-name">
             <div id="basic-info-name1" style="color: rgb(180, 177, 177);">
-                <img src="@/assets/HR/name.png" alt="이름" class="info-img">
+                <i class="bi bi-file-person " style="width: 12px; height: 12px;"></i> &nbsp;
                 이름
             </div>
             <div id="basic-info-name2" style="color: rgb(180, 177, 177);">
-                <img src="@/assets/HR/employeeNumber.png" alt="사번" class="info-img">
+                <i class="bi bi-circle-square" style="width: 12px; height: 12px;"></i> &nbsp;
                 사번
             </div>
             <div id="basic-info-name3" style="color: rgb(180, 177, 177);">
-                <img src="@/assets/HR/email.png" alt="이메일" class="info-img">
+                <i class="bi bi-mailbox" style="width: 12px; height: 12px;"></i> &nbsp;
                 이메일
             </div>
             <div id="basic-info-name4" style="color: rgb(180, 177, 177);">
-                <img src="@/assets/HR/smartPhone.png" alt="휴대전화번호" class="info-img">
+                <i class="bi bi-phone-vibrate" style="width: 12px; height: 12px;"></i> &nbsp;
                 휴대전화번호
             </div>
             <div id="basic-info-name5" style="color: rgb(180, 177, 177);">
-                <img src="@/assets/HR/oldPhone.png" alt="전화번호" class="info-img">
+                <i class="bi bi-telephone-inbound " style="width: 12px; height: 12px;"></i> &nbsp;
                 전화번호
             </div>
             <div id="basic-info-name6" style="color: rgb(180, 177, 177);">
-                <img src="@/assets/HR/date.png" alt="입사일" class="info-img">
+                <i class="bi bi-calendar2-date " style="width: 12px; height: 12px;"></i> &nbsp;
                 입사일
             </div>
         </div>
@@ -165,27 +165,27 @@
         <hr id="hr-3">
         <div class="admin-info-name">
             <div id="admin-info-name1" style="color: rgb(180, 177, 177);">
-                <img src="@/assets/HR/address.png" alt="주소" class="info-img">
+                <i class="bi bi-pin-map" style="width: 12px; height: 12px;"></i> &nbsp;
                 주소
             </div>
             <div id="admin-info-name2" style="color: rgb(180, 177, 177);">
-                <img src="@/assets/HR/type.png" alt="입사 유형" class="info-img">
+                <i class="bi bi-command " style="width: 12px; height: 12px;"></i> &nbsp;
                 입사 유형
             </div>
             <div id="admin-info-name3" style="color: rgb(180, 177, 177);">
-                <img src="@/assets/HR/type.png" alt="고용" class="info-img">
+                <i class="bi bi-command " style="width: 12px; height: 12px;"></i> &nbsp;
                 고용 유형
             </div>
             <div id="admin-info-name4" style="color: rgb(180, 177, 177);">
-                <img src="@/assets/HR/date.png" alt="계약 시작일" class="info-img">
+                <i class="bi bi-calendar2-date " style="width: 12px; height: 12px;"></i> &nbsp;
                 계약 시작일
             </div>
             <div id="admin-info-name5" style="color: rgb(180, 177, 177);">
-                <img src="@/assets/HR/date.png" alt="계약 종료일" class="info-img">
+                <i class="bi bi-calendar2-date " style="width: 12px; height: 12px;"></i> &nbsp;
                 계약 종료일
             </div>
             <div id="admin-info-name6" style="color: rgb(180, 177, 177);">
-                <img src="@/assets/HR/resign.png" alt="퇴사 여부" class="info-img">
+                <i class="bi bi-door-open " style="width: 12px; height: 12px;"></i> &nbsp;
                 퇴사 여부
             </div>
         </div>

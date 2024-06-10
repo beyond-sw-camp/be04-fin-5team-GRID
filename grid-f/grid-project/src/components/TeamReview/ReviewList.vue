@@ -15,7 +15,7 @@
     <table class="reviewTable">
       <thead>
         <tr>
-          <th>제목</th>
+          <th class="fixed-width">제목</th>
           <th>연도</th>
           <th>분기</th>
           <th>작성 시간</th>
@@ -26,11 +26,11 @@
       </thead>
       <tbody>
         <tr v-for="review in paginatedReviews" :key="review.id">
-          <td>{{ review.content }}</td>
+          <td class="fixed-width">{{ review.content }}</td>
           <td>{{ review.year }}</td>
           <td>{{ review.quarter }}</td>
           <td>{{ review.writeTime ? formatDate(review.writeTime) : '-' }}</td>
-          <td>{{ review.revieweeName }}</td>
+          <td>{{ review.revieweeName }}</td>  
           <td>{{ getStatusLabel(review.reviewStatus) }}</td>
           <td>
             <button 
@@ -294,7 +294,7 @@ const search = () => {
 
 .container {
   display: grid;
-  grid-template-rows: 18% 13% 4% 53% 8%;
+  grid-template-rows: 18% 8% 4% 75% 8%;
   grid-template-columns: 10% 80% 10%;
   padding: 0;
   font-family: 'IBMPlexSansKR-Regular';
@@ -334,7 +334,7 @@ const search = () => {
 }
 
 .searchBox {
-  padding: 10px;
+  padding: 5px;
   font-size: 14px;
   border-radius: 4px;
   border: 1px solid #ddd;
@@ -345,7 +345,7 @@ const search = () => {
 .searchBtn {
   background-color: #088A85;
   color: white;
-  padding: 10px;
+  padding: 5px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -500,5 +500,15 @@ tr:hover {
   background-color: #ddd;
   color: #999;
   cursor: not-allowed;
+}
+
+th, td {
+  text-align: center;
+}
+
+.fixed-width {  
+  width: 160px;
+  max-width: 160px;
+  word-wrap: break-word;
 }
 </style>

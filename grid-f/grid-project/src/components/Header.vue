@@ -7,14 +7,14 @@
 
       <div class="icons">
         <div class="tokenArea">
-          <span class="token-timer" style="font: 20px;">접속 시간 &nbsp {{ timeLeft }}</span>
+          <span class="token-timer" style="font: 15px;">접속 시간 &nbsp {{ timeLeft }}</span>
           <i class="bi bi-arrow-counterclockwise token" @click="addTokenTime()" style="cursor: pointer;"></i>
         </div>
         <button class="icon-button" type="button" data-bs-toggle="offcanvas" data-bs-target="#demo">
-          <img src="@/assets/people.png" alt="Button 2" class="icon-image" />
+          <img src="@/assets/diagram3.png" alt="Button 2" class="icon-image" />
         </button>
         <div class="dropdown">
-          <img :src="profileUrl" alt="profile" class="profile" @click="toggleDropdown">
+          <img src="@/assets/grid3.png" alt="profile" class="profile" @click="toggleDropdown">
           <ul class="dropdown-menu" ref="dropdownMenu">
             <li><a class="dropdown-item" href="#" @click="goProfile">
                 <i class="bi bi-file-person"></i>&nbsp; &nbsp; 내 정보</a></li>
@@ -499,11 +499,13 @@ onMounted(fetchDepartments);
   cursor: pointer;
   margin-right: 20px;
   object-fit: cover;
+  display: flex;
+  align-items: center;
+  filter: invert(100%) sepia(65%) saturate(424%) hue-rotate(91deg) brightness(129%) contrast(107%);
 }
 
 .profile img {
-  width: 25px;
-  height: 25px;
+
 }
 
 .icon-button {
@@ -514,7 +516,7 @@ onMounted(fetchDepartments);
   cursor: pointer;
   display: flex;
   align-items: center;
-  margin-right: 20px;
+  margin-right: 12px;
 }
 
 .icon-image {
@@ -532,6 +534,8 @@ onMounted(fetchDepartments);
   display: inline-block;
   height: 35px;
   width: 35px;
+  display: flex;
+  align-items: center;
 }
 
 .dropdown-menu {
@@ -589,5 +593,11 @@ onMounted(fetchDepartments);
   border: none;
   border-radius: 4px;
   cursor: pointer;
+}
+
+.icon-image:hover, .profile:hover {
+  opacity: 0.8;
+  border: 2px solid #088A85;
+  transition: border 0.2s;
 }
 </style>

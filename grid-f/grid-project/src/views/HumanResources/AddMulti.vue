@@ -8,11 +8,11 @@
                                 class="bi bi-people"></i>&nbsp; 인사
                             정보</a></li>
                     <li class="breadcrumb-item active" aria-current="page"><span class="fw-bolder"><i
-                                class="bi bi-pencil-square"></i>&nbsp; 일괄 수정</span></li>
+                                class="bi bi-pencil-square"></i>&nbsp; 신규 사원 등록</span></li>
                 </ol>
             </nav>
             <div class="title-content">
-                <h1> <i class="bi bi-person-plus"></i>&nbsp 사원 추가</h1>
+                <h1> <i class="bi bi-person-plus"></i>&nbsp; 신규 사원 등록</h1>
                 <div class="guide">
                     <img src="@/assets/buttons/guide.png" alt="guide button" id="guide" @click="openModal">
                 </div>
@@ -188,12 +188,28 @@
             <div class="modal-content">
                 <!-- Modal Header -->
                 <div class="modal-header">
-                    <h4 class="modal-title" id="guideModalLabel">CSV 작성 가이드</h4>
+                    <h4 class="modal-title" id="guideModalLabel">사원 등록 가이드</h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
 
                 <!-- Modal body -->
                 <div class="modal-body">
+                    <div class="example">
+                        <img src="@/assets/HR/multi.png" alt="일괄 추가 설명">
+                    </div>
+                    <div class="example-content">
+                        <hr>
+                        <p>1. <행 추가> 버튼을 통해 새롭게 등록할 행을 추가할 수 있습니다. </p>
+                        <p>2. <삭제> 버튼을 통해 기존에 추가된 행을 삭제할 수 있습니다.</p>
+                        <p>3. <작성 양식> 버튼을 통해 csv작성에 필요한 기본 양식을 받을 수 있습니다. </p>
+                        <p>3-1. 기본적인 csv파일의 작성 방법은 아래의 'CSV 작성 가이드'를 참고해주세요. </p>
+                        <p>4. <양식 적용> 버튼을 통해 작성한 csv를 업로드하여 일괄 등록이 가능합니다. </p>
+                        <p>5. 작성 정보를 확인 후, <확인> 버튼을 통해 신규 사원을 추가할 수 있습니다. </p>
+                    </div>
+                    <hr>
+                    <br>
+                    <h5>CSV 작성 가이드</h5>
+
                     <div class="example">
                         <img src="@/assets/HR/csvexample.png" alt="csv 예시">
                     </div>
