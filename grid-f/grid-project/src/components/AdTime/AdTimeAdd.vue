@@ -97,7 +97,18 @@ const fetchAdTime = async () => {
 
     console.log(adTime.value);
   } catch (error) {
-    console.error('에러 발생:', error);
+    if (error.response && error.response.status === 400) {
+      console.log('데이터가 없습니다. 초기값을 설정합니다.');
+      // 데이터가 없을 때 초기값 설정
+      adTime.value = {
+        id: null,
+        startTime: "00:00",
+        endTime: "00:00",
+        employeeId: null,
+      };
+    } else {
+      console.error('에러 발생:', error);
+    }
   }
 }
 

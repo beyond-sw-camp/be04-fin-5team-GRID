@@ -1,8 +1,12 @@
 package org.highfives.grid.performance_review.query.dto;
 
-import lombok.Data;
+import lombok.*;
 
-@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+@ToString
 public class WriterDTO {
     private int id;
     private String employeeName;

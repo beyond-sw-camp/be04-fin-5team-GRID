@@ -1,11 +1,15 @@
 package org.highfives.grid.performance_review.query.dto;
 
 
-import lombok.Data;
+import lombok.*;
 
 import java.util.List;
 
-@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+@ToString
 public class DetailGoalDTO {
     private int id;
     private int year;
