@@ -1,8 +1,10 @@
 package org.highfives.grid.user.command.vo;
 
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class ReqResetPwdVO {
 
     private String pwd;
