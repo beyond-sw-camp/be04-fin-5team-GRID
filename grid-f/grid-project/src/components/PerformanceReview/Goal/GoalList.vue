@@ -140,6 +140,7 @@ const showModal = (modalId) => {
 const fetchMemberGoal = async () => {
   try {
     // 팀원일때
+    console.log(user.value.id);
     const response = await axios.get(`/api/review-goal/member/${user.value.id}`);
 
     goalList.value = response.data.findGoalList;
@@ -161,7 +162,9 @@ const fetchLeaderGoal = async () => {
 };
 
 onMounted(() => {
+  console.log("1");
   if(user.value.duties.dutiesName === '팀원') {
+    console.log("2");
     fetchMemberGoal();
   } else {
     fetchLeaderGoal();
@@ -267,6 +270,7 @@ const goToDetailPage = (id) => {
   display: grid;
   grid-template-columns: 24% 4%;
   align-items: center;
+  min-width: 1000px;
 }
 
 .goalListTitle h1 {
