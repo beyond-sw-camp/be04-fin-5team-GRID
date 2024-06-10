@@ -36,6 +36,10 @@
           <th>세부계획</th>
           <th>가중치</th>
           <th>추진실적</th>
+          <th>중간 평가 등급</th>
+          <th>중간 평가 점수</th>
+          <th>연말 평가 등급</th>
+          <th>연말 평가 점수</th>
         </tr>
         </thead>
         <tbody>
@@ -58,6 +62,18 @@
           </td>
           <td>
             {{ item.performance }}
+          </td>
+          <td>
+            {{ gradeMapping[midReviewItemList[index].superiorId] }}
+          </td>
+          <td>
+            {{ midReviewItemList[index].superiorScore }}
+          </td>
+          <td>
+            {{ gradeMapping[item.superiorId]}}
+          </td>
+          <td>
+            {{ item.superiorScore}}
           </td>
         </tr>
         </tbody>
@@ -242,6 +258,13 @@ const mappingScoreGrade = (score) => {
     return 'C'
 }
 
+const gradeMapping = {
+  1: 'S', // S
+  2: 'A',  // A
+  3: 'B+',  // B+
+  4: 'B',  // B
+  5: 'C'   // C
+};
 
 </script>
 
@@ -399,5 +422,29 @@ th {
 .performanceTableContainer th:nth-child(7),
 .performanceTableContainer td:nth-child(7) {
   min-width: 500px; /* 추진실적 */
+}
+
+.performanceTableContainer th:nth-child(8),
+.performanceTableContainer td:nth-child(8) {
+  min-width: 90px; /* 중간 평가 등급 */
+  text-align: center;
+}
+
+.performanceTableContainer th:nth-child(9),
+.performanceTableContainer td:nth-child(9) {
+  min-width: 90px; /* 중간 평가 점수 */
+  text-align: center;
+}
+
+.performanceTableContainer th:nth-child(10),
+.performanceTableContainer td:nth-child(10) {
+  min-width: 90px; /* 연말 평가 등급 */
+  text-align: center;
+}
+
+.performanceTableContainer th:nth-child(11),
+.performanceTableContainer td:nth-child(11) {
+  min-width: 90px; /* 연말 평가 점수 */
+  text-align: center;
 }
 </style>
