@@ -1,5 +1,6 @@
 package org.highfives.grid.review.query.controller;
 
+import org.highfives.grid.review.query.dto.ReviewEmployeesHistoryDTO;
 import org.highfives.grid.review.query.vo.ResponseReviewListVO;
 import org.highfives.grid.review.query.dto.ReviewHistoryDTO;
 import org.highfives.grid.review.query.dto.ReviewListDTO;
@@ -108,5 +109,13 @@ public class ReviewController {
                 .build();
 
         return ResponseEntity.status(HttpStatus.OK).body(responseReviewListVO);
+    }
+
+    @GetMapping("/employees-history")
+    public ResponseEntity<List<ReviewEmployeesHistoryDTO>> findEmployeesHistory() {
+
+        List<ReviewEmployeesHistoryDTO> employeesHistoryDTOList = reviewService.findEmployeesHistory();
+
+        return ResponseEntity.status(HttpStatus.OK).body(employeesHistoryDTOList);
     }
 }

@@ -3,6 +3,7 @@ package org.highfives.grid.review.query.service;
 import org.highfives.grid.review.query.aggregate.ReviewHistory;
 import org.highfives.grid.review.query.aggregate.ReviewHistoryAndScore;
 import org.highfives.grid.review.query.aggregate.ReviewList;
+import org.highfives.grid.review.query.dto.ReviewEmployeesHistoryDTO;
 import org.highfives.grid.review.query.dto.ReviewHistoryAndScoreDTO;
 import org.highfives.grid.review.query.dto.ReviewHistoryDTO;
 import org.highfives.grid.review.query.dto.ReviewListDTO;
@@ -90,5 +91,10 @@ public class ReviewServiceImpl implements ReviewService {
         return mapper.map(reviewList, ReviewListDTO.class);
 
 
+    }
+
+    @Override
+    public List<ReviewEmployeesHistoryDTO> findEmployeesHistory() {
+        return null;
     }
 }

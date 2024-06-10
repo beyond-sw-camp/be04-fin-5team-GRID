@@ -25,7 +25,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(department, index) in paginatedDepartments" :key="department.sequence">
+        <tr v-for="(department) in paginatedDepartments" :key="department.sequence">
           <td>
             <input v-if="userRole === 'ROLE_ADMIN'" type="checkbox" @change="toggleDepartmentSelection(department)" :checked="isDepartmentSelected(department)">
           </td>

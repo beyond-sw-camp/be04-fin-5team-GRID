@@ -149,7 +149,6 @@ const selectedReview = ref(null);
 const reviewItems = ref([]);
 const reviewContents = ref({});
 
-
 const showModal = (modalId) => {
   const modal = new bootstrap.Modal(document.getElementById(modalId));
   modal.show();
@@ -160,18 +159,24 @@ const fetchReviews = async () => {
     const response = await axios.get('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/review/history-list');
     const reviewList = response.data.result;
 
-    await Promise.all(reviewList.map(async review => {
-      const reviewerResponse = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/id/${review.reviewerId}`);
-      const revieweeResponse = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/id/${review.revieweeId}`);
+    const reviewDetails = await Promise.all(reviewList.map(async review => {
+      const [reviewerResponse, revieweeResponse] = await Promise.all([
+        axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/id/${review.reviewerId}`),
+        axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/id/${review.revieweeId}`)
+      ]);
+
       review.reviewerName = reviewerResponse.data.result.name;
       review.departmentId = reviewerResponse.data.result.department.id;
       review.revieweeName = revieweeResponse.data.result.name;
 
       const departmentResponse = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/department/${review.departmentId}`);
       review.departmentName = departmentResponse.data.result.departmentName;
+
+      return review;
     }));
-    reviews.value = reviewList;
-    filteredReviews.value = reviewList; // 초기에는 모든 리뷰를 표시
+
+    reviews.value = reviewDetails;
+    filteredReviews.value = reviewDetails;
   } catch (error) {
     console.error('평가 내역을 가져오는 중 오류 발생:', error);
   }
@@ -255,12 +260,10 @@ const goToPage = (page) => {
   currentPage.value = page;
 };
 
-// 처음 페이지로 이동
 const goToFirstPage = () => {
   currentPage.value = 1;
 };
 
-// 마지막 페이지로 이동
 const goToLastPage = () => {
   currentPage.value = totalPages.value;
 };
@@ -279,7 +282,7 @@ const search = () => {
   filteredReviews.value = reviews.value.filter(review =>
     review.reviewerName.toLowerCase().includes(searchQuery.value.toLowerCase())
   );
-  currentPage.value = 1; // 검색 후 첫 페이지로 이동
+  currentPage.value = 1;
 };
 
 const closeModal = (modalId) => {
@@ -324,7 +327,6 @@ const addNewReview = async () => {
   };
 
   try {
-    // 중복된 리뷰가 있는지 확인
     const isDuplicate = reviews.value.some(review =>
       review.year === newReview.year &&
       review.quarter === newReview.quarter &&
@@ -348,8 +350,8 @@ const addNewReview = async () => {
     console.error('Error adding new review:', error);
   }
 };
-
 </script>
+
 
 <style scoped>
 @font-face {
@@ -479,20 +481,24 @@ tr:hover {
   justify-content: center;
   align-items: center;
   margin-top: 10px;
+  
 }
 
 .pagination .page-item.active .page-link {
   background-color: #088A85; /* 원하는 배경색 */
   border-color: #088A85; /* 원하는 테두리 색 */
   color: white; /* 원하는 텍스트 색 */
+  
 }
 
 .pagination .page-item .page-link {
   color: #088A85; /* 기본 텍스트 색 */
+  cursor: pointer;
 }
 
 .pagination .page-item.disabled .page-link {
   color: #088A85; /* 비활성화된 페이지 색 */
+  cursor: not-allowed;
 }
 
 .view-review-btn {
@@ -503,10 +509,12 @@ tr:hover {
   border-radius: 4px;
   cursor: pointer;
   font-size: 12px;
+  
 }
 
 .view-review-btn:hover {
   background-color: #065f5b;
+  
 }
 
 .btn-custom-1 {
@@ -520,6 +528,7 @@ tr:hover {
     overflow: hidden;
     font-size: 11px;
     font-weight: bold;
+    
 }
 
 .btn-custom-1::before {
@@ -532,10 +541,12 @@ tr:hover {
     background-color: #088A85;
     transition: left 0.4s;
     z-index: 1;
+    
 }
 
 .btn-custom-1:hover::before {
     left: 0;
+    
 }
 
 .btn-custom-1 span {
