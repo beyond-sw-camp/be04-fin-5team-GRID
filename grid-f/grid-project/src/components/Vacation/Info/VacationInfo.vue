@@ -425,6 +425,10 @@ th {
     /* 비활성화된 페이지 색 */
 }
 
+.pagination a {
+  cursor: pointer;
+}
+
 .vacationsNum {
     grid-column-start: 1;
     display: grid;
