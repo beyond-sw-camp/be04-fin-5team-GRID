@@ -155,7 +155,7 @@ const fetchVacationType = async() => {
     let typeList = response.data.result;
 
     for (const type of typeList) {
-      state.vacationType.push({value: parseInt(type.id), text: type.typeName});
+      state.vacationType.push({value: parseInt(type.id), text: type.typeName, timeCheck: type.timeCheck, vacationTime:type.vacationTime});
     }
 
   } catch (error) {
@@ -163,24 +163,24 @@ const fetchVacationType = async() => {
   }
 };
 
-function calculateDaysBetweenDates(startDate, endDate) {
-const start = new Date(startDate);
-const end = new Date(endDate);
-
-// 시작 날짜와 종료 날짜의 차이를 밀리초 단위로 계산
-const differenceInTime = end.getTime() - start.getTime();
-
-// 밀리초를 일(day)로 변환
-const differenceInDays = differenceInTime / (1000 * 3600 * 24);
-
-return differenceInDays;
-}
-
 const calculateBusinessDays = (startDate, endDate) => {
   let count = 0;
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  
+  // 시작 날짜와 종료 날짜가 같은 경우
+  if (start.toDateString() === end.toDateString()) {
+    const dayOfWeek = start.getDay();
+    if (dayOfWeek !== 0 && dayOfWeek !== 6) { // 주말이 아닌 경우
+      return 1;
+    } else {
+      return 0; // 주말인 경우
+    }
+  }
+
   const curDate = new Date(startDate);
 
-  while (curDate <= new Date(endDate)) {
+  while (curDate <= end) {
     const dayOfWeek = curDate.getDay();
     if (dayOfWeek !== 0 && dayOfWeek !== 6) { // 0 = Sunday, 6 = Saturday
       count++;
@@ -191,13 +191,12 @@ const calculateBusinessDays = (startDate, endDate) => {
   return count;
 }
 
+
 const registApproval = async () => {
   postData.requesterId = userId.value;
 
-  if(postData.infoId === 5 || postData.infoId === 6) {
-    postData.e_date = postData.s_date;
-    postData.e_time = postData.s_time;
-  }
+  const selectedType = state.vacationType.find(type => type.value === postData.infoId);
+  const timeCheck = selectedType ? selectedType.timeCheck : null;
 
   await getUserVacationInfo(postData.infoId);
 
@@ -217,7 +216,7 @@ const registApproval = async () => {
     if(confirmed) {
       console.log(postData.startTime, postData.endTime);
       if (postData.content !== '' && postData.startTime !== ' 00:00:00' && postData.endTime !== ' 00:00:00' && postData.infoId !== 0) {
-        if (vacationNum.value >= daysBetween) {
+        if (vacationNum.value >= businessDaysBetween) {
           const response = await axios.post(`/api/approval/vacation`, postData, {
             headers: {
               'Content-Type': "application/json"
@@ -243,13 +242,28 @@ const registApproval = async () => {
 }
 
 watch(
-    () => postData.infoId,
-    (newInfoId) => {
-      const selectedType = state.vacationType.find(type => type.value === newInfoId);
+  () => postData.infoId,
+  (newInfoId) => {
+    const selectedType = state.vacationType.find(type => type.value === newInfoId);
+    
+    state.isEndDateDisabled = selectedType && (selectedType.timeCheck === 'Y');
+    state.isTimeDisabled = selectedType && (selectedType.timeCheck === 'N');
+    
+    if (selectedType && selectedType.timeCheck === 'Y') {
+      watch(() => [postData.s_date, postData.s_time], () => {
+        if (postData.s_date && postData.s_time) {
+          const sTime = new Date(`1970-01-01T${postData.s_time}Z`);
+          sTime.setHours(sTime.getHours() + selectedType.vacationTime); // 시간을 더합니다
 
-      state.isEndDateDisabled = selectedType && (selectedType.text === '반차' || selectedType.text === '반반차');
-      state.isTimeDisabled = selectedType && [1, 2, 3, 4].includes(selectedType.value);
+          const eTimeHours = String(sTime.getUTCHours()).padStart(2, '0');
+          const eTimeMinutes = String(sTime.getUTCMinutes()).padStart(2, '0');
+          const eTimeSeconds = String(sTime.getUTCSeconds()).padStart(2, '0');
+          postData.e_time = `${eTimeHours}:${eTimeMinutes}:${eTimeSeconds}`;
+          postData.e_date = postData.s_date;
+        }
+      });
     }
+  }
 );
 
 watch(
