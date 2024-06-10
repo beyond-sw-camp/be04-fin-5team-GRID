@@ -137,7 +137,7 @@
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">휴가 정책 등록</h5>
+          <h5 class="modal-title" id="exampleModalLabel">휴가 직접 지급</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
                   @click="closeModal('giveVacation')"></button>
         </div>

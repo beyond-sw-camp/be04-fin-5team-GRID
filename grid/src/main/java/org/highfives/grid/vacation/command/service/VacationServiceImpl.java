@@ -391,14 +391,31 @@ public class VacationServiceImpl implements VacationService {
     @Override
     @Transactional
     public void registVacationType(RegistVacationType typeInfo) {
-        VacationType vacationType = VacationType.builder()
-                .typeName(typeInfo.getTypeName())
-                .vacationNum(typeInfo.getVacationNum())
-                .dateOfUse(typeInfo.getDateOfUse())
-                .vacationExplain(typeInfo.getVacationExplain())
-                .useYn("Y")
-                .build();
-        vacationTypeRepository.save(vacationType);
+        if(typeInfo.getTimeCheck().equals("Y")) {
+            VacationType vacationType = VacationType.builder()
+                    .typeName(typeInfo.getTypeName())
+                    .timeCheck(typeInfo.getTimeCheck())
+                    .vacationTime(typeInfo.getVacationTime())
+                    .vacationNum(typeInfo.getVacationNum())
+                    .dateOfUse(typeInfo.getDateOfUse())
+                    .vacationExplain(typeInfo.getVacationExplain())
+                    .useYn("Y")
+                    .build();
+            vacationTypeRepository.save(vacationType);
+        } else {
+            VacationType vacationType = VacationType.builder()
+                    .typeName(typeInfo.getTypeName())
+                    .timeCheck(typeInfo.getTimeCheck())
+                    .vacationTime(0)
+                    .vacationNum(typeInfo.getVacationNum())
+                    .dateOfUse(typeInfo.getDateOfUse())
+                    .vacationExplain(typeInfo.getVacationExplain())
+                    .useYn("Y")
+                    .build();
+            vacationTypeRepository.save(vacationType);
+
+        }
+
     }
 
     @Override
@@ -406,6 +423,8 @@ public class VacationServiceImpl implements VacationService {
     public void modifyVacationType(ModifyVacationType typeInfo, int id) {
         VacationType vacationType = vacationTypeRepository.findById(id).orElseThrow(IllegalArgumentException::new);
         vacationType.setVacationNum(typeInfo.getVacationNum());
+        vacationType.setVacationTime(typeInfo.getVacationTime());
+        vacationType.setTimeCheck(typeInfo.getTimeCheck());
         vacationType.setDateOfUse(typeInfo.getDateOfUse());
         vacationType.setVacationExplain(typeInfo.getVacationExplain());
         vacationType.setUseYn(typeInfo.getUseYn());
