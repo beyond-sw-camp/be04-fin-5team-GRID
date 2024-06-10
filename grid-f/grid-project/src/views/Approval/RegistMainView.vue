@@ -2,7 +2,7 @@
   <div class="registAll">
     <div class="registHeader">
       <div>
-        <h1 class="fw-bolder mb-1"><i class="bi bi-pencil-square"></i>&nbsp; 결재 작성 &nbsp;&nbsp;<i class="bi bi-info-circle fs-5 mt-5" id="popover-target-1"></i></h1>
+        <h1 class="fw-bolder mb-1"><i class="bi bi-pencil-square"></i>&nbsp; 결재 작성 &nbsp;&nbsp;<i class="bi bi-info-circle fs-5 mt-5" id="popover-target-1" style="color: darkgoldenrod"></i></h1>
         <b-popover target="popover-target-1" triggers="hover" placement="right">
           <template #title><i class="bi bi-info-circle sm"></i>&nbsp;&nbsp; 결재 취소 시 유의사항</template>
           미열람 상태의 결재를 취소하게 되면 결재가 회수되어 바로 취소 처리되지만 승인 상태의 결재를 취소하게 되면 취소 결재가 생성되어 생성된 취소 결재를 승인 받은 후에만 취소 처리가 됩니다.

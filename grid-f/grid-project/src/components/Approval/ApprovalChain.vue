@@ -64,7 +64,7 @@
       <!-- 중복 취소 불가하는 코드 추가 -->
       <div class="d-flex justify-content-center mt-3">
         <b-button v-if="props.requesterId === userId && props.approvalStatus !== 'D' && props.cancelStatus === 'N' && props.cancelDoc === 0" @click="cancelApproval" class="mx-2">취소</b-button>
-        <b-button v-if="(props.requesterId === userId || userRole === 'ROLE_ADMIN') && props.approvalStatus === 'A'" @click="printApproval" class="mx-2">출력</b-button>
+<!--        <b-button v-if="(props.requesterId === userId || userRole === 'ROLE_ADMIN') && props.approvalStatus === 'A'" @click="printApproval" class="mx-2">출력</b-button>-->
       </div>
       <div v-if="state.show && props.cancelStatus === 'N'" class="d-flex justify-content-center mt-3">
         <b-button variant="success" @click="registStatus('A')" class="mx-2">승인</b-button>

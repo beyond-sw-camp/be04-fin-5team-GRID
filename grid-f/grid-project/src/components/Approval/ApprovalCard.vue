@@ -5,7 +5,7 @@
     <div v-if="props.approval['destination'] !== null" class="fs-6 text-muted mb-4"><strong>출장지 :  &nbsp;</strong>{{ props.approval['destination'] }}</div>
     <div v-if="props.approval['vacationType'] !== null" class="fs-6 text-muted mb-4"><strong>휴가 유형 :  &nbsp;</strong>{{ props.approval['vacationType'] }}</div>
     <div class="fs-6 text-muted mb-4"><strong>내용 :  &nbsp;</strong>{{ props.approval['content'] }}</div>
-    <div v-if="props.typeId === '3'" class="fs-6 text-muted mb-4" @click="printRW"> <strong>증명 서류 :  &nbsp;</strong><button>확인</button></div>
+    <div v-if="props.typeId === '3'" class="fs-6 text-muted mb-4" @click="printRW"> <strong>증명 서류 :  &nbsp;&nbsp;</strong><a class="fileDownload">제출 서류 확인</a></div>
   </div>
 </template>
 
@@ -30,5 +30,15 @@
 </script>
 
 <style scoped>
+.fileDownload {
+  text-decoration: underline; /* 밑줄 추가 */
+  color: #727272; /* 기본 링크 색상 */
+  cursor: pointer;
+}
 
+/* 링크 호버 스타일 */
+.fileDownload:hover {
+  color: #000000; /* 진한 색상으로 변경 */
+  font-weight: 700;
+}
 </style>
