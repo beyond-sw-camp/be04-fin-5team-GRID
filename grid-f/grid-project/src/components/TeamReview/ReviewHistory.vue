@@ -30,7 +30,7 @@
           <td>{{ formatDate(review.writeTime) }}</td>
           <td>{{ review.year }}</td>
           <td>{{ review.quarter }}</td>
-          <td>{{ review.revieweeName}}</td>
+          <td>{{ review.revieweeName }}</td>
         </tr>
       </tbody>
     </table>
@@ -52,7 +52,6 @@
         <li class="page-item" :class="{ disabled: currentPage === totalPages }">
           <a class="page-link" @click.prevent="goToLastPage">»»</a>
         </li>
-
       </ul>
     </div>
 
@@ -74,22 +73,12 @@
                 </div>
               </div>
               <div class="mb-3">
-                <label for="vacationNum" class="form-label">연도</label>
-                <input class="form-control" type="number" id="newReviewYear" v-model="newReviewYear" required />
-                <div class="invalid-feedback">
-                  연도를 입력해주세요.
-                </div>
+                <label for="newReviewYear" class="form-label">연도</label>
+                <input class="form-control" type="number" id="newReviewYear" v-model="newReviewYear" required readonly />
               </div>
               <div class="mb-3">
-                <label for="employeeNum" class="form-label">분기</label>
-                <select class="form-select" id="newReviewQuarter" v-model="newReviewQuarter" required>
-                  <option value="" disabled selected>분기를 선택해주세요.</option>
-                  <option value="1">1분기</option>
-                  <option value="2">2분기</option>
-                </select>
-                <div class="invalid-feedback">
-                  분기를 선택해주세요.
-                </div>
+                <label for="newReviewQuarter" class="form-label">분기</label>
+                <input class="form-control" type="text" id="newReviewQuarter" v-model="formattedQuarter" required readonly />
               </div>
               <div class="mb-3">
               </div>
@@ -121,7 +110,7 @@ const employees = ref([]);
 const newReviewContent = ref('');
 const currentYear = new Date().getFullYear();
 const newReviewYear = ref(currentYear);
-const newReviewQuarter = ref(1);
+const newReviewQuarter = ref(new Date().getMonth() < 6 ? 1 : 2); // 분기를 자동 계산
 const newRevieweeId = ref(null);
 const userRole = ref('');
 const user = ref({});
@@ -141,7 +130,6 @@ const fetchReviews = async () => {
     const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/review/employees-history?page=${currentPage.value}&size=${itemsPerPage.value}`);
     const reviewPage = response.data;
     reviews.value = reviewPage.list;
-    console.log(reviews.value)
     totalPages.value = Math.ceil(reviewPage.total / itemsPerPage.value); // 총 페이지 수를 계산합니다.
   } catch (error) {
     console.error('평가 내역을 가져오는 중 오류 발생:', error);
@@ -239,7 +227,7 @@ const closeModal = (modalId) => {
   if (modalId === 'addReview') {
     newReviewContent.value = '';
     newReviewYear.value = currentYear;
-    newReviewQuarter.value = 1;
+    newReviewQuarter.value = new Date().getMonth() < 6 ? 1 : 2;
     newRevieweeId.value = null;
     const form = document.querySelector(`#${modalId} form`);
     if (form) {
@@ -253,17 +241,14 @@ const validateAndRegistContent = () => {
   if (!form.checkValidity()) {
     form.classList.add('was-validated');
   } else {
-    if (newReviewYear.value <= currentYear - 1) {
-      alert(`${currentYear - 1}년 이하로는 설정할 수 없습니다.`);
-    } else {
-      addNewReview();
-    }
+    addNewReview();
   }
 };
 
 const addNewReview = async () => {
-  if (newReviewYear.value <= currentYear - 1) {
-    alert(`${currentYear - 1}년 이하로는 설정할 수 없습니다.`);
+  const currentQuarter = new Date().getMonth() < 6 ? 1 : 2;
+  if (newReviewYear.value !== currentYear || newReviewQuarter.value !== currentQuarter) {
+    alert('현재 연도와 분기만 설정할 수 있습니다.');
     return;
   }
 
@@ -277,12 +262,11 @@ const addNewReview = async () => {
   try {
     const isDuplicate = reviews.value.some(review =>
       review.year === newReview.year &&
-      review.quarter === newReview.quarter &&
-      review.revieweeId === newReview.revieweeId
+      review.quarter === newReview.quarter
     );
 
     if (isDuplicate) {
-      alert('같은 연도, 같은 분기, 같은 대상자로 이미 생성된 평가가 있습니다.');
+      alert('이미 생성된 평가가 있습니다.');
       return;
     }
 
@@ -315,6 +299,11 @@ const visiblePages = computed(() => {
   }
   return pages;
 });
+
+const formattedQuarter = computed(() => {
+  return newReviewQuarter.value === 1 ? '1분기' : '2분기';
+});
+
 </script>
 
 <style scoped>
