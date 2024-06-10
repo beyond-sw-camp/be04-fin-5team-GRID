@@ -1,10 +1,7 @@
 <template>
     <div class="hr-main">
         <div class="hr-title">
-            <h1 class="mb-1"><i class="bi bi-people"></i>&nbsp; 인사 정보</h1>
-            <div class="guide" v-if="userRole === 'ROLE_ADMIN'">
-                <img src="@/assets/buttons/guide.png" alt="guide button" id="guide" @click="openModal">
-            </div>
+            <h1 class="mb-1"><i class="bi bi-people"></i>&nbsp; 인사 정보 &nbsp;&nbsp;<i class="bi bi-info-circle fs-5 mt-5" id="popover-target-1" style="color: darkgoldenrod" @click="openModal"></i></h1>
         </div>
         <div class="search">
             <button class="printBtn" @click="downloadCSV">
@@ -298,22 +295,22 @@ button {
 }
 
 .hr-title {
-    grid-column-start: 2;
-    grid-column-end: 3;
-    margin-top: 2%;
-    margin-left: -0.5%;
-    color: #000000;
-    display: grid;
-    grid-template-columns: 140px auto;
-    align-items: center;
+  grid-column-start: 2;
+  align-content: center;
+  margin-top: 2%;
+  margin-left: -0.5%;
+  color: #000000;
+  display: grid;
+  grid-template-columns: 24% 4%;
+  align-items: center;
+  min-width: 1000px;
 }
 
 .hr-title h1 {
-    max-width: 150px;
-    margin-left: 0.5%;
-    font-size: 25px;
-    font-weight: 600;
-    font-family: 'IBMPlexSansKR-Regular', sans-serif;
+  margin-left: 0.5%;
+  font-size: 25px;
+  font-weight: 600;
+  font-family: 'IBMPlexSansKR-Regular', sans-serif;
 }
 
 .hr-icon {

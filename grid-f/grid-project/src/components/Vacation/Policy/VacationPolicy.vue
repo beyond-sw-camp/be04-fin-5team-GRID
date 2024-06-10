@@ -3,8 +3,7 @@
       <div class="policyTitle">
         <i class="bi bi-brightness-high fs-3"></i>
         <h1 v-if="userRole === 'ROLE_USER'" class="mb-1">휴가 종류/정책</h1>
-        <h1 v-if="userRole === 'ROLE_ADMIN'" class="mb-1">휴가 정책</h1>
-        <img src="@/assets/buttons/guide.png" v-if="userRole === 'ROLE_ADMIN'" class="guide" @click="showModal('guideManage')"></img>
+        <h1 v-if="userRole === 'ROLE_ADMIN'" class="mb-1">휴가 정책 &nbsp;&nbsp;<i class="bi bi-info-circle fs-5 mt-5" id="popover-target-1" style="color: darkgoldenrod" @click="showModal('guideManage')"></i></h1>
         <button class="policyRegist" @click="showModal('registPolicy')" v-if="userRole === 'ROLE_ADMIN'"><span>등록하기</span></button>
       </div>
       <div class="vacations">

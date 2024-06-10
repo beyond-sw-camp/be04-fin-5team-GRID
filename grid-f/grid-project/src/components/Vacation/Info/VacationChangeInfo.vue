@@ -2,9 +2,7 @@
   <div class="historyAll">
     <div class="historyTitle">
       <i class="bi bi-brightness-high fs-3"></i>
-      <h1>휴가 변화 이력</h1>
-      <img src="@/assets/buttons/guide.png" v-if="userRole === 'ROLE_ADMIN'" class="guide"
-           @click="showModal('guideModal')"></img>
+      <h1>휴가 변화 이력 &nbsp;&nbsp;<i class="bi bi-info-circle fs-5 mt-5" id="popover-target-1" style="color: darkgoldenrod" @click="showModal('guideModal')"></i></h1>
     </div>
     <div class="vacations">
       <div class="annual" v-if="userRole === 'ROLE_ADMIN'">
@@ -642,6 +640,10 @@ onBeforeMount(() => {
 .pagination .page-item.disabled .page-link {
   color: #088A85;
   /* 비활성화된 페이지 색 */
+}
+
+.pagination a {
+  cursor: pointer;
 }
 
 .registMain {

@@ -2,9 +2,7 @@
     <div class="manageAll">
         <div class="manageTitle">
             <i class="bi bi-brightness-high fs-3"></i>
-            <h1 class="mb-1">휴가 종류</h1>
-            <img src="@/assets/buttons/guide.png" v-if="userRole === 'ROLE_ADMIN'" class="guide"
-                @click="showModal('guideManage')"></img>
+            <h1 class="mb-1">휴가 종류 &nbsp;&nbsp;<i class="bi bi-info-circle fs-5 mt-5" id="popover-target-1" style="color: darkgoldenrod" @click="showModal('guideManage')"></i></h1>
             <button class="manageRegist" type="button" @click="showModal('registVacation')">등록하기</button>
             <button class="manageVacation" type="button" @click="showModal('manageVacation')">관리하기</button>
         </div>
