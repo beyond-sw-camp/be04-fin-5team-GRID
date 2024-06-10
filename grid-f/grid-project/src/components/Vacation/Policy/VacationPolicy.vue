@@ -1,11 +1,13 @@
 <template>
   <div class="policyAll">
-      <div class="policyTitle">
+      <div class="policyTitle" v-if="userRole === 'ROLE_ADMIN'">
         <i class="bi bi-brightness-high fs-3"></i>
-        <h1 v-if="userRole === 'ROLE_USER'" class="mb-1">휴가 종류/정책</h1>
-        <h1 v-if="userRole === 'ROLE_ADMIN'" class="mb-1">휴가 정책</h1>
-        <img src="@/assets/buttons/guide.png" v-if="userRole === 'ROLE_ADMIN'" class="guide" @click="showModal('guideManage')"></img>
+        <h1 v-if="userRole === 'ROLE_ADMIN'" class="mb-1">휴가 정책 &nbsp;&nbsp;<i class="bi bi-info-circle fs-5 mt-5" id="popover-target-1" style="color: darkgoldenrod" @click="showModal('guideManage')"></i></h1>
         <button class="policyRegist" @click="showModal('registPolicy')" v-if="userRole === 'ROLE_ADMIN'"><span>등록하기</span></button>
+      </div>
+      <div class="policyTitleUser" v-if="userRole === 'ROLE_USER'">
+        <i class="bi bi-brightness-high fs-3"></i>
+        <h1 class="mb-1">휴가 종류/정책</h1>
       </div>
       <div class="vacations">
           <div class="card mb-3" v-for="policy in policies" :key="policy.id">
@@ -362,12 +364,32 @@ Array.from(forms).forEach(form => {
   font-weight: 600;
   margin-top: 2%;
   color: #000000;
+  align-items: center;
   display: grid;
   grid-template-columns: 3% 10% 5% 66% 7% 2% 7%;
-  align-items: center;
 }
 
 .policyTitle h1 {
+  margin-left: 0.5%;
+  margin-bottom: 0;
+  font-size: 25px;
+  font-weight: 600;
+  font-family: 'IBMPlexSansKR-Regular', sans-serif;
+}
+
+.policyTitleUser {
+  grid-column-start: 2;
+  grid-column-end: 3;
+  font-size: 12px;
+  font-weight: 600;
+  margin-top: 2%;
+  color: #000000;
+  align-items: center;
+  display: grid;
+  grid-template-columns: 3% 20% 77%;
+}
+
+.policyTitleUser h1 {
   margin-left: 0.5%;
   margin-bottom: 0;
   font-size: 25px;

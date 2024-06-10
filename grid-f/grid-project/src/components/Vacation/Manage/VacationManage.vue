@@ -2,9 +2,7 @@
     <div class="manageAll">
         <div class="manageTitle">
             <i class="bi bi-brightness-high fs-3"></i>
-            <h1 class="mb-1">휴가 종류</h1>
-            <img src="@/assets/buttons/guide.png" v-if="userRole === 'ROLE_ADMIN'" class="guide"
-                @click="showModal('guideManage')"></img>
+            <h1 class="mb-1">휴가 종류 &nbsp;&nbsp;<i class="bi bi-info-circle fs-5 mt-5" id="popover-target-1" style="color: darkgoldenrod" @click="showModal('guideManage')"></i></h1>
             <button class="manageRegist" type="button" @click="showModal('registVacation')">등록하기</button>
             <button class="manageVacation" type="button" @click="showModal('manageVacation')">관리하기</button>
         </div>
@@ -222,6 +220,8 @@
                             <p>2. 새로운 휴가종류를 원하시면 <등록하기> 버튼을 통해 등록 가능합니다.</p>
                             <p>2-1. 모든 값을 채우고 등록한 후에 정책페이지로 이동하여 정책을 등록해주세요.</p>
                             <p>2-2. 정책을 등록하면 직원들이 정책을 확인하여 사내에 운영중인 휴가의 종류를 확인할 수 있습니다.</p>
+                            <p>2-3. 시간체크의 값은 일 단위휴가(ex..연차,월차)는 N으로 두시고 시간 단위휴가(ex.. 반차,반반차)는 Y로 하시면 됩니다.</p>
+                            <p>2-4. 시간체크의 값이 Y일때 휴가 제공시간을 입력가능하고, 몇시간을 제공하는지 입력해주시면 됩니다.</p>
                             <p>3. 사용을 멈추고싶은 휴가의 종류가 있다면 <관리하기> 버튼을 통하여 활성/비활성 할 수 있습니다.</p>
                             <p>3-1. 현재 비활성화 되어있는 휴가는 휴가이름옆에 (비활성화)로 표시되어 있습니다.</p>
                             <p>3-2. 비활성화 하면 휴가정책도 함께 사라집니다.</p>
