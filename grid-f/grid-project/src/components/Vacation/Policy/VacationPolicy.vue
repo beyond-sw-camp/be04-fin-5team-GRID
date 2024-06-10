@@ -363,7 +363,7 @@ Array.from(forms).forEach(form => {
   margin-top: 2%;
   color: #000000;
   display: grid;
-  grid-template-columns: 3% 12% 1% 5% 63% 7% 2% 7%;
+  grid-template-columns: 3% 10% 5% 66% 7% 2% 7%;
   align-items: center;
 }
 
@@ -394,10 +394,10 @@ Array.from(forms).forEach(form => {
 }
 
 .guide {
-  width: 60%;
-  height: 25px;
-  grid-column: 4;
-  margin: 0;
+  width: 30px;
+  height: 30px;
+  grid-column: 3;
+  margin-bottom: 6px;
   cursor: pointer;
 }
 

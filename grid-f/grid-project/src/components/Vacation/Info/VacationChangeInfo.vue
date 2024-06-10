@@ -514,13 +514,11 @@ onBeforeMount(() => {
 
 .historyTitle {
   grid-column-start: 2;
-  align-content: center;
+  align-items: center;
   font-size: 12px;
   font-weight: 600;
-  margin-top: 2%;
-  margin-left: -0.5%;
   display: grid;
-  grid-template-columns: 3% 15% 1% 5% 63% 7% 2% 7%;
+  grid-template-columns: 3% 15% 5% 77%;
   color: #000000;
 }
 
@@ -536,10 +534,10 @@ onBeforeMount(() => {
 }
 
 .guide {
-  width: 60%;
-  height: 25px;
-  grid-column: 4;
-  margin: 0;
+  width: 30px;
+  height: 30px;
+  grid-column: 3;
+  margin-bottom: 5px;
   cursor: pointer;
 }
 
