@@ -12,7 +12,7 @@
     <div class="myContent">
       <b-card no-body>
         <b-tabs card>
-          <b-tab title="출장" @click="fetchApprovalList(1, 0, userId)" active>
+          <b-tab title="출장" @click="setTab(1)" active>
             <b-form-group v-slot="{ ariaDescribedby }" class="d-flex justify-content-end my-3 pb-3">
               <b-form-radio-group
                   id="btn-radios-1"
@@ -26,7 +26,7 @@
             </b-form-group>
             <b-card-text><ApprovalList :approvalList="filteredItems"/></b-card-text>
           </b-tab>
-          <b-tab title="시간 외 근무" @click="fetchApprovalList(2, 0, userId)">
+          <b-tab title="시간 외 근무" @click="setTab(2)">
             <b-form-group v-slot="{ ariaDescribedby }" class="d-flex justify-content-end my-3 pb-3">
               <b-form-radio-group
                   id="btn-radios-2"
@@ -40,7 +40,7 @@
             </b-form-group>
             <ApprovalList :approvalList="filteredItems"/>
           </b-tab>
-          <b-tab title="단축 근무" @click="fetchApprovalList(3, 0, userId)">
+          <b-tab title="단축 근무" @click="setTab(3)">
             <b-form-group v-slot="{ ariaDescribedby }" class="d-flex justify-content-end my-3 pb-3">
               <b-form-radio-group
                   id="btn-radios-3"
@@ -54,7 +54,7 @@
             </b-form-group>
             <ApprovalList :approvalList="filteredItems"/>
           </b-tab>
-          <b-tab title="휴가" @click="fetchApprovalList(4, 0, userId)">
+          <b-tab title="휴가" @click="setTab(4)">
             <b-form-group v-slot="{ ariaDescribedby }" class="d-flex justify-content-end my-3 pb-3">
               <b-form-radio-group
                   id="btn-radios-4"
@@ -84,14 +84,14 @@ import {computed, onMounted, reactive, ref} from "vue";
   const isLoading = ref(true);
 
   const currentTab = ref(1);
-  const filterStatus = ref('');
+  const filterStatus = ref(null);
 
   const state = reactive({
     approvalList: []
   })
 
   const statusOptions = [
-    { value: '', text: '전체' },
+    { value: null, text: '전체' },
     { value: 'A', text: '승인' },
     { value: 'D', text: '반려' },
     { value: 'V', text: '열람' },
@@ -138,7 +138,7 @@ import {computed, onMounted, reactive, ref} from "vue";
 
   const setTab = async (tabIndex) => {
     currentTab.value = tabIndex;
-    filterStatus.value = ''; // 필터 상태 초기화
+    filterStatus.value = null; // 필터 상태 초기화
     await fetchApprovalList(currentTab.value, 0, userId.value); // 해당 탭의 데이터를 불러오기
   }
 
