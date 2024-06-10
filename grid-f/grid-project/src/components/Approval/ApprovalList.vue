@@ -12,7 +12,7 @@
           <span>{{ data.item.startTime.substring(0, 10) }} ~ {{ data.item.endTime.substring(0, 10) }}</span>
         </template>
         <template #cell(details)="data">
-          <b-badge @click="approvalDetail(1, data.item.id)">
+          <b-badge class="detail" @click="approvalDetail(1, data.item.id)">
             &#x2139;
           </b-badge>
         </template>
@@ -32,7 +32,7 @@
           <span>{{ data.item.startTime }} ~ {{ data.item.endTime }}</span>
         </template>
         <template #cell(details)="data">
-          <b-badge @click="approvalDetail(2, data.item.id)">
+          <b-badge class="detail" @click="approvalDetail(2, data.item.id)">
             &#x2139;
           </b-badge>
         </template>

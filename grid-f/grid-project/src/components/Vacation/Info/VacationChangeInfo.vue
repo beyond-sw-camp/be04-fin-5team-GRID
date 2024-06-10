@@ -2,7 +2,7 @@
   <div class="historyAll">
     <div class="historyTitle">
       <i class="bi bi-brightness-high fs-3"></i>
-      <h1 class="mb-1">휴가 변화 이력</h1>
+      <h1>휴가 변화 이력</h1>
       <img src="@/assets/buttons/guide.png" v-if="userRole === 'ROLE_ADMIN'" class="guide"
            @click="showModal('guideModal')"></img>
     </div>
@@ -526,11 +526,8 @@ onBeforeMount(() => {
   margin-left: 0.5%;
   font-size: 25px;
   font-weight: 600;
+  margin: 0;
   font-family: 'IBMPlexSansKR-Regular', sans-serif;
-}
-
-.historyIcon {
-  width: 80%;
 }
 
 .guide {
