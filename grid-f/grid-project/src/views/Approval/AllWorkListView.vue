@@ -222,7 +222,7 @@ onMounted(async () => {
   font-family: 'IBMPlexSansKR-Regular', sans-serif;
 }
 
-.text-end {
+.text-muted {
   cursor: pointer;
 }
 </style>
