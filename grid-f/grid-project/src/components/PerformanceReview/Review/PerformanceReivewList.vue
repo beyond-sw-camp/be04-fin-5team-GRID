@@ -39,7 +39,7 @@
           <td>{{ getEmployeeNumber(item.approver) }}</td>
           <td>{{ getEmployeeName(item.approver) }}</td>
           <td>
-            <b-badge @click="goToDetailPage(item.id)">
+            <b-badge @click="goToDetailPage(item.id)" class="detailIcon">
               &#x2139;
             </b-badge>
 <!--            <button @click="goToDetailPage(item.id)"><img class="more" src="@/assets/buttons/zoom.png"></button>-->
@@ -140,6 +140,7 @@ const showModal = (modalId) => {
 
 const fetchMemberReview = async () => {
   try {
+    console.log('2', user.value.id);
     // 팀원일때
     const response = await axios.get(`/api/performance-review/member/${user.value.id}`);
 
@@ -162,7 +163,10 @@ const fetchLeaderReview = async () => {
 };
 
 onMounted(() => {
+  console.log('출력');
+  console.log('1', user.value.id);
   if (user.value.duties.dutiesName === '팀원') {
+    console.log('1', user.value.id);
     fetchMemberReview();
   } else {
     fetchLeaderReview();
@@ -282,6 +286,7 @@ const goToDetailPage = (id) => {
   display: grid;
   grid-template-columns: 20% 4%;
   align-items: center;
+  min-width: 1000px;
 }
 
 .PerformanceReviewListTitle h1 {
@@ -293,6 +298,10 @@ const goToDetailPage = (id) => {
 
 .PerformanceIcon {
   width: 80%;
+}
+
+.detailIcon {
+  cursor: pointer;
 }
 
 .guide {

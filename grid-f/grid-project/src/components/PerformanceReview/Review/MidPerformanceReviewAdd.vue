@@ -479,6 +479,7 @@ async function submit() {
   display: grid;
   grid-template-columns: 24% 4%;
   align-items: center;
+  min-width: 1000px;
 }
 
 .reviewTitle h1 {

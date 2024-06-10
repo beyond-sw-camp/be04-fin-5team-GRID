@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.highfives.grid.department.query.repository.DepartmentMapper">
+
+    <resultMap id="DepartmentResultMap" type="org.highfives.grid.department.query.aggregate.Department">
+        <id column="id" property="id"/>
+        <result column="department_name" property="departmentName"/>
+        <result column="member_cnt" property="memberCnt"/>
+        <result column="department_status" property="departmentStatus"/>
+        <result column="start_time" property="startTime"/>
+        <result column="end_time" property="endTime"/>
+        <result column="sequence" property="sequence"/>
+        <result column="department_code" property="departmentCode"/>
+        <result column="leader_id" property="leaderId"/>
+    </resultMap>
+
+    <select id="findAllDepartment" resultMap="DepartmentResultMap">
+        SELECT
+              A.ID
+            , A.DEPARTMENT_NAME
+            , A.MEMBER_CNT
+            , A.DEPARTMENT_STATUS
+            , A.START_TIME
+            , A.END_TIME
+            , A.LEADER_ID
+            , A.SEQUENCE
+            , A.DEPARTMENT_CODE
+            , B.EMPLOYEE_NAME
+         FROM department A
+         JOIN employee B ON A.LEADER_ID = B.ID
+    </select>
+
+</mapper>

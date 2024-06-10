@@ -110,9 +110,17 @@ public class PdfServiceImpl implements PdfService {
             d_img.scaleToFit(60, 100);
             t_img.scaleToFit(60, 100);
 
-            String fontPath = "/usr/share/fonts/truetype/noto/NotoSansCJK-Regular.ttc";
+            String fontPath = "src/main/resources/fonts/Sejong hospital Light.ttf";
 //            String fontPath = "src/main/resources/fonts/NotoSansKR-Regular.ttf";
 //            String fontPath = "src/main/resources/fonts/malgun.ttf";
+
+            File f = new File("src/main/resources/fonts/NotoSansCJKkr-Regular.otf");
+            if(f.isFile()) {
+                System.out.println("폰트 파일 존재");
+            } else {
+                System.out.println("폰트 파일 없음");
+            }
+
             BaseFont bf = BaseFont.createFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
 
             Font titleFont = new Font(bf, 20, Font.BOLD);
