@@ -518,7 +518,7 @@ onBeforeMount(() => {
   font-size: 12px;
   font-weight: 600;
   display: grid;
-  grid-template-columns: 3% 16% 5% 64% 7% 2% 7%;
+  grid-template-columns: 3% 15% 5% 77%;
   color: #000000;
 }
 
@@ -531,10 +531,10 @@ onBeforeMount(() => {
 }
 
 .guide {
-  width: 60%;
-  height: 25px;
+  width: 30px;
+  height: 30px;
   grid-column: 3;
-  margin: 0;
+  margin-bottom: 5px;
   cursor: pointer;
 }
 
