@@ -139,11 +139,27 @@
             <div class="modal-content">
                 <!-- Modal Header -->
                 <div class="modal-header">
-                    <h4 class="modal-title" id="guideModalLabel">CSV 작성 가이드</h4>
+                    <h4 class="modal-title" id="guideModalLabel">유저 추가 가이드</h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <!-- Modal body -->
                 <div class="modal-body">
+                    <div class="example">
+                        <img src="@/assets/HR/multi.png" alt="일괄 수정 설명">
+                    </div>
+                    <div class="example-content">
+                        <hr>
+                        <p>1. <행 추가> 버튼을 통해 새롭게 수정할 행을 추가할 수 있습니다. </p>
+                        <p>2. <삭제> 버튼을 통해 기존에 추가된 행을 삭제할 수 있습니다.</p>
+                        <p>3. <작성 양식> 버튼을 통해 csv작성에 필요한 기본 양식을 받을 수 있습니다. </p>
+                        <p>3-1. 기본적인 csv파일의 작성 방법은 아래의 'CSV 작성 가이드'를 참고해주세요. </p>
+                        <p>4. <양식 적용> 버튼을 통해 작성한 csv를 업로드하여 일괄 수정이 가능합니다. </p>
+                        <p>5. 작성 정보를 확인 후, <확인> 버튼을 통해 사원 정보를 수정할 수 있습니다. </p>
+                        <p>5-1. 상세 정보 수정을 위해서는 '인사 정보 상세'의 <회원 정보 수정> 버튼을 사용해주세요. </p>
+                    </div>
+                    <hr>
+                    <br>
+                    <h5>CSV 작성 가이드</h5>
                     <div class="example">
                         <img src="@/assets/HR/csvexample.png" alt="csv 예시">
                     </div>

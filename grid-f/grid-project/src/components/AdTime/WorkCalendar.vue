@@ -5,7 +5,7 @@
 </template>
 
 <script setup>
-import {ref, onMounted} from "vue";
+import {ref, onMounted,defineProps} from "vue";
 import axios from 'axios';
 import {Calendar} from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -17,6 +17,14 @@ const router = useRouter();
 
 const userRole = ref('');
 const userId = ref('');
+
+// Profile 화면용 수정 부분
+
+const props = defineProps({
+    profileId: String
+});
+
+const effectiveProfileId = ref(props.profileId || route.params.id);
 
 // 유저 확인
 function parseJwt(token) {
@@ -103,7 +111,7 @@ const fetchEmployeeEvent = async () => {
     let adEvents = [];
     if(Number(route.params.id) === userId.value){
       // 출근시간은 본인일 때만 조회 가능
-      const responseAdTime = await axios.get(`/api/ad-time/${route.params.id}`);
+      const responseAdTime = await axios.get(`/api/ad-time/${effectiveProfileId.value}`);
 
       const adTime = responseAdTime.data.adTimeDTOList;
 
@@ -111,20 +119,20 @@ const fetchEmployeeEvent = async () => {
     }
 
     // 출장 조회
-    const responseBt = await axios.get(`/api/approval/list/1/1/${route.params.id}`);
+    const responseBt = await axios.get(`/api/approval/list/1/1/${effectiveProfileId.value}`);
 
     const bt = responseBt.data.approvalEmpResultList
     const btEvents = transformEvents(bt, '출장', '#fad7d7', 2);
 
 
     // 시간외 근무 조회
-    const responseO = await axios.get(`/api/approval/list/2/1/${route.params.id}`);
+    const responseO = await axios.get(`/api/approval/list/2/1/${effectiveProfileId.value}`);
 
     const o = responseO.data.approvalEmpResultList
     const oEvents = transformEvents(o, '시간외 근무', '#c0caff', 3);
 
     // 휴가 조회
-    const responseV = await axios.get(`/api/approval/list/4/1/${route.params.id}`);
+    const responseV = await axios.get(`/api/approval/list/4/1/${effectiveProfileId.value}`);
 
     const v = responseV.data.approvalEmpResultList
     const vEvents = transformEvents(v, '휴가', '#ffdbf7',4);

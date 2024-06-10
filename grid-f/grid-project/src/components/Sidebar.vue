@@ -32,7 +32,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, watchEffect } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 import defaultProfileImage from '@/assets/defaultProfile.jpg';
@@ -40,6 +40,7 @@ import defaultProfileImage from '@/assets/defaultProfile.jpg';
 const router = useRouter();
 const store = useStore();
 const userRole = ref('');
+const userId = ref('');
 const activeMenu = ref('');
 
 const user = computed(() => store.state.user);
@@ -82,8 +83,8 @@ const menus = {
   departmentEvaluation: {
     title: '동료 평가',
     items: [
-      { label: '평가 받은 목록', path: '/team-review/myreview', role: 'ROLE_USER' },
-      { label: '동료 평가 작성', path: '/team-review/list', role: 'ROLE_USER' },
+      { label: '평가 받은 목록', path: () => `/team-review/myreview/${userId.value}`, role: 'ROLE_USER' },
+      { label: '동료 평가 작성', path: () => `/team-review/list/${userId.value}`, role: 'ROLE_USER' },
       { label: '평가 항목 등록', path: '/team-review/add', role: 'ROLE_ADMIN' },
       { label: '전체 평가 목록', path: '/team-review/history', role: 'ROLE_ADMIN' },
     ]
@@ -106,11 +107,16 @@ const toggleMenu = (menu) => {
 };
 
 const navigateTo = (path) => {
+  if (typeof path === 'function') {
+    path = path();
+  }
   router.push(path);
 };
 
-const filteredMenus = computed(() => {
-  return Object.keys(menus).reduce((acc, key) => {
+const filteredMenus = ref({});
+
+watchEffect(() => {
+  filteredMenus.value = Object.keys(menus).reduce((acc, key) => {
     const items = menus[key].items.filter(item => !item.role || item.role === userRole.value);
     if (items.length) {
       acc[key] = { ...menus[key], items };
@@ -123,6 +129,7 @@ onMounted(() => {
   const token = localStorage.getItem('access');
   if (token) {
     const decodedToken = parseJwt(token);
+    userId.value = decodedToken?.id || '';
     userRole.value = decodedToken?.auth || '';
   }
 });

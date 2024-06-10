@@ -289,13 +289,19 @@ hr {
   align-self: center;
 }
 
+#title h1 {
+  font-family: 'IBMPlexSansKR-Regular';
+}
+
 #title-content {
+  font-family: 'IBMPlexSansKR-Regular';
   align-self: center;
   font-size: 0.9em;
   color: rgb(179, 173, 173);
 }
 
 #title-content2 {
+  font-family: 'IBMPlexSansKR-Regular';
   align-self: center;
   font-size: 0.9em;
   color: rgb(179, 173, 173);

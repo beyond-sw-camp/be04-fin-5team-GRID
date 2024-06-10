@@ -69,7 +69,7 @@
             </div>
         </div>
         <div class="content">
-            <component :is="currentTabComponent" :result="result" :userRole="userRole" :userId="userId"></component>
+            <component :is="currentTabComponent" :result="result" :userRole="userRole" :profileId="profileId"></component>
         </div>
     </div>
 </template>
@@ -91,6 +91,7 @@ const userRole = ref('');
 const userId = ref('');
 const givenEmail = ref('');
 const router = useRouter();
+const profileId = ref('');
 
 const profileUrl = computed(() => {
     return result.value.profilePath ? result.value.profilePath : defaultProfileImage;
@@ -103,10 +104,23 @@ const tabComponents = {
 
 const currentTabComponent = computed(() => tabComponents[currentTab.value]);
 
+
+// function navigateToTab(tab) {
+//     currentTab.value = tab;
+//     router.push({ query: { tab: tab } });
+// }
+
 function navigateToTab(tab) {
     currentTab.value = tab;
-    router.push({ query: { tab: tab } });
+    if (tab === 'wb') {
+        router.push({
+            query: { tab: tab, profileId: result.value.id }
+        });
+    } else {
+        router.push({ query: { tab: tab } });
+    }
 }
+
 
 function parseJwt(token) {
     try {
@@ -156,7 +170,7 @@ onMounted(async () => {
         isAbsence.value = true;
     }
     console.log('받아오는 유저: ', result.value);
-
+    profileId.value = result.value.id;
     givenEmail.value = result.value.email;
 
     currentTab.value = route.query.tab || 'human-resources';
