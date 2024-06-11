@@ -37,135 +37,100 @@
     </resultMap>
 
     <select id="findOInWeekByEmployeeId" resultMap="oApprovalMap" parameterType="org.highfives.grid.approval.common.dto.OvertimeInWeekDTO">
-         SELECT
-                start_time,
-                end_time
-           FROM overtime_approval
-          WHERE requester_id = #{requesterId}
-            AND approval_status = "A"
-            AND cancel_yn = "N"
-            AND cancel_document_id = 0
-            AND (STR_TO_DATE(start_time, '%Y-%m-%d %H:%i:%s') BETWEEN #{sunday} AND #{saturday});
+        SELECT
+        start_time,
+        end_time
+        FROM overtime_approval
+        WHERE requester_id = #{requesterId}
+        AND approval_status = "A"
+        AND cancel_yn = "N"
+        AND cancel_document_id = 0
+        AND (STR_TO_DATE(start_time, '%Y-%m-%d %H:%i:%s') BETWEEN #{sunday} AND #{saturday});
     </select>
 
     <select id="findAllBTApproval" resultMap="approvalMap" parameterType="map">
-         SELECT
-                a.employee_name,
-                a.employee_number,
-                b.id,
-                b.start_time,
-                b.end_time,
-                b.content,
-                b.approval_status,
-                b.write_time,
-                b.cancel_yn,
-                b.cancel_document_id,
-                b.requester_id
-          FROM  employee a
-          JOIN
-                <if test="typeId == 1">
-                    bt_approval b
-                </if>
-                <if test="typeId == 2">
-                    overtime_approval b
-                </if>
-                <if test="typeId == 3">
-                    rw_approval b
-                </if>
-                <if test="typeId == 4">
-                    vacation_approval b
-                </if>
-                ON  a.id = b.requester_id
+        SELECT
+        a.employee_name,
+        a.employee_number,
+        b.id,
+        b.start_time,
+        b.end_time,
+        b.content,
+        b.approval_status,
+        b.write_time,
+        b.cancel_yn,
+        b.cancel_document_id,
+        b.requester_id
+        <if test="typeId == 4">
+            ,
+            b.info_id,
+            c.type_name
+        </if>
+        FROM  employee a
+        JOIN
+        <if test="typeId == 1">
+            bt_approval b
+        </if>
+        <if test="typeId == 2">
+            overtime_approval b
+        </if>
+        <if test="typeId == 3">
+            rw_approval b
+        </if>
+        <if test="typeId == 4">
+            vacation_approval b
+        </if>
+        ON  a.id = b.requester_id
+        <if test="typeId == 4">
+        JOIN  vacation_type c
+        ON  c.id = b.info_id
+        </if>
 
-                <!-- 승인 -->
-                <if test="isApproval == 1">
-                    WHERE b.approval_status = 'A'
-                </if>
-                <!-- 반려 -->
-                <if test="isApproval == 2">
-                    WHERE b.approval_status = 'D'
-                </if>
-                <!-- 대기 -->
-                <if test="isApproval == 3">
-                    WHERE b.approval_status = 'N'
-                    OR  b.approval_status = 'V'
-                </if>
-                <!-- 취소 -->
-                <if test="isApproval == 4">
-                    WHERE b.cancel_yn = 'Y'
-                    OR  b.cancel_document_id != 0
-                </if>
-                <!-- 승인(취소 제외) <목록> -->
-                <if test="isApproval == 5">
-                    WHERE b.approval_status = 'A'
-                    AND  b.cancel_yn = 'N'
-                    AND  b.cancel_document_id = 0
-                </if>
-                ORDER BY b.write_time DESC;
+        <!-- 승인 -->
+        <if test="isApproval == 1">
+            WHERE b.approval_status = 'A'
+        </if>
+        <!-- 반려 -->
+        <if test="isApproval == 2">
+            WHERE b.approval_status = 'D'
+        </if>
+        <!-- 대기 -->
+        <if test="isApproval == 3">
+            WHERE b.approval_status = 'N'
+            OR  b.approval_status = 'V'
+        </if>
+        <!-- 취소 -->
+        <if test="isApproval == 4">
+            WHERE b.cancel_yn = 'Y'
+            OR  b.cancel_document_id != 0
+        </if>
+        <!-- 승인(취소 제외) <목록> -->
+        <if test="isApproval == 5">
+            WHERE b.approval_status = 'A'
+            AND  b.cancel_yn = 'N'
+            AND  b.cancel_document_id = 0
+        </if>
+        ORDER BY b.write_time DESC;
     </select>
 
     <select id="findAllBTApprovalByEmployeeId" resultMap="approvalMap" parameterType="map">
         SELECT
-                a.employee_name,
-                a.employee_number,
-                b.id,
-                b.start_time,
-                b.end_time,
-                b.content,
-                b.destination,
-                b.approval_status,
-                b.write_time,
-                b.cancel_yn,
-                b.cancel_document_id,
-                b.requester_id
-          FROM  employee a
-          JOIN  bt_approval b
-            ON  a.id = b.requester_id
-         WHERE  a.id = #{employeeId}
-            <!-- 승인 -->
-            <if test="isApproval == 1">
-                AND  b.approval_status = 'A'
-            </if>
-            <!-- 반려 -->
-            <if test="isApproval == 2">
-                AND  b.approval_status = 'D'
-            </if>
-            <!-- 대기 -->
-            <if test="isApproval == 3">
-                AND  (b.approval_status = 'N'
-                 OR  b.approval_status = 'V')
-            </if>
-            <!-- 취소 -->
-            <if test="isApproval == 4">
-                AND  (b.cancel_yn = 'Y'
-                 OR  b.cancel_document_id != 0)
-            </if>
-            <!-- 승인(취소 제외) <목록> -->
-            <if test="isApproval == 5">
-                AND  b.approval_status = 'A'
-                AND  b.cancel_yn = 'N'
-                AND  b.cancel_document_id = 0
-            </if>
-            ORDER BY b.write_time DESC;
-    </select>
-
-    <select id="findAllOApprovalByEmployeeId" resultMap="approvalMap" parameterType="map">
-        SELECT
-                a.employee_name,
-                a.employee_number,
-                b.id,
-                b.start_time,
-                b.end_time,
-                b.content,
-                b.approval_status,
-                b.write_time,
-                b.cancel_yn,
-                b.cancel_document_id,
-                b.requester_id
-          FROM  employee a
-          JOIN  overtime_approval b
-            ON  a.id = b.requester_id
-         WHERE  a.id = #{employeeId}
+        a.employee_name,
+        a.employee_number,
+        b.id,
+        b.start_time,
+        b.end_time,
+        b.content,
+        b.destination,
+        b.approval_status,
+        b.write_time,
+        b.cancel_yn,
+        b.cancel_document_id,
+        b.requester_id
+        FROM  employee a
+        JOIN  bt_approval b
+        ON  a.id = b.requester_id
+        WHERE  a.id = #{employeeId}
         <!-- 승인 -->
         <if test="isApproval == 1">
             AND  b.approval_status = 'A'
@@ -177,12 +142,56 @@
         <!-- 대기 -->
         <if test="isApproval == 3">
             AND  (b.approval_status = 'N'
-             OR  b.approval_status = 'V')
+            OR  b.approval_status = 'V')
         </if>
         <!-- 취소 -->
         <if test="isApproval == 4">
             AND  (b.cancel_yn = 'Y'
-             OR  b.cancel_document_id != 0)
+            OR  b.cancel_document_id != 0)
+        </if>
+        <!-- 승인(취소 제외) <목록> -->
+        <if test="isApproval == 5">
+            AND  b.approval_status = 'A'
+            AND  b.cancel_yn = 'N'
+            AND  b.cancel_document_id = 0
+        </if>
+        ORDER BY b.write_time DESC;
+    </select>
+
+    <select id="findAllOApprovalByEmployeeId" resultMap="approvalMap" parameterType="map">
+        SELECT
+        a.employee_name,
+        a.employee_number,
+        b.id,
+        b.start_time,
+        b.end_time,
+        b.content,
+        b.approval_status,
+        b.write_time,
+        b.cancel_yn,
+        b.cancel_document_id,
+        b.requester_id
+        FROM  employee a
+        JOIN  overtime_approval b
+        ON  a.id = b.requester_id
+        WHERE  a.id = #{employeeId}
+        <!-- 승인 -->
+        <if test="isApproval == 1">
+            AND  b.approval_status = 'A'
+        </if>
+        <!-- 반려 -->
+        <if test="isApproval == 2">
+            AND  b.approval_status = 'D'
+        </if>
+        <!-- 대기 -->
+        <if test="isApproval == 3">
+            AND  (b.approval_status = 'N'
+            OR  b.approval_status = 'V')
+        </if>
+        <!-- 취소 -->
+        <if test="isApproval == 4">
+            AND  (b.cancel_yn = 'Y'
+            OR  b.cancel_document_id != 0)
         </if>
         <!-- 승인(취소 제외) <목록> -->
         <if test="isApproval == 5">
@@ -195,27 +204,27 @@
 
     <select id="findAllRWApprovalByEmployeeId" resultMap="approvalMap" parameterType="map">
         SELECT
-                a.employee_name,
-                a.employee_number,
-                b.id,
-                b.start_time,
-                b.end_time,
-                b.content,
-                b.origin_name,
-                b.rename_name,
-                b.path,
-                b.approval_status,
-                b.write_time,
-                b.cancel_yn,
-                b.cancel_document_id,
-                b.requester_id
-          FROM  employee a
-          JOIN  rw_approval b
-            ON  a.id = b.requester_id
-         WHERE  a.id = #{employeeId}
+        a.employee_name,
+        a.employee_number,
+        b.id,
+        b.start_time,
+        b.end_time,
+        b.content,
+        b.origin_name,
+        b.rename_name,
+        b.path,
+        b.approval_status,
+        b.write_time,
+        b.cancel_yn,
+        b.cancel_document_id,
+        b.requester_id
+        FROM  employee a
+        JOIN  rw_approval b
+        ON  a.id = b.requester_id
+        WHERE  a.id = #{employeeId}
         <!-- 승인 -->
-         <if test="isApproval == 1">
-           AND  b.approval_status = 'A'
+        <if test="isApproval == 1">
+            AND  b.approval_status = 'A'
         </if>
         <!-- 반려 -->
         <if test="isApproval == 2">
@@ -224,12 +233,12 @@
         <!-- 대기 -->
         <if test="isApproval == 3">
             AND  (b.approval_status = 'N'
-             OR  b.approval_status = 'V')
+            OR  b.approval_status = 'V')
         </if>
         <!-- 취소 -->
         <if test="isApproval == 4">
             AND  (b.cancel_yn = 'Y'
-             OR  b.cancel_document_id != 0)
+            OR  b.cancel_document_id != 0)
         </if>
         <!-- 승인(취소 제외) <목록> -->
         <if test="isApproval == 5">
@@ -242,28 +251,28 @@
 
     <select id="findAllVApprovalByEmployeeId" resultMap="approvalMap" parameterType="map">
         SELECT
-                a.employee_name,
-                a.employee_number,
-                b.id,
-                b.start_time,
-                b.end_time,
-                b.info_id,
-                b.content,
-                b.approval_status,
-                b.write_time,
-                b.cancel_yn,
-                b.cancel_document_id,
-                b.requester_id,
-                c.type_name
-          FROM  employee a
-          JOIN  vacation_approval b
-            ON  a.id = b.requester_id
-          JOIN  vacation_type c
-            ON  c.id = b.info_id
-         WHERE  a.id = #{employeeId}
+        a.employee_name,
+        a.employee_number,
+        b.id,
+        b.start_time,
+        b.end_time,
+        b.info_id,
+        b.content,
+        b.approval_status,
+        b.write_time,
+        b.cancel_yn,
+        b.cancel_document_id,
+        b.requester_id,
+        c.type_name
+        FROM  employee a
+        JOIN  vacation_approval b
+        ON  a.id = b.requester_id
+        JOIN  vacation_type c
+        ON  c.id = b.info_id
+        WHERE  a.id = #{employeeId}
         <!-- 승인 -->
         <if test="isApproval == 1">
-           AND  b.approval_status = 'A'
+            AND  b.approval_status = 'A'
         </if>
         <!-- 반려 -->
         <if test="isApproval == 2">
@@ -272,12 +281,12 @@
         <!-- 대기 -->
         <if test="isApproval == 3">
             AND  (b.approval_status = 'N'
-             OR  b.approval_status = 'V')
+            OR  b.approval_status = 'V')
         </if>
         <!-- 취소 -->
         <if test="isApproval == 4">
             AND  (b.cancel_yn = 'Y'
-             OR  b.cancel_document_id != 0)
+            OR  b.cancel_document_id != 0)
         </if>
         <!-- 승인(취소 제외) <목록> -->
         <if test="isApproval == 5">
@@ -290,82 +299,82 @@
 
     <select id="findBTDetailByApprovalId" resultMap="approvalMap" parameterType="int">
         SELECT
-                id,
-                start_time,
-                end_time,
-                content,
-                destination,
-                approval_status,
-                write_time,
-                cancel_yn,
-                cancel_document_id,
-                requester_id
-          FROM  bt_approval
-         WHERE  id = #{approvalId};
+        id,
+        start_time,
+        end_time,
+        content,
+        destination,
+        approval_status,
+        write_time,
+        cancel_yn,
+        cancel_document_id,
+        requester_id
+        FROM  bt_approval
+        WHERE  id = #{approvalId};
     </select>
 
     <select id="findODetailByApprovalId" resultMap="approvalMap" parameterType="int">
         SELECT
-                id,
-                start_time,
-                end_time,
-                content,
-                approval_status,
-                write_time,
-                cancel_yn,
-                cancel_document_id,
-                requester_id
-          FROM  overtime_approval
-         WHERE  id = #{approvalId};
+        id,
+        start_time,
+        end_time,
+        content,
+        approval_status,
+        write_time,
+        cancel_yn,
+        cancel_document_id,
+        requester_id
+        FROM  overtime_approval
+        WHERE  id = #{approvalId};
     </select>
 
     <select id="findRWDetailByApprovalId" resultMap="approvalMap" parameterType="int">
         SELECT
-                id,
-                start_time,
-                end_time,
-                content,
-                origin_name,
-                rename_name,
-                path,
-                approval_status,
-                write_time,
-                cancel_yn,
-                cancel_document_id,
-                requester_id
-          FROM  rw_approval
-         WHERE  id = #{approvalId};
+        id,
+        start_time,
+        end_time,
+        content,
+        origin_name,
+        rename_name,
+        path,
+        approval_status,
+        write_time,
+        cancel_yn,
+        cancel_document_id,
+        requester_id
+        FROM  rw_approval
+        WHERE  id = #{approvalId};
     </select>
 
     <select id="findVDetailByApprovalId" resultMap="approvalMap" parameterType="int">
         SELECT
-                a.id,
-                a.start_time,
-                a.end_time,
-                a.content,
-                a.info_id,
-                a.approval_status,
-                a.write_time,
-                a.cancel_yn,
-                a.cancel_document_id,
-                a.requester_id,
-                b.type_name
-          FROM  vacation_approval a
-          JOIN  vacation_type b
-            ON  a.info_id = b.id
-         WHERE  a.id = #{approvalId};
+        a.id,
+        a.start_time,
+        a.end_time,
+        a.content,
+        a.info_id,
+        a.approval_status,
+        a.write_time,
+        a.cancel_yn,
+        a.cancel_document_id,
+        a.requester_id,
+        b.type_name
+        FROM  vacation_approval a
+        JOIN  vacation_type b
+        ON  a.info_id = b.id
+        WHERE  a.id = #{approvalId};
     </select>
 
     <select id="findAllBTApprovalByApproverId" resultMap="approvalMap" parameterType="map">
         SELECT
-                b.id,
-                b.content,
-                c.employee_name,
-                c.employee_number,
-                b.write_time,
-                b.approval_status,
-                b.cancel_yn,
-                b.cancel_document_id
+        b.id,
+        b.content,
+        c.employee_name,
+        c.employee_number,
+        b.write_time,
+        b.approval_status,
+        b.cancel_yn,
+        b.cancel_document_id
         FROM
         <if test="typeId == 1">
             bt_approval_chain a
@@ -383,9 +392,9 @@
             v_approval_chain a
             JOIN  vacation_approval b
         </if>
-          ON  a.approval_id = b.id
+        ON  a.approval_id = b.id
         JOIN  employee c
-          ON  b.requester_id = c.id
+        ON  b.requester_id = c.id
         WHERE  a.employee_id = #{approverId}
         <!-- 승인 -->
         <if test="isApproval == 1">
@@ -398,17 +407,17 @@
         <!-- 대기 -->
         <if test="isApproval == 3">
             AND  (b.approval_status = 'N'
-             OR  b.approval_status = 'V')
+            OR  b.approval_status = 'V')
         </if>
         <!-- 취소 -->
         <if test="isApproval == 4">
             AND  (cancel_yn = 'Y'
-             OR  cancel_document_id != 0)
+            OR  cancel_document_id != 0)
         </if>
         <!-- 결재 필요 <메인> -->
         <if test="isApproval == 5">
             AND  (b.approval_status = 'N'
-             OR  b.approval_status = 'V')
+            OR  b.approval_status = 'V')
             AND  a.approval_status = 'W'
         </if>
         ORDER BY b.write_time DESC;
@@ -416,21 +425,21 @@
 
     <select id="findTodayBTandV" resultMap="approvalMap" parameterType="map">
         SELECT
-                id,
-                start_time,
-                end_time,
-                content,
-                approval_status,
-                write_time,
-                cancel_yn,
-                cancel_document_id,
-                requester_id
-         FROM
-            <if test="typeId == 1">bt_approval</if>
-            <if test="typeId == 2">vacation_approval</if>
-         WHERE  (#{today} BETWEEN (STR_TO_DATE(start_time, '%Y-%m-%d %H:%i:%s')) AND (STR_TO_DATE(end_time, '%Y-%m-%d %H:%i:%s')))
-           AND  approval_status = 'A'
-           AND  cancel_yn = 'N'
-           AND  cancel_document_id = 0;
+        id,
+        start_time,
+        end_time,
+        content,
+        approval_status,
+        write_time,
+        cancel_yn,
+        cancel_document_id,
+        requester_id
+        FROM
+        <if test="typeId == 1">bt_approval</if>
+        <if test="typeId == 2">vacation_approval</if>
+        WHERE  (#{today} BETWEEN (STR_TO_DATE(start_time, '%Y-%m-%d %H:%i:%s')) AND (STR_TO_DATE(end_time, '%Y-%m-%d %H:%i:%s')))
+        AND  approval_status = 'A'
+        AND  cancel_yn = 'N'
+        AND  cancel_document_id = 0;
     </select>
 </mapper>

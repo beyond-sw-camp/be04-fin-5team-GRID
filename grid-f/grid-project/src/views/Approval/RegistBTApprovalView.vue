@@ -63,7 +63,7 @@
         </b-form-group>
       </b-card>
     </div>
-    <div class="btnArea">
+    <div class="btnArea" style="margin-top: 10%;">
       <b-button class="btn" block variant="primary" @click="registApproval()">제출</b-button>
     </div>
   </div>
@@ -148,7 +148,7 @@ import {onMounted, reactive, ref, watch} from "vue";
 <style scoped>
 .registBTAll {
   display: grid;
-  grid-template-rows: 18% 50% 5% 27%;
+  grid-template-rows: 18% 45% 5% 27%;
   grid-template-columns: 10% 80% 10%;
   height: 100%;
 }
