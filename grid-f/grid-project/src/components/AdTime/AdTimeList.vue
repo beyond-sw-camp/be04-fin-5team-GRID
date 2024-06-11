@@ -1,7 +1,7 @@
 <template>
   <div class="adTimeListContainer">
     <div class="adTimeListTitle">
-      <h1 class="mb-1"><i class="bi bi-person-add fs-3"></i>&nbsp; 출퇴근 조회 &nbsp;&nbsp;<i class="bi bi-info-circle fs-5 mt-5" id="popover-target-1" style="color: darkgoldenrod" @click="showModal('guideAdTime')"></i></h1>
+      <h1 class="mb-1"><i class="bi bi-person-add fs-3"></i>&nbsp; 출퇴근 조회 &nbsp;&nbsp;<i class="bi bi-info-circle fs-5 mt-5" id="popover-target-1" style="color: darkgoldenrod; cursor: pointer;" @click="showModal('guideAdTime')"></i></h1>
     </div>
     <div class="workerContainer" v-if="userRole === 'ROLE_ADMIN'">
       <div class="card-deck cnt">
@@ -323,6 +323,7 @@ const goToLastPage = () => {
   display: grid;
   grid-template-columns: 16% 4%;
   align-items: center;
+  min-width: 1300px;
 }
 
 .adTimeListTitle h1 {

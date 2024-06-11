@@ -1,7 +1,7 @@
 <template>
   <div class="goalListContainer">
     <div class="goalListTitle">
-      <h1 class="mb-1"><i class="bi-award fs-3"></i>&nbsp; 업적 평가 목표 조회 &nbsp;&nbsp;<i class="bi bi-info-circle fs-5 mt-5" id="popover-target-1" style="color: darkgoldenrod" @click="showModal('guideGoalList')"></i></h1>
+      <h1 class="mb-1"><i class="bi-award fs-3"></i>&nbsp; 업적 평가 목표 조회 &nbsp;&nbsp;<i class="bi bi-info-circle fs-5 mt-5" id="popover-target-1" style="color: darkgoldenrod; cursor: pointer;" @click="showModal('guideGoalList')"></i></h1>
     </div>
     <div class="tableContainer">
       <table class="table table-hover">
