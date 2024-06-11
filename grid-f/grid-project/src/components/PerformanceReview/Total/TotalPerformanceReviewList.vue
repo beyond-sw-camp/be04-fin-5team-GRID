@@ -271,7 +271,7 @@ const goToDetailPage = (id) => {
   display: grid;
   grid-template-columns: 25% 4%;
   align-items: center;
-  min-width: 1000px;
+  min-width: 1200px;
 }
 
 .TotalPerformanceReviewListTitle h1 {

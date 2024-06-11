@@ -51,7 +51,6 @@ const initCalendar = async (events) => {
       plugins: [dayGridPlugin, interactionPlugin],
       initialView: 'dayGridMonth',
       contentHeight: 'auto',
-      firstDay: 1,    // 월요일 시작
       titleFormat: function (info) {  // tile 설정
         let year = info.date.year;
         let month = info.date.month + 1;
@@ -89,6 +88,12 @@ const initCalendar = async (events) => {
         eventEl.style.overflow = 'hidden';
         eventEl.style.textOverflow = 'ellipsis';
         eventEl.style.whiteSpace = 'nowrap';
+
+        var popover = new bootstrap.Popover(info.el, {
+          content: info.event.title,
+          trigger: 'hover',
+          placement: 'auto'
+        });
       },
     });
     calendar.render();
@@ -124,19 +129,22 @@ const fetchEmployeeEvent = async () => {
     const bt = responseBt.data.approvalEmpResultList
     const btEvents = transformEvents(bt, '출장', '#fad7d7', 2);
 
+    console.log(btEvents);
 
     // 시간외 근무 조회
     const responseO = await axios.get(`/api/approval/list/2/1/${effectiveProfileId.value}`);
 
     const o = responseO.data.approvalEmpResultList
-    const oEvents = transformEvents(o, '시간외 근무', '#c0caff', 3);
+    const oEvents = transformEvents(o, '시간외 근무', '#c0caff', 4);
 
+    console.log(oEvents);
     // 휴가 조회
     const responseV = await axios.get(`/api/approval/list/4/1/${effectiveProfileId.value}`);
 
     const v = responseV.data.approvalEmpResultList
-    const vEvents = transformEvents(v, '휴가', '#ffdbf7',4);
+    const vEvents = transformEvents(v, '휴가', '#ffdbf7',3);
 
+    console.log(vEvents);
 
     events.value = [...adEvents, ...btEvents, ...oEvents, ...vEvents];
 
@@ -151,7 +159,7 @@ function transformAdEvents(list) {
     title: `${item.attendanceStatus}`,
     start: item.startTime ? item.startTime.replace(" ", "T") : null,
     end: item.endTime ? item.endTime.replace(" ", "T") : null,
-    color: '#fff1c3',
+    color: item.attendanceStatus === '정시 출근'? '#e3ffc5' : '#fda9a9',
     textColor : "#424242",
     priority:  1
   }));
@@ -159,14 +167,43 @@ function transformAdEvents(list) {
 
 
 function transformEvents(list, type, color, priority) {
-  return list.map(item => ({
-    title: type,
-    start: item.startTime? item.startTime.replace(" ", "T"): null,
-    end: item.endTime? item.endTime.replace(" ", "T"): null,
-    color: color,
-    textColor : "#424242",
-    priority:  priority
-  }));
+  return list.map(item => {
+    if (type === '휴가' && ['연차', '월차', '정기휴가'].includes(item.vacationType)) {
+      let startTime = item.startTime ? item.startTime.split(" ")[0] : null;
+      let endTime = item.endTime ? item.endTime.split(" ")[0] : null;
+
+      let endDate = new Date(endTime);
+      endDate.setDate(endDate.getDate() + 1);
+      endTime = endDate.toISOString().split('T')[0];
+      return {
+        title: item.vacationType,
+        start: startTime,
+        end: endTime,
+        color: color,
+        textColor: "#424242",
+        priority: priority
+      };
+    } else {
+      let startTime = item.startTime ? item.startTime.replace(" ", "T") : null;
+      let endTime = item.endTime ? item.endTime.replace(" ", "T") : null;
+
+      // 출장인 경우에만 시간에 00:00:00을 추가
+      if (type === '출장') {
+        let endDate = new Date(endTime);
+        endDate.setDate(endDate.getDate() + 1);
+        endTime = endDate.toISOString().split('T')[0];
+      }
+
+      return {
+        title: type !== '휴가' ? type : item.vacationType,
+        start: startTime,
+        end: endTime,
+        color: color,
+        textColor: "#424242",
+        priority: priority
+      };
+    }
+  });
 }
 
 onMounted(async () => {
