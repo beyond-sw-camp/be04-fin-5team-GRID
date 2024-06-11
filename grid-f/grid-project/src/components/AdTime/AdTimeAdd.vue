@@ -121,6 +121,7 @@ const initCalendar = async (events) => {
   if (calendarEl) {
     calendar = new Calendar(calendarEl, {
       plugins: [dayGridPlugin, interactionPlugin],
+      locale: 'ko', //한국어 설정
       initialView: 'dayGridWeek',
       headerToolbar: {
         left: 'prev,next today',
@@ -185,14 +186,14 @@ const fetchEmployeeEvent = async () => {
     console.log('시간외', responseO.data);
 
     const O = responseO.data.approvalEmpResultList
-    const OEvents = transformEvents(O, '시간외 근무', '#bec8fc',3);
+    const OEvents = transformEvents(O, '시간외 근무', '#bec8fc',4);
 
     // 휴가 조회
     const responseV = await axios.get(`/api/approval/list/4/1/${userId.value}`);
     console.log(responseV.data);
 
     const V = responseV.data.approvalEmpResultList
-    const VEvents = transformEvents(V, '휴가', '#f4d4ff',4);
+    const VEvents = transformEvents(V, '휴가', '#f4d4ff',3);
 
 
     events.value = [...adEvents, ...btEvents, ...OEvents, ...VEvents];
@@ -203,45 +204,40 @@ const fetchEmployeeEvent = async () => {
   }
 };
 
-// 관리자용
-const fetchAllEvent = async () => {
-  try {
-    // 출근 조회
-    const responseAdTime = await axios.get(`/api/ad-time/all`);
-
-    const adTime = responseAdTime.data.adTimeDTOList;
-    console.log(adTime);
-    events.value = transformAdEvents(adTime);
-    console.log(adTime.attendanceStatus);
-    console.log(events.value);
-
-  } catch (error) {
-    console.error('에러 발생:', error);
-  }
-};
-
 
 function transformAdEvents(list) {
-  console.log(list);
   return list.map(item => ({
     title: `${item.attendanceStatus}`,
     start: item.startTime ? item.startTime.replace(" ", "T") : null,
     end: item.endTime ? item.endTime.replace(" ", "T") : null,
-    color: '#fff1c3',
+    color: item.attendanceStatus === '정시 출근'? '#e3ffc5' : '#fda9a9',
     textColor : "#424242",
     priority:  1
   }));
 }
 
 function transformEvents(list, type, color, priority) {
-  return list.map(item => ({
-    title: type,
-    start: item.startTime ? item.startTime.replace(" ", "T") : null,
-    end: item.endTime ? item.endTime.replace(" ", "T") : null,
-    color: color,
-    textColor : "#424242",
-    priority:  priority
-  }));
+  return list.map(item => {
+    if (type === '휴가' && ['연차', '월차', '정기휴가'].includes(item.vacationType)) {
+      return {
+        title: item.vacationType,
+        start: item.startTime ? item.startTime.split(" ")[0] : null,
+        end: item.endTime ? item.endTime.split(" ")[0] : null,
+        color: color,
+        textColor: "#424242",
+        priority: priority
+      };
+    } else {
+      return {
+        title: type !== '휴가' ? type : item.vacationType,
+        start: item.startTime ? item.startTime.replace(" ", "T") : null,
+        end: item.endTime ? item.endTime.replace(" ", "T") : null,
+        color: color,
+        textColor: "#424242",
+        priority: priority
+      };
+    }
+  });
 }
 
 

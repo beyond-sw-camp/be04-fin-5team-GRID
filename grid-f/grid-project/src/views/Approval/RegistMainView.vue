@@ -33,7 +33,10 @@
               </div>
               <h3>시간 외 근무</h3>
               <p>시간 외 근무는 평일 오후 7시부터 익일 오전 6시까지, 주말 모든 시간 가능합니다. 주별 시간 외 근무 합계는 12시간을 넘을 수 없으며, 이를 준수하지 않을 경우 결재 제출이 불가하니 유의하시기 바랍니다.</p>
-              <div class="button-wrapper">
+              <div v-if="user['gender'] === 'P'" class="button-wrapper" tabindex="0" data-bs-toggle="tooltip" title="임신 중인 직원은 시간 외 근무를 신청할 수 없습니다.">
+                <button class="btn btn-primary btn-sm btn-custom-1 disabled" @click="navigateTO('overtime')"><span>작성하기</span></button>
+              </div>
+              <div v-else class="button-wrapper">
                 <button class="btn btn-primary btn-sm btn-custom-1" @click="navigateTO('overtime')"><span>작성하기</span></button>
               </div>
             </b-card>
@@ -46,8 +49,11 @@
               </div>
               <h3>단축 근무</h3>
               <p>단축 근무 신청 결재는 임신 중인 직원만 제출 가능하며, 승인 시 신청 기간동안 1일 2시간씩 근무 시간이 단축됩니다. 원활한 승인 절차를 위해 결재 제출 시 증명 서류 첨부가 필요합니다.</p>
-              <div class="button-wrapper">
+              <div v-if="user['gender'] === 'F'" class="button-wrapper">
                 <button class="btn btn-primary btn-sm btn-custom-1" @click="navigateTO('rw')"><span>작성하기</span></button>
+              </div>
+              <div v-else class="button-wrapper" tabindex="0" data-bs-toggle="tooltip" title="단축 근무 신청 대상자가 아닙니다.">
+                <button class="btn btn-primary btn-sm btn-custom-1 disabled" @click="navigateTO('rw')"><span>작성하기</span></button>
               </div>
             </b-card>
           </div>
@@ -72,8 +78,14 @@
 
 <script setup>
 import { useRouter } from "vue-router";
+import {useStore} from "vuex";
+import {computed} from "vue";
 
 const router = useRouter();
+
+const store = useStore();
+
+const user = computed(() => store.state.user);
 
 const navigateTO = (path) => {
   router.push(`/regist/${path}`);

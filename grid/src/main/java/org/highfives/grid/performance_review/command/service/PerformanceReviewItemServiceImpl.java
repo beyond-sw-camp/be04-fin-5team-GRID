@@ -41,8 +41,10 @@ public class PerformanceReviewItemServiceImpl implements PerformanceReviewItemSe
         List<PerformanceReviewItemDTO> addReviewList = new ArrayList<>();
         for (PerformanceReviewGoalItemDTO performanceReviewGoalItem : performanceReviewGoalItemList) {
             PerformanceReviewItem performanceReviewItem = new PerformanceReviewItem(
+                    performanceReviewGoalItem.getJobName(),
                     performanceReviewGoalItem.getGoal(),
                     performanceReviewGoalItem.getMetric(),
+                    performanceReviewGoalItem.getPlan(),
                     performanceReviewGoalItem.getWeight(),
                     3,
                     75*performanceReviewGoalItem.getWeight()*0.01,
@@ -68,8 +70,8 @@ public class PerformanceReviewItemServiceImpl implements PerformanceReviewItemSe
                 .orElseThrow(IllegalArgumentException::new);
 
         if (performanceReviewItem != null) {
-            performanceReviewItem.setActionItem(performanceReviewItemDTO.getActionItem());
-            performanceReviewItem.setDetailPlan(performanceReviewItemDTO.getDetailPlan());
+//            performanceReviewItem.setActionItem(performanceReviewItemDTO.getActionItem());
+//            performanceReviewItem.setDetailPlan(performanceReviewItemDTO.getDetailPlan());
             performanceReviewItem.setPerformance(performanceReviewItemDTO.getPerformance());
             performanceReviewItem.setSelfId(performanceReviewItemDTO.getSelfId());
             performanceReviewItem.setSelfScore(performanceReviewItemDTO.getSelfScore());
