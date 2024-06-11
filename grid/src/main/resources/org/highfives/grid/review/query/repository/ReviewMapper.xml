@@ -111,6 +111,46 @@
          WHERE A.ID = #{reviewId}
     </select>
 
+    <resultMap id="findEmployeesHistoryResultMap" type="org.highfives.grid.review.query.aggregate.ReviewEmployeeHistory">
+        <id property="id" column="ID"/>
+        <result property="content" column="CONTENT"/>
+        <result property="reviewStatus" column="REVIEW_STATUS"/>
+        <result property="writeTime" column="WRITE_TIME"/>
+        <result property="year" column="YEAR"/>
+        <result property="quarter" column="QUARTER"/>
+        <result property="reviewerId" column="REVIEWER_ID"/>
+        <result property="revieweeId" column="REVIEWEE_ID"/>
+        <result property="revieweeName" column="REVIEWEE_NAME"/>
+        <result property="reviewerName" column="REVIEWER_NAME"/>
+        <result property="departmentName" column="DEPARTMENT_NAME"/>
+
+    </resultMap>
+
+    <select id="findEmployeesHistory" resultMap="findEmployeesHistoryResultMap" parameterType="int">
+        SELECT
+        A.ID,
+        A.CONTENT,
+        A.REVIEW_STATUS,
+        A.WRITE_TIME,
+        A.YEAR,
+        A.QUARTER,
+        A.REVIEWER_ID,
+        A.REVIEWEE_ID,
+        B.ID AS employee_id,
+        B.EMPLOYEE_NAME AS REVIEWEE_NAME,
+        B.DEPARTMENT_ID,
+        D.DEPARTMENT_NAME AS DEPARTMENT_NAME,
+        C.ID AS employee2_id,
+        C.EMPLOYEE_NAME AS REVIEWER_NAME
+        FROM
+        member_review_history A
+        JOIN employee B ON A.REVIEWEE_ID = B.ID
+        JOIN employee C ON A.REVIEWER_ID = C.ID
+        JOIN department D ON B.DEPARTMENT_ID = D.ID
+        ORDER BY A.ID DESC
+    </select>
+
+
 
 
 </mapper>

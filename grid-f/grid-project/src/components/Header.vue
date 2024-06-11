@@ -27,14 +27,14 @@
 
     <div class="offcanvas offcanvas-end" id="demo">
       <div class="offcanvas-header">
-        <h1 class="offcanvas-title">부서 리스트</h1>
+        <h1 class="offcanvas-title">조직도</h1>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
       </div>
       <div class="offcanvas-body" style="position: relative;">
         <draggable v-model="departments" @end="handleDragEnd" tag="ul" class="list-group" :itemKey="item => item.id"
           :disabled="userRole === 'ROLE_USER'">
           <template #item="{ element, index }">
-            <li class="list-group-item" :data-id="element.id">
+            <li class="list-group-item" :data-id="element.id" v-if="element.departmentStatus !== 'N'">
               <div @click="toggleTeams(element.id)" style="cursor: pointer;">
                 {{ element.departmentName }}
               </div>
@@ -42,25 +42,25 @@
                 :group="{ name: 'teams', pull: true, put: true }" @end="handleTeamDragEnd($event)" class="list-group"
                 :itemKey="item => item.id" :disabled="userRole === 'ROLE_USER'">
                 <template #item="{ element: team }">
-            <li class="list-group-item">
-              <div @click="toggleEmployees(team.id)" style="cursor: pointer;">
-                {{ team.teamName }}
-              </div>
-              <ul v-if="team.showEmployees">
-                <li v-for="employee in team.employees" :key="employee.id" @click="goToProfile(employee.employeeNumber)"
-                  style="cursor: pointer;">
-                  {{ employee.name }}
-                </li>
-              </ul>
+                  <li class="list-group-item">
+                    <div @click="toggleEmployees(team.id)" style="cursor: pointer;">
+                      {{ team.teamName }}
+                    </div>
+                    <ul v-if="team.showEmployees">
+                      <li v-for="employee in team.employees" :key="employee.id" @click="goToProfile(employee.employeeNumber)"
+                        style="cursor: pointer;">
+                        {{ employee.name }}
+                      </li>
+                    </ul>
+                  </li>
+                </template>
+              </draggable>
             </li>
           </template>
         </draggable>
-        </li>
-</template>
-</draggable>
-</div>
-</div>
-</div>
+      </div>
+    </div>
+  </div>
 </template>
 
 
@@ -90,6 +90,7 @@ const fetchDepartments = async () => {
   try {
     const response = await axios.get('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/department/find-all');
     departments.value = response.data.result
+      .filter(department => department.departmentStatus !== 'N')  // departmentStatus가 N인 부서는 제외
       .map(department => ({
         id: department.id,
         departmentName: department.departmentName,
@@ -314,8 +315,6 @@ const getNewToken = async () => {
   }
 };
 
-
-
 function isTokenExpired(token) {
   const payload = JSON.parse(atob(token.split('.')[1]));
   const exp = payload.exp * 1000; // Expiration time in milliseconds
@@ -439,8 +438,6 @@ function main() {
 
 onMounted(fetchDepartments);
 </script>
-
-
 
 <style scoped>
 @font-face {
