@@ -51,11 +51,16 @@
         </template>
       </div>
       <div style="margin-top: 30px;">
-        <b-input-group>
-          <b-form-input v-model="putCommentData.comment"></b-form-input>
+        <b-input-group v-if="userId === props.requesterId || props.approvalStatus === 'A' || props.approvalStatus === 'D'" >
+          <b-form-input v-model="putCommentData.comment" :disabled="true" placeholder="작성 권한이 없습니다."></b-form-input>
           <b-input-group-append>
-            <b-button v-if="userId === props.requesterId || props.approvalStatus === 'A' || props.approvalStatus === 'D'" variant="outline-success" @click="registComment" disabled>등록</b-button>
-            <b-button v-else variant="outline-success" @click="registComment">등록</b-button>
+            <b-button variant="outline-success" @click="registComment" disabled>등록</b-button>
+          </b-input-group-append>
+        </b-input-group>
+        <b-input-group v-else>
+          <b-form-input v-model="putCommentData.comment" placeholder="승인/반려 사유를 입력해주세요."></b-form-input>
+          <b-input-group-append>
+            <b-button variant="outline-success" @click="registComment">등록</b-button>
           </b-input-group-append>
         </b-input-group>
       </div>

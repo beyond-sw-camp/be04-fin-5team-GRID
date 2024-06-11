@@ -23,6 +23,7 @@
                       button-variant="outline-secondary"
                       name="radios-btn-default"
                       buttons
+                      active
                   ></b-form-radio-group>
                 </b-form-group>
                 <b-card-text><ApprovalList :approvalList="filteredItems" /></b-card-text>
@@ -109,7 +110,7 @@ const userId = ref();
 const isLoading = ref(true);
 
 const currentTab = ref(1);
-const filterStatus = ref('');
+const filterStatus = ref(null);
 
 const state = reactive({
   approvalList: [],
@@ -119,7 +120,7 @@ const state = reactive({
 });
 
 const statusOptions = [
-  { value: '', text: '전체' },
+  { value: null, text: '전체' },
   { value: 'A', text: '승인' },
   { value: 'D', text: '반려' },
   { value: 'V', text: '열람' },
@@ -194,7 +195,7 @@ const filteredItems = computed(() => {
 
 const setTab = async (tabIndex) => {
   currentTab.value = tabIndex;
-  filterStatus.value = ''; // 필터 상태 초기화
+  filterStatus.value = null; // 필터 상태 초기화
   await fetchApprovalList(currentTab.value, 0, userId.value); // 해당 탭의 데이터를 불러오기
 }
 

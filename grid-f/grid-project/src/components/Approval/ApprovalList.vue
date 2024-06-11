@@ -86,12 +86,13 @@
 
     <template v-else>
       <b-table id="table" :fields="fields" :items="props.approvalList" hover small
-               :per-page=10 :current-page="currentPage" :sort-by.sync='employeeNumber' :sort-desc.sync="false">
-        <template #cell(index)="data">
+               :per-page=10 :current-page="currentPage" :sort-by.sync='employeeNumber' :sort-desc.sync="false"
+               @row-clicked="approvalDetail(props.approvalList.type, $event['id'], $event['employeeId'], $event['approvalStatus'])">
+      <template #cell(index)="data">
           {{ data.index + 1 }}
         </template>
         <template #cell(content)="data">
-          <span class="detail" @click="approvalDetail(props.approvalList.type, data.item.id, data.item.employeeId, data.item.approvalStatus)">{{ data.value }}</span>
+          <span class="detail">{{ data.value }}</span>
         </template>
         <template #cell(writeTime)="data">
           <span>{{ data.value.substring(0, 10) }}</span>
@@ -166,7 +167,9 @@
 
   const isLoading = ref(true);
 
-  const filterByStatus = ref('');
+  function print(item) {
+    console.log(item)
+  }
 
   function parseJwt(token) {
     try {
