@@ -5,8 +5,8 @@
             <h1 class="mb-1">휴가 종류</h1>
             <img src="@/assets/buttons/guide.png" v-if="userRole === 'ROLE_ADMIN'" class="guide"
                 @click="showModal('guideManage')"></img>
-            <button class="manageRegist" type="button" @click="showModal('registVacation')">등록하기</button>
-            <button class="manageVacation" type="button" @click="showModal('manageVacation')">관리하기</button>
+            <button class="manageRegist btn-custom-2" type="button" @click="showModal('registVacation')"><span>등록하기</span></button>
+            <button class="manageVacation btn-custom-3" type="button" @click="showModal('manageVacation')"><span>관리하기</span></button>
         </div>
         <div class="vacations">
             <div class="card mb-3" v-for="type in filteredTypes" :key="type.id">
@@ -604,33 +604,86 @@ onMounted(() => {
     width: 80%;
 }
 
-.manageRegist {
-    background-color: #088A85;
-    color: white;
-    padding: 5px 5px;
+.btn-custom-2 {
+    background-color: white;
+    color: #088A85;
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    transition: background-color 0.4s, color 0.4s;
+    position: relative;
+    overflow: hidden;
     font-size: 11px;
-    font-style: bold;
-    width: 100%;
-    min-width: 51.4px;
+    font-weight: bold;
     grid-column-start: 6;
-    }
-    
-    .manageVacation {
-        background-color: #088A85;
-        color: white;
-        padding: 5px 5px;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 11px;
-        font-style: bold;
-        width: 100%;
-        min-width: 51.4px;
-        grid-column-start: 8;
-        }
+}
+
+.btn-custom-2::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background-color: #088A85;
+    transition: left 0.4s;
+    z-index: 1;
+}
+
+.btn-custom-2:hover::before {
+    left: 0;
+}
+
+.btn-custom-2 span {
+    position: relative;
+    z-index: 2;
+    color: #088A85;
+}
+
+.btn-custom-2:hover span {
+    color: white;
+}
+
+
+.btn-custom-3 {
+    background-color: white;
+    color: #088A85;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.4s, color 0.4s;
+    position: relative;
+    overflow: hidden;
+    font-size: 11px;
+    font-weight: bold;
+    grid-column-start: 8;
+}
+
+.btn-custom-3::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background-color: #088A85;
+    transition: left 0.4s;
+    z-index: 1;
+}
+
+.btn-custom-3:hover::before {
+    left: 0;
+}
+
+.btn-custom-3 span {
+    position: relative;
+    z-index: 2;
+    color: #088A85;
+}
+
+.btn-custom-3:hover span {
+    color: white;
+}
         
 
 .vacations {

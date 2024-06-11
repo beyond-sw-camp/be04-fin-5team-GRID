@@ -4,7 +4,7 @@
         <i class="bi bi-brightness-high fs-3"></i>
         <h1 class="mb-1">휴가 정책</h1>
         <img src="@/assets/buttons/guide.png" v-if="userRole === 'ROLE_ADMIN'" class="guide" @click="showModal('guideManage')"></img>
-        <button class="policyRegist" @click="showModal('registPolicy')" v-if="userRole === 'ROLE_ADMIN'"><span>등록하기</span></button>
+        <button class="policyRegist btn-custom-1" @click="showModal('registPolicy')" v-if="userRole === 'ROLE_ADMIN'"><span>등록하기</span></button>
       </div>
       <div class="policyTitleUser" v-if="userRole === 'ROLE_USER'">
         <i class="bi bi-brightness-high fs-3"></i>
@@ -689,5 +689,44 @@ Array.from(forms).forEach(form => {
 .card {
   padding: 10px 10px;
   border: 2px solid #a0a0a0;
+}
+
+.btn-custom-1 {
+  background-color: white;
+  color: #088A85;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.4s, color 0.4s;
+  position: relative;
+  overflow: hidden;
+  font-size: 11px;
+  font-weight: bold;
+}
+
+.btn-custom-1::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background-color: #088A85;
+  transition: left 0.4s;
+  z-index: 1;
+}
+
+.btn-custom-1:hover::before {
+  left: 0;
+}
+
+.btn-custom-1 span {
+  position: relative;
+  z-index: 2;
+  color: #088A85;
+}
+
+.btn-custom-1:hover span {
+  color: white;
 }
 </style>
