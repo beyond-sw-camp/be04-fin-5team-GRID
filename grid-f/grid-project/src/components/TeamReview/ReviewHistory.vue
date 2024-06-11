@@ -83,7 +83,7 @@
               <div class="mb-3">
               </div>
               <div class="button-container">
-                <button type="submit" class="btn btn-primary">생성</button>
+                <button type="submit" class="btn btn-primary" >생성</button>
               </div>
             </form>
           </div>
@@ -338,6 +338,11 @@ const formattedQuarter = computed(() => {
   font-size: 25px;
   font-weight: 600;
   font-family: 'IBMPlexSansKR-Regular', sans-serif;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center; /* 중앙 정렬을 위해 추가 */
 }
 
 .reviewIcon {

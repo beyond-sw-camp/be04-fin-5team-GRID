@@ -66,12 +66,15 @@
                   <button type="button" class="btn btn-secondary" @click="showModal('selectLeaderModal')">조회</button>
                 </div>
               </div>
-              <button type="submit" class="btn btn-primary">등록</button>
+              <div class="button-container">
+                <button type="submit" class="btn btn-primary">등록</button>
+              </div>
             </form>
           </div>
         </div>
       </div>
     </div>
+
 
     <!-- 부서장 선택 모달 -->
     <div class="modal fade" id="selectLeaderModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -107,6 +110,7 @@
         </div>
       </div>
     </div>
+
     <div class="modal fade" id="updateLeaderModal" tabindex="-1" aria-labelledby="updateLeaderModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -129,7 +133,9 @@
                   <button type="button" class="btn btn-secondary" @click="showModal('selectLeaderModalForUpdate')">조회</button>
                 </div>
               </div>
-              <button type="submit" class="btn btn-primary">수정</button>
+              <div class="button-container">
+                <button type="submit" class="btn btn-primary">수정</button>
+              </div>
             </form>
           </div>
         </div>
@@ -700,4 +706,11 @@ tr:hover {
 }
 
 td, th { text-align: center;}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  padding-top: 10px;
+}
 </style>

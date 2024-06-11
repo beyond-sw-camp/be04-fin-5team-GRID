@@ -32,6 +32,7 @@
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="addQuestionModalLabel">항목 추가</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
             <div class="mb-3">
@@ -40,8 +41,9 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
-            <button type="button" class="btn btn-primary" @click="addReview">생성</button>
+            <div class="button-container">
+              <button type="button" class="btn btn-primary" @click="addReview">생성</button>
+            </div>
           </div>
         </div>
       </div>
@@ -239,13 +241,10 @@ const addReview = async () => {
   margin: 1.75rem auto;
 }
 
-.modal-header,
-.modal-footer {
-  border-bottom: 1px solid #dee2e6;
-}
-
 .modal-footer {
   border-top: 1px solid #dee2e6;
+  display: flex;
+  justify-content: center;
 }
 
 table {
@@ -288,6 +287,11 @@ tr:hover {
   grid-column-start: 2;
 }
 
+.btn btn-primary{
+  display: flex;
+  justify-content: center;
+}
+
 .addBtn {
   width: 100%;
   background-color: #088A85;
@@ -303,19 +307,6 @@ tr:hover {
 
 .deleteBtn:hover, .addBtn:hover {
   background-color: #065f5b;
-}
-
-.btn-close {
-  background-color: #888;
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  border-radius: 50%;
-  cursor: pointer;
-}
-
-.btn-close:hover {
-  background-color: #555;
 }
 
 .btn-custom-1 {
@@ -355,5 +346,12 @@ tr:hover {
 
 .btn-custom-1:hover span {
     color: white;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  padding-top: 10px;
 }
 </style>

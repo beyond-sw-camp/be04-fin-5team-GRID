@@ -1,36 +1,35 @@
 <template>
   <div class="container">
     <div class="header">
-  <div class="header-title">
-    <nav style="--bs-breadcrumb-divider: '>'; margin-top: -35px; margin-bottom: -7px;" aria-label="breadcrumb">
-      <ol class="breadcrumb">
-        <li class="breadcrumb-item">
-          <a href="#" @click.prevent="goBack" style="text-decoration: none; color: grey; font-size: 17px;">
-            <i class="bi bi-person"></i>&nbsp; 팀 정보
-          </a>
-        </li>
-        <li class="breadcrumb-item active" aria-current="page">
-          <span class="fw-bolder">
-            <i class="bi bi-briefcase"></i>&nbsp; {{ departmentName }}
-          </span>
-        </li>
-      </ol>
-    </nav>
-    <div><h1 class="fw-bolder"><i class="bi bi-person"></i>&nbsp; 소속 팀 정보</h1></div>
-  </div>
-  <div class="buttons">
-    <button @click="prepareUpdateLeaderModal" class="updateLeaderBtn btn-custom-1" v-if="userRole === 'ROLE_ADMIN'"><span>팀장 수정</span></button>
-    <button @click="showModal('addNewTeamModal')" class="addTeamBtn btn-custom-1" v-if="userRole === 'ROLE_ADMIN'"><span>팀 추가</span></button>
-    <button @click="toggleTeamStatus" class="toggleStatusBtn btn-custom-1" v-if="userRole === 'ROLE_ADMIN'"><span>활성/비활성화</span></button>
-  </div>
-</div>
+      <div class="header-title">
+        <nav style="--bs-breadcrumb-divider: '>'; margin-top: -35px; margin-bottom: -7px;" aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a href="#" @click.prevent="goBack" style="text-decoration: none; color: grey; font-size: 17px;">
+                <i class="bi bi-person"></i>&nbsp; 팀 정보
+              </a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">
+              <span class="fw-bolder">
+                <i class="bi bi-briefcase"></i>&nbsp; {{ departmentName }}
+              </span>
+            </li>
+          </ol>
+        </nav>
+        <div><h1 class="fw-bolder"><i class="bi bi-person"></i>&nbsp; 소속 팀 정보</h1></div>
+      </div>
+      <div class="buttons">
+        <button @click="prepareUpdateLeaderModal" class="updateLeaderBtn btn-custom-1" v-if="userRole === 'ROLE_ADMIN'"><span>팀장 수정</span></button>
+        <button @click="showModal('addNewTeamModal')" class="addTeamBtn btn-custom-1" v-if="userRole === 'ROLE_ADMIN'"><span>팀 추가</span></button>
+        <button @click="toggleTeamStatus" class="toggleStatusBtn btn-custom-1" v-if="userRole === 'ROLE_ADMIN'"><span>활성/비활성화</span></button>
+      </div>
+    </div>
 
     <div class="search">
       <div class="search-group">
         <input type="text" class="searchBox" v-model="searchQuery" placeholder="팀명 검색" />
         <button @click="search" class="searchBtn">검색</button>
       </div>
-
     </div>
 
     <b-table hover :items="filteredTeams" :fields="fields" responsive>
@@ -86,7 +85,11 @@
                   <button type="button" class="btn btn-secondary" @click="showModal('selectLeaderModal')">조회</button>
                 </div>
               </div>
-              <button type="submit" class="btn btn-primary">추가</button>
+              <div class="modal-footer">
+                <div class="button-container">
+                  <button type="submit" class="btn btn-primary">추가</button>
+                </div>
+              </div>
             </form>
           </div>
         </div>
@@ -151,7 +154,11 @@
                   <button type="button" class="btn btn-secondary" @click="showModal('selectLeaderModalForUpdate')">조회</button>
                 </div>
               </div>
-              <button type="submit" class="btn btn-primary">수정</button>
+              <div class="modal-footer">
+                <div class="button-container">
+                  <button type="submit" class="btn btn-primary">수정</button>
+                </div>
+              </div>
             </form>
           </div>
         </div>
@@ -184,7 +191,7 @@
                   <td>{{ leader.name }}</td>
                   <td>{{ leader.position.positionName }}</td>
                   <td>{{ leader.duties.dutiesName }}</td>
-                  <td><button type="button" class="btn btn-primary" @click="selectLeaderForUpdate(leader)">선택</button></td>
+                  <td><button type="button" class="btn-primary" @click="selectLeaderForUpdate(leader)">선택</button></td>
                 </tr>
               </tbody>
             </table>
@@ -194,6 +201,8 @@
     </div>
   </div>
 </template>
+
+
 
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue';
@@ -782,4 +791,14 @@ h1 {
   align-items: center; /* 세로 높이를 맞추기 위해 추가 */
   justify-content: right;
 }
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  padding-top: 10px;
+}
+
+
 </style>
+
