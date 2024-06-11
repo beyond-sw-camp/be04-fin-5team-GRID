@@ -57,6 +57,7 @@
                 placeholder="내용을 입력하세요."
                 rows="3"
                 max-rows="8"
+                style="resize: none; height: 200px;"
             ></b-form-textarea>
           </b-form-group>
         </b-form-group>
