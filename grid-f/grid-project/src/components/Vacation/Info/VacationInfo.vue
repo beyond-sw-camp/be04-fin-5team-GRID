@@ -116,9 +116,8 @@ const fields = [
     { key: 'employeeName', label: '이름' },
     { key: 'employeeNumber', label: '사번' },
     { key: 'typeName', label: '휴가종류' },
-    { key: 'addTime', label: '지급날짜' },
     { key: 'changeTime', label: '휴가 사용기간' },
-    { key: 'vacationNum', label: '지급개수' }
+    { key: 'vacationNum', label: '보유개수' }
 ];
 
 const getAllVacationInfo = async () => {
@@ -423,6 +422,10 @@ th {
 .pagination .page-item.disabled .page-link {
     color: #088A85;
     /* 비활성화된 페이지 색 */
+}
+
+.pagination a {
+  cursor: pointer;
 }
 
 .vacationsNum {

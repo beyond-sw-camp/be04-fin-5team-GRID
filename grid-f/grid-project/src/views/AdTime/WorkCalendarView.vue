@@ -36,7 +36,7 @@ const router = useRouter();
   margin-top: 2%;
   color: #000000;
   display: grid;
-  grid-template-columns: 3% 97%;
+  //grid-template-columns: 3% 97%;
   align-items: center;
 }
 

@@ -84,14 +84,14 @@ import {computed, onMounted, reactive, ref} from "vue";
   const isLoading = ref(true);
 
   const currentTab = ref(1);
-  const filterStatus = ref('');
+  const filterStatus = ref(null);
 
   const state = reactive({
     approvalList: []
   })
 
   const statusOptions = [
-    { value: '', text: '전체' },
+    { value: null, text: '전체' },
     { value: 'A', text: '승인' },
     { value: 'D', text: '반려' },
     { value: 'V', text: '열람' },

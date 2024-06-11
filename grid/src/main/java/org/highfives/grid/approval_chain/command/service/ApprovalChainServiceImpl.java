@@ -23,11 +23,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 @Service(value = "CommandApprovalChainService")
 public class ApprovalChainServiceImpl implements ApprovalChainService{
@@ -354,10 +356,10 @@ public class ApprovalChainServiceImpl implements ApprovalChainService{
         LocalDateTime startTime = LocalDateTime.parse(vacationApproval.getStartTime(), dateFormat);
         LocalDateTime endTime = LocalDateTime.parse(vacationApproval.getEndTime(), dateFormat);
 
-        long gap = ChronoUnit.DAYS.between(startTime, endTime);
+        long businessDays = calculateBusinessDays(startTime, endTime);
 
-        if (gap <= 1) {
-            gap = 1;
+        if (businessDays <= 1) {
+            businessDays = 1;
         }
 
         approvalChain.setApprovalStatus(chainStatusVO.getChainStatus());
@@ -370,10 +372,10 @@ public class ApprovalChainServiceImpl implements ApprovalChainService{
                 VacationApproval canceledVApproval = vApprovalRepository.findById(vacationApproval.getCancelDocId()).orElseThrow();
                 canceledVApproval.setCancelYN(YN.Y);
 
-                vacationService.plusVacationNum(vacationApproval.getRequesterId(), vacationApproval.getInfoId(), gap);
+                vacationService.plusVacationNum(vacationApproval.getRequesterId(), vacationApproval.getInfoId(), businessDays);
 
             } else {
-                vacationService.minusVacationNum(vacationApproval.getRequesterId(), vacationApproval.getInfoId(), gap);
+                vacationService.minusVacationNum(vacationApproval.getRequesterId(), vacationApproval.getInfoId(), businessDays);
             }
 
         } else {
@@ -384,5 +386,14 @@ public class ApprovalChainServiceImpl implements ApprovalChainService{
         vApprovalRepository.save(vacationApproval);
 
         return mapper.map(approvalChain, VApprovalChainDTO.class);
+    }
+
+    public long calculateBusinessDays(LocalDateTime startDate, LocalDateTime endDate) {
+        long daysBetween = ChronoUnit.DAYS.between(startDate, endDate) + 1; // 시작일 포함
+        long businessDays = Stream.iterate(startDate, date -> date.plusDays(1))
+                .limit(daysBetween)
+                .filter(date -> date.getDayOfWeek().getValue() < 6) // 주말 제외
+                .count();
+        return businessDays;
     }
 }

@@ -1,10 +1,7 @@
 <template>
   <div class="goalDetailContainer">
     <div class="goalTitle">
-      <h1 class="mb-1"><i class="bi bi-award fs-3"></i>&nbsp; 업적 평가 목표 작성</h1>
-      <img src="@/assets/buttons/guide.png" class="guide"
-           @click="showModal('guideGoal')"></img>
-
+      <h1 class="mb-1"><i class="bi bi-award fs-3"></i>&nbsp; 업적 평가 목표 작성 &nbsp;&nbsp;<i class="bi bi-info-circle fs-5 mt-5" id="popover-target-1" style="color: darkgoldenrod" @click="showModal('guideGoal')"></i></h1>
     </div>
     <div class="titleTableContainer">
       <table>
@@ -99,7 +96,12 @@
             <span v-else>{{ item.plan }}</span>
           </td>
           <td>
-            {{ item.objection }}
+            <span v-if="!isReadOnly">
+              {{ item.objection }}
+            </span>
+            <span v-else>
+              {{ '' }}
+            </span>
           </td>
           <td v-if="!isReadOnly">
             <button class="goalBtn1" @click="deleteItem(index)">삭제</button>
@@ -351,9 +353,8 @@ async function deleteItem(index) {
   if (confirm("목표를 삭제하시겠습니까?")) {
     try {
       const id = goalItemList.value[index].id;
-      console.log(id);
 
-      if (id != null) {
+      if (id != '') {
         await axios.delete(`/api/goal-item/${id}`);
       }
       goalItemList.value.splice(index, 1);
@@ -515,7 +516,7 @@ async function submit() {
   display: grid;
   grid-template-columns: 24% 4%;
   align-items: center;
-  min-width: 1000px;
+  min-width: 1200px;
 }
 
 .goalTitle h1 {

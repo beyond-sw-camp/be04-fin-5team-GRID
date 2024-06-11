@@ -1,7 +1,7 @@
 <template>
   <div class="reviewDetailContainer">
     <div class="reviewTitle">
-      <h1 class="mb-1"><i class="bi bi-award fs-3"></i>&nbsp; 종합 업적 평가 상세 조회</h1>
+      <h1 class="mb-1"><i class="bi bi-award fs-3"></i>&nbsp; 종합 업적 평가 상세 조회 &nbsp;&nbsp;<i class="bi bi-info-circle fs-5 mt-5" id="popover-target-1" style="color: darkgoldenrod" @click="showModal('guideReview')"></i></h1>
       <img src="@/assets/buttons/guide.png" class="guide"
            @click="showModal('guideReview')"></img>
     </div>
@@ -36,6 +36,10 @@
           <th>세부계획</th>
           <th>가중치</th>
           <th>추진실적</th>
+          <th>중간 평가 등급</th>
+          <th>중간 평가 점수</th>
+          <th>연말 평가 등급</th>
+          <th>연말 평가 점수</th>
         </tr>
         </thead>
         <tbody>
@@ -58,6 +62,18 @@
           </td>
           <td>
             {{ item.performance }}
+          </td>
+          <td>
+            {{ gradeMapping[midReviewItemList[index].superiorId] }}
+          </td>
+          <td>
+            {{ midReviewItemList[index].superiorScore }}
+          </td>
+          <td>
+            {{ gradeMapping[item.superiorId]}}
+          </td>
+          <td>
+            {{ item.superiorScore}}
           </td>
         </tr>
         </tbody>
@@ -242,6 +258,13 @@ const mappingScoreGrade = (score) => {
     return 'C'
 }
 
+const gradeMapping = {
+  1: 'S', // S
+  2: 'A',  // A
+  3: 'B+',  // B+
+  4: 'B',  // B
+  5: 'C'   // C
+};
 
 </script>
 
@@ -262,7 +285,7 @@ const mappingScoreGrade = (score) => {
   display: grid;
   grid-template-columns: 25% 4%;
   align-items: center;
-  min-width: 1000px;
+  min-width: 1200px;
 }
 
 .reviewTitle h1 {
@@ -399,5 +422,29 @@ th {
 .performanceTableContainer th:nth-child(7),
 .performanceTableContainer td:nth-child(7) {
   min-width: 500px; /* 추진실적 */
+}
+
+.performanceTableContainer th:nth-child(8),
+.performanceTableContainer td:nth-child(8) {
+  min-width: 90px; /* 중간 평가 등급 */
+  text-align: center;
+}
+
+.performanceTableContainer th:nth-child(9),
+.performanceTableContainer td:nth-child(9) {
+  min-width: 90px; /* 중간 평가 점수 */
+  text-align: center;
+}
+
+.performanceTableContainer th:nth-child(10),
+.performanceTableContainer td:nth-child(10) {
+  min-width: 90px; /* 연말 평가 등급 */
+  text-align: center;
+}
+
+.performanceTableContainer th:nth-child(11),
+.performanceTableContainer td:nth-child(11) {
+  min-width: 90px; /* 연말 평가 점수 */
+  text-align: center;
 }
 </style>

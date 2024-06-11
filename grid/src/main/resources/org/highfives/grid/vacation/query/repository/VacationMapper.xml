@@ -32,6 +32,7 @@
         <result property="typeId" column="TYPE_ID"/>
         <result property="changeTypeId" column="CHANGE_TYPE_ID"/>
         <result property="employeeId" column="EMPLOYEE_ID"/>
+        <result property="changeNum" column="CHANGE_NUM"/>
     </resultMap>
     <resultMap id="vacationHistoryDTOResultMap" type="org.highfives.grid.vacation.query.dto.VacationHistoryDTO">
         <id property="id" column="ID"/>
@@ -40,6 +41,7 @@
         <result property="typeId" column="TYPE_ID"/>
         <result property="changeTypeId" column="CHANGE_TYPE_ID"/>
         <result property="employeeId" column="EMPLOYEE_ID"/>
+        <result property="changeNum" column="CHANGE_NUM"/>
         <result property="employeeName" column="EMPLOYEE_NAME"/>
         <result property="employeeNumber" column="EMPLOYEE_NUMBER"/>
         <result property="typeName" column="TYPE_NAME"/>
@@ -116,7 +118,8 @@
         CHANGE_REASON,
         TYPE_ID,
         CHANGE_TYPE_ID,
-        EMPLOYEE_ID
+        EMPLOYEE_ID,
+        CHANGE_NUM
         FROM vacation_history
     </select>
     <select id="searchVacationInfoByName" parameterType="org.highfives.grid.vacation.query.vo.NameSearch" resultMap="vacationInfoResultMap">
@@ -152,6 +155,7 @@
         TYPE_ID,
         CHANGE_TYPE_ID,
         EMPLOYEE_ID,
+        CHANGE_NUM,
         e.EMPLOYEE_NAME AS EMPLOYEE_NAME,
         e.EMOLOYEE_NUMBER AS EMPLOYEE_NUMBER,
         vt.TYPE_NAME AS TYPE_NAME,
@@ -170,6 +174,7 @@
         vh.TYPE_ID,
         vh.CHANGE_TYPE_ID,
         vh.EMPLOYEE_ID,
+        vh.CHANGE_NUM,
         e.EMPLOYEE_NAME AS EMPLOYEE_NAME,
         e.EMPLOYEE_NUMBER AS EMPLOYEE_NUMBER,
         vt.TYPE_NAME AS TYPE_NAME,
@@ -179,7 +184,7 @@
         JOIN vacation_type vt ON vt.id = vh.type_id
         JOIN vacation_change_type vct on vh.change_type_id = vct.id
         WHERE e.EMPLOYEE_NAME = #{employeeName}
-        ORDER BY vh.ID ASC
+        ORDER BY vh.ID DESC
     </select>
     <select id="searchVacationHistoryById" parameterType="String" resultMap="vacationHistoryDTOResultMap">
         SELECT
@@ -189,6 +194,7 @@
         vh.TYPE_ID,
         vh.CHANGE_TYPE_ID,
         vh.EMPLOYEE_ID,
+        vh.CHANGE_NUM,
         e.EMPLOYEE_NAME AS EMPLOYEE_NAME,
         e.EMPLOYEE_NUMBER AS EMPLOYEE_NUMBER,
         vt.TYPE_NAME AS TYPE_NAME,
@@ -198,7 +204,7 @@
         JOIN vacation_type vt ON vt.id = vh.type_id
         JOIN vacation_change_type vct on vh.change_type_id = vct.id
         WHERE e.EMPLOYEE_NUMBER = #{employeeNumber}
-        ORDER BY vh.ID ASC
+        ORDER BY vh.ID DESC
     </select>
     <select id="vacationHistoryTable" resultMap="vacationHistoryDTOResultMap">
         SELECT
@@ -208,6 +214,7 @@
         vh.TYPE_ID,
         vh.CHANGE_TYPE_ID,
         vh.EMPLOYEE_ID,
+        vh.CHANGE_NUM,
         e.EMPLOYEE_NAME AS EMPLOYEE_NAME,
         e.EMPLOYEE_NUMBER AS EMPLOYEE_NUMBER,
         vt.TYPE_NAME AS TYPE_NAME,
@@ -216,7 +223,7 @@
         JOIN employee e ON vh.employee_id = e.id
         JOIN vacation_type vt ON vt.id = vh.type_id
         JOIN vacation_change_type vct on vh.change_type_id = vct.id
-        ORDER BY vh.ID ASC
+        ORDER BY vh.ID DESC
     </select>
     <select id="userVacationHistoryTable" parameterType="_int" resultMap="vacationHistoryDTOResultMap">
         SELECT
@@ -226,6 +233,7 @@
         vh.TYPE_ID,
         vh.CHANGE_TYPE_ID,
         vh.EMPLOYEE_ID,
+        vh.CHANGE_NUM,
         e.EMPLOYEE_NAME AS EMPLOYEE_NAME,
         e.EMPLOYEE_NUMBER AS EMPLOYEE_NUMBER,
         vt.TYPE_NAME AS TYPE_NAME,
@@ -235,7 +243,7 @@
         JOIN vacation_type vt ON vt.id = vh.type_id
         JOIN vacation_change_type vct on vh.change_type_id = vct.id
         WHERE vh.EMPLOYEE_ID = #{employeeId}
-        ORDER BY vh.ID ASC
+        ORDER BY vh.ID DESC
     </select>
     <select id="selectAllType" resultMap="vacationTypeResultMap">
         SELECT
