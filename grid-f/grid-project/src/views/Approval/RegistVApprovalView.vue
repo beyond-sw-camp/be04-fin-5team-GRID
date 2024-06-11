@@ -296,7 +296,7 @@ onMounted(async() => {
 <style scoped>
 .vAll {
 display: grid;
-grid-template-rows: 18% 60% 5% 17%;
+grid-template-rows: 18% 55% 5% 17%;
 grid-template-columns: 10% 80% 10%;
 height: 100%;
 }

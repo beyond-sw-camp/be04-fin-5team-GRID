@@ -190,7 +190,7 @@ onMounted(async () => {
 <style scoped>
   .rwAll {
   display: grid;
-  grid-template-rows: 18% 50% 5% 27%;
+  grid-template-rows: 18% 45% 5% 27%;
   grid-template-columns: 10% 80% 10%;
   height: 100%;
 }
