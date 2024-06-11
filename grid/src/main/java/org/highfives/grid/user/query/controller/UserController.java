@@ -58,7 +58,6 @@ public class UserController {
             @RequestParam(defaultValue = "12") int size,
             @RequestAttribute("claims") Claims token) {
 
-        System.out.println(" 여기까지 들어오나? " + token.get("auth"));
         String auth = (String) token.get("auth");
         Pageable pageable = PageRequest.of(page, size);
         List<EmpStatusDTO> absenceInfo = approvalService.findEmpStatus();
@@ -80,7 +79,6 @@ public class UserController {
             @RequestParam(defaultValue = "12") int size,
             @RequestAttribute("claims") Claims token) {
 
-        System.out.println(" 여기까지 들어오나? ");
         String auth = (String) token.get("auth");
         Pageable pageable = PageRequest.of(page, size);
         List<EmpStatusDTO> absenceInfo = approvalService.findEmpStatus();
@@ -122,11 +120,11 @@ public class UserController {
             ResFindUserVO response =
                     new ResFindUserVO(200, "Success to find user", "/users/list", userDTO);
             return ResponseEntity.status(HttpStatus.OK).body(response);
-        } else {
-            ResFindUserVO response =
-                    new ResFindUserVO(404, "No matching user", "/users/{employeeNumber}", null);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
+
+        ResFindUserVO response =
+                new ResFindUserVO(404, "No matching user", "/users/{employeeNumber}", null);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
 
     //이메일로 사원 정보 조회
@@ -139,11 +137,11 @@ public class UserController {
             ResFindUserVO response =
                     new ResFindUserVO(200, "Success to find user", "/users/list", userDTO);
             return ResponseEntity.status(HttpStatus.OK).body(response);
-        } else {
-            ResFindUserVO response =
-                    new ResFindUserVO(404, "No matching user", "/users/{employeeNumber}", null);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
+
+        ResFindUserVO response =
+                new ResFindUserVO(404, "No matching user", "/users/{employeeNumber}", null);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
 
     // 이메일로 이름 체크
@@ -234,6 +232,6 @@ public class UserController {
     @GetMapping("/health")
     public String healthCheck() {
 
-        return "Health check success test3334211";
+        return "Health check...Success to access?";
     }
 }

@@ -1,9 +1,6 @@
-
 import { createRouter, createWebHistory } from 'vue-router';
 
-
 const router = createRouter({
-
     history: createWebHistory(),
     routes: [
         {
@@ -30,7 +27,7 @@ const router = createRouter({
             path: '/department',
             component: () => import('@/components/Department/Department.vue'),
             props: true
-        },        
+        },
         {
             path: '/team/:id',
             component: () => import('@/components/Department/Team.vue'),
@@ -87,42 +84,41 @@ const router = createRouter({
         },
         {
             path: '/vacation/policy',
-            component:() => import('../views/Vacation/VacationPolicyView.vue')
+            component: () => import('../views/Vacation/VacationPolicyView.vue')
         },
         {
             path: '/vacation/policy/modify/:id',
-            component:() => import('../views/Vacation/VacationPolicyModifyView.vue')
+            component: () => import('../views/Vacation/VacationPolicyModifyView.vue')
         },
         {
             path: '/vacation/policy/regist',
-            component:() => import('../views/Vacation/VacationPolicyRegistView.vue')
+            component: () => import('../views/Vacation/VacationPolicyRegistView.vue')
         },
         {
             path: '/vacation/manage',
-            component:() => import('../views/Vacation/VacationManageMainView.vue')
+            component: () => import('../views/Vacation/VacationManageMainView.vue')
         },
         {
             path: '/vacation/manage/regist',
-            component:() => import('../views/Vacation/VacationManageRegistView.vue')
+            component: () => import('../views/Vacation/VacationManageRegistView.vue')
         },
         {
             path: '/vacation/manage/modify/:id',
-            component:() => import('../views/Vacation/VacationManageDeleteView.vue')
+            component: () => import('../views/Vacation/VacationManageDeleteView.vue')
         },
         {
             path: '/vacation/history',
-            component:() => import('../views/Vacation/VacationHistoryMainView.vue')
+            component: () => import('../views/Vacation/VacationHistoryMainView.vue')
         },
         {
             path: '/vacation/changeInfo',
-            component:() => import('../views/Vacation/VacationChangeInfoMainView.vue')
+            component: () => import('../views/Vacation/VacationChangeInfoMainView.vue')
         },
         {
             path: '/vacation/info',
-            component:() => import('../views/Vacation/VacationInfoMainView.vue')
+            component: () => import('../views/Vacation/VacationInfoMainView.vue')
         },
         {
-
             path: '/performance-review',
             component: () => import('../views/PerformanceReview/Review/PerformanceReviewListView.vue')
         },
@@ -238,17 +234,24 @@ const router = createRouter({
             path: '/main',
             component: () => import('@/views/Main/Main.vue')
         }
-
     ]
-})
+});
 
 router.beforeEach((to, from, next) => {
     const accessToken = localStorage.getItem('access');
     const refreshToken = document.cookie.split('; ').find(row => row.startsWith('refresh='));
-    
-    const publicPaths = ['/', '/find/id', '/find/pwd', '/find/id/result', '/find/pwd/:email/result'];
 
-    if (publicPaths.includes(to.path)) {
+    const publicPaths = [
+        /^\/$/,
+        /^\/find\/id$/,
+        /^\/find\/pwd$/,
+        /^\/find\/id\/result$/,
+        /^\/find\/pwd\/[A-Za-z0-9+/=]+\/result$/
+    ];
+
+    const isPublicPath = publicPaths.some(regex => regex.test(to.path));
+
+    if (isPublicPath) {
         next();
     } else if (!accessToken && !refreshToken) {
         next({ path: '/' });

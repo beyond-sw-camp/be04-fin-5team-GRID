@@ -62,7 +62,7 @@ public class UserServiceImpl implements UserService{
         UserDTO submitInfo = inputSubData(givenInfo);
         submitInfo.setPwd(encodePwd(submitInfo.getPwd()));
 
-        Employee addInfo = dTOtoEntity(submitInfo);
+        Employee addInfo = dtoToEntity(submitInfo);
         userRepository.save(addInfo);
 
         Employee addResult = userRepository.findByEmployeeNumber(givenInfo.getEmployeeNumber());
@@ -76,17 +76,21 @@ public class UserServiceImpl implements UserService{
 
         List<UserDTO> addResultList = new ArrayList<>();
         for (UserDTO userInfo : givenInfo) {
+            try{
+                UserDTO submitInfo = inputSubData(userInfo);
 
-            UserDTO submitInfo = inputSubData(userInfo);
+                submitInfo.setPwd(encodePwd(submitInfo.getPwd()));
+                Employee employee = dtoToEntity(submitInfo);
 
-            submitInfo.setPwd(encodePwd(submitInfo.getPwd()));
-            Employee employee = dTOtoEntity(submitInfo);
+                userRepository.save(employee);
 
-            userRepository.save(employee);
+                UserDTO addedUser = modelMapper.map(userRepository.findByEmail(userInfo.getEmail()), UserDTO.class);
+                addResultList.add(addedUser);
 
-            addResultList
-                    .add(modelMapper
-                            .map(userRepository.findByEmail(userInfo.getEmail()), UserDTO.class));
+            } catch(Exception e){
+                log.error("Failed to add user: " + userInfo.getEmail(), e);
+                throw e;
+            }
         }
 
         return addResultList;
@@ -284,7 +288,7 @@ public class UserServiceImpl implements UserService{
         return false;
     }
 
-    private Employee dTOtoEntity(UserDTO givenInfo) {
+    private Employee dtoToEntity(UserDTO givenInfo) {
 
         return Employee.builder()
                 .email(givenInfo.getEmail())
