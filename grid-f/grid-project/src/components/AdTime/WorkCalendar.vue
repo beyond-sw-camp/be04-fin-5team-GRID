@@ -81,7 +81,7 @@ const initCalendar = async (events) => {
       events: events.value,
       eventOrder: 'priority',  // 우선순위 필드에 따라 정렬
       eventDisplay: 'block', // 이벤트 표시를 블록형으로 설정
-      dayMaxEventRows: 4,
+      dayMaxEventRows: 3,
       moreLinkClick: 'popover', // "more" 링크 클릭 시 팝오버로 표시
       eventDidMount: function (info) {
         var eventEl = info.el;
@@ -89,16 +89,55 @@ const initCalendar = async (events) => {
         eventEl.style.textOverflow = 'ellipsis';
         eventEl.style.whiteSpace = 'nowrap';
 
+
+        // 이벤트의 시작 및 종료 시간을 가져옵니다.
+        const startDate = new Date(info.event.start);
+        let endDate = new Date(info.event.end);
+
+        if(info.event.title === '출장' || info.event.title === '연차' || info.event.title === '월차'
+            || info.event.title === '정기 휴가'){
+          endDate.setDate(endDate.getDate() - 1);
+        }
+
+        // 시작 시간과 종료 시간을 문자열로 변환합니다.
+        let startTimeString = '';
+        let endTimeString = '';
+        if(info.event.title === '출장' || info.event.title === '연차' || info.event.title === '월차'
+            || info.event.title === '정기 휴가'){
+          startTimeString = formatDate(startDate, false);
+          endTimeString = formatDate(endDate, false);
+        } else {
+          startTimeString = formatDate(startDate, true);
+          endTimeString = formatDate(endDate, true);
+        }
+
+
         var popover = new bootstrap.Popover(info.el, {
-          content: info.event.title,
+          title: info.event.title,
+          content: `시작: ${startTimeString}<br>종료: ${endTimeString}`,
           trigger: 'hover',
-          placement: 'auto'
+          placement: 'right',
+          html: true
         });
       },
     });
     calendar.render();
   } else {
     console.error("Calendar element not found");
+  }
+}
+
+function formatDate(date, includeTime) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  if (includeTime) {
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+  } else {
+    return `${year}-${month}-${day}`;
   }
 }
 
@@ -124,7 +163,7 @@ const fetchEmployeeEvent = async () => {
     }
 
     // 출장 조회
-    const responseBt = await axios.get(`/api/approval/list/1/1/${effectiveProfileId.value}`);
+    const responseBt = await axios.get(`/api/approval/list/1/5/${effectiveProfileId.value}`);
 
     const bt = responseBt.data.approvalEmpResultList
     const btEvents = transformEvents(bt, '출장', '#fad7d7', 2);
@@ -132,14 +171,14 @@ const fetchEmployeeEvent = async () => {
     console.log(btEvents);
 
     // 시간외 근무 조회
-    const responseO = await axios.get(`/api/approval/list/2/1/${effectiveProfileId.value}`);
+    const responseO = await axios.get(`/api/approval/list/2/5/${effectiveProfileId.value}`);
 
     const o = responseO.data.approvalEmpResultList
     const oEvents = transformEvents(o, '시간외 근무', '#c0caff', 4);
 
     console.log(oEvents);
     // 휴가 조회
-    const responseV = await axios.get(`/api/approval/list/4/1/${effectiveProfileId.value}`);
+    const responseV = await axios.get(`/api/approval/list/4/5/${effectiveProfileId.value}`);
 
     const v = responseV.data.approvalEmpResultList
     const vEvents = transformEvents(v, '휴가', '#ffdbf7',3);
@@ -187,7 +226,6 @@ function transformEvents(list, type, color, priority) {
       let startTime = item.startTime ? item.startTime.replace(" ", "T") : null;
       let endTime = item.endTime ? item.endTime.replace(" ", "T") : null;
 
-      // 출장인 경우에만 시간에 00:00:00을 추가
       if (type === '출장') {
         let endDate = new Date(endTime);
         endDate.setDate(endDate.getDate() + 1);
@@ -235,6 +273,9 @@ onMounted(async () => {
   height: 100%;
 }
 
+.popover {
+  z-index: 9999; /* 다른 요소보다 높은 z-index 값 */
+}
 
 #calendar {
   width: 100%;
