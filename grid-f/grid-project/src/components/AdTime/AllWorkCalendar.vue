@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class = "calenderContainer ">
     <div id="calendar"></div>
   </div>
 </template>

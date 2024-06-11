@@ -96,6 +96,9 @@
                     <div class="example">
                         <img src="@/assets/HR/hr-main.png" alt="csv 예시">
                     </div>
+                    <div>
+                        <p><정보 수정> 및 <사원 추가> 버튼은 관리자 계정에서만 확인 가능합니다. </p>
+                    </div>
                     <div class="example-content">
                         <hr>
                         <p>1. <목록 받기>를 통해 전체 직원의 리스트를 다운로드 받을 수 있습니다.</p>
@@ -186,10 +189,10 @@ const downloadCSV = async () => {
         item => ({
             name: item.name,
             employeeNumber: item.employeeNumber,
-            department: item.department,
-            team: item.team,
-            position: item.position,
-            duties: item.duties,
+            department: item.department.departmentName,
+            team: item.team.teamName,
+            position: item.position.positionName,
+            duties: item.duties.dutiesName,
             absenceYn: item.absenceYn,
             absenceContent: item.absenceContent
         })

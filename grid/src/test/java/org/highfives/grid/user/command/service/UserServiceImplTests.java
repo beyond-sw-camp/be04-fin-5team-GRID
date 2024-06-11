@@ -1,89 +1,89 @@
-//package org.highfives.grid.user.command.service;
+package org.highfives.grid.user.command.service;
+
+import jakarta.transaction.Transactional;
+import org.highfives.grid.user.command.aggregate.Gender;
+import org.highfives.grid.user.command.aggregate.JoinType;
+import org.highfives.grid.user.command.aggregate.Role;
+import org.highfives.grid.user.command.aggregate.WorkType;
+import org.highfives.grid.user.command.dto.UserDTO;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
+
+import static org.highfives.grid.user.command.aggregate.Gender.M;
+import static org.highfives.grid.user.command.aggregate.JoinType.NEW;
+import static org.highfives.grid.user.command.aggregate.Role.ROLE_USER;
+import static org.highfives.grid.user.command.aggregate.WorkType.C;
+import static org.highfives.grid.user.command.aggregate.YN.N;
+
+@SpringBootTest
+class UserServiceImplTests {
+
+    @Autowired
+    private UserServiceImpl userService;
+
+    static Stream<Arguments> userList() {
+        List<UserDTO> userDTO = new ArrayList<>();
+
+        userDTO.add(new UserDTO("testemail@gamil.com","testpwd","tester1",
+                "2499999", M,"010-1234-5678",
+                "2024-05-06", NEW, WorkType.R, "2024-05-06",ROLE_USER,
+                4,1,1,1));
+
+        userDTO.add(new UserDTO("testemail2@gamil.com","testpwd","tester1",
+                "2399999", M,"010-5678-1234",
+                "2024-05-06", NEW, WorkType.R, "2024-05-06",ROLE_USER,
+                4,1,1,1));
+
+        return Stream.of(
+                Arguments.of(userDTO)
+        );
+    }
+
+//    static Stream<Arguments> modifyInfo() {
 //
-//import jakarta.transaction.Transactional;
-//import org.highfives.grid.user.command.aggregate.Gender;
-//import org.highfives.grid.user.command.aggregate.JoinType;
-//import org.highfives.grid.user.command.aggregate.Role;
-//import org.highfives.grid.user.command.aggregate.WorkType;
-//import org.highfives.grid.user.command.dto.UserDTO;
-//import org.junit.jupiter.api.Assertions;
-//import org.junit.jupiter.api.DisplayName;
-//import org.junit.jupiter.api.Test;
-//import org.junit.jupiter.params.ParameterizedTest;
-//import org.junit.jupiter.params.provider.Arguments;
-//import org.junit.jupiter.params.provider.MethodSource;
-//
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.boot.test.context.SpringBootTest;
-//
-//import java.util.ArrayList;
-//import java.util.HashMap;
-//import java.util.List;
-//import java.util.Map;
-//import java.util.stream.Stream;
-//
-//import static org.highfives.grid.user.command.aggregate.Gender.M;
-//import static org.highfives.grid.user.command.aggregate.JoinType.NEW;
-//import static org.highfives.grid.user.command.aggregate.Role.ROLE_USER;
-//import static org.highfives.grid.user.command.aggregate.WorkType.C;
-//import static org.highfives.grid.user.command.aggregate.YN.N;
-//
-//@SpringBootTest
-//class UserServiceImplTests {
-//
-//    @Autowired
-//    private UserServiceImpl userService;
-//
-//    static Stream<Arguments> addUserDTO() {
-//        return Stream.of(
-//                Arguments.of(new UserDTO(
-//                        "testemail@gamil.com","testpwd","tester1",
-//                        "2499999", M,"010-1234-5678",
-//                        "2024-05-06", NEW, WorkType.R, "2024-05-06", ROLE_USER,
-//                        4,1,1,1)
-//                )
-//        );
-//    }
-//
-//    static Stream<Arguments> userList() {
-//        List<UserDTO> userDTO1 = new ArrayList<>();
-//
-//        userDTO1.add(new UserDTO("testemail@gamil.com","testpwd","tester1",
-//                "2499999", M,"010-1234-5678",
-//                "2024-05-06", NEW, WorkType.R, "2024-05-06",ROLE_USER,
-//                4,1,1,1));
-//
-//        userDTO1.add(new UserDTO("testemail2@gamil.com","testpwd","tester1",
-//                "2399999", M,"010-5678-1234",
-//                "2024-05-06", NEW, WorkType.R, "2024-05-06",ROLE_USER,
-//                4,1,1,1));
+//        UserDTO userDTO =
 //
 //        return Stream.of(
-//                Arguments.of(userDTO1)
+//                Arguments.of(1, ),
+//                Arguments.of(56, new UserDTO())
 //        );
 //    }
-//
-//    @DisplayName("유저 추가")
+
+    @DisplayName("다중 유저 등록 테스트 - 정상 동작")
+    @ParameterizedTest
+    @MethodSource("userList")
+    @Transactional
+    void addMultiUserNormalTest(List<UserDTO> givenInfo) {
+
+        Assertions.assertDoesNotThrow(
+                () -> userService.addMultiUser(givenInfo)
+        );
+    }
+
+//    @DisplayName("단일 유저 수정 테스트 - 정상 동작")
 //    @ParameterizedTest
-//    @MethodSource("addUserDTO")
+//    @MethodSource("modifyInfo")
 //    @Transactional
-//    void addNewUserTest(UserDTO givenInfo) {
+//    void modifyUserNormalTest(int id, UserDTO infos) {
 //
 //        Assertions.assertDoesNotThrow(
-//                () -> userService.addNewUser(givenInfo, null)
+//                () -> userService.modifyUser(id, infos)
 //        );
 //    }
-//
-//    @DisplayName("다중 유저 추가")
-//    @ParameterizedTest
-//    @MethodSource("userList")
-//    @Transactional
-//    void addMultiUserTest(List<UserDTO> givenInfo) {
-//
-//        Assertions.assertDoesNotThrow(
-//                () -> userService.addMultiUser(givenInfo)
-//        );
-//    }
+
 //
 //    @DisplayName("유저 수정")
 //    @Test
@@ -149,5 +149,5 @@
 //                () -> userService.resetPwd(test)
 //        );
 //    }
-//
-//}
+
+}

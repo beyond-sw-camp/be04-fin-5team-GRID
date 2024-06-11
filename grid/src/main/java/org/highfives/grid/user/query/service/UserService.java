@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Map;
 
 public interface UserService {
+    List<UserDTO> findList();
+
     Page<UserDTO> findAllUsers(Pageable pageable, List<EmpStatusDTO> absenceInfo, String auth);
 
     Page<UserDTO> findUsersByName(String name, Pageable pageable, List<EmpStatusDTO> absenceInfo, String auth);
@@ -31,6 +33,4 @@ public interface UserService {
     List<PositionDTO> findPositions();
 
     List<DutiesDTO> findDuties();
-
-    List<UserDTO> findList();
 }
