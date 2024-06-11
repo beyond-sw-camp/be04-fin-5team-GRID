@@ -189,10 +189,10 @@ const downloadCSV = async () => {
         item => ({
             name: item.name,
             employeeNumber: item.employeeNumber,
-            department: item.department,
-            team: item.team,
-            position: item.position,
-            duties: item.duties,
+            department: item.department.departmentName,
+            team: item.team.teamName,
+            position: item.position.positionName,
+            duties: item.duties.dutiesName,
             absenceYn: item.absenceYn,
             absenceContent: item.absenceContent
         })
