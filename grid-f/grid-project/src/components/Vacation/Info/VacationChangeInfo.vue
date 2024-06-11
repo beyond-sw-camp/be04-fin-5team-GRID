@@ -61,6 +61,9 @@
         <template #cell(changeTime)="data">
           <span>{{ data.item.changeTime }}</span>
         </template>
+        <template #cell(changeNum)="data">
+          <span>{{ data.item.changeNum }}</span>
+        </template>
         <template #cell(changeReason)="data">
           <span>{{ data.item.changeReason }}</span>
         </template>
@@ -227,6 +230,7 @@ const fields = [
   {key: 'changeTypeName', label: '지급종류'},
   {key: 'typeName', label: '휴가종류'},
   {key: 'changeTime', label: '변경일'},
+  {key: 'changeNum', label: '변화개수'},
   {key: 'changeReason', label: '사유'}
 ];
 

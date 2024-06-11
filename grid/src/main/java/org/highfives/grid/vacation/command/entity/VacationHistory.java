@@ -31,13 +31,17 @@ public class VacationHistory {
     @Column(nullable = false, name = "employee_id")
     private int employeeId;
 
+    @Column(name = "change_num")
+    private double changeNum;
+
     @Builder
-    public VacationHistory(int id, String changeTime, String changeReason, int typeId, int changeTypeId, int employeeId) {
+    public VacationHistory(int id, String changeTime, String changeReason, int typeId, int changeTypeId, int employeeId, double changeNum) {
         this.id = id;
         this.changeTime = changeTime;
         this.changeReason = changeReason;
         this.typeId = typeId;
         this.changeTypeId = changeTypeId;
         this.employeeId = employeeId;
+        this.changeNum = changeNum;
     }
 }
