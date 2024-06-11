@@ -1,10 +1,10 @@
 <script setup>
-import { computed, onMounted } from 'vue';
+import { computed, onMounted, watch } from 'vue';
 import { RouterView, useRoute } from 'vue-router';
 import Header from '@/components/Header.vue';
 import Sidebar from '@/components/Sidebar.vue';
-import Footer from '@/components/Footer.vue';
 import { useStore } from 'vuex';
+import axios from 'axios';
 
 const store = useStore();
 const route = useRoute();
@@ -46,6 +46,20 @@ function parseJwt(token) {
   }
 }
 
+const addTokenTime = async () => {
+  const response = await axios.post(
+    '/api/tokens/re-auth',
+    {},
+    {
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      withCredentials: true
+    }
+  );
+  localStorage.setItem('access', response.data.access);
+};
+
 onMounted(async () => {
   const token = localStorage.getItem('access');
   if (token) {
@@ -53,22 +67,30 @@ onMounted(async () => {
     const email = decodedToken?.sub || '';
     await store.dispatch('fetchUserByEmail', email);
   }
+  addTokenTime();
 });
+
+watch(
+  () => route.path,
+  () => {
+    addTokenTime();
+  }
+);
 
 </script>
 
 <template>
   <div class="container" :class="containerClass">
     <div class="header" v-if="showLayout">
-      <Header/>
+      <Header />
     </div>
     <div class="sidebar" v-if="showLayout">
-      <Sidebar/>
+      <Sidebar />
     </div>
     <div class="main-content" :class="mainContentClass">
-      <RouterView/>
+      <RouterView />
     </div>
-    
+
   </div>
 
 </template>
@@ -95,9 +117,9 @@ body {
   grid-template-columns: 250px 1fr;
   grid-template-rows: 50px auto 35px;
   grid-template-areas:
-        "header header"
-        "side body"
-        "side footer";
+    "header header"
+    "side body"
+    "side footer";
   height: 100%;
   min-width: 100%;
   width: 100%;

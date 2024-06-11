@@ -31,6 +31,7 @@
   </aside>
 </template>
 
+
 <script setup>
 import { ref, onMounted, computed, watchEffect } from 'vue';
 import { useRouter } from 'vue-router';
@@ -92,10 +93,10 @@ const menus = {
   performanceReview: {
     title: '업적 평가 관리',
     items: [
-      { label: '목표 작성', path: '/performance-review/goal/add', role: 'ROLE_USER' },
+      { label: '목표 작성', path: '/performance-review/goal/add', role: 'ROLE_USER', dutiesId: '4' },
       { label: '목표 조회', path: '/performance-review/goal', role: 'ROLE_USER' },
-      { label: '중간 평가 작성', path: '/performance-review/mid', role: 'ROLE_USER' },
-      { label: '연말 평가 작성', path: '/performance-review/final', role: 'ROLE_USER' },
+      { label: '중간 평가 작성', path: '/performance-review/mid', role: 'ROLE_USER', dutiesId: '4' },
+      { label: '연말 평가 작성', path: '/performance-review/final', role: 'ROLE_USER', dutiesId: '4' },
       { label: '평가 조회', path: '/performance-review', role: 'ROLE_USER' },
       { label: '종합 평가 조회', path: '/performance-review/total' },
     ]
@@ -117,7 +118,11 @@ const filteredMenus = ref({});
 
 watchEffect(() => {
   filteredMenus.value = Object.keys(menus).reduce((acc, key) => {
-    const items = menus[key].items.filter(item => !item.role || item.role === userRole.value);
+    const items = menus[key].items.filter(item => {
+      const hasRole = !item.role || item.role === userRole.value;
+      const hasDutiesId = !item.dutiesId || item.dutiesId == user.value.duties.id;
+      return hasRole && hasDutiesId;
+    });
     if (items.length) {
       acc[key] = { ...menus[key], items };
     }
@@ -132,6 +137,8 @@ onMounted(() => {
     userId.value = decodedToken?.id || '';
     userRole.value = decodedToken?.auth || '';
   }
+
+  console.log(user.value.duties.id);
 });
 
 function parseJwt(token) {
@@ -148,6 +155,7 @@ function parseJwt(token) {
   }
 }
 </script>
+
 
 <style scoped>
 @font-face {

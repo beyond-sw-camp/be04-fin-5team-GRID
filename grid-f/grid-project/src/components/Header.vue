@@ -14,8 +14,8 @@
           <img src="@/assets/diagram3.png" alt="Button 2" class="icon-image" />
         </button>
         <div class="dropdown">
-          <img src="@/assets/grid3.png" alt="profile" class="profile" @click="toggleDropdown">
-          <ul class="dropdown-menu" ref="dropdownMenu">
+          <img src="@/assets/grid3.png" alt="profile" class="profile">
+          <ul class="dropdown-menu">
             <li><a class="dropdown-item" href="#" @click="goProfile">
                 <i class="bi bi-file-person"></i>&nbsp; &nbsp; 내 정보</a></li>
             <li><a class="dropdown-item" href="#" @click="logout">
@@ -24,7 +24,6 @@
         </div>
       </div>
     </header>
-
 
     <div class="offcanvas offcanvas-end" id="demo">
       <div class="offcanvas-header">
@@ -64,6 +63,7 @@
 </div>
 </template>
 
+
 <script setup>
 import { ref, onMounted, computed } from 'vue';
 import axios from 'axios';
@@ -74,7 +74,6 @@ import draggable from 'vuedraggable';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 import defaultProfileImage from '@/assets/defaultProfile.jpg';
-import Cookies from 'js-cookie';
 
 const departments = ref([]);
 const router = useRouter();
@@ -86,12 +85,6 @@ const userId = ref('');
 const userRole = ref('');
 
 const user = computed(() => store.state.user);
-
-
-
-const profileUrl = computed(() => {
-  return user.value?.profilePath ? user.value.profilePath : defaultProfileImage;
-});
 
 const fetchDepartments = async () => {
   try {
@@ -212,14 +205,6 @@ const handleDragEnd = async () => {
   }
 };
 
-const toggleDropdown = () => {
-  if (dropdownMenu.value.style.display === 'block') {
-    dropdownMenu.value.style.display = 'none';
-  } else {
-    dropdownMenu.value.style.display = 'block';
-  }
-};
-
 const handleTeamDragEnd = async (event) => {
   // 새 부서의 ID를 올바르게 가져옵니다.
   const newDepartmentId = event.to.closest('.list-group-item').getAttribute('data-id');
@@ -282,7 +267,6 @@ const addTokenTime = async () => {
 
       localStorage.setItem('access', response.data.access);
       alert('접속시간이 연장되었습니다!');
-      window.location.reload();
     }
   } catch (error) {
     console.error("Error:", error);
@@ -504,10 +488,6 @@ onMounted(fetchDepartments);
   filter: invert(100%) sepia(65%) saturate(424%) hue-rotate(91deg) brightness(129%) contrast(107%);
 }
 
-.profile img {
-
-}
-
 .icon-button {
   background: none;
   border: none;
@@ -538,6 +518,10 @@ onMounted(fetchDepartments);
   align-items: center;
 }
 
+.dropdown:hover .dropdown-menu {
+  display: block;
+}
+
 .dropdown-menu {
   display: none;
   position: absolute;
@@ -549,8 +533,6 @@ onMounted(fetchDepartments);
   list-style: none;
   padding: 10px 0;
   margin: 0;
-  transform: translateY(0);
-  transition: all 2s ease;
 }
 
 .dropdown-menu a {
