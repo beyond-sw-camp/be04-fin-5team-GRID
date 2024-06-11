@@ -391,7 +391,6 @@ Array.from(forms).forEach(form => {
 }
 
 .policyTitleUser h1 {
-  margin-left: 0.5%;
   margin-bottom: 0;
   font-size: 25px;
   font-weight: 600;

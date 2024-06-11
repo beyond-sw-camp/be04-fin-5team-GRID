@@ -511,23 +511,22 @@ onBeforeMount(() => {
 <style scoped>
 .historyAll {
   display: grid;
-  grid-template-rows: 18% 13% 4% 50% 10% 8%;
+  grid-template-rows: 18% 13% 4% 50% 10% 5%;
   grid-template-columns: 10% 80% 10%;
   height: 100%;
 }
 
 .historyTitle {
   grid-column-start: 2;
-  align-items: center;
-  font-size: 12px;
-  font-weight: 600;
+  margin-top: 2%;
   display: grid;
   grid-template-columns: 3% 15% 5% 77%;
+  align-items: center;
   color: #000000;
 }
 
 .historyTitle h1 {
-  margin-left: 0.5%;
+  margin-bottom: 0;
   font-size: 25px;
   font-weight: 600;
   font-family: 'IBMPlexSansKR-Regular', sans-serif;

@@ -1,7 +1,8 @@
 <template>
     <div class="historyAll">
         <div class="historyTitle">
-            <h1 class="mb-1"><i class="bi bi-brightness-high fs-3"></i>&nbsp; 휴가 보유 정보</h1>
+            <i class="bi bi-brightness-high fs-3"></i>
+            <h1 class="mb-1">휴가 보유 정보</h1>
         </div>
         <div class="vacations">
             <div class="annual" v-if="userRole === 'ROLE_USER'">
@@ -246,26 +247,27 @@ onBeforeMount(() => {
 <style scoped>
 .historyAll {
     display: grid;
-    grid-template-rows: 18% 13% 4% 50% 10% 8%;
+    grid-template-rows: 18% 13% 4% 50% 10% 5%;
     grid-template-columns: 10% 80% 10%;
     height: 100%;
 }
 
 .historyTitle {
   grid-column-start: 2;
-  align-content: center;
+  align-items: center;
   margin-top: 2%;
-  margin-left: -0.5%;
+  display: grid;
+  grid-template-columns: 3% 97%;
   color: #000000;
 }
 
 .historyTitle h1 {
-  margin-left: 0.5%;
   margin-bottom: 0;
   font-size: 25px;
   font-weight: 600;
   font-family: 'IBMPlexSansKR-Regular', sans-serif;
 }
+
 
 .historyIcon {
     width: 80%;
