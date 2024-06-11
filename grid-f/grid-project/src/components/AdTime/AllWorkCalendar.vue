@@ -43,7 +43,6 @@ const initCalendar = async (events) => {
       plugins: [dayGridPlugin, interactionPlugin],
       initialView: 'dayGridMonth',
       contentHeight: 'auto',
-      firstDay: 1,    // 월요일 시작
       titleFormat: function (info) {  // tile 설정
         let year = info.date.year;
         let month = info.date.month + 1;
@@ -111,14 +110,14 @@ const fetchAllEvent = async () => {
     console.log(responseO.data);
 
     const o = responseO.data.approvalEmpResultList
-    const oEvents = transformEvents(o, '시간외 근무', '#c0caff', 3);
+    const oEvents = transformEvents(o, '시간외 근무', '#c0caff', 4);
 
     // 휴가 조회
     const responseV = await axios.get(`/api/approval/all/4/1`);
     console.log(responseV.data);
 
     const v = responseV.data.approvalEmpResultList
-    const vEvents = transformEvents(v, '휴가', '#ffdbf7', 4);
+    const vEvents = transformEvents(v, '휴가', '#ffdbf7', 3);
 
 
     events.value = [...btEvents, ...oEvents, ...vEvents];
@@ -130,6 +129,28 @@ const fetchAllEvent = async () => {
 };
 
 function transformEvents(list, type, color, priority) {
+  return list.map(item => {
+    if (type === '휴가' && ['연차', '월차', '정기휴가'].includes(item.vacationType)) {
+      return {
+        title: `${item.vacationType} ${item.employeeNumber} ${item.employeeName}`,
+        start: item.startTime ? item.startTime.split(" ")[0] : null,
+        end: item.endTime ? item.endTime.split(" ")[0] : null,
+        color: color,
+        textColor: "#424242",
+        priority: priority
+      };
+    } else {
+      return {
+        title: type !== '휴가' ? `${type} ${item.employeeNumber} ${item.employeeName}` : `${item.vacationType} ${item.employeeNumber} ${item.employeeName}`,
+        start: item.startTime ? item.startTime.replace(" ", "T") : null,
+        end: item.endTime ? item.endTime.replace(" ", "T") : null,
+        color: color,
+        textColor: "#424242",
+        priority: priority
+      };
+    }
+  });
+
   return list.map(item => ({
     title: `${type} ${item.employeeNumber} ${item.employeeName}`,
     start: item.startTime? item.startTime.replace(" ", "T"): null,

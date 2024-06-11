@@ -96,7 +96,12 @@
             <span v-else>{{ item.plan }}</span>
           </td>
           <td>
-            {{ item.objection }}
+            <span v-if="!isReadOnly">
+              {{ item.objection }}
+            </span>
+            <span v-else>
+              {{ '' }}
+            </span>
           </td>
           <td v-if="!isReadOnly">
             <button class="goalBtn1" @click="deleteItem(index)">삭제</button>
@@ -348,9 +353,8 @@ async function deleteItem(index) {
   if (confirm("목표를 삭제하시겠습니까?")) {
     try {
       const id = goalItemList.value[index].id;
-      console.log(id);
 
-      if (id != null) {
+      if (id != '') {
         await axios.delete(`/api/goal-item/${id}`);
       }
       goalItemList.value.splice(index, 1);
@@ -512,7 +516,7 @@ async function submit() {
   display: grid;
   grid-template-columns: 24% 4%;
   align-items: center;
-  min-width: 1000px;
+  min-width: 1200px;
 }
 
 .goalTitle h1 {

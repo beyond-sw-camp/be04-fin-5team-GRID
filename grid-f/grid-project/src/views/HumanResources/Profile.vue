@@ -161,7 +161,7 @@ onMounted(async () => {
     if (token) {
         const decodedToken = parseJwt(token);
         userRole.value = decodedToken?.auth || '';
-        userId.value = decodedToken?.id || '';
+        profileId.value = decodedToken?.id || '';
     }
 
     const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/${route.params.employeeNumber}`);
@@ -170,7 +170,6 @@ onMounted(async () => {
         isAbsence.value = true;
     }
     console.log('받아오는 유저: ', result.value);
-    profileId.value = result.value.id;
     givenEmail.value = result.value.email;
 
     currentTab.value = route.query.tab || 'human-resources';
