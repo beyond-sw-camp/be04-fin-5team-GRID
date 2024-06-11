@@ -30,8 +30,9 @@
               label-cols-sm="3"
               label-align-sm="right"
           >
-            <b-form-input type="date" v-model="postData.s_date"></b-form-input>
-            <b-form-input type="time" v-model="postData.s_time" :disabled="state.isTimeDisabled"></b-form-input>
+          <b-form-input type="date" v-model="postData.s_date"></b-form-input>
+          <b-form-select v-model="postData.s_time_period" :disabled="state.isTimePeriodDisabled" :options="state.timePeriods"></b-form-select>
+          <b-form-input type="time" v-model="postData.s_time" :disabled="state.isTimeDisabled || state.isTimePeriodDisabled"></b-form-input>
           </b-form-group>
 
           <b-form-group
@@ -82,12 +83,18 @@ const userVacationEndTime = ref('');
 const state = reactive({
   vacationType: [],
   isEndDateDisabled: false,
-  isTimeDisabled: false
+  isTimeDisabled: false,
+  isTimePeriodDisabled: true,
+  timePeriods: [
+    { value: 'AM', text: '오전' },
+    { value: 'PM', text: '오후' }
+  ]
 });
 
 const postData = reactive({
   s_date: "",
   s_time: "00:00:00",
+  s_time_period: "",
   e_date: "",
   e_time: "00:00:00",
   infoId: 0,
@@ -200,6 +207,11 @@ const registApproval = async () => {
 
   await getUserVacationInfo(postData.infoId);
 
+  if (vacationNum.value <= 0) {
+    alert('해당 휴가를 보유하고 있지 않습니다.');
+    return;
+  }
+
   // 휴가 사용 종료 날짜가 지난 경우 신청을 막음
   if (userVacationEndTime.endTime < postData.e_date || userVacationEndTime.endTime < postData.s_date) {
     alert('휴가 사용기한 안에서만 신청 가능합니다.');
@@ -208,12 +220,35 @@ const registApproval = async () => {
 
   // 주말을 제외한 일수 계산
   const businessDaysBetween = calculateBusinessDays(postData.s_date, postData.e_date);
-  console.log(businessDaysBetween);
+  
+  if (selectedType.vacationTime === 4) {
+    if (postData.s_time_period === 'AM') {
+      postData.s_time = '09:00:00';
+      postData.e_time = '13:00:00';
+    } else if (postData.s_time_period === 'PM') {
+      postData.s_time = '14:00:00';
+      postData.e_time = '18:00:00';
+    }
+    postData.e_date = postData.s_date; // 시작일과 종료일이 같도록 설정
+  }
+
+  if (selectedType.vacationTime === 2) {
+    if (postData.s_time_period === 'AM') {
+      postData.s_time = '09:00:00';
+      postData.e_time = '11:00:00';
+    } else if (postData.s_time_period === 'PM') {
+      postData.s_time = '16:00:00';
+      postData.e_time = '18:00:00';
+    }
+    postData.e_date = postData.s_date; // 시작일과 종료일이 같도록 설정
+  }
+
+  updateDateTime(); // 시간 및 날짜 정보 업데이트
 
   try {
     const confirmed = window.confirm('휴가를 사용하시겠습니까?');
 
-    if(confirmed) {
+    if (confirmed) {
       console.log(postData.startTime, postData.endTime);
       if (postData.content !== '' && postData.startTime !== ' 00:00:00' && postData.endTime !== ' 00:00:00' && postData.infoId !== 0) {
         if (vacationNum.value >= businessDaysBetween) {
@@ -221,11 +256,11 @@ const registApproval = async () => {
             headers: {
               'Content-Type': "application/json"
             }
-          })
+          });
           if (response.status !== 201) {
             throw new Error("response is not ok");
           } else {
-            alert('결재가 제출되었습니다.')
+            alert('결재가 제출되었습니다.');
             router.push(response.data.href);
           }
         } else {
@@ -239,32 +274,32 @@ const registApproval = async () => {
   } catch (error) {
     console.error('Fail to post: ', error.message);
   }
-}
+};
+
 
 watch(
   () => postData.infoId,
   (newInfoId) => {
     const selectedType = state.vacationType.find(type => type.value === newInfoId);
-    
+
     state.isEndDateDisabled = selectedType && (selectedType.timeCheck === 'Y');
     state.isTimeDisabled = selectedType && (selectedType.timeCheck === 'N');
-    
-    if (selectedType && selectedType.timeCheck === 'Y') {
-      watch(() => [postData.s_date, postData.s_time], () => {
-        if (postData.s_date && postData.s_time) {
-          const sTime = new Date(`1970-01-01T${postData.s_time}Z`);
-          sTime.setHours(sTime.getHours() + selectedType.vacationTime); // 시간을 더합니다
+    state.isTimePeriodDisabled = selectedType && (selectedType.timeCheck !== 'Y');
 
-          const eTimeHours = String(sTime.getUTCHours()).padStart(2, '0');
-          const eTimeMinutes = String(sTime.getUTCMinutes()).padStart(2, '0');
-          const eTimeSeconds = String(sTime.getUTCSeconds()).padStart(2, '0');
-          postData.e_time = `${eTimeHours}:${eTimeMinutes}:${eTimeSeconds}`;
-          postData.e_date = postData.s_date;
-        }
-      });
+    // 휴가 종류가 변경될 때마다 관련 필드 초기화
+    postData.s_date = "";
+    postData.s_time = "00:00:00";
+    postData.s_time_period = "";
+    postData.e_date = "";
+    postData.e_time = "00:00:00";
+    postData.content = "";
+
+    if (selectedType.timeCheck === 'Y') {
+      state.isTimeDisabled = true;
     }
   }
 );
+
 
 watch(
     () => [postData.s_date, postData.s_time],
