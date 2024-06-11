@@ -2,8 +2,6 @@
   <div class="reviewDetailContainer">
     <div class="reviewTitle">
       <h1 class="mb-1"><i class="bi bi-award fs-3"></i>&nbsp; 종합 업적 평가 상세 조회 &nbsp;&nbsp;<i class="bi bi-info-circle fs-5 mt-5" id="popover-target-1" style="color: darkgoldenrod; cursor: pointer;" @click="showModal('guideReview')"></i></h1>
-      <img src="@/assets/buttons/guide.png" class="guide"
-           @click="showModal('guideReview')"></img>
     </div>
     <div class="titleTableContainer">
       <table>
