@@ -122,6 +122,10 @@ const router = createRouter({
             component:() => import('../views/Vacation/VacationInfoMainView.vue')
         },
         {
+            path: '/vacation/userInfo',
+            component:() => import('../views/Vacation/VacationInfoUserView.vue')
+        },
+        {
 
             path: '/performance-review',
             component: () => import('../views/PerformanceReview/Review/PerformanceReviewListView.vue')
