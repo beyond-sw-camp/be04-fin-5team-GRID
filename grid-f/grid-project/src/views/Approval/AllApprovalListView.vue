@@ -2,12 +2,11 @@
   <div class="approvalAll">
     <div class="approvalHeader">
       <div><h1 class="fw-bolder mb-1"><i class="bi bi-collection"></i>&nbsp; 결재 목록</h1></div>
-      <div v-if="isLoading">
-        로딩 중
-      </div>
-      <div v-else></div>
     </div>
-    <div class="approvalContent">
+    <div v-if="isLoading">
+      로딩 중
+    </div>
+    <div class="approvalContent" v-else>
       <div v-if="userRole === 'ROLE_ADMIN'">
         <!-- 관리자 -->
         <div>
