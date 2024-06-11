@@ -88,15 +88,15 @@ public class VacationServiceImpl implements VacationService {
             if (day < 365 && months >= 1) {
                 if (vacationInfoRepository.findByEmployeeIdAndTypeId(userId, 2) != null) {
                     if (vacationInfoRepository.findByEmployeeIdAndTypeId(userId, 2).getVacationNum() != 0) {
-                        vacationInfoRepository.deleteByTypeIdAndEmployeeId(2, userId);
                         VacationHistory inputVacationHistory = VacationHistory.builder()
                                 .changeTime(firstDayString)
                                 .changeReason("사용기한 만료로 인한 월차 소멸")
                                 .typeId(2)
                                 .changeTypeId(2)
                                 .employeeId(userId)
+                                .changeNum(vacationInfoRepository.findByEmployeeIdAndTypeId(userId, 2).getVacationNum())
                                 .build();
-
+                        vacationInfoRepository.deleteByTypeIdAndEmployeeId(2, userId);
                         vacationHistoryRepository.save(inputVacationHistory);
                     } else {
                         vacationInfoRepository.deleteByTypeIdAndEmployeeId(2, userId);
@@ -129,6 +129,7 @@ public class VacationServiceImpl implements VacationService {
                         .typeId(2)
                         .changeTypeId(1)
                         .employeeId(userId)
+                        .changeNum(1)
                         .build();
 
                 vacationHistoryRepository.save(inputVacationHistory);
@@ -154,16 +155,15 @@ public class VacationServiceImpl implements VacationService {
             if (day >= 365) {
                 if (vacationInfoRepository.findByEmployeeIdAndTypeId(userId, 1) != null) {
                     if (vacationInfoRepository.findByEmployeeIdAndTypeId(userId, 1).getVacationNum() != 0) {
-                        vacationInfoRepository.deleteByTypeIdAndEmployeeId(1, userId);
-
                         VacationHistory inputVacationHistory = VacationHistory.builder()
                                 .changeTime(firstDayString)
                                 .changeReason("사용기한 만료로 인한 연차 소멸")
                                 .typeId(1)
                                 .changeTypeId(2)
                                 .employeeId(userId)
+                                .changeNum(vacationInfoRepository.findByEmployeeIdAndTypeId(userId, 1).getVacationNum())
                                 .build();
-
+                        vacationInfoRepository.deleteByTypeIdAndEmployeeId(1, userId);
                         vacationHistoryRepository.save(inputVacationHistory);
                     } else {
                         vacationInfoRepository.deleteByTypeIdAndEmployeeId(1, userId);
@@ -196,6 +196,7 @@ public class VacationServiceImpl implements VacationService {
                         .typeId(1)
                         .changeTypeId(1)
                         .employeeId(userId)
+                        .changeNum(vacationNum)
                         .build();
 
                 vacationHistoryRepository.save(inputVacationHistory);
@@ -217,6 +218,7 @@ public class VacationServiceImpl implements VacationService {
                         .typeId(1)
                         .changeTypeId(1)
                         .employeeId(userId)
+                        .changeNum(months)
                         .build();
 
                 vacationHistoryRepository.save(inputVacationHistory);
@@ -243,15 +245,15 @@ public class VacationServiceImpl implements VacationService {
             try {
                 if (vacationInfoRepository.findByEmployeeIdAndTypeId(userId, 4) != null) {
                     if (vacationInfoRepository.findByEmployeeIdAndTypeId(userId, 4).getVacationNum() != 0) {
-                        vacationInfoRepository.deleteByTypeIdAndEmployeeId(4, userId);
                         VacationHistory inputVacationHistory = VacationHistory.builder()
                                 .changeTime(firstDayString)
                                 .changeReason("사용기한 만료로 인한 정기휴가 소멸")
                                 .typeId(4)
                                 .changeTypeId(2)
                                 .employeeId(userId)
+                                .changeNum(vacationInfoRepository.findByEmployeeIdAndTypeId(userId, 4).getVacationNum())
                                 .build();
-
+                        vacationInfoRepository.deleteByTypeIdAndEmployeeId(4, userId);
                         vacationHistoryRepository.save(inputVacationHistory);
                     } else {
                         vacationInfoRepository.deleteByTypeIdAndEmployeeId(4, userId);
@@ -284,6 +286,7 @@ public class VacationServiceImpl implements VacationService {
                     .typeId(4)
                     .changeTypeId(1)
                     .employeeId(userId)
+                    .changeNum(4)
                     .build();
 
             vacationHistoryRepository.save(inputVacationHistory);
@@ -309,15 +312,15 @@ public class VacationServiceImpl implements VacationService {
                 try {
                     if (vacationInfoRepository.findByEmployeeIdAndTypeId(userId, 3) != null) {
                         if (vacationInfoRepository.findByEmployeeIdAndTypeId(userId, 3).getVacationNum() != 0) {
-                            vacationInfoRepository.deleteByTypeIdAndEmployeeId(3, userId);
                             VacationHistory inputVacationHistory = VacationHistory.builder()
                                     .changeTime(firstDayString)
                                     .changeReason("사용기한 만료로 인한 보건휴가 소멸")
                                     .typeId(3)
                                     .changeTypeId(2)
                                     .employeeId(userId)
+                                    .changeNum(vacationInfoRepository.findByEmployeeIdAndTypeId(userId, 3).getVacationNum())
                                     .build();
-
+                            vacationInfoRepository.deleteByTypeIdAndEmployeeId(3, userId);
                             vacationHistoryRepository.save(inputVacationHistory);
                         } else {
                             vacationInfoRepository.deleteByTypeIdAndEmployeeId(3, userId);
@@ -351,6 +354,7 @@ public class VacationServiceImpl implements VacationService {
                         .typeId(3)
                         .changeTypeId(1)
                         .employeeId(userId)
+                        .changeNum(1)
                         .build();
 
                 vacationHistoryRepository.save(inputVacationHistory);
@@ -382,6 +386,7 @@ public class VacationServiceImpl implements VacationService {
                 .typeId(vacationInfo.getTypeId())
                 .changeTypeId(1)
                 .employeeId(employeeId)
+                .changeNum(vacationInfo.getVacationNum())
                 .build();
 
 
@@ -450,18 +455,36 @@ public class VacationServiceImpl implements VacationService {
 
         if (typeId == 5) {
             vacationInfo.setVacationNum(vacationInfo.getVacationNum() + 0.5);
+            VacationHistory inputVacationHistory = VacationHistory.builder()
+                    .changeTime(today.toString())
+                    .changeReason(vacationTypeName + " 사용취소로 인한 " + vacationTypeName + " 개수 증가")
+                    .typeId(typeId)
+                    .changeTypeId(4)
+                    .employeeId(employeeId)
+                    .changeNum(0.5)
+                    .build();
         } else if (typeId == 6) {
             vacationInfo.setVacationNum(vacationInfo.getVacationNum() + 0.25);
+            VacationHistory inputVacationHistory = VacationHistory.builder()
+                    .changeTime(today.toString())
+                    .changeReason(vacationTypeName + " 사용취소로 인한 " + vacationTypeName + " 개수 증가")
+                    .typeId(typeId)
+                    .changeTypeId(4)
+                    .employeeId(employeeId)
+                    .changeNum(0.25)
+                    .build();
         } else
             vacationInfo.setVacationNum(vacationInfo.getVacationNum() + days);
+            VacationHistory inputVacationHistory = VacationHistory.builder()
+                    .changeTime(today.toString())
+                    .changeReason(vacationTypeName + " 사용취소로 인한 " + vacationTypeName + " 개수 증가")
+                    .typeId(typeId)
+                    .changeTypeId(4)
+                    .employeeId(employeeId)
+                    .changeNum(days)
+                    .build();
 
-        VacationHistory inputVacationHistory = VacationHistory.builder()
-                .changeTime(today.toString())
-                .changeReason(vacationTypeName + " 사용취소로 인한 " + vacationTypeName + " 개수 증가")
-                .typeId(typeId)
-                .changeTypeId(4)
-                .employeeId(employeeId)
-                .build();
+
 
         vacationHistoryRepository.save(inputVacationHistory);
 
@@ -481,18 +504,34 @@ public class VacationServiceImpl implements VacationService {
 
         if (typeId == 5) {
             vacationInfo.setVacationNum(vacationInfo.getVacationNum() - 0.5);
+            VacationHistory inputVacationHistory = VacationHistory.builder()
+                    .changeTime(today.toString())
+                    .changeReason(vacationTypeName + " 사용으로 인한 " + vacationTypeName + " 개수 감소")
+                    .typeId(typeId)
+                    .changeTypeId(3)
+                    .employeeId(employeeId)
+                    .changeNum(0.5)
+                    .build();
         } else if (typeId == 6) {
             vacationInfo.setVacationNum(vacationInfo.getVacationNum() - 0.25);
+            VacationHistory inputVacationHistory = VacationHistory.builder()
+                    .changeTime(today.toString())
+                    .changeReason(vacationTypeName + " 사용으로 인한 " + vacationTypeName + " 개수 감소")
+                    .typeId(typeId)
+                    .changeTypeId(3)
+                    .employeeId(employeeId)
+                    .changeNum(0.25)
+                    .build();
         } else
             vacationInfo.setVacationNum(vacationInfo.getVacationNum() - days);
-
-        VacationHistory inputVacationHistory = VacationHistory.builder()
-                .changeTime(today.toString())
-                .changeReason(vacationTypeName + " 사용으로 인한 " + vacationTypeName + " 개수 감소")
-                .typeId(typeId)
-                .changeTypeId(3)
-                .employeeId(employeeId)
-                .build();
+            VacationHistory inputVacationHistory = VacationHistory.builder()
+                    .changeTime(today.toString())
+                    .changeReason(vacationTypeName + " 사용으로 인한 " + vacationTypeName + " 개수 감소")
+                    .typeId(typeId)
+                    .changeTypeId(3)
+                    .employeeId(employeeId)
+                    .changeNum(days)
+                    .build();
 
         vacationHistoryRepository.save(inputVacationHistory);
     }

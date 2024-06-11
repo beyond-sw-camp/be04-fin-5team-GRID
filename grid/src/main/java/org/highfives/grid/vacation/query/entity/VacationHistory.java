@@ -15,4 +15,5 @@ public class VacationHistory {
     private int typeId;
     private int changeTypeId;
     private int employeeId;
+    private double changeNum;
 }
