@@ -292,7 +292,6 @@ const getNewToken = async () => {
 
       localStorage.setItem('access', response.data.access); // 새로운 access 토큰 저장
       alert('접속시간이 연장되었습니다!');
-      window.location.reload();
     } else {
       alert("접속시간 연장을 취소했습니다. 로그아웃합니다.");
       await axios.post(
