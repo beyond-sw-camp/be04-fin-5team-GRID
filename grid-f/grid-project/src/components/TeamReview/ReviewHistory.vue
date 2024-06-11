@@ -20,7 +20,6 @@
           <th style="width: 10%;">연도</th>
           <th style="width: 10%;">분기</th>
           <th style="width: 10%;">대상자</th>
-          <!-- <th style="width: 10%;">평가 보기</th> -->
         </tr>
       </thead>
       <tbody>
@@ -32,40 +31,29 @@
           <td>{{ review.year }}</td>
           <td>{{ review.quarter }}</td>
           <td>{{ review.revieweeName }}</td>
-          <!-- <td>
-            <button class="view-review-btn" @click="openModal(review.id)">평가 보기</button>
-          </td> -->
         </tr>
       </tbody>
     </table>
 
-    <nav class="pg" aria-label="Page navigation example" v-if="totalPages > 1">
+    <div class="pagination-container">
       <ul class="pagination">
         <li class="page-item" :class="{ disabled: currentPage === 1 }">
-          <a class="page-link" href="#" aria-label="First" @click.prevent="goToFirstPage">
-            <span aria-hidden="true">&laquo;&laquo;</span>
-          </a>
+          <a class="page-link" @click.prevent="goToFirstPage">««</a>
         </li>
         <li class="page-item" :class="{ disabled: currentPage === 1 }">
-          <a class="page-link" href="#" aria-label="Previous" @click.prevent="prevPage">
-            <span aria-hidden="true">&laquo;</span>
-          </a>
+          <a class="page-link" @click.prevent="prevPage">«</a>
         </li>
-        <li v-for="page in filteredPages" :key="page" class="page-item" :class="{ active: page === currentPage }">
+        <li class="page-item" v-for="page in visiblePages" :key="page" :class="{ active: currentPage === page }">
           <a class="page-link" @click.prevent="goToPage(page)">{{ page }}</a>
         </li>
         <li class="page-item" :class="{ disabled: currentPage === totalPages }">
-          <a class="page-link" aria-label="Next" @click.prevent="nextPage">
-            <span aria-hidden="true">&raquo;</span>
-          </a>
+          <a class="page-link" @click.prevent="nextPage">»</a>
         </li>
         <li class="page-item" :class="{ disabled: currentPage === totalPages }">
-          <a class="page-link" href="#" aria-label="Last" @click.prevent="goToLastPage">
-            <span aria-hidden="true">&raquo;&raquo;</span>
-          </a>
+          <a class="page-link" @click.prevent="goToLastPage">»»</a>
         </li>
       </ul>
-    </nav>
+    </div>
 
     <!-- Add New Modal -->
     <div class="modal fade" id="addReview" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -85,34 +73,17 @@
                 </div>
               </div>
               <div class="mb-3">
-                <label for="vacationNum" class="form-label">연도</label>
-                <input class="form-control" type="number" id="newReviewYear" v-model="newReviewYear" required />
-                <div class="invalid-feedback">
-                  연도를 입력해주세요.
-                </div>
+                <label for="newReviewYear" class="form-label">연도</label>
+                <input class="form-control" type="number" id="newReviewYear" v-model="newReviewYear" required readonly />
               </div>
               <div class="mb-3">
-                <label for="employeeNum" class="form-label">분기</label>
-                <select class="form-select" id="newReviewQuarter" v-model="newReviewQuarter" required>
-                  <option value="" disabled selected>분기를 선택해주세요.</option>
-                  <option value="1">1분기</option>
-                  <option value="2">2분기</option>
-                </select>
-                <div class="invalid-feedback">
-                  분기를 선택해주세요.
-                </div>
+                <label for="newReviewQuarter" class="form-label">분기</label>
+                <input class="form-control" type="text" id="newReviewQuarter" v-model="formattedQuarter" required readonly />
               </div>
               <div class="mb-3">
-                <!-- <label for="dayOfUsing" class="form-label">평가 대상자</label>
-                <select class="form-select" id="newRevieweeId" v-model="newRevieweeId" required>
-                  <option value="" disabled selected>평가 대상자를 선택해주세요.</option>
-                  <option v-for="employee in employees" :key="employee.id" :value="employee.id">
-                    {{ employee.name }}
-                  </option>
-                </select> -->
               </div>
               <div class="button-container">
-                <button type="submit" class="btn btn-primary">생성</button>
+                <button type="submit" class="btn btn-primary" >생성</button>
               </div>
             </form>
           </div>
@@ -131,16 +102,16 @@ import router from '@/router/router';
 
 const searchQuery = ref('');
 const reviews = ref([]);
-const filteredReviews = ref([]);
 const currentPage = ref(1);
-const itemsPerPage = 10;
+const itemsPerPage = ref(10); // 페이지당 항목 수
+const totalPages = ref(1);
 
 const employees = ref([]);
 const newReviewContent = ref('');
 const currentYear = new Date().getFullYear();
 const newReviewYear = ref(currentYear);
-const newReviewQuarter = ref(1);
-const newRevieweeId = ref('');
+const newReviewQuarter = ref(new Date().getMonth() < 6 ? 1 : 2); // 분기를 자동 계산
+const newRevieweeId = ref(null);
 const userRole = ref('');
 const user = ref({});
 const selectedReviews = ref([]);
@@ -149,7 +120,6 @@ const selectedReview = ref(null);
 const reviewItems = ref([]);
 const reviewContents = ref({});
 
-
 const showModal = (modalId) => {
   const modal = new bootstrap.Modal(document.getElementById(modalId));
   modal.show();
@@ -157,32 +127,12 @@ const showModal = (modalId) => {
 
 const fetchReviews = async () => {
   try {
-    const response = await axios.get('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/review/history-list');
-    const reviewList = response.data.result;
-
-    await Promise.all(reviewList.map(async review => {
-      const reviewerResponse = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/id/${review.reviewerId}`);
-      const revieweeResponse = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/id/${review.revieweeId}`);
-      review.reviewerName = reviewerResponse.data.result.name;
-      review.departmentId = reviewerResponse.data.result.department.id;
-      review.revieweeName = revieweeResponse.data.result.name;
-
-      const departmentResponse = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/department/${review.departmentId}`);
-      review.departmentName = departmentResponse.data.result.departmentName;
-    }));
-    reviews.value = reviewList;
-    filteredReviews.value = reviewList; // 초기에는 모든 리뷰를 표시
+    const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/review/employees-history?page=${currentPage.value}&size=${itemsPerPage.value}`);
+    const reviewPage = response.data;
+    reviews.value = reviewPage.list;
+    totalPages.value = Math.ceil(reviewPage.total / itemsPerPage.value); // 총 페이지 수를 계산합니다.
   } catch (error) {
     console.error('평가 내역을 가져오는 중 오류 발생:', error);
-  }
-};
-
-const fetchEmployees = async () => {
-  try {
-    const response = await axios.get('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/list/all');
-    employees.value = response.data.result;
-  } catch (error) {
-    console.error('Error fetching employees:', error);
   }
 };
 
@@ -213,56 +163,47 @@ onMounted(() => {
     router.go(-1);
   } else {
     fetchReviews();
-    fetchEmployees();
   }
 });
 
-const totalPages = computed(() => {
-  return Math.ceil(filteredReviews.value.length / itemsPerPage);
-});
-
 const paginatedReviews = computed(() => {
-  const start = (currentPage.value - 1) * itemsPerPage;
-  const end = start + itemsPerPage;
-  return filteredReviews.value.slice(start, start + itemsPerPage);
+  const start = (currentPage.value - 1) * itemsPerPage.value;
+  const end = start + itemsPerPage.value;
+  return reviews.value.slice(start, end);
 });
 
 const changePage = (page) => {
   currentPage.value = page;
+  fetchReviews(); // 페이지 변경 시 새로운 데이터 요청
 };
 
-const filteredPages = computed(() => {
-  const maxPages = 5; // 페이지당 최대 표시할 페이지 수
-  const startPage = Math.max(1, currentPage.value - Math.floor(maxPages / 2));
-  const endPage = Math.min(totalPages.value, startPage + maxPages - 1);
-
-  const pages = [];
-  for (let i = startPage; i <= endPage; i++) {
-    pages.push(i);
-  }
-  return pages;
-});
-
 const prevPage = () => {
-  if (currentPage.value > 1) currentPage.value--;
+  if (currentPage.value > 1) {
+    currentPage.value--;
+    fetchReviews();
+  }
 };
 
 const nextPage = () => {
-  if (currentPage.value < totalPages.value) currentPage.value++;
+  if (currentPage.value < totalPages.value) {
+    currentPage.value++;
+    fetchReviews();
+  }
 };
 
 const goToPage = (page) => {
   currentPage.value = page;
+  fetchReviews();
 };
 
-// 처음 페이지로 이동
 const goToFirstPage = () => {
   currentPage.value = 1;
+  fetchReviews();
 };
 
-// 마지막 페이지로 이동
 const goToLastPage = () => {
   currentPage.value = totalPages.value;
+  fetchReviews();
 };
 
 const formatDate = (datetime) => {
@@ -276,10 +217,8 @@ const search = () => {
     alert('검색어를 입력해주세요.');
     return;
   }
-  filteredReviews.value = reviews.value.filter(review =>
-    review.reviewerName.toLowerCase().includes(searchQuery.value.toLowerCase())
-  );
-  currentPage.value = 1; // 검색 후 첫 페이지로 이동
+  currentPage.value = 1;
+  fetchReviews();
 };
 
 const closeModal = (modalId) => {
@@ -287,9 +226,9 @@ const closeModal = (modalId) => {
   modal.hide();
   if (modalId === 'addReview') {
     newReviewContent.value = '';
-    newReviewYear.value = '';
-    newReviewQuarter.value = '';
-    newRevieweeId.value = '';
+    newReviewYear.value = currentYear;
+    newReviewQuarter.value = new Date().getMonth() < 6 ? 1 : 2;
+    newRevieweeId.value = null;
     const form = document.querySelector(`#${modalId} form`);
     if (form) {
       form.classList.remove('was-validated');
@@ -302,17 +241,14 @@ const validateAndRegistContent = () => {
   if (!form.checkValidity()) {
     form.classList.add('was-validated');
   } else {
-    if (newReviewYear.value <= currentYear - 1) {
-      alert(`${currentYear - 1}년 이하로는 설정할 수 없습니다.`);
-    } else {
-      addNewReview();
-    }
+    addNewReview();
   }
 };
 
 const addNewReview = async () => {
-  if (newReviewYear.value <= currentYear - 1) {
-    alert(`${currentYear - 1}년 이하로는 설정할 수 없습니다.`);
+  const currentQuarter = new Date().getMonth() < 6 ? 1 : 2;
+  if (newReviewYear.value !== currentYear || newReviewQuarter.value !== currentQuarter) {
+    alert('현재 연도와 분기만 설정할 수 있습니다.');
     return;
   }
 
@@ -324,15 +260,13 @@ const addNewReview = async () => {
   };
 
   try {
-    // 중복된 리뷰가 있는지 확인
     const isDuplicate = reviews.value.some(review =>
       review.year === newReview.year &&
-      review.quarter === newReview.quarter &&
-      review.revieweeId === newReview.revieweeId
+      review.quarter === newReview.quarter
     );
 
     if (isDuplicate) {
-      alert('같은 연도, 같은 분기, 같은 대상자로 이미 생성된 평가가 있습니다.');
+      alert('이미 생성된 평가가 있습니다.');
       return;
     }
 
@@ -348,6 +282,27 @@ const addNewReview = async () => {
     console.error('Error adding new review:', error);
   }
 };
+
+const visiblePages = computed(() => {
+  const totalVisible = 5;
+  let startPage = currentPage.value - Math.floor(totalVisible / 2);
+  if (startPage < 1) startPage = 1;
+  let endPage = startPage + totalVisible - 1;
+  if (endPage > totalPages.value) {
+    endPage = totalPages.value;
+    startPage = endPage - totalVisible + 1;
+    if (startPage < 1) startPage = 1;
+  }
+  const pages = [];
+  for (let i = startPage; i <= endPage; i++) {
+    pages.push(i);
+  }
+  return pages;
+});
+
+const formattedQuarter = computed(() => {
+  return newReviewQuarter.value === 1 ? '1분기' : '2분기';
+});
 
 </script>
 
@@ -383,6 +338,11 @@ const addNewReview = async () => {
   font-size: 25px;
   font-weight: 600;
   font-family: 'IBMPlexSansKR-Regular', sans-serif;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center; /* 중앙 정렬을 위해 추가 */
 }
 
 .reviewIcon {
@@ -479,20 +439,24 @@ tr:hover {
   justify-content: center;
   align-items: center;
   margin-top: 10px;
+  
 }
 
 .pagination .page-item.active .page-link {
   background-color: #088A85; /* 원하는 배경색 */
   border-color: #088A85; /* 원하는 테두리 색 */
   color: white; /* 원하는 텍스트 색 */
+  
 }
 
 .pagination .page-item .page-link {
   color: #088A85; /* 기본 텍스트 색 */
+  cursor: pointer;
 }
 
 .pagination .page-item.disabled .page-link {
   color: #088A85; /* 비활성화된 페이지 색 */
+  cursor: not-allowed;
 }
 
 .view-review-btn {
@@ -503,10 +467,12 @@ tr:hover {
   border-radius: 4px;
   cursor: pointer;
   font-size: 12px;
+  
 }
 
 .view-review-btn:hover {
   background-color: #065f5b;
+  
 }
 
 .btn-custom-1 {
@@ -520,6 +486,7 @@ tr:hover {
     overflow: hidden;
     font-size: 11px;
     font-weight: bold;
+    
 }
 
 .btn-custom-1::before {
@@ -532,10 +499,12 @@ tr:hover {
     background-color: #088A85;
     transition: left 0.4s;
     z-index: 1;
+    
 }
 
 .btn-custom-1:hover::before {
     left: 0;
+    
 }
 
 .btn-custom-1 span {
@@ -546,5 +515,11 @@ tr:hover {
 
 .btn-custom-1:hover span {
     color: white;
+}
+
+.pagination-container {
+  grid-row-start: 5;
+  grid-column-start: 2;
+  justify-self: center;
 }
 </style>

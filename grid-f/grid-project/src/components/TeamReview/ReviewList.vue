@@ -6,7 +6,7 @@
 
     <div class="search-and-add">
       <div class="search-group">
-        <input type="text" v-model="searchQuery" placeholder="제목 검색" class="searchBox" />
+        <input type="text" v-model="searchQuery" placeholder="평가대상자 검색" class="searchBox" />
         <button @click="search" class="searchBtn">검색</button>
       </div>
     </div>
@@ -173,7 +173,7 @@ const fetchReviewItems = async (reviewId) => {
 onMounted(fetchReviews);
 
 const filteredReviews = computed(() => {
-  return reviews.value.filter(review => review.content.toLowerCase().includes(searchQuery.value.toLowerCase()));
+  return reviews.value.filter(review => review.revieweeName.toLowerCase().includes(searchQuery.value.toLowerCase()));
 });
 
 const paginatedReviews = computed(() => {
@@ -418,10 +418,6 @@ tr:hover {
   display: flex;
   justify-content: center;
   align-items: center;
-  position: fixed;
-  z-index: 1;
-  left: 0;
-  top: 0;
   width: 100%;
   height: 100%;
   overflow: auto;
@@ -432,8 +428,10 @@ tr:hover {
   background-color: white;
   padding: 20px;
   border-radius: 5px;
-  width: 60%;
+  width: 50%;
   max-width: 80%;
+  height: 90%;
+  overflow: auto;
 }
 
 .close {
