@@ -4,7 +4,7 @@
       <div class="header-title">
         <h1 class="mb-1"><i class="bi bi-diagram-2 fs-3"></i>&nbsp; 부서 정보</h1>
       </div>
-      <button v-if="userRole === 'ROLE_ADMIN'" class="updateLeaderBtn btn-custom-1" @click="showModal('updateLeaderModal')"><span>부서장 수정</span></button>
+      <button v-if="userRole === 'ROLE_ADMIN'" class="updateLeaderBtn btn-custom-1" @click="prepareUpdateLeaderModal"><span>부서장 수정</span></button>
       <button v-if="userRole === 'ROLE_ADMIN'" class="addbtn btn-custom-1" @click="showModal('addNewModal')"><span>추가하기</span></button>
       <button v-if="userRole === 'ROLE_ADMIN'" class="modifybtn btn-custom-1" @click="modifyDepartmentsStatus"><span>활성/비활성</span></button>
     </div>
@@ -13,7 +13,7 @@
       <button @click="search" class="searchBtn">검색</button>
     </div>
     <table class="deptTable" style="background-color: white;">
-      <thead >
+      <thead>
         <tr>
           <th style="width: 10%;"></th>
           <th style="width: 10%;">부서코드</th>
@@ -27,7 +27,7 @@
       <tbody>
         <tr v-for="(department) in paginatedDepartments" :key="department.sequence">
           <td>
-            <input v-if="userRole === 'ROLE_ADMIN'" type="checkbox" @change="toggleDepartmentSelection(department)" :checked="isDepartmentSelected(department)">
+            <input v-if="userRole === 'ROLE_ADMIN'" type="checkbox" @change="selectDepartment(department)" :checked="isDepartmentSelected(department)">
           </td>
           <td>{{ department.departmentCode }}</td>
           <td>{{ department.departmentName }}</td>
@@ -40,9 +40,6 @@
         </tr>
       </tbody>
     </table>
-    <!-- <div class="pagination">
-      <a href="#" @click.prevent="changePage(page)" :class="{ active: page === currentPage }" v-for="page in totalPages" :key="page">{{ page }}</a>
-    </div> -->
 
     <!-- 부서 추가 Modal -->
     <div class="modal fade" id="addNewModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -92,6 +89,7 @@
                   <th>사원번호</th>
                   <th>이름</th>
                   <th>직책</th>
+                  <th>직급</th>
                   <th>선택</th>
                 </tr>
               </thead>
@@ -100,6 +98,7 @@
                   <td>{{ leader.employeeNumber }}</td>
                   <td>{{ leader.name }}</td>
                   <td>{{ leader.position.positionName }}</td>
+                  <td>{{ leader.duties.dutiesName }}</td>
                   <td><button type="button" class="btn btn-primary" @click="selectLeader(leader)">선택</button></td>
                 </tr>
               </tbody>
@@ -153,6 +152,7 @@
                   <th>사원번호</th>
                   <th>이름</th>
                   <th>직책</th>
+                  <th>직급</th>
                   <th>선택</th>
                 </tr>
               </thead>
@@ -161,6 +161,7 @@
                   <td>{{ leader.employeeNumber }}</td>
                   <td>{{ leader.name }}</td>
                   <td>{{ leader.position.positionName }}</td>
+                  <td>{{ leader.duties.dutiesName }}</td>
                   <td><button type="button" class="btn btn-primary" @click="selectLeaderForUpdate(leader)">선택</button></td>
                 </tr>
               </tbody>
@@ -183,7 +184,7 @@ const leaders = ref([]);
 const currentPage = ref(1);
 const itemsPerPage = 10;
 const searchQuery = ref('');
-const selectedDepartments = ref([]);
+const selectedDepartment = ref(null);
 const userId = ref('');
 const userRole = ref('');
 const selectedDepartmentId = ref(null);
@@ -308,7 +309,6 @@ const showModal = (modalId) => {
   modal.show();
 };
 
-// Computed property to get list of leader IDs already assigned as department leaders
 const leaderIdsInDepartments = computed(() => {
   return departments.value.map(department => department.leaderId);
 });
@@ -388,18 +388,17 @@ const goToDepartmentTeams = (id) => {
 };
 
 const modifyDepartmentsStatus = async () => {
-  if (selectedDepartments.value.length === 0) {
+  if (!selectedDepartment.value) {
     alert('수정할 부서를 선택하세요.');
     return;
   }
 
   try {
-    const response = await axios.put('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/department/status', selectedDepartments.value);
+    const response = await axios.put('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/department/status', [selectedDepartment.value]);
     if (response.status === 200) {
       alert('수정되었습니다.');
       await fetchDepartments();
-      selectedDepartments.value = [];
-      clearSelection();
+      selectedDepartment.value = null;
     }
   } catch (error) {
     console.error('부서 상태를 수정하는 중 에러 발생:', error);
@@ -407,29 +406,12 @@ const modifyDepartmentsStatus = async () => {
   }
 };
 
-const toggleDepartmentSelection = (department) => {
-  if (selectedDepartments.value.length >= 1 && !isDepartmentSelected(department)) {
-    alert('한 개의 부서만 선택할 수 있습니다.');
-    return;
-  }
-
-  const index = selectedDepartments.value.findIndex(d => d.id === department.id);
-  if (index > -1) {
-    selectedDepartments.value.splice(index, 1);
-  } else {
-    selectedDepartments.value.push(department);
-  }
+const selectDepartment = (department) => {
+  selectedDepartment.value = department;
 };
 
 const isDepartmentSelected = (department) => {
-  return selectedDepartments.value.some(d => d.id === department.id);
-};
-
-const clearSelection = () => {
-  const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-  checkboxes.forEach(checkbox => {
-    checkbox.checked = false;
-  });
+  return selectedDepartment.value && selectedDepartment.value.id === department.id;
 };
 
 const updateLeader = async () => {
@@ -462,6 +444,14 @@ const updateLeader = async () => {
   }
 };
 
+const prepareUpdateLeaderModal = () => {
+  if (selectedDepartment.value) {
+    selectedDepartmentId.value = selectedDepartment.value.id;
+  }
+  showModal('updateLeaderModal');
+};
+
+
 const filteredLeaders = computed(() => {
   return leaders.value.filter(leader => {
     return leader.name.includes(leaderSearchQuery.value) || 
@@ -478,7 +468,6 @@ const searchLeaders = () => {
            leader.position.positionName.includes(leaderSearchQuery.value);
   });
 };
-
 </script>
 
 <style scoped>

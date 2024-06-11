@@ -16,6 +16,7 @@
             </li>
           </ol>
         </nav>
+        <div><h1 class="fw-bolder"><i class="bi bi-person"></i>&nbsp; 팀원 정보</h1></div>
       </div>
     </div>
 
@@ -38,7 +39,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="employee in paginatedEmployees" :key="employee.employeeId">
+        <tr v-for="employee in paginatedEmployees" :key="employee.duties.id">
           <td>{{ employee.name }}</td>
           <td>{{ employee.employeeNumber }}</td>
           <td>{{ employee.email }}</td>
@@ -91,8 +92,9 @@ const fetchEmployees = async (teamId) => {
     const employeeDetailsPromises = employeeIds.map(id => axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/id/${id}`));
     const employeeDetailsResponses = await Promise.all(employeeDetailsPromises);
     
-    // 상세 정보를 employees에 저장
+    // 상세 정보를 employees에 저장하고 duties.id를 기준으로 정렬
     employees.value = employeeDetailsResponses.map(response => response.data.result);
+    employees.value.sort((a, b) => a.duties.id - b.duties.id); // duties.id를 기준으로 정렬
     filteredEmployees.value = employees.value;
   } catch (error) {
     console.error('직원 데이터를 가져오는 중 오류 발생:', error);
@@ -205,6 +207,7 @@ const goBack = () => {
   display: flex;
   align-items: center;
   flex-grow: 1;
+  justify-content: right;
 }
 
 .searchBox {
@@ -291,5 +294,8 @@ tr:hover {
 
 .pagination button:hover:not(.active):not(:disabled) {
   background-color: #f1f1f1;
+}
+h1 {
+  font-size: 25px;
 }
 </style>

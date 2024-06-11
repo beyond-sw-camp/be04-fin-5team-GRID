@@ -27,7 +27,7 @@
 
     <div class="offcanvas offcanvas-end" id="demo">
       <div class="offcanvas-header">
-        <h1 class="offcanvas-title">부서 리스트</h1>
+        <h1 class="offcanvas-title">조직도</h1>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
       </div>
       <div class="offcanvas-body" style="position: relative;">

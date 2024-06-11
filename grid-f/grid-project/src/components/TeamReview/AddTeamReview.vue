@@ -108,6 +108,11 @@ const deleteSelectedReviews = async () => {
     return;
   }
 
+  const confirmDeletion = confirm('선택한 항목을 삭제하시겠습니까?');
+  if (!confirmDeletion) {
+    return;
+  }
+
   try {
     for (const reviewId of selectedReviews.value) {
       await axios.delete(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/review/list/${reviewId}`);
@@ -120,6 +125,7 @@ const deleteSelectedReviews = async () => {
     alert('평가되지 않는 항목만 삭제할 수 있습니다.');
   }
 };
+
 
 const addReview = async () => {
   if (!newReviewText.value) {
