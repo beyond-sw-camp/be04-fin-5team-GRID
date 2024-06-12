@@ -113,7 +113,8 @@ https://www.notion.so/Grid-api-b1d410e771d148ae9b99b035a446663d
 - 테스트 케이스 정리
 - 
 ![image](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/108782390/73f696ab-58d6-4d2e-8f76-f0909b0a7a40)
-![image](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/64297541/f91aca58-412b-4934-be8f-259630106ddf)
+![스크린샷 2024-06-12 160928](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/64297541/3bb18e48-fd24-436b-adba-3ac86ba17838)
+
 
 
 ## 2-9. UI/UX 테스트 결과
