@@ -368,6 +368,12 @@ public class UserServiceImpl implements UserService{
         if(givenInfo.getAddress() == null)
             givenInfo.setAddress(oldInfo.getAddress());
 
+        //관리자일 경우 1 ADMIN , 1이외의 유저일 경우 USER 넣음
+        if(oldInfo.getId() == 1)
+            givenInfo.setRole(Role.ROLE_ADMIN);
+        if(oldInfo.getId() != 1)
+            givenInfo.setRole(Role.ROLE_USER);
+
         return Employee.builder()
                 .id(oldInfo.getId())
                 .email(givenInfo.getEmail())
@@ -385,7 +391,7 @@ public class UserServiceImpl implements UserService{
                 .resignTime(oldInfo.getResignTime())
                 .resignYn(oldInfo.getResignYn())
                 .workType(givenInfo.getWorkType())
-                .role(Role.ROLE_USER)
+                .role(givenInfo.getRole())
                 .contractStartTime(oldInfo.getContractStartTime())
                 .contractEndTime(oldInfo.getContractEndTime())
                 .salary(oldInfo.getSalary())
