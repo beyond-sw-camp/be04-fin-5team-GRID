@@ -3,7 +3,7 @@
       <div class="policyTitle" v-if="userRole === 'ROLE_ADMIN'">
         <i class="bi bi-brightness-high fs-3"></i>
         <h1 class="mb-1">휴가 정책</h1>
-        <img src="@/assets/buttons/guide.png" v-if="userRole === 'ROLE_ADMIN'" class="guide" @click="showModal('guideManage')"></img>
+        <i class="bi bi-info-circle fs-5 custom-icon" v-if="userRole === 'ROLE_ADMIN'" id="popover-target-1" style="color: darkgoldenrod" @click="showModal('guideManage')"></i>
         <button class="policyRegist btn-custom-1" @click="showModal('registPolicy')" v-if="userRole === 'ROLE_ADMIN'"><span>등록하기</span></button>
       </div>
       <div class="policyTitleUser" v-if="userRole === 'ROLE_USER'">
@@ -356,6 +356,10 @@ Array.from(forms).forEach(form => {
   grid-template-rows: 18% minmax(75%, max-content) 5% 2%;
   grid-template-columns: 10% 80% 10%;
   height: 100%;
+}
+
+.custom-icon {
+  cursor: pointer;
 }
 
 .policyTitle {
