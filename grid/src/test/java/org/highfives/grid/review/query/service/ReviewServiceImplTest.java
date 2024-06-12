@@ -70,42 +70,52 @@ class ReviewServiceImplTest {
     }
 
     @Test
+    @DisplayName("평가 내역 전체 조회 기능")
     void findHistoryList() {
         // Given
-        int reviewerId = 1;
 
         // When
         List<ReviewHistoryDTO> historyList = reviewService.findHistoryList();
 
 
         // Then
+        for (ReviewHistoryDTO history : historyList) {
+            assertThat(history).isNotNull();
+        }
     }
 
     @Test
+    @DisplayName("자신의 동료 평가 조회 기능")
     void findMyReviewHistory() {
         // Given
-        int reviewerId = 1;
+        int revieweeId = 1;
 
         // When
-        List<ReviewHistoryDTO> myReviewHistory = reviewService.findMyReviewHistory(reviewerId);
+        List<ReviewHistoryDTO> myReviewHistory = reviewService.findMyReviewHistory(revieweeId);
 
 
         // Then
+        for (ReviewHistoryDTO reviewHistory : myReviewHistory) {
+            assertThat(reviewHistory).isNotNull();
+            assertThat(reviewHistory.getRevieweeId()).isSameAs(revieweeId);
+        }
     }
 
     @Test
+    @DisplayName("동료 평가 항목 조회 기능")
     void findReviewList() {
         // Given
-        int reviewerId = 1;
+        int id = 1;
 
         // When
-        ReviewListDTO reviewList = reviewService.findReviewList(reviewerId);
-
+        ReviewListDTO reviewList = reviewService.findReviewList(id);
 
         // Then
+        assertThat(reviewList).isNotNull();
     }
 
     @Test
+    @DisplayName("전체 동료 평가 조회 기능")
     void findEmployeesHistory() {
         // Given
         int page = 10;
@@ -115,5 +125,6 @@ class ReviewServiceImplTest {
 
 
         // Then
+        assertThat(employeesHistory).isNotNull();
     }
 }

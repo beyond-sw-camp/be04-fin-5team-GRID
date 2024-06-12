@@ -50,16 +50,17 @@ class DepartmentServiceImplTest {
 
         // Given
         DepartmentDTO departmentDTO = new DepartmentDTO();
-        departmentDTO.setDepartmentName("테스트");
-        departmentDTO.setDepartmentCode("0100");
+        departmentDTO.setDepartmentName("테스트123122");
+        departmentDTO.setDepartmentCode("010021");
+        departmentDTO.setLeaderId(1);
 
         // When
         DepartmentDTO departmentDTOList = departmentService.registDepartment(departmentDTO);
 
         // Then
 
-        assertThat(departmentDTOList.getDepartmentName()).isEqualTo("테스트");
-        assertThat(departmentDTOList.getDepartmentCode()).isEqualTo("0100");
+        assertThat(departmentDTOList.getDepartmentName()).isEqualTo(departmentDTO.getDepartmentName());
+        assertThat(departmentDTOList.getDepartmentCode()).isEqualTo(departmentDTO.getDepartmentCode());
     }
 
 
@@ -155,6 +156,8 @@ class DepartmentServiceImplTest {
 
     }
     @Test
+    @DisplayName("부서 활성/비활성화")
+    @Transactional
     void modifyDepartmentStatus() {
 
         // Given
@@ -191,11 +194,13 @@ class DepartmentServiceImplTest {
     }
 
     @Test
+    @DisplayName("부서장 변경")
+    @Transactional
     void modifyDepartmentLeader() {
         // Given
         DepartmentDTO departmentDTO1 = DepartmentDTO.builder()
                 .id(1)
-                .leaderId(3)
+                .leaderId(4)
                 .build();
 
         // When

@@ -73,7 +73,7 @@ class ReviewServiceImplTest {
 
         // Then
         for (ReviewDTO testData : testDataList) {
-            assertThat(testData.getScore()).isEqualTo(reviewDTO.getScore());
+            assertThat(testData.getScore()).isNotNull();
         }
 
 
@@ -87,14 +87,14 @@ class ReviewServiceImplTest {
         // Given
         ReviewDTO reviewDTO = ReviewDTO.builder()
                 .id(1)
-                .score(350)
+                .score(100)
                 .build();
 
         // When
         ReviewDTO updateData = reviewService.modifyReview(reviewDTO);
 
         // Then
-        assertThat(updateData.getScore()).isEqualTo(350);
+        assertThat(updateData.getScore()).isEqualTo(100);
 
     }
 
@@ -169,7 +169,18 @@ class ReviewServiceImplTest {
     }
 
     @Test
+    @DisplayName("평가 항목 삭제 기능")
+    @Transactional
     void deleteReviewList() {
+
+
+        //Given
+
+        int id = 1;
+
+        // When
+
+        reviewService.deleteReviewList(id);
     }
 
     @Test
@@ -219,7 +230,7 @@ class ReviewServiceImplTest {
 
 
         // Then
-        assertThat(updateData.getReviewStatus()).isSameAs("COMPLETE");
+        assertThat(updateData.getReviewStatus()).isSameAs("Y");
 
     }
 

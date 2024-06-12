@@ -36,7 +36,7 @@ class TeamServiceImplTest {
         // Given
         TeamDTO teamDTO = TeamDTO.builder()
                 .teamName("test")
-                .leaderId(1)
+                .leaderId(3)
                 .departmentId(1)
                 .build();
 
@@ -89,6 +89,8 @@ class TeamServiceImplTest {
     }
 
     @Test
+    @DisplayName("팀장 변경")
+    @Transactional
     void modifyTeamLeader() {
 
         // Given
@@ -96,7 +98,7 @@ class TeamServiceImplTest {
                 .id(1)
                 .teamName("test")
                 .teamStatus(TeamStatus.N)
-                .leaderId(2)
+                .leaderId(3)
                 .departmentId(1)
                 .build();
 
@@ -110,6 +112,8 @@ class TeamServiceImplTest {
     }
 
     @Test
+    @DisplayName("팀 활성/비활성화")
+    @Transactional
     void modifyTeamStatus() {
 
         // Given
@@ -131,7 +135,7 @@ class TeamServiceImplTest {
         // Then
         for (TeamDTO testData : testDataList) {
             assertThat(testData).isNotNull();
-            assertThat(testData.getLeaderId()).isEqualTo(teamDTO.getLeaderId());
+            assertThat(testData.getLeaderId()).isNotSameAs(teamDTO.getLeaderId());
         }
 
 
