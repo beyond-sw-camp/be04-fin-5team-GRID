@@ -120,9 +120,7 @@
             <p>3. 월 단위 휴가 지급 버튼을 누르면 월차와 보건휴가가 지급됩니다.</p>
             <p>3-1. 1년 미만의 직원들은 한달에 한개씩 월차가 지급됩니다.</p>
             <p>3-2. 여성직원들에게는 한달에 한개씩 보건휴가가 지급됩니다.</p>
-            <p>4. 직접지급 버튼을 누르면 원하는 휴가타입과 휴가일수, 사용기한을 입력한 후에 사번을 통해 <br> &nbsp; &nbsp; &nbsp; 해당직원에게 직접 휴가를
-              지급할 수
-              있습니다.</p>
+            <p>4. 직접지급 버튼을 누르면 원하는 휴가타입과 휴가일수, 사용기한을 입력한 후에 사번을 통해 <br> &nbsp; &nbsp; &nbsp; 해당직원에게 직접 휴가를 지급할 수 있습니다.</p>
           </div>
         </div>
         <div class="modal-footer">
@@ -509,23 +507,22 @@ onBeforeMount(() => {
 <style scoped>
 .historyAll {
   display: grid;
-  grid-template-rows: 18% 13% 4% 50% 10% 8%;
+  grid-template-rows: 18% 13% 4% 50% 10% 5%;
   grid-template-columns: 10% 80% 10%;
   height: 100%;
 }
 
 .historyTitle {
   grid-column-start: 2;
-  align-items: center;
-  font-size: 12px;
-  font-weight: 600;
+  margin-top: 2%;
   display: grid;
   grid-template-columns: 3% 15% 5% 77%;
+  align-items: center;
   color: #000000;
 }
 
 .historyTitle h1 {
-  margin-left: 0.5%;
+  margin-bottom: 0;
   font-size: 25px;
   font-weight: 600;
   margin: 0;

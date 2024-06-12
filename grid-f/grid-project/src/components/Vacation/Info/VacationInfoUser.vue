@@ -2,7 +2,7 @@
     <div class="historyAll">
         <div class="historyTitle">
             <i class="bi bi-brightness-high fs-3"></i>
-            <h1 class="mb-1">휴가 보유 정보</h1>
+            <h1 class="mb-1">휴가 보유 정보/변화 이력</h1>
         </div>
         <div class="vacations">
             <div class="annual" v-if="userRole === 'ROLE_USER'">
@@ -30,18 +30,10 @@
                 </div>
             </div>
         </div>
-        <div class="search">
-            <select v-model="searchType" class="searchType">
-                <option value="name">이름</option>
-                <option value="employeeNumber">사번</option>
-            </select>
-            <input v-model="searchQuery" class="sortBox" type="text" placeholder="검색">
-            <button @click="search" class="printBtn">검색</button>
-        </div>
         <div class="tableContainer">
             <b-table empty-html hover small :fields="fields" :items="paginatedInfo">
                 <template #cell(index)="data">
-                    {{ (currentPage - 1) * itemsPerPage + data.index + 1 }}
+                    {{ (currentPageInfo - 1) * itemsPerPage + data.index + 1 }}
                 </template>
                 <template #cell(employeeName)="data">
                     <span>{{ data.item.employeeName }}</span>
@@ -65,27 +57,83 @@
         </div>
         <nav class="pg" aria-label="Page navigation example">
             <ul class="pagination">
-                <li class="page-item" :class="{ disabled: currentPage === 1 }">
-                    <a class="page-link" href="#" aria-label="First" @click.prevent="goToFirstPage">
+                <li class="page-item" :class="{ disabled: currentPageInfo === 1 }">
+                    <a class="page-link" href="#" aria-label="First" @click.prevent="goToFirstPageInfo">
                         <span aria-hidden="true">&laquo;&laquo;</span>
                     </a>
                 </li>
-                <li class="page-item" :class="{ disabled: currentPage === 1 }">
-                    <a class="page-link" href="#" aria-label="Previous" @click.prevent="prevPage">
+                <li class="page-item" :class="{ disabled: currentPageInfo === 1 }">
+                    <a class="page-link" href="#" aria-label="Previous" @click.prevent="prevPageInfo">
                         <span aria-hidden="true">&laquo;</span>
                     </a>
                 </li>
-                <li v-for="page in filteredPages" :key="page" class="page-item"
-                    :class="{ active: page === currentPage }">
-                    <a class="page-link" @click.prevent="goToPage(page)">{{ page }}</a>
+                <li v-for="page in filteredPagesInfo" :key="page" class="page-item"
+                    :class="{ active: page === currentPageInfo }">
+                    <a class="page-link" @click.prevent="goToPageInfo(page)">{{ page }}</a>
                 </li>
-                <li class="page-item" :class="{ disabled: currentPage === totalPages }">
-                    <a class="page-link" aria-label="Next" @click.prevent="nextPage">
+                <li class="page-item" :class="{ disabled: currentPageInfo === totalPagesInfo }">
+                    <a class="page-link" aria-label="Next" @click.prevent="nextPageInfo">
                         <span aria-hidden="true">&raquo;</span>
                     </a>
                 </li>
-                <li class="page-item" :class="{ disabled: currentPage === totalPages }">
-                    <a class="page-link" href="#" aria-label="Last" @click.prevent="goToLastPage">
+                <li class="page-item" :class="{ disabled: currentPageInfo === totalPagesInfo }">
+                    <a class="page-link" href="#" aria-label="Last" @click.prevent="goToLastPageInfo">
+                        <span aria-hidden="true">&raquo;&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <div class="tableContainer-changeInfo">
+            <b-table hover small :fields="changeInfofields" :items="paginatedHistories">
+                <template #cell(index)="data">
+                    {{ (currentPageHistories - 1) * itemsPerPage + data.index + 1 }}
+                </template>
+                <template #cell(employeeName)="data">
+                    <span>{{ data.item.employeeName }}</span>
+                </template>
+                <template #cell(employeeNumber)="data">
+                    <span>{{ data.item.employeeNumber }}</span>
+                </template>
+                <template #cell(changeTypeName)="data">
+                    <span>{{ data.item.changeTypeName }}</span>
+                </template>
+                <template #cell(typeName)="data">
+                    <span>{{ data.item.typeName }}</span>
+                </template>
+                <template #cell(changeTime)="data">
+                    <span>{{ data.item.changeTime }}</span>
+                </template>
+                <template #cell(changeNum)="data">
+                    <span>{{ data.item.changeNum }}</span>
+                </template>
+                <template #cell(changeReason)="data">
+                    <span>{{ data.item.changeReason }}</span>
+                </template>
+            </b-table>
+        </div>
+        <nav class="changeInfopg" aria-label="Page navigation example">
+            <ul class="pagination">
+                <li class="page-item" :class="{ disabled: currentPageHistories === 1 }">
+                    <a class="page-link" href="#" aria-label="First" @click.prevent="goToFirstPageHistories">
+                        <span aria-hidden="true">&laquo;&laquo;</span>
+                    </a>
+                </li>
+                <li class="page-item" :class="{ disabled: currentPageHistories === 1 }">
+                    <a class="page-link" href="#" aria-label="Previous" @click.prevent="prevPageHistories">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <li v-for="page in filteredPagesHistories" :key="page" class="page-item"
+                    :class="{ active: page === currentPageHistories }">
+                    <a class="page-link" @click.prevent="goToPageHistories(page)">{{ page }}</a>
+                </li>
+                <li class="page-item" :class="{ disabled: currentPageHistories === totalPagesHistories }">
+                    <a class="page-link" aria-label="Next" @click.prevent="nextPageHistories">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+                <li class="page-item" :class="{ disabled: currentPageHistories === totalPagesHistories }">
+                    <a class="page-link" href="#" aria-label="Last" @click.prevent="goToLastPageHistories">
                         <span aria-hidden="true">&raquo;&raquo;</span>
                     </a>
                 </li>
@@ -98,15 +146,16 @@
 import { onBeforeMount, ref, computed } from 'vue';
 import axios from "axios";
 
-const searchType = ref('name');
-const searchQuery = ref('');
 const allInfo = ref([]);
 const vacationNum = ref('');
-const currentPage = ref(1);
-const itemsPerPage = 10;
+const currentPageInfo = ref(1); // 변경된 부분: vacation info의 현재 페이지
+const currentPageHistories = ref(1); // 변경된 부분: vacation histories의 현재 페이지
+const itemsPerPage = 5;
 const filteredInfo = ref([]);
 const userRole = ref('');
 const userId = ref('');
+const histories = ref([]);
+const filteredHistories = ref([]); // 필터링된 기록
 
 const annualVacationNum = ref(0);
 const monthVacationNum = ref(0);
@@ -121,16 +170,16 @@ const fields = [
     { key: 'vacationNum', label: '보유개수' }
 ];
 
-const getAllVacationInfo = async () => {
-    try {
-        const response = await axios.get("/api/vacation/info");
-        allInfo.value = response.data.result;
-        filteredInfo.value = allInfo.value; // 초기화 시 전체 데이터를 필터링된 데이터에 할당
-        calculateVacationNums();
-    } catch (error) {
-        console.error("Error:", error);
-    }
-};
+const changeInfofields = [
+    {key: 'index', label: '번호'},
+    {key: 'employeeName', label: '이름'},
+    {key: 'employeeNumber', label: '사번'},
+    {key: 'changeTypeName', label: '지급종류'},
+    {key: 'typeName', label: '휴가종류'},
+    {key: 'changeTime', label: '변경일'},
+    {key: 'changeNum', label: '변화개수'},
+    {key: 'changeReason', label: '사유'}
+];
 
 const getUserVacationInfo = async () => {
     try {
@@ -143,13 +192,15 @@ const getUserVacationInfo = async () => {
     }
 };
 
-const search = () => {
-    if (searchType.value === 'name') {
-        filteredInfo.value = allInfo.value.filter(info => info.employeeName.includes(searchQuery.value));
-    } else if (searchType.value === 'employeeNumber') {
-        filteredInfo.value = allInfo.value.filter(info => info.employeeNumber.includes(searchQuery.value));
-    }
-    currentPage.value = 1; // 검색 후 페이지를 1로 초기화
+const getUserVacationHistory = async () => {
+  try {
+    const response = await axios.get(`/api/vacation/details/${userId.value}`);
+    console.log(response.value)
+    histories.value = response.data.result;
+    filteredHistories.value = histories.value; // 처음에 모든 기록을 보여줌
+  } catch (error) {
+    console.error("Error fetching vacation details:", error);
+  }
 };
 
 const calculateVacationNums = () => {
@@ -167,15 +218,22 @@ const calculateVacationNums = () => {
 };
 
 const paginatedInfo = computed(() => {
-    const start = (currentPage.value - 1) * itemsPerPage;
+    const start = (currentPageInfo.value - 1) * itemsPerPage;
     const end = start + itemsPerPage;
     return filteredInfo.value.slice(start, end);
 });
 
-const filteredPages = computed(() => {
+const paginatedHistories = computed(() => {
+    const start = (currentPageHistories.value - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
+    return filteredHistories.value.slice(start, end);
+});
+
+
+const filteredPagesInfo = computed(() => {
     const maxPages = 5; // 페이지당 최대 표시할 페이지 수
-    const startPage = Math.max(1, currentPage.value - Math.floor(maxPages / 2));
-    const endPage = Math.min(totalPages.value, startPage + maxPages - 1);
+    const startPage = Math.max(1, currentPageInfo.value - Math.floor(maxPages / 2));
+    const endPage = Math.min(totalPagesInfo.value, startPage + maxPages - 1);
 
     const pages = [];
     for (let i = startPage; i <= endPage; i++) {
@@ -184,35 +242,78 @@ const filteredPages = computed(() => {
     return pages;
 });
 
-const totalPages = computed(() => {
+const filteredPagesHistories = computed(() => {
+    const maxPages = 5; // 페이지당 최대 표시할 페이지 수
+    const startPage = Math.max(1, currentPageHistories.value - Math.floor(maxPages / 2));
+    const endPage = Math.min(totalPagesHistories.value, startPage + maxPages - 1);
+
+    const pages = [];
+    for (let i = startPage; i <= endPage; i++) {
+        pages.push(i);
+    }
+    return pages;
+});
+
+const totalPagesInfo = computed(() => {
     return Math.ceil(filteredInfo.value.length / itemsPerPage);
 });
 
-const goToPage = (page) => {
-    if (page >= 1 && page <= totalPages.value) {
-        currentPage.value = page;
+const totalPagesHistories = computed(() => {
+    return Math.ceil(filteredHistories.value.length / itemsPerPage);
+});
+
+const goToPageInfo = (page) => {
+    if (page >= 1 && page <= totalPagesInfo.value) {
+        currentPageInfo.value = page;
     }
 };
 
-const prevPage = () => {
-    if (currentPage.value > 1) {
-        currentPage.value--;
+const goToPageHistories = (page) => {
+    if (page >= 1 && page <= totalPagesHistories.value) {
+        currentPageHistories.value = page;
     }
 };
 
-const nextPage = () => {
-    if (currentPage.value < totalPages.value) {
-        currentPage.value++;
+const prevPageInfo = () => {
+    if (currentPageInfo.value > 1) {
+        currentPageInfo.value--;
     }
 };
 
-const goToFirstPage = () => {
-    currentPage.value = 1;
+const prevPageHistories = () => {
+    if (currentPageHistories.value > 1) {
+        currentPageHistories.value--;
+    }
 };
 
-const goToLastPage = () => {
-    currentPage.value = totalPages.value;
+const nextPageInfo = () => {
+    if (currentPageInfo.value < totalPagesInfo.value) {
+        currentPageInfo.value++;
+    }
 };
+
+const nextPageHistories = () => {
+    if (currentPageHistories.value < totalPagesHistories.value) {
+        currentPageHistories.value++;
+    }
+};
+
+const goToFirstPageInfo = () => {
+    currentPageInfo.value = 1;
+};
+
+const goToFirstPageHistories = () => {
+    currentPageHistories.value = 1;
+};
+
+const goToLastPageInfo = () => {
+    currentPageInfo.value = totalPagesInfo.value;
+};
+
+const goToLastPageHistories = () => {
+    currentPageHistories.value = totalPagesHistories.value;
+};
+
 
 function parseJwt(token) {
     try {
@@ -236,18 +337,15 @@ onBeforeMount(() => {
         userId.value = decodedToken?.id || '';
     }
 
-    if (userRole.value === 'ROLE_ADMIN') {
-        getAllVacationInfo();
-    } else if (userRole.value === 'ROLE_USER') {
         getUserVacationInfo();
-    }
+        getUserVacationHistory();
 });
 </script>
 
 <style scoped>
 .historyAll {
     display: grid;
-    grid-template-rows: 18% 13% 4% 50% 10% 5%;
+    grid-template-rows: 18% 13% 25% 8% 25% 8% 3%;
     grid-template-columns: 10% 80% 10%;
     height: 100%;
 }
@@ -271,18 +369,6 @@ onBeforeMount(() => {
 
 .historyIcon {
     width: 80%;
-}
-
-.search {
-    grid-row-start: 3;
-    grid-column-start: 2;
-    display: grid;
-    grid-template-columns: 74% 5% 1% 15% 1% 4%;
-    font-size: 12px;
-}
-
-.searchType {
-    grid-column-start: 2;
 }
 
 .vacations {
@@ -358,22 +444,9 @@ onBeforeMount(() => {
     font-style: bold;
 }
 
-.printBtn {
-    grid-column-start: 6;
-    margin-left: 2%;
-    width: 100%;
-    background-color: #088A85;
-    color: white;
-    padding: 5px 5px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 12px;
-    font-style: bold;
-}
 
 .tableContainer {
-    grid-row-start: 4;
+    grid-row-start: 3;
     grid-column-start: 2;
     grid-column-end: 3;
     margin-top: 20px;
@@ -398,7 +471,7 @@ th {
 }
 
 .pg {
-    grid-row-start: 5;
+    grid-row-start: 4;
     grid-column-start: 2;
     grid-column-end: 3;
     display: flex;
@@ -424,10 +497,6 @@ th {
 .pagination .page-item.disabled .page-link {
     color: #088A85;
     /* 비활성화된 페이지 색 */
-}
-
-.pagination a {
-  cursor: pointer;
 }
 
 .vacationsNum {
@@ -472,5 +541,22 @@ th {
     border: 2px solid #a0a0a0;
     margin-bottom: 0;
     height: 100%;
+}
+
+.tableContainer-changeInfo {
+    grid-row-start: 5;
+    grid-column-start: 2;
+    margin-top: 20px;
+    font-size: 12px; 
+}
+
+.changeInfopg {
+    grid-row-start: 6;
+    grid-column-start: 2;
+    grid-column-end: 3;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
 }
 </style>
