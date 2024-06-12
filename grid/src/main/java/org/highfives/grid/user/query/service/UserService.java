@@ -14,13 +14,13 @@ import java.util.Map;
 public interface UserService {
     List<UserDTO> findList();
 
-    Page<UserDTO> findAllUsers(Pageable pageable, List<EmpStatusDTO> absenceInfo, String auth);
+    Page<UserDTO> findAllUsers(Pageable pageable, Map<Integer, EmpStatusDTO> ndAbsenceInfo, String auth);
 
-    Page<UserDTO> findUsersByName(String name, Pageable pageable, List<EmpStatusDTO> absenceInfo, String auth);
+    Page<UserDTO> findUsersByName(String name, Pageable pageable, Map<Integer, EmpStatusDTO> ndAbsenceInfo, String auth);
 
     LeaderInfoDTO findLeaderInfo(int id);
 
-    UserDTO findUserByEmployeeNum(String eNum, List<EmpStatusDTO> absenceInfo);
+    UserDTO findUserByEmployeeNum(String eNum, Map<Integer, EmpStatusDTO> ndAbsenceInfo);
 
     UserDTO findUserById(int id);
 

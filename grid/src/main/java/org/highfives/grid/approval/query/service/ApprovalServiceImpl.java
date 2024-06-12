@@ -12,8 +12,10 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
@@ -181,7 +183,7 @@ public class ApprovalServiceImpl implements ApprovalService{
         params.put("today", today);
 
         List<ApprovalEmpDTO> approvalEmpList = approvalMapper.findTodayBTandV(params);
-        System.out.println(approvalEmpList);
+        System.out.println("test " + approvalEmpList);
 
         return approvalEmpList;
     }
@@ -206,25 +208,36 @@ public class ApprovalServiceImpl implements ApprovalService{
     public List<EmpStatusDTO> findEmpStatus() {
 
         List<EmpStatusDTO> todayWork = new ArrayList<>();
-        DateTimeFormatter inputFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        DateTimeFormatter inputFormatBT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter inputFormatV = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         DateTimeFormatter outputFormat = DateTimeFormatter.ofPattern("yy.MM.dd");
 
         for (ApprovalEmpDTO bt : findTodayBT()) {
-            LocalDateTime startDateTime = LocalDateTime.parse(bt.getStartTime(), inputFormat);
-            LocalDateTime endDateTime = LocalDateTime.parse(bt.getEndTime(), inputFormat);
-            String startTime = startDateTime.format(outputFormat);
-            String endTime = endDateTime.format(outputFormat);
-            todayWork.add(new EmpStatusDTO(bt.getEmployeeId(), "출장", startTime, endTime));
+            try {
+                LocalDate startDate = LocalDate.parse(bt.getStartTime(), inputFormatBT);
+                LocalDate endDate = LocalDate.parse(bt.getEndTime(), inputFormatBT);
+                String startTime = startDate.format(outputFormat);
+                String endTime = endDate.format(outputFormat);
+                todayWork.add(new EmpStatusDTO(bt.getEmployeeId(), "출장", startTime, endTime));
+            } catch (DateTimeParseException e) {
+                System.err.println("Error parsing date for BT: " + bt + ". Error: " + e.getMessage());
+            }
         }
 
         for (ApprovalEmpDTO v : findTodayV()) {
-            LocalDateTime startDateTime = LocalDateTime.parse(v.getStartTime(), inputFormat);
-            LocalDateTime endDateTime = LocalDateTime.parse(v.getEndTime(), inputFormat);
-            String startTime = startDateTime.format(outputFormat);
-            String endTime = endDateTime.format(outputFormat);
-            todayWork.add(new EmpStatusDTO(v.getEmployeeId(), "휴가", startTime, endTime));
+            try {
+                LocalDateTime startDateTime = LocalDateTime.parse(v.getStartTime(), inputFormatV);
+                LocalDateTime endDateTime = LocalDateTime.parse(v.getEndTime(), inputFormatV);
+                String startTime = startDateTime.format(outputFormat);
+                String endTime = endDateTime.format(outputFormat);
+                todayWork.add(new EmpStatusDTO(v.getEmployeeId(), "휴가", startTime, endTime));
+            } catch (DateTimeParseException e) {
+                System.err.println("Error parsing date for V: " + v + ". Error: " + e.getMessage());
+            }
         }
 
         return todayWork;
     }
+
+
 }

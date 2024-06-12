@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController("UserQueryController")
 @RequestMapping("/users")
@@ -62,7 +63,14 @@ public class UserController {
         Pageable pageable = PageRequest.of(page, size);
         List<EmpStatusDTO> absenceInfo = approvalService.findEmpStatus();
 
-        Page<UserDTO> resultDTOs = userService.findAllUsers(pageable, absenceInfo, auth);
+        Map<Integer, EmpStatusDTO> ndAbsenceInfo = absenceInfo.stream()
+                .collect(Collectors.toMap(
+                        EmpStatusDTO::getEmployeeId,
+                        empStatus -> empStatus,
+                        (existing, replacement) -> existing
+                ));
+
+        Page<UserDTO> resultDTOs = userService.findAllUsers(pageable, ndAbsenceInfo, auth);
         List<SimpleInfo> resultList = DTOtoSimpleInfo(resultDTOs.getContent());
 
         ResFindListVO response = new ResFindListVO(200, "Success to find user list", "/users/{id}", resultList,
@@ -82,7 +90,15 @@ public class UserController {
         String auth = (String) token.get("auth");
         Pageable pageable = PageRequest.of(page, size);
         List<EmpStatusDTO> absenceInfo = approvalService.findEmpStatus();
-        Page<UserDTO> resultDTOs = userService.findUsersByName(name, pageable, absenceInfo, auth);
+
+        Map<Integer, EmpStatusDTO> ndAbsenceInfo = absenceInfo.stream()
+                .collect(Collectors.toMap(
+                        EmpStatusDTO::getEmployeeId,
+                        empStatus -> empStatus,
+                        (existing, replacement) -> existing
+                ));
+
+        Page<UserDTO> resultDTOs = userService.findUsersByName(name, pageable, ndAbsenceInfo, auth);
         List<SimpleInfo> resultList = DTOtoSimpleInfo(resultDTOs.getContent());
 
         ResFindListVO response = new ResFindListVO(200, "Success to find user list", "/users/{id}", resultList,
@@ -97,7 +113,15 @@ public class UserController {
     public ResponseEntity<ResFindUserVO> findUserByEmployeeNum(@PathVariable("employeeNumber") String eNum) {
 
         List<EmpStatusDTO> absenceInfo = approvalService.findEmpStatus();
-        UserDTO userDTO = userService.findUserByEmployeeNum(eNum, absenceInfo);
+
+        Map<Integer, EmpStatusDTO> ndAbsenceInfo = absenceInfo.stream()
+                .collect(Collectors.toMap(
+                        EmpStatusDTO::getEmployeeId,
+                        empStatus -> empStatus,
+                        (existing, replacement) -> existing
+                ));
+
+        UserDTO userDTO = userService.findUserByEmployeeNum(eNum, ndAbsenceInfo);
 
         if(userDTO != null){
             ResFindUserVO response =

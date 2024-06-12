@@ -44,23 +44,17 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public Page<UserDTO> findAllUsers(Pageable pageable, List<EmpStatusDTO> absenceInfo, String auth) {
+    public Page<UserDTO> findAllUsers(Pageable pageable, Map<Integer, EmpStatusDTO> ndAbsenceInfo, String auth) {
         long offset = pageable.getOffset();
         int pageSize = pageable.getPageSize();
         List<UserDTO> userList = userMapper.getUserList(offset, pageSize, auth);
 
-        Map<Integer, EmpStatusDTO> absenceInfoMap;
-        if(absenceInfo != null){
-            absenceInfoMap = absenceInfo.stream()
-                    .collect(Collectors.toMap(EmpStatusDTO::getEmployeeId, empStatusDTO -> empStatusDTO));
-        } else {
-            absenceInfoMap = new HashMap<>();
-        }
+        Map<Integer, EmpStatusDTO> absenceInfo = (ndAbsenceInfo != null) ? ndAbsenceInfo : new HashMap<>();
 
         userList.forEach(user -> {
             System.out.println("user.getId() + user.getResignYn() = " + user.getId() + user.getResignYn());
             if(user.getResignYn().equals(YN.N)) {
-                EmpStatusDTO empStatusDTO = absenceInfoMap.get(user.getId());
+                EmpStatusDTO empStatusDTO = absenceInfo.get(user.getId());
                 if (empStatusDTO != null) {
                     user.setAbsenceYn(YN.Y);
                     user.setAbsenceContent(empStatusDTO.getStatus());
@@ -75,23 +69,17 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public Page<UserDTO> findUsersByName(String name, Pageable pageable, List<EmpStatusDTO> absenceInfo,
+    public Page<UserDTO> findUsersByName(String name, Pageable pageable, Map<Integer, EmpStatusDTO> ndAbsenceInfo,
                                          String auth) {
         long offset = pageable.getOffset();
         int pageSize = pageable.getPageSize();
         List<UserDTO> userList = userMapper.getUserListByName(name, offset, pageSize, auth);
 
-        Map<Integer, EmpStatusDTO> absenceInfoMap;
-        if(absenceInfo != null){
-            absenceInfoMap = absenceInfo.stream()
-                    .collect(Collectors.toMap(EmpStatusDTO::getEmployeeId, empStatusDTO -> empStatusDTO));
-        } else {
-            absenceInfoMap = new HashMap<>();
-        }
+        Map<Integer, EmpStatusDTO> absenceInfo = (ndAbsenceInfo != null) ? ndAbsenceInfo : new HashMap<>();
 
         userList.forEach(user -> {
             if(user.getResignYn() == YN.N) {
-                EmpStatusDTO empStatusDTO = absenceInfoMap.get(user.getId());
+                EmpStatusDTO empStatusDTO = absenceInfo.get(user.getId());
                 if (empStatusDTO != null) {
                     user.setAbsenceYn(YN.Y);
                     user.setAbsenceContent(empStatusDTO.getStatus());
@@ -112,22 +100,14 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public UserDTO findUserByEmployeeNum(String eNum, List<EmpStatusDTO> absenceInfo) {
+    public UserDTO findUserByEmployeeNum(String eNum, Map<Integer, EmpStatusDTO> ndAbsenceInfo) {
 
         if (eNum == null || eNum.trim().isEmpty() || !eNum.matches("\\d+") || eNum.length() != 7) {
             throw new InvalidNumberException("Invalid employee number: " + eNum);
         }
-
+        Map<Integer, EmpStatusDTO> absenceInfo = (ndAbsenceInfo != null) ? ndAbsenceInfo : new HashMap<>();
         Map<String, Object> info = new HashMap<>();
         info.put("eNum", eNum);
-
-        Map<Integer, EmpStatusDTO> absenceInfoMap;
-        if(absenceInfo != null){
-            absenceInfoMap = absenceInfo.stream()
-                    .collect(Collectors.toMap(EmpStatusDTO::getEmployeeId, empStatusDTO -> empStatusDTO));
-        } else {
-            absenceInfoMap = new HashMap<>();
-        }
 
         UserDTO result = userMapper.getUserInfo(info);
         if (result == null) {
@@ -135,7 +115,7 @@ public class UserServiceImpl implements UserService{
         }
 
         if( result.getResignYn() == YN.N) {
-            EmpStatusDTO absence = absenceInfoMap.get(result.getId());
+            EmpStatusDTO absence = absenceInfo.get(result.getId());
             if (absence != null) {
                 result.setAbsenceYn(YN.Y);
                 result.setAbsenceContent(absence.getStatus());
