@@ -14,6 +14,7 @@ import org.highfives.grid.department.command.service.TeamServiceImpl;
 import org.highfives.grid.user.command.aggregate.*;
 import org.highfives.grid.user.command.dto.UserDTO;
 import org.highfives.grid.user.command.repository.UserRepository;
+import org.highfives.grid.user.exception.InvalidInfoException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -113,6 +114,10 @@ public class UserServiceImpl implements UserService{
     @Override
     @Transactional
     public List<UserDTO> modifyMultiUser(List<UserDTO> modifyList) {
+
+        if(modifyList == null)
+            throw new InvalidInfoException("Info list is empty");
+
         List<Employee> employeeList = new ArrayList<>();
 
         // 유저 검증 단계
@@ -121,9 +126,9 @@ public class UserServiceImpl implements UserService{
             if (oldInfo == null || !oldInfo.getEmployeeName().equals(userDTO.getName())) {
                 throw new UsernameNotFoundException("유저명과 사번이 일치하지 않습니다: " + userDTO.getEmail());
             }
-            employeeList.add(inputNewMulitInfo(oldInfo, userDTO));
+            employeeList.add(inputNewMultiInfo(oldInfo, userDTO));
         }
-        System.out.println("employeeList = " + employeeList);
+
         // 검증에 성공한 경우 수정 단계
         userRepository.saveAll(employeeList);
 
@@ -139,6 +144,9 @@ public class UserServiceImpl implements UserService{
     @Override
     @Transactional
     public boolean deleteUser(String eNum) {
+
+        if(eNum.isEmpty() || eNum == null)
+            throw new InvalidInfoException("Employee number is empty");
 
         try {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -158,6 +166,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    @Transactional
     public boolean rejoinUser(String eNum) {
 
         try {
@@ -202,7 +211,7 @@ public class UserServiceImpl implements UserService{
     private String checkDuplicateEmail(String email) {
         try {
             Employee employee = userRepository.findByEmail(email);
-            if (employee != null && !employee.getEmail().equals(email)) {
+            if (employee != null) {
                 return "Already used Email: " + email;
             }
         } catch (Exception e) {
@@ -214,7 +223,7 @@ public class UserServiceImpl implements UserService{
     private String checkDuplicateEmployeeNumber(String employeeNumber) {
         try {
             Employee employee = userRepository.findByEmployeeNumber(employeeNumber);
-            if (employee != null && !employee.getEmployeeNumber().equals(employeeNumber)) {
+            if (employee != null) {
                 return "Already used Employee Number: " + employeeNumber;
             }
         } catch (Exception e) {
@@ -226,7 +235,7 @@ public class UserServiceImpl implements UserService{
     private String checkDuplicatePhoneNumber(String phoneNumber) {
         try {
             Employee employee = userRepository.findByPhoneNumber(phoneNumber);
-            if (employee != null && !employee.getPhoneNumber().equals(phoneNumber)) {
+            if (employee != null) {
                 return "Already used Phone Number: " + phoneNumber;
             }
         } catch (Exception e) {
@@ -260,6 +269,9 @@ public class UserServiceImpl implements UserService{
     @Override
     @Transactional
     public boolean resetPwd(Map<String, String> infos) {
+
+        if(infos.isEmpty())
+            throw new InvalidInfoException("Change info is empty");
 
         try{
             Employee employee = userRepository.findByEmail(infos.get("email"));
@@ -404,7 +416,7 @@ public class UserServiceImpl implements UserService{
                 .build();
     }
 
-    private Employee inputNewMulitInfo(Employee oldInfo, UserDTO givenInfo) {
+    private Employee inputNewMultiInfo(Employee oldInfo, UserDTO givenInfo) {
 
         // 수정 받는 정보들 중에 null 값이 있을 시 기존 값으로 입력받음.
         if(givenInfo.getDepartmentId() == 0)
