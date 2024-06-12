@@ -68,20 +68,44 @@
 ## 주요기능
 
 
-## 새롭게 도입한 기술
-
 ---
+## 2-1. WBS
+- 기획 및 정책 수립 일정
+![image](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/108782390/b4998f56-0f3e-4560-8b86-38e4e336236f)
 
-## 2-1. 요구사항 명세서
+- 백엔드 일정
+![image](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/108782390/eab02fef-9bc6-40e9-9398-6a1747414e10)
+![image](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/108782390/1fe77f83-94b6-40fb-8452-5f0a6c9f968a)
+
+- 프론트 일정
+![image](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/108782390/fc110c7e-4ef5-4065-a3df-02c165a1bced)
+
+- CI/CD 및 문서화 일정
+![image](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/108782390/3e2a1cc0-7b8e-4991-b8eb-b2b9ad7db145)
 
 
-## 2-2. DB 모델링
-
+## 2-2. 요구사항 명세서
+![image](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/108782390/99ccae21-1067-4830-981f-65777459e702)
+![image](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/108782390/7051bcfc-b6e6-4cb4-9c2a-ef99cbb8957f)
+![image](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/108782390/5e40cb81-d080-4919-9291-990f91822aeb)
 
 ## 2-3. Context Map 
+![DDD](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/108782390/5befa14f-3d38-41b1-a92e-f3e2c44cc05a)
 
+## 2-4. DB 모델링
+- 논리 모델링
+
+
+- 물리 모델링
+
+
+## 2-5. 화면 설계서
+![image](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/108782390/ac9cc906-f02d-4ef1-ad77-78eb047fdb3e)
+![image](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/108782390/b2550eee-731f-45df-9142-3cb1a83ac35f)
+![image](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/108782390/17f77ef0-282c-41db-91a0-db5e09972eb6)
 
 ## 2-5. 시스템 아키텍쳐
+![아키텍처](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/108782390/e242a2a8-d9aa-4834-b0a9-5ca1c0b91508)
 
 
 ## 2-6. CICD 빌드/배포 
@@ -89,7 +113,9 @@
 
 ## 2-7. API 명세서
 
+
 ## 2-8. 테스트 케이스 & 결과 
+
 
 
 ## 2-9. UI
