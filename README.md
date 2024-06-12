@@ -107,15 +107,19 @@
 
 
 ## 2-7. API 명세서
-
+https://www.notion.so/Grid-api-b1d410e771d148ae9b99b035a446663d
 
 ## 2-8. 단위 테스트 결과 
+- 테스트 케이스 정리
+- 
+![image](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/108782390/73f696ab-58d6-4d2e-8f76-f0909b0a7a40)
 
 
 ## 2-9. UI/UX 테스트 결과
 
 
 ## 2-10. 통합 테스트 결과 
+![image](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/108782390/a08358ba-1d8f-47cb-a293-bf672cde8781)
 
 
 
