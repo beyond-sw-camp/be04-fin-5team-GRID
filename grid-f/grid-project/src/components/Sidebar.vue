@@ -118,18 +118,23 @@ const navigateTo = (path) => {
 const filteredMenus = ref({});
 
 watchEffect(() => {
-  filteredMenus.value = Object.keys(menus).reduce((acc, key) => {
-    const items = menus[key].items.filter(item => {
-      const hasRole = !item.role || item.role === userRole.value;
-      const hasDutiesId = !item.dutiesId || item.dutiesId == user.value.duties.id;
-      return hasRole && hasDutiesId;
-    });
-    if (items.length) {
-      acc[key] = { ...menus[key], items };
-    }
-    return acc;
-  }, {});
+  if (user.value && user.value.duties && user.value.duties.id && user.value.department && user.value.department.id &&
+      user.value.position && user.value.position.id && user.value.team && user.value.team.id) {
+    filteredMenus.value = Object.keys(menus).reduce((acc, key) => {
+      const items = menus[key].items.filter(item => {
+        const hasRole = !item.role || item.role === userRole.value;
+        const hasDutiesId = !item.dutiesId || item.dutiesId == user.value.duties.id;
+
+        return hasRole && hasDutiesId;
+      });
+      if (items.length) {
+        acc[key] = { ...menus[key], items };
+      }
+      return acc;
+    }, {});
+  }
 });
+
 
 onMounted(() => {
   const token = localStorage.getItem('access');
@@ -139,8 +144,33 @@ onMounted(() => {
     userRole.value = decodedToken?.auth || '';
   }
 
-  console.log(user.value.duties.id);
+  if (user.value) {
+    if (user.value.duties && user.value.duties.id) {
+      console.log(user.value.duties.id);
+    } else {
+      console.log("User duties are not loaded yet.");
+    }
+
+    if (user.value.department && user.value.department.id) {
+      console.log(user.value.department.id);
+    } else {
+      console.log("User department is not loaded yet.");
+    }
+
+    if (user.value.position && user.value.position.id) {
+      console.log(user.value.position.id);
+    } else {
+      console.log("User position is not loaded yet.");
+    }
+
+    if (user.value.team && user.value.team.id) {
+      console.log(user.value.team.id);
+    } else {
+      console.log("User team is not loaded yet.");
+    }
+  }
 });
+
 
 function parseJwt(token) {
   try {
