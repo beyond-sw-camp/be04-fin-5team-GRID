@@ -5,28 +5,30 @@
   <div v-else>
     <h3 class="fw-bolder mb-3" style="font-family: 'IBMPlexSansKR-Regular', sans-serif;"><i class="bi bi-link-45deg"></i>&nbsp; 결재 라인</h3>
     <b-card class="container shadow">
-      <div class="list-group-item list-group-item-action d-flex" aria-current="true">
-        <div class=" mb-3 pt-2 d-flex gap-2 w-100 justify-content-between" style="font-family: 'IBMPlexSansKR-Regular', sans-serif;">
-          <h6 class="opacity-50"></h6>
-          <h6 class="mb-0 opacity-75 fw-bolder">이름</h6>
-          <h6 class="mb-0 opacity-75 fw-bolder">&nbsp;&nbsp;&nbsp; 단계</h6>
-          <h6 class="mb-0 opacity-75 fw-bolder">상태&nbsp;</h6>
+      <div class="list-group-item list-group-item-action" aria-current="true">
+        <div class="header" style="font-family: 'IBMPlexSansKR-Regular', sans-serif;">
+          <h6 class="mb-0 opacity-75 fw-bolder name">이름</h6>
+          <h6 class="mb-0 opacity-75 fw-bolder stage">단계</h6>
+          <h6 class="mb-0 opacity-75 fw-bolder state">상태</h6>
         </div>
       </div>
       <div v-for="chain in state.approvalChainList" :key="chain.id" class="chain">
-        <div href="#" class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
-          <template v-if="chain.user['profilePath'] === null"><img :src="defaultProfileImage" alt="profile" width="50" height="50" class="rounded-circle flex-shrink-0"></template>
-          <template v-else><img :src="chain.user['profilePath']" alt="profile" width="50" height="50" class="rounded-circle flex-shrink-0"/></template>
-          <div class="d-flex gap-2 w-100 justify-content-between">
-            <div class="mt-1">
-              <h5 class="fw-bolder mb-0">&nbsp;&nbsp;&nbsp;&nbsp;{{ chain.user['name'] }}</h5>
-              <p class="mb-0 opacity-75">&nbsp;&nbsp;&nbsp;&nbsp;{{ chain.user['team'].teamName }} / {{ chain.user['duties'].dutiesName }}</p>
+        <div href="#"  aria-current="true">
+          
+          <div class="mainContent">
+            <div class="profileImage">
+              <template v-if="chain.user['profilePath'] === null"><img :src="defaultProfileImage" alt="profile" width="35" height="35" class="rounded-circle flex-shrink-0"></template>
+              <template v-else><img :src="chain.user['profilePath']" alt="profile" width="35" height="35" class="rounded-circle flex-shrink-0"/></template>
             </div>
-            <h6 class="mt-3" style="font-family: 'IBMPlexSansKR-Regular', sans-serif;">{{ chain.stage }}단계</h6>
-            <div>
-              <b-badge class="mt-3" variant="success" v-if="chain.chainStatus === 'A'">승인</b-badge>
-              <b-badge class="mt-3" variant="danger" v-if="chain.chainStatus === 'D'">반려</b-badge>
-              <b-badge class="mt-3" variant="warning" v-if="chain.chainStatus === 'W'">진행중</b-badge>
+            <div class="nameAndTeam">
+              <h5 class="fw-bolder mb-0 chainName">{{ chain.user['name'] }}</h5>
+              <p class="mb-0 opacity-75 chainTeam">{{ chain.user['team'].teamName }} / {{ chain.user['duties'].dutiesName }}</p>
+            </div>
+            <h6 class="stageMain" style="font-family: 'IBMPlexSansKR-Regular', sans-serif;">{{ chain.stage }}단계</h6>
+            <div class="badgeMain">
+              <b-badge variant="success" v-if="chain.chainStatus === 'A'">승인</b-badge>
+              <b-badge variant="danger" v-if="chain.chainStatus === 'D'">반려</b-badge>
+              <b-badge variant="warning" v-if="chain.chainStatus === 'W'">진행중</b-badge>
             </div>
           </div>
         </div>
@@ -49,11 +51,16 @@
         </template>
       </div>
       <div style="margin-top: 30px;">
-        <b-input-group>
-          <b-form-input v-model="putCommentData.comment"></b-form-input>
+        <b-input-group v-if="userId === props.requesterId || props.approvalStatus === 'A' || props.approvalStatus === 'D'" >
+          <b-form-input v-model="putCommentData.comment" :disabled="true" placeholder="작성 권한이 없습니다."></b-form-input>
           <b-input-group-append>
-            <b-button v-if="userId === props.requesterId || props.approvalStatus === 'A' || props.approvalStatus === 'D'" variant="outline-success" @click="registComment" disabled>등록</b-button>
-            <b-button v-else variant="outline-success" @click="registComment">등록</b-button>
+            <b-button variant="outline-success" @click="registComment" disabled>등록</b-button>
+          </b-input-group-append>
+        </b-input-group>
+        <b-input-group v-else>
+          <b-form-input v-model="putCommentData.comment" placeholder="승인/반려 사유를 입력해주세요."></b-form-input>
+          <b-input-group-append>
+            <b-button variant="outline-success" @click="registComment">등록</b-button>
           </b-input-group-append>
         </b-input-group>
       </div>
@@ -62,7 +69,7 @@
       <!-- 중복 취소 불가하는 코드 추가 -->
       <div class="d-flex justify-content-center mt-3">
         <b-button v-if="props.requesterId === userId && props.approvalStatus !== 'D' && props.cancelStatus === 'N' && props.cancelDoc === 0" @click="cancelApproval" class="mx-2">취소</b-button>
-        <b-button v-if="(props.requesterId === userId || userRole === 'ROLE_ADMIN') && props.approvalStatus === 'A'" @click="printApproval" class="mx-2">출력</b-button>
+<!--        <b-button v-if="(props.requesterId === userId || userRole === 'ROLE_ADMIN') && props.approvalStatus === 'A'" @click="printApproval" class="mx-2">출력</b-button>-->
       </div>
       <div v-if="state.show && props.cancelStatus === 'N'" class="d-flex justify-content-center mt-3">
         <b-button variant="success" @click="registStatus('A')" class="mx-2">승인</b-button>
@@ -336,7 +343,59 @@
   grid-column-start: 6;
 }
 
+.header {
+  display: grid;
+  grid-template-columns: 55% 11% 12% 10% 12%;
+}
 .danger {
   grid-column-start: 8;
+}
+
+.stage {
+  grid-column-start: 3;
+}
+
+.name {
+  grid-column-start: 1;
+  text-align: center;
+}
+
+.state {
+  grid-column-start: 5;
+}
+
+.chainName {
+  font-size: 16px;
+}
+
+.chainTeam {
+  font-size: 12px;
+}
+
+.stageMain {
+  font-size: 12px;
+  grid-column-start: 4;
+  margin-bottom: 0;
+}
+
+.badgeMain {
+  grid-column-start: 6;
+}
+
+.nameAndTeam {
+ grid-column-start: 2;
+}
+
+.profileImage {
+  grid-column-start: 1;
+  width:35px;
+  height:35px;
+}
+
+.mainContent {
+  margin-top: 20px;
+  display:grid;
+  grid-template-columns:15% 40% 11% 12% 10% 12%;
+  align-items: center;
 }
 </style>

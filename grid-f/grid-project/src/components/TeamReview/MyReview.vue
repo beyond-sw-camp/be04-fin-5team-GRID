@@ -1,8 +1,7 @@
 <template>
   <div class="container">
     <div class="header-title">
-      <img class="reviewIcon" src="@/assets/list-check.png" alt="list-check" />
-      <h1>평가 받은 목록</h1>
+      <h1 class="mb-1"><i class="bi bi-person-check fs-3"></i>&nbsp; 평가 받은 목록</h1>
     </div>
 
     <div class="search-and-add">
@@ -254,7 +253,7 @@ const search = () => {
 
 .container {
   display: grid;
-  grid-template-rows: 18% 13% 4% 53% 8%;
+  grid-template-rows: 18% 5% 4% 75% 8%;
   grid-template-columns: 10% 80% 10%;
   padding: 0;
   font-family: 'IBMPlexSansKR-Regular';
@@ -262,17 +261,20 @@ const search = () => {
 
 .header-title {
   grid-column-start: 2;
-  grid-row-start: 1;
+  align-content: center;
+  margin-top: 2%;
+  margin-left: -0.5%;
+  color: #000000;
   display: grid;
-  grid-template-columns: 3% 97%;
+  grid-template-columns: 24% 4%;
   align-items: center;
 }
 
 .header-title h1 {
   margin-left: 0.5%;
-  margin-bottom: 0;
   font-size: 25px;
   font-weight: 600;
+  font-family: 'IBMPlexSansKR-Regular', sans-serif;
 }
 
 .reviewIcon {
@@ -294,7 +296,7 @@ const search = () => {
 }
 
 .searchBox {
-  padding: 10px;
+  padding: 5px;
   font-size: 14px;
   border-radius: 4px;
   border: 1px solid #ddd;
@@ -305,7 +307,7 @@ const search = () => {
 .searchBtn {
   background-color: #088A85;
   color: white;
-  padding: 10px;
+  padding: 5px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -431,5 +433,9 @@ tr:hover {
 .view-details-btn:disabled {
   background-color: grey;
   cursor: not-allowed;
+}
+
+td, th {
+  text-align : center;  
 }
 </style>

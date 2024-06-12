@@ -1,7 +1,7 @@
 <template>
     <div class="hr-main">
         <div class="hr-title">
-            <h1 class="mb-1"><i class="bi bi-people"></i>&nbsp; 인사 정보</h1>
+            <h1 class="mb-1"><i class="bi bi-people"></i>&nbsp; 인사 정보 &nbsp;&nbsp;<i class="bi bi-info-circle fs-5 mt-5" id="popover-target-1" style="color: darkgoldenrod" @click="openModal"></i></h1>
         </div>
         <div class="search">
             <button class="printBtn" @click="downloadCSV">
@@ -83,6 +83,37 @@
             </ul>
         </nav>
     </div>
+    <div class="modal fade" id="guideModal" tabindex="-1" aria-labelledby="guideModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title" id="guideModalLabel">인사 정보 가이드</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" style="background-color: white;"></button>
+                </div>
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="example">
+                        <img src="@/assets/HR/hr-main.png" alt="csv 예시">
+                    </div>
+                    <div>
+                        <p><정보 수정> 및 <사원 추가> 버튼은 관리자 계정에서만 확인 가능합니다. </p>
+                    </div>
+                    <div class="example-content">
+                        <hr>
+                        <p>1. <목록 받기>를 통해 전체 직원의 리스트를 다운로드 받을 수 있습니다.</p>
+                        <p>2. <정보 수정>으로 사원 정보를 일괄 수정할 수 있습니다. </p>
+                        <p>2-1. 사원 정보의 상세 수정은 '인사 정보 상세' > <회원 정보 수정>에서 가능합니다. </p>
+                        <p>3. <사원 추가>를 통해 사원 정보를 일괄 등록할 수 있습니다. </p>
+                    </div>
+                </div>
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script setup>
@@ -92,6 +123,7 @@ import router from '@/router/router';
 import { saveAs } from 'file-saver';
 import { Parser } from '@json2csv/plainjs';
 import defaultProfileImage from '@/assets/defaultProfile.jpg';
+import { Modal } from 'bootstrap';
 
 const employeeList = ref([]);
 const searchCondition = ref('');
@@ -100,6 +132,7 @@ const totalPages = ref(0);
 const pageSize = ref(12); // 페이징을 12명 기준으로 설정
 const visiblePages = ref([]);
 const userRole = ref('');
+const guideModal = ref(null);
 
 const fields = [
     { key: 'profileImage', label: '프로필' },
@@ -156,10 +189,10 @@ const downloadCSV = async () => {
         item => ({
             name: item.name,
             employeeNumber: item.employeeNumber,
-            department: item.department,
-            team: item.team,
-            position: item.position,
-            duties: item.duties,
+            department: item.department.departmentName,
+            team: item.team.teamName,
+            position: item.position.positionName,
+            duties: item.duties.dutiesName,
             absenceYn: item.absenceYn,
             absenceContent: item.absenceContent
         })
@@ -229,6 +262,13 @@ function parseJwt(token) {
     }
 }
 
+const openModal = () => {
+    if (!guideModal.value) {
+        guideModal.value = new Modal(document.getElementById('guideModal'));
+    }
+    guideModal.value.show();
+};
+
 onMounted(async () => {
     const token = localStorage.getItem('access');
     if (token) {
@@ -258,20 +298,22 @@ button {
 }
 
 .hr-title {
-    grid-column-start: 2;
-    grid-column-end: 3;
-    margin-top: 2%;
-    margin-left: -0.5%;
-    color: #000000;
-    display: grid;
-    align-items: center;
+  grid-column-start: 2;
+  align-content: center;
+  margin-top: 2%;
+  margin-left: -0.5%;
+  color: #000000;
+  display: grid;
+  grid-template-columns: 24% 4%;
+  align-items: center;
+  min-width: 1000px;
 }
 
 .hr-title h1 {
-    margin-left: 0.5%;
-    font-size: 25px;
-    font-weight: 600;
-    font-family: 'IBMPlexSansKR-Regular', sans-serif;
+  margin-left: 0.5%;
+  font-size: 25px;
+  font-weight: 600;
+  font-family: 'IBMPlexSansKR-Regular', sans-serif;
 }
 
 .hr-icon {
@@ -536,4 +578,36 @@ button:hover {
     align-items: center;
     justify-content: center;
 }
+
+.guide img {
+    width: 21px;
+    height: 21px;
+    margin: 0 0 0 20px;
+    cursor: pointer;
+}
+
+.example img {
+    width: 100%;
+}
+
+.modal-content button {
+    background-color: #088A85;
+    color: white;
+    border: none;
+}
+
+.modal-content button:hover::before {
+    left: -100%;
+    background-color: transparent; /* Remove background transition */
+}
+
+.modal-content button:hover span,
+.modal-content button:hover i {
+    color: white; /* Keep the original color */
+}
+
+.modal-content button:hover {
+    color: white; /* Keep the original color */
+}
+
 </style>

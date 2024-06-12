@@ -16,8 +16,12 @@
             </li>
           </ol>
         </nav>
+        <div><h1 class="fw-bolder"><i class="bi bi-person"></i>&nbsp; 소속 팀 정보</h1></div>
       </div>
-      <div class="department-name">
+      <div class="buttons">
+        <button @click="prepareUpdateLeaderModal" class="updateLeaderBtn btn-custom-1" v-if="userRole === 'ROLE_ADMIN'"><span>팀장 수정</span></button>
+        <button @click="showModal('addNewTeamModal')" class="addTeamBtn btn-custom-1" v-if="userRole === 'ROLE_ADMIN'"><span>팀 추가</span></button>
+        <button @click="toggleTeamStatus" class="toggleStatusBtn btn-custom-1" v-if="userRole === 'ROLE_ADMIN'"><span>활성/비활성화</span></button>
       </div>
     </div>
 
@@ -25,11 +29,6 @@
       <div class="search-group">
         <input type="text" class="searchBox" v-model="searchQuery" placeholder="팀명 검색" />
         <button @click="search" class="searchBtn">검색</button>
-      </div>
-      <div>
-        <button @click="showModal('updateLeaderModal')" class="updateLeaderBtn btn-custom-1" v-if="userRole === 'ROLE_ADMIN'"><span>팀장 수정</span></button>
-        <button @click="showModal('addNewTeamModal')" class="addTeamBtn btn-custom-1" v-if="userRole === 'ROLE_ADMIN'"><span>팀 추가</span></button>
-        <button @click="toggleTeamStatus" class="toggleStatusBtn btn-custom-1" v-if="userRole === 'ROLE_ADMIN'"><span>활성/비활성화</span></button>
       </div>
     </div>
 
@@ -76,17 +75,21 @@
                 <input type="text" class="form-control" id="teamName" v-model="newTeam.teamName" required />
               </div>
               <div class="mb-3">
-                <label for="departmentName" class="form-label">상위 부서명</label>
+                <label for="departmentName" class="form-label">상위 부서</label>
                 <input type="text" class="form-control" id="departmentName" v-model="newTeam.departmentName" readonly />
               </div>
               <div class="mb-3">
-                <label for="leaderName" class="form-label">팀장 명</label>
+                <label for="leaderName" class="form-label">팀장</label>
                 <div class="input-group">
                   <input type="text" class="form-control" id="leaderName" v-model="newTeam.leaderName" readonly />
                   <button type="button" class="btn btn-secondary" @click="showModal('selectLeaderModal')">조회</button>
                 </div>
               </div>
-              <button type="submit" class="btn btn-primary">추가</button>
+              <div class="modal-footer">
+                <div class="button-container">
+                  <button type="submit" class="btn btn-primary">추가</button>
+                </div>
+              </div>
             </form>
           </div>
         </div>
@@ -107,8 +110,9 @@
               <thead>
                 <tr>
                   <th>사원번호</th>
-                  <th>팀장 명</th>
+                  <th>팀장</th>
                   <th>직책</th>
+                  <th>직급</th>
                   <th>선택</th>
                 </tr>
               </thead>
@@ -117,6 +121,7 @@
                   <td>{{ leader.employeeNumber }}</td>
                   <td>{{ leader.name }}</td>
                   <td>{{ leader.position.positionName }}</td>
+                  <td>{{ leader.duties.dutiesName }}</td>
                   <td><button type="button" class="btn btn-primary" @click="selectLeader(leader)">선택</button></td>
                 </tr>
               </tbody>
@@ -143,13 +148,17 @@
                 </select>
               </div>
               <div class="mb-3">
-                <label for="leaderName" class="form-label">팀장 명</label>
+                <label for="leaderName" class="form-label">팀장</label>
                 <div class="input-group">
                   <input type="text" class="form-control" id="newLeaderName" v-model="newLeaderName" readonly />
                   <button type="button" class="btn btn-secondary" @click="showModal('selectLeaderModalForUpdate')">조회</button>
                 </div>
               </div>
-              <button type="submit" class="btn btn-primary">수정</button>
+              <div class="modal-footer">
+                <div class="button-container">
+                  <button type="submit" class="btn btn-primary">수정</button>
+                </div>
+              </div>
             </form>
           </div>
         </div>
@@ -170,8 +179,9 @@
               <thead>
                 <tr>
                   <th>사원번호</th>
-                  <th>팀장 명</th>
+                  <th>팀장</th>
                   <th>직책</th>
+                  <th>직급</th>
                   <th>선택</th>
                 </tr>
               </thead>
@@ -180,7 +190,8 @@
                   <td>{{ leader.employeeNumber }}</td>
                   <td>{{ leader.name }}</td>
                   <td>{{ leader.position.positionName }}</td>
-                  <td><button type="button" class="btn btn-primary" @click="selectLeaderForUpdate(leader)">선택</button></td>
+                  <td>{{ leader.duties.dutiesName }}</td>
+                  <td><button type="button" class="btn-primary" @click="selectLeaderForUpdate(leader)">선택</button></td>
                 </tr>
               </tbody>
             </table>
@@ -190,6 +201,9 @@
     </div>
   </div>
 </template>
+
+
+
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
@@ -295,7 +309,7 @@ function parseJwt(token) {
 }
 
 onMounted(() => {
-  fetchDepartmentName(); // 부서 이름 가져오기
+  fetchDepartmentName(); 
   fetchTeams();
   fetchDepartments();
   fetchLeaders();
@@ -315,7 +329,7 @@ const fields = [
   { key: 'startTime', label: '시작 일', thStyle: { width: '20%' } },
   { key: 'endTime', label: '종료일', thStyle: { width: '20%' } },
   { key: 'departmentName', label: '상위 부서명', thStyle: { width: '10%' } },
-  { key: 'leaderName', label: '팀장 명', thStyle: { width: '10%' } },
+  { key: 'leaderName', label: '팀장', thStyle: { width: '10%' } },
   { key: 'actions', label: '', thStyle: { width: '10%' } }
 ];
 
@@ -326,7 +340,7 @@ const filteredTeams = computed(() => {
   return teams.value
     .filter(team => {
       if (userRole.value !== 'ROLE_ADMIN' && team.teamStatus === 'N') {
-        return false; // 관리자가 아니고 상태가 N인 팀은 필터링
+        return false; 
       }
       return true;
     })
@@ -336,7 +350,7 @@ const filteredTeams = computed(() => {
 const totalPages = computed(() => {
   return Math.ceil(teams.value.filter(team => {
     if (userRole.value !== 'ROLE_ADMIN' && team.teamStatus === 'N') {
-      return false; // 관리자가 아니고 상태가 N인 팀은 제외
+      return false;
     }
     return true;
   }).length / itemsPerPage);
@@ -504,10 +518,18 @@ const goBack = () => {
 };
 
 const checkSelectionLimit = () => {
-  if (selectedTeams.value.length >= 2) {
-    selectedTeams.value.pop(); // Remove the last selected item
-    alert('두 개 이상의 팀을 선택할 수 없습니다.');
+  if (selectedTeams.value.length > 1) {
+    alert('한 개의 팀만 선택할 수 있습니다.');
   }
+};
+
+const prepareUpdateLeaderModal = () => {
+  if (selectedTeams.value.length === 1) {
+    selectedTeamId.value = selectedTeams.value[0].id;
+  } else {
+    selectedTeamId.value = null;
+  }
+  showModal('updateLeaderModal');
 };
 
 const filteredLeaders = computed(() => {
@@ -526,7 +548,10 @@ const searchLeaders = () => {
            leader.position.positionName.includes(leaderSearchQuery.value);
   });
 };
+
+
 </script>
+
 <style scoped>
 @font-face {
   font-family: 'IBMPlexSansKR-Regular';
@@ -552,21 +577,16 @@ const searchLeaders = () => {
 
 .header-title {
   display: flex;
-  align-items: center;
+  flex-direction: column;
 }
 
-.header-title h1 {
-  font-size: 25px;
-  font-weight: 600;
-  margin-left: 10px;
-}
 
 .reviewIcon {
   width: 30px; /* 이미지 크기 유지 */
 }
 
 .department-name {
-  margin-left: auto;
+  
 }
 
 .addNewBtn {
@@ -585,7 +605,7 @@ const searchLeaders = () => {
 
 .search {
   display: flex;
-  justify-content: space-between;
+  justify-content: right;
   align-items: center;
   margin-bottom: 20px;
 }
@@ -593,6 +613,7 @@ const searchLeaders = () => {
 .search-group {
   display: flex;
   align-items: center;
+  justify-content: right;
 }
 
 .searchBox {
@@ -759,4 +780,25 @@ const searchLeaders = () => {
 .listBtn {
   margin-top: 0;
 }
+h1 {
+  font-size: 25px;
+  margin: 0; /* 세로 높이를 맞추기 위해 margin 제거 */
+}
+
+
+.buttons {
+  display: flex;
+  align-items: center; /* 세로 높이를 맞추기 위해 추가 */
+  justify-content: right;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  padding-top: 10px;
+}
+
+
 </style>
+

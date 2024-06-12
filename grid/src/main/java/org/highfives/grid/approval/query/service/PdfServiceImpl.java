@@ -37,6 +37,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -44,6 +45,7 @@ import org.springframework.stereotype.Service;
 
 import java.awt.*;
 import java.io.*;
+import java.net.URI;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -66,6 +68,9 @@ public class PdfServiceImpl implements PdfService {
 
     @Value("${cloud.aws.s3.bucketName}")
     private String bucketName;
+
+    @Autowired
+    ResourceLoader resourceLoader;
 
     DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     String date = LocalDateTime.now().format(dateFormat);
@@ -110,18 +115,13 @@ public class PdfServiceImpl implements PdfService {
             d_img.scaleToFit(60, 100);
             t_img.scaleToFit(60, 100);
 
-            String fontPath = "src/main/resources/fonts/Sejong hospital Light.ttf";
+            String fontPath = "build/resources/main/static/fonts/malgun.ttf";
 //            String fontPath = "src/main/resources/fonts/NotoSansKR-Regular.ttf";
 //            String fontPath = "src/main/resources/fonts/malgun.ttf";
 
-            File f = new File("src/main/resources/fonts/NotoSansCJKkr-Regular.otf");
-            if(f.isFile()) {
-                System.out.println("폰트 파일 존재");
-            } else {
-                System.out.println("폰트 파일 없음");
-            }
-
-            BaseFont bf = BaseFont.createFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            String fontPath2 = resourceLoader.getResource("classpath:static/fonts/malgun.ttf").getURI().getPath();
+            System.out.println(fontPath2);
+            BaseFont bf = BaseFont.createFont(fontPath2, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
 
             Font titleFont = new Font(bf, 20, Font.BOLD);
             Font headerFont = new Font(bf, 12, Font.BOLD);

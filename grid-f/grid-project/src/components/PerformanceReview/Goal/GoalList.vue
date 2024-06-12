@@ -1,9 +1,7 @@
 <template>
   <div class="goalListContainer">
     <div class="goalListTitle">
-      <h1 class="mb-1"><i class="bi-award fs-3"></i>&nbsp; 업적 평가 목표 조회</h1>
-      <img src="@/assets/buttons/guide.png" class="guide"
-           @click="showModal('guideGoalList')"></img>
+      <h1 class="mb-1"><i class="bi-award fs-3"></i>&nbsp; 업적 평가 목표 조회 &nbsp;&nbsp;<i class="bi bi-info-circle fs-5 mt-5" id="popover-target-1" style="color: darkgoldenrod; cursor: pointer;" @click="showModal('guideGoalList')"></i></h1>
     </div>
     <div class="tableContainer">
       <table class="table table-hover">
@@ -270,7 +268,7 @@ const goToDetailPage = (id) => {
   display: grid;
   grid-template-columns: 24% 4%;
   align-items: center;
-  min-width: 1000px;
+  min-width: 1200px;
 }
 
 .goalListTitle h1 {

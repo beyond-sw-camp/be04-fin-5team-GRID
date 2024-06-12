@@ -7,15 +7,15 @@
 
       <div class="icons">
         <div class="tokenArea">
-          <span class="token-timer" style="font: 20px;">접속 시간 &nbsp {{ timeLeft }}</span>
+          <span class="token-timer" style="font: 15px;">접속 시간 &nbsp {{ timeLeft }}</span>
           <i class="bi bi-arrow-counterclockwise token" @click="addTokenTime()" style="cursor: pointer;"></i>
         </div>
         <button class="icon-button" type="button" data-bs-toggle="offcanvas" data-bs-target="#demo">
-          <img src="@/assets/people.png" alt="Button 2" class="icon-image" />
+          <img src="@/assets/diagram3.png" alt="Button 2" class="icon-image" />
         </button>
         <div class="dropdown">
-          <img :src="profileUrl" alt="profile" class="profile" @click="toggleDropdown">
-          <ul class="dropdown-menu" ref="dropdownMenu">
+          <img src="@/assets/grid3.png" alt="profile" class="profile">
+          <ul class="dropdown-menu">
             <li><a class="dropdown-item" href="#" @click="goProfile">
                 <i class="bi bi-file-person"></i>&nbsp; &nbsp; 내 정보</a></li>
             <li><a class="dropdown-item" href="#" @click="logout">
@@ -25,17 +25,16 @@
       </div>
     </header>
 
-
     <div class="offcanvas offcanvas-end" id="demo">
       <div class="offcanvas-header">
-        <h1 class="offcanvas-title">부서 리스트</h1>
+        <h1 class="offcanvas-title">조직도</h1>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
       </div>
       <div class="offcanvas-body" style="position: relative;">
         <draggable v-model="departments" @end="handleDragEnd" tag="ul" class="list-group" :itemKey="item => item.id"
           :disabled="userRole === 'ROLE_USER'">
           <template #item="{ element, index }">
-            <li class="list-group-item" :data-id="element.id">
+            <li class="list-group-item" :data-id="element.id" v-if="element.departmentStatus !== 'N'">
               <div @click="toggleTeams(element.id)" style="cursor: pointer;">
                 {{ element.departmentName }}
               </div>
@@ -43,26 +42,27 @@
                 :group="{ name: 'teams', pull: true, put: true }" @end="handleTeamDragEnd($event)" class="list-group"
                 :itemKey="item => item.id" :disabled="userRole === 'ROLE_USER'">
                 <template #item="{ element: team }">
-            <li class="list-group-item">
-              <div @click="toggleEmployees(team.id)" style="cursor: pointer;">
-                {{ team.teamName }}
-              </div>
-              <ul v-if="team.showEmployees">
-                <li v-for="employee in team.employees" :key="employee.id" @click="goToProfile(employee.employeeNumber)"
-                  style="cursor: pointer;">
-                  {{ employee.name }}
-                </li>
-              </ul>
+                  <li class="list-group-item">
+                    <div @click="toggleEmployees(team.id)" style="cursor: pointer;">
+                      {{ team.teamName }}
+                    </div>
+                    <ul v-if="team.showEmployees">
+                      <li v-for="employee in team.employees" :key="employee.id" @click="goToProfile(employee.employeeNumber)"
+                        style="cursor: pointer;">
+                        {{ employee.name }}
+                      </li>
+                    </ul>
+                  </li>
+                </template>
+              </draggable>
             </li>
           </template>
         </draggable>
-        </li>
+      </div>
+    </div>
+  </div>
 </template>
-</draggable>
-</div>
-</div>
-</div>
-</template>
+
 
 <script setup>
 import { ref, onMounted, computed } from 'vue';
@@ -74,7 +74,6 @@ import draggable from 'vuedraggable';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 import defaultProfileImage from '@/assets/defaultProfile.jpg';
-import Cookies from 'js-cookie';
 
 const departments = ref([]);
 const router = useRouter();
@@ -87,16 +86,11 @@ const userRole = ref('');
 
 const user = computed(() => store.state.user);
 
-
-
-const profileUrl = computed(() => {
-  return user.value?.profilePath ? user.value.profilePath : defaultProfileImage;
-});
-
 const fetchDepartments = async () => {
   try {
     const response = await axios.get('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/department/find-all');
     departments.value = response.data.result
+      .filter(department => department.departmentStatus !== 'N')  // departmentStatus가 N인 부서는 제외
       .map(department => ({
         id: department.id,
         departmentName: department.departmentName,
@@ -212,14 +206,6 @@ const handleDragEnd = async () => {
   }
 };
 
-const toggleDropdown = () => {
-  if (dropdownMenu.value.style.display === 'block') {
-    dropdownMenu.value.style.display = 'none';
-  } else {
-    dropdownMenu.value.style.display = 'block';
-  }
-};
-
 const handleTeamDragEnd = async (event) => {
   // 새 부서의 ID를 올바르게 가져옵니다.
   const newDepartmentId = event.to.closest('.list-group-item').getAttribute('data-id');
@@ -282,7 +268,6 @@ const addTokenTime = async () => {
 
       localStorage.setItem('access', response.data.access);
       alert('접속시간이 연장되었습니다!');
-      window.location.reload();
     }
   } catch (error) {
     console.error("Error:", error);
@@ -307,7 +292,6 @@ const getNewToken = async () => {
 
       localStorage.setItem('access', response.data.access); // 새로운 access 토큰 저장
       alert('접속시간이 연장되었습니다!');
-      window.location.reload();
     } else {
       alert("접속시간 연장을 취소했습니다. 로그아웃합니다.");
       await axios.post(
@@ -329,8 +313,6 @@ const getNewToken = async () => {
     alert("토큰 갱신에 실패했습니다.");
   }
 };
-
-
 
 function isTokenExpired(token) {
   const payload = JSON.parse(atob(token.split('.')[1]));
@@ -456,8 +438,6 @@ function main() {
 onMounted(fetchDepartments);
 </script>
 
-
-
 <style scoped>
 @font-face {
   font-family: 'IBMPlexSansKR-Regular';
@@ -499,11 +479,9 @@ onMounted(fetchDepartments);
   cursor: pointer;
   margin-right: 20px;
   object-fit: cover;
-}
-
-.profile img {
-  width: 25px;
-  height: 25px;
+  display: flex;
+  align-items: center;
+  filter: invert(100%) sepia(65%) saturate(424%) hue-rotate(91deg) brightness(129%) contrast(107%);
 }
 
 .icon-button {
@@ -514,7 +492,7 @@ onMounted(fetchDepartments);
   cursor: pointer;
   display: flex;
   align-items: center;
-  margin-right: 20px;
+  margin-right: 12px;
 }
 
 .icon-image {
@@ -532,6 +510,12 @@ onMounted(fetchDepartments);
   display: inline-block;
   height: 35px;
   width: 35px;
+  display: flex;
+  align-items: center;
+}
+
+.dropdown:hover .dropdown-menu {
+  display: block;
 }
 
 .dropdown-menu {
@@ -545,8 +529,6 @@ onMounted(fetchDepartments);
   list-style: none;
   padding: 10px 0;
   margin: 0;
-  transform: translateY(0);
-  transition: all 2s ease;
 }
 
 .dropdown-menu a {
@@ -589,5 +571,9 @@ onMounted(fetchDepartments);
   border: none;
   border-radius: 4px;
   cursor: pointer;
+}
+
+.icon-image:hover, .profile:hover {
+  opacity: 0.8;
 }
 </style>

@@ -54,7 +54,7 @@
                 v-model="postData.content"
                 placeholder="내용을 입력하세요."
                 rows="3"
-                max-rows="8"
+                style="resize: none;"
             ></b-form-textarea>
           </b-form-group>
         </b-form-group>
@@ -331,7 +331,7 @@ onMounted(async() => {
 <style scoped>
 .vAll {
 display: grid;
-grid-template-rows: 18% 60% 5% 17%;
+grid-template-rows: 18% 55% 5% 17%;
 grid-template-columns: 10% 80% 10%;
 height: 100%;
 }

@@ -1,8 +1,7 @@
 <template>
   <div class="calenderContainer">
     <div class="calenderTitle">
-      <img class="calenderIcon" src="@/assets/icons/goal_icon.png">
-      <h1>근무 관리</h1>
+      <h1><i class="bi bi-stickies"></i>&nbsp;근무 관리</h1>
     </div>
     <div class="content">
       <WorkCalendar />
@@ -37,7 +36,7 @@ const router = useRouter();
   margin-top: 2%;
   color: #000000;
   display: grid;
-  grid-template-columns: 3% 97%;
+  //grid-template-columns: 3% 97%;
   align-items: center;
 }
 

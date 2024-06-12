@@ -1,8 +1,9 @@
 package org.highfives.grid.user.query.service;
 
 import org.highfives.grid.approval.query.dto.EmpStatusDTO;
-import org.highfives.grid.approval.query.service.ApprovalService;
 import org.highfives.grid.user.command.aggregate.YN;
+import org.highfives.grid.user.exception.InvalidNumberException;
+import org.highfives.grid.user.exception.UserNotFoundException;
 import org.highfives.grid.user.query.dto.DutiesDTO;
 import org.highfives.grid.user.query.dto.LeaderInfoDTO;
 import org.highfives.grid.user.query.dto.PositionDTO;
@@ -26,76 +27,6 @@ public class UserServiceImpl implements UserService{
     private final UserMapper userMapper;
     private final ImgMapper imgMapper;
 
-    @Autowired
-    public UserServiceImpl(UserMapper userMapper, ImgMapper imgMapper)
-    {
-        this.userMapper = userMapper;
-        this.imgMapper = imgMapper;
-    }
-
-    @Override
-    public UserDTO findUserByEmployeeNum(String eNum, List<EmpStatusDTO> absenceInfo) {
-        Map<String, Object> info = new HashMap<>();
-        info.put("eNum", eNum);
-
-        Map<Integer, EmpStatusDTO> absenceInfoMap = absenceInfo.stream()
-                .collect(Collectors.toMap(EmpStatusDTO::getEmployeeId, empStatusDTO -> empStatusDTO));
-
-        UserDTO result = userMapper.getUserInfo(info);
-        if (result == null) {
-            return null;
-        }
-
-        if( result.getResignYn() == YN.N) {
-            EmpStatusDTO absence = absenceInfoMap.get(result.getId());
-            if (absence != null) {
-                result.setAbsenceYn(YN.Y);
-                result.setAbsenceContent(absence.getStatus());
-                result.setAbsenceStartTime(absence.getStartTime());
-                result.setAbsenceEndTime(absence.getEndTime());
-            }
-        }
-
-        result.setProfilePath(imgMapper.getProfileImg(result.getId()));
-        result.setSealPath(imgMapper.getSealImg(result.getId()));
-
-        return result;
-    }
-
-
-    @Override
-    public UserDTO findUserById(int id) {
-
-        Map<String, Object> info = new HashMap<>();
-        info.put("id", id);
-
-        try {
-            UserDTO result = userMapper.getUserInfo(info);
-            result.setProfilePath(imgMapper.getProfileImg(result.getId()));
-            result.setSealPath(imgMapper.getSealImg(result.getId()));
-            return result;
-
-        } catch (NullPointerException e) {
-            return null;
-        }
-    }
-
-    @Override
-    public UserDTO findUserByEmail(String email) {
-        Map<String, Object> info = new HashMap<>();
-        info.put("email", email);
-
-        try {
-            UserDTO result = userMapper.getUserInfo(info);
-            result.setProfilePath(imgMapper.getProfileImg(result.getId()));
-            result.setSealPath(imgMapper.getSealImg(result.getId()));
-            return result;
-
-        } catch (NullPointerException e) {
-            return null;
-        }
-    }
-
     @Override
     public List<UserDTO> findList() {
 
@@ -118,8 +49,13 @@ public class UserServiceImpl implements UserService{
         int pageSize = pageable.getPageSize();
         List<UserDTO> userList = userMapper.getUserList(offset, pageSize, auth);
 
-        Map<Integer, EmpStatusDTO> absenceInfoMap = absenceInfo.stream()
-                .collect(Collectors.toMap(EmpStatusDTO::getEmployeeId, empStatusDTO -> empStatusDTO));
+        Map<Integer, EmpStatusDTO> absenceInfoMap;
+        if(absenceInfo != null){
+            absenceInfoMap = absenceInfo.stream()
+                    .collect(Collectors.toMap(EmpStatusDTO::getEmployeeId, empStatusDTO -> empStatusDTO));
+        } else {
+            absenceInfoMap = new HashMap<>();
+        }
 
         userList.forEach(user -> {
             System.out.println("user.getId() + user.getResignYn() = " + user.getId() + user.getResignYn());
@@ -145,8 +81,13 @@ public class UserServiceImpl implements UserService{
         int pageSize = pageable.getPageSize();
         List<UserDTO> userList = userMapper.getUserListByName(name, offset, pageSize, auth);
 
-        Map<Integer, EmpStatusDTO> absenceInfoMap = absenceInfo.stream()
-                .collect(Collectors.toMap(EmpStatusDTO::getEmployeeId, empStatusDTO -> empStatusDTO));
+        Map<Integer, EmpStatusDTO> absenceInfoMap;
+        if(absenceInfo != null){
+            absenceInfoMap = absenceInfo.stream()
+                    .collect(Collectors.toMap(EmpStatusDTO::getEmployeeId, empStatusDTO -> empStatusDTO));
+        } else {
+            absenceInfoMap = new HashMap<>();
+        }
 
         userList.forEach(user -> {
             if(user.getResignYn() == YN.N) {
@@ -159,10 +100,93 @@ public class UserServiceImpl implements UserService{
             user.setProfilePath(imgMapper.getProfileImg(user.getId()));
         });
 
-        long total = userMapper.countUsersByName(name); // 총 이름 검색 결과 수를 계산하는 메소드가 필요합니다.
+        long total = userMapper.countUsersByName(name);
 
         return new PageImpl<>(userList, pageable, total);
     }
+    @Autowired
+    public UserServiceImpl(UserMapper userMapper, ImgMapper imgMapper)
+    {
+        this.userMapper = userMapper;
+        this.imgMapper = imgMapper;
+    }
+
+    @Override
+    public UserDTO findUserByEmployeeNum(String eNum, List<EmpStatusDTO> absenceInfo) {
+
+        if (eNum == null || eNum.trim().isEmpty() || !eNum.matches("\\d+") || eNum.length() != 7) {
+            throw new InvalidNumberException("Invalid employee number: " + eNum);
+        }
+
+        Map<String, Object> info = new HashMap<>();
+        info.put("eNum", eNum);
+
+        Map<Integer, EmpStatusDTO> absenceInfoMap;
+        if(absenceInfo != null){
+            absenceInfoMap = absenceInfo.stream()
+                    .collect(Collectors.toMap(EmpStatusDTO::getEmployeeId, empStatusDTO -> empStatusDTO));
+        } else {
+            absenceInfoMap = new HashMap<>();
+        }
+
+        UserDTO result = userMapper.getUserInfo(info);
+        if (result == null) {
+            throw new UserNotFoundException("User not found with employee number: " + eNum);
+        }
+
+        if( result.getResignYn() == YN.N) {
+            EmpStatusDTO absence = absenceInfoMap.get(result.getId());
+            if (absence != null) {
+                result.setAbsenceYn(YN.Y);
+                result.setAbsenceContent(absence.getStatus());
+                result.setAbsenceStartTime(absence.getStartTime());
+                result.setAbsenceEndTime(absence.getEndTime());
+            }
+        }
+
+        result.setProfilePath(imgMapper.getProfileImg(result.getId()));
+        result.setSealPath(imgMapper.getSealImg(result.getId()));
+
+        return result;
+    }
+
+
+    @Override
+    public UserDTO findUserById(int id) {
+
+        if (id <= 0) {
+            throw new InvalidNumberException("Invalid user id: " + id);
+        }
+
+        Map<String, Object> info = new HashMap<>();
+        info.put("id", id);
+
+        UserDTO result = userMapper.getUserInfo(info);
+        if(result == null) {
+            throw new UserNotFoundException("User not found with user id: " + id);
+        }
+
+        result.setProfilePath(imgMapper.getProfileImg(result.getId()));
+        result.setSealPath(imgMapper.getSealImg(result.getId()));
+        return result;
+    }
+
+    @Override
+    public UserDTO findUserByEmail(String email) {
+        Map<String, Object> info = new HashMap<>();
+        info.put("email", email);
+
+        UserDTO result = userMapper.getUserInfo(info);
+        if(result == null) {
+            throw new UserNotFoundException("User not found with email: " + email);
+        }
+
+        result.setProfilePath(imgMapper.getProfileImg(result.getId()));
+        result.setSealPath(imgMapper.getSealImg(result.getId()));
+        return result;
+    }
+
+
 
     @Override
     public LeaderInfoDTO findLeaderInfo(int id) {
@@ -201,17 +225,23 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public Map<String, Object> checkNameByEmail(String email) {
-        try {
-            return userMapper.getUserInfoByEmail(email);
-        } catch (NullPointerException e) {
-            return null;
-        }
+
+        Map<String, Object> result = userMapper.getUserInfoByEmail(email);
+        if(result == null)
+            throw new UserNotFoundException("User not found with email: " + email);
+
+        return result;
     }
 
     @Override
     public List<UserDTO> findTeamList(int teamId) {
 
+        if(teamId <= 0)
+            throw new InvalidNumberException("Invalid team id: " + teamId);
+
         List<UserDTO> userDTOList = userMapper.findTeamList(teamId);
+        if(userDTOList == null || userDTOList.isEmpty())
+            throw new UserNotFoundException("User not found at team id: " + teamId);
 
         return userDTOList;
     }

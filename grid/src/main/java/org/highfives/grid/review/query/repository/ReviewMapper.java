@@ -1,6 +1,7 @@
 package org.highfives.grid.review.query.repository;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.highfives.grid.review.query.aggregate.ReviewEmployeeHistory;
 import org.highfives.grid.review.query.aggregate.ReviewHistory;
 import org.highfives.grid.review.query.aggregate.ReviewHistoryAndScore;
 import org.highfives.grid.review.query.aggregate.ReviewList;
@@ -20,4 +21,6 @@ public interface ReviewMapper {
     List<ReviewHistory> findMyReviewHistory(int revieweeId);
 
     ReviewList findReviewList(int id);
+
+    List<ReviewEmployeeHistory> findEmployeesHistory();
 }

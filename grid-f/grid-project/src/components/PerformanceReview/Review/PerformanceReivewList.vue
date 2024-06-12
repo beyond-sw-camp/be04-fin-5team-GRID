@@ -1,9 +1,7 @@
 <template>
   <div class="PerformanceReviewListContainer">
     <div class="PerformanceReviewListTitle">
-      <h1 class="mb-1"><i class="bi bi-award fs-3"></i>&nbsp; 업적 평가 조회</h1>
-      <img src="@/assets/buttons/guide.png" class="guide"
-           @click="showModal('guideReview')"></img>
+      <h1 class="mb-1"><i class="bi bi-award fs-3"></i>&nbsp; 업적 평가 조회 &nbsp;&nbsp;<i class="bi bi-info-circle fs-5 mt-5" id="popover-target-1" style="color: darkgoldenrod; cursor: pointer;" @click="showModal('guideReview')"></i></h1>
     </div>
     <div class="PerformanceTableContainer">
       <table class="table table-hover">
@@ -286,7 +284,7 @@ const goToDetailPage = (id) => {
   display: grid;
   grid-template-columns: 20% 4%;
   align-items: center;
-  min-width: 1000px;
+  min-width: 1200px;
 }
 
 .PerformanceReviewListTitle h1 {

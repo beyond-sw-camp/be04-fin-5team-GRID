@@ -32,6 +32,7 @@
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="addQuestionModalLabel">항목 추가</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
             <div class="mb-3">
@@ -40,8 +41,9 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
-            <button type="button" class="btn btn-primary" @click="addReview">생성</button>
+            <div class="button-container">
+              <button type="button" class="btn btn-primary" @click="addReview">생성</button>
+            </div>
           </div>
         </div>
       </div>
@@ -108,6 +110,11 @@ const deleteSelectedReviews = async () => {
     return;
   }
 
+  const confirmDeletion = confirm('선택한 항목을 삭제하시겠습니까?');
+  if (!confirmDeletion) {
+    return;
+  }
+
   try {
     for (const reviewId of selectedReviews.value) {
       await axios.delete(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/review/list/${reviewId}`);
@@ -120,6 +127,7 @@ const deleteSelectedReviews = async () => {
     alert('평가되지 않는 항목만 삭제할 수 있습니다.');
   }
 };
+
 
 const addReview = async () => {
   if (!newReviewText.value) {
@@ -233,13 +241,10 @@ const addReview = async () => {
   margin: 1.75rem auto;
 }
 
-.modal-header,
-.modal-footer {
-  border-bottom: 1px solid #dee2e6;
-}
-
 .modal-footer {
   border-top: 1px solid #dee2e6;
+  display: flex;
+  justify-content: center;
 }
 
 table {
@@ -282,6 +287,11 @@ tr:hover {
   grid-column-start: 2;
 }
 
+.btn btn-primary{
+  display: flex;
+  justify-content: center;
+}
+
 .addBtn {
   width: 100%;
   background-color: #088A85;
@@ -297,19 +307,6 @@ tr:hover {
 
 .deleteBtn:hover, .addBtn:hover {
   background-color: #065f5b;
-}
-
-.btn-close {
-  background-color: #888;
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  border-radius: 50%;
-  cursor: pointer;
-}
-
-.btn-close:hover {
-  background-color: #555;
 }
 
 .btn-custom-1 {
@@ -349,5 +346,12 @@ tr:hover {
 
 .btn-custom-1:hover span {
     color: white;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  padding-top: 10px;
 }
 </style>

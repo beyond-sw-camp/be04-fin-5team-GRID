@@ -8,6 +8,7 @@ import org.highfives.grid.user.command.aggregate.*;
 @ToString
 @RequiredArgsConstructor
 @Builder
+@EqualsAndHashCode
 public class UserDTO {
 
     private int id;

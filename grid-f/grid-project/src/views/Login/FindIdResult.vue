@@ -168,6 +168,10 @@ hr {
     align-self: center;
 }
 
+#title h1 {
+  font-family: 'IBMPlexSansKR-Regular';
+}
+
 #title-content {
     align-self: center;
     font-size: 0.9em;

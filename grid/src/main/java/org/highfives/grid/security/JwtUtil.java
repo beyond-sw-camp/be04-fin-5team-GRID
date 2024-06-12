@@ -196,7 +196,7 @@ public class JwtUtil {
         cookie.setMaxAge(24*60*60);
 //        cookie.setHttpOnly(true);
         cookie.setPath("/");
-        cookie.setDomain("gridhr.site");
+//        cookie.setDomain("gridhr.site");
         cookie.setSecure(false); // HTTPS를 사용하지 않으므로 false
         return cookie;
     }

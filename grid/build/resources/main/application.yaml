@@ -1,6 +1,3 @@
-server:
-  port: 8000
-
 spring:
   servlet:
     multipart:
@@ -20,14 +17,13 @@ spring:
     username: grid
     password: grid
 
-
 application:
   security:
     jwt:
-      secretKey: ENC(f3wKWCQ/OmBLNnU6eprBvXJ4ef1/csgBkQJ7w+oovLurPBPtYJTqR32OSW5mrkiA+1aDHYyKYXgB/54ZDi1H4ea9wNNJlBHIXHQMM3KwOimaMX7OzYjsoCkChl++daFKizqZuFJ9ZCI=)
-      expiration_time: 11300000 # 5분
+      secretKey: BQFXy4afcXCxKI7BNo8argHNwP5nh6AiCcSyLnkCs0xZkS8RPImDlK42uE4Mz/DmFEidO0ALl7Lkxs2s9aGwmw==
+      expiration_time: 6000000000 # 10분
       refresh-token:
-        expiration_time: 86400000 # 하루
+        expiration_time: 86400000 #1
   redis:
     host: localhost
     port: 6379
@@ -43,3 +39,21 @@ cloud:
       bucketName: ENC(AxkWVAblj5LXXbz3TDkaGJABO7vNbY98)
     stack:
       auto: false
+
+management:
+  endpoint:
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+
+  endpoints:
+    web:
+      exposure:
+        include: health, info, metrics, prometheus
+
+  metrics:
+    tags:
+      application: ${spring.application.name}
+server:
+  port: 8081

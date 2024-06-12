@@ -34,17 +34,18 @@
                     <div id="absenceInfo">
                         <b-badge v-if="isAbsence" variant="danger">부재중</b-badge>
                         <b-badge v-else variant="success">재실중</b-badge>
-                    </div> 
+                    </div>
                 </div>
                 <div style="display: flex;">
                     <div>
-                        <b-badge v-if="result.absenceStartTime" variant="light">{{ result.absenceContent }} : &nbsp; {{ result.absenceStartTime }} - {{ result.absenceEndTime }} </b-badge>
+                        <b-badge v-if="result.absenceStartTime" variant="light">{{ result.absenceContent }} : &nbsp; {{
+                            result.absenceStartTime }} - {{ result.absenceEndTime }} </b-badge>
                         <b-badge v-if="result.resignYn === 'Y'" variant="danger"> 퇴사 </b-badge>
                     </div>
                 </div>
             </div>
 
-            <div class="button" v-if="userRole === 'ROLE_ADMIN' || userId == result.id">
+            <div class="button" v-if="userRole === 'ROLE_ADMIN' || profileId == result.id">
                 <div>
                     <button class="custom-button" @click="toModify(result.employeeNumber, result)" :userRole="userRole">
                         <i class="bi bi-gear"></i>&nbsp;
@@ -69,7 +70,8 @@
             </div>
         </div>
         <div class="content">
-            <component :is="currentTabComponent" :result="result" :userRole="userRole" :userId="userId"></component>
+            <component :is="currentTabComponent" :result="result" :userRole="userRole" :profileId="profileId">
+            </component>
         </div>
     </div>
 </template>
@@ -91,6 +93,7 @@ const userRole = ref('');
 const userId = ref('');
 const givenEmail = ref('');
 const router = useRouter();
+const profileId = ref('');
 
 const profileUrl = computed(() => {
     return result.value.profilePath ? result.value.profilePath : defaultProfileImage;
@@ -105,8 +108,15 @@ const currentTabComponent = computed(() => tabComponents[currentTab.value]);
 
 function navigateToTab(tab) {
     currentTab.value = tab;
-    router.push({ query: { tab: tab } });
+    if (tab === 'wb') {
+        router.push({
+            query: { tab: tab, profileId: result.value.id }
+        });
+    } else {
+        router.push({ query: { tab: tab } });
+    }
 }
+
 
 function parseJwt(token) {
     try {
@@ -125,10 +135,10 @@ function parseJwt(token) {
 function formatDateString(dateString) {
 
     const date = new Date(dateString);
-    const year = date.getFullYear().toString().slice(2); 
-    const month = String(date.getMonth() + 1).padStart(2, '0'); 
-    const day = String(date.getDate()).padStart(2, '0'); 
-    
+    const year = date.getFullYear().toString().slice(2);
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+
     return `${year}.${month}.${day}`;
 }
 
@@ -147,7 +157,7 @@ onMounted(async () => {
     if (token) {
         const decodedToken = parseJwt(token);
         userRole.value = decodedToken?.auth || '';
-        userId.value = decodedToken?.id || '';
+        profileId.value = decodedToken?.id || '';
     }
 
     const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/${route.params.employeeNumber}`);
@@ -156,7 +166,6 @@ onMounted(async () => {
         isAbsence.value = true;
     }
     console.log('받아오는 유저: ', result.value);
-
     givenEmail.value = result.value.email;
 
     currentTab.value = route.query.tab || 'human-resources';

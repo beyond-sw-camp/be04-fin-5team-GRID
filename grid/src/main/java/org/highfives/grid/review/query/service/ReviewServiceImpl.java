@@ -1,8 +1,12 @@
 package org.highfives.grid.review.query.service;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import org.highfives.grid.review.query.aggregate.ReviewEmployeeHistory;
 import org.highfives.grid.review.query.aggregate.ReviewHistory;
 import org.highfives.grid.review.query.aggregate.ReviewHistoryAndScore;
 import org.highfives.grid.review.query.aggregate.ReviewList;
+import org.highfives.grid.review.query.dto.ReviewEmployeesHistoryDTO;
 import org.highfives.grid.review.query.dto.ReviewHistoryAndScoreDTO;
 import org.highfives.grid.review.query.dto.ReviewHistoryDTO;
 import org.highfives.grid.review.query.dto.ReviewListDTO;
@@ -13,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service(value = "QueryReviewService")
 public class ReviewServiceImpl implements ReviewService {
@@ -90,5 +95,26 @@ public class ReviewServiceImpl implements ReviewService {
         return mapper.map(reviewList, ReviewListDTO.class);
 
 
+    }
+
+    @Override
+    public PageInfo<ReviewEmployeesHistoryDTO> findEmployeesHistory(int page, int size) {
+        PageHelper.startPage(page, size);
+        List<ReviewEmployeeHistory> reviewHistoryList = reviewMapper.findEmployeesHistory();
+
+        PageInfo<ReviewEmployeeHistory> pageInfo = new PageInfo<>(reviewHistoryList);
+
+        List<ReviewEmployeesHistoryDTO> dtoList = pageInfo.getList().stream()
+                .map(reviewHistory -> mapper.map(reviewHistory, ReviewEmployeesHistoryDTO.class))
+                .collect(Collectors.toList());
+
+        PageInfo<ReviewEmployeesHistoryDTO> dtoPageInfo = new PageInfo<>();
+        dtoPageInfo.setList(dtoList);
+        dtoPageInfo.setTotal(pageInfo.getTotal());
+        dtoPageInfo.setPageNum(pageInfo.getPageNum());
+        dtoPageInfo.setPageSize(pageInfo.getPageSize());
+        dtoPageInfo.setPages(pageInfo.getPages());
+
+        return dtoPageInfo;
     }
 }

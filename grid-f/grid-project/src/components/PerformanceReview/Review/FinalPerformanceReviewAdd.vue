@@ -1,9 +1,7 @@
 <template>
   <div class="reviewAddContainer">
     <div class="reviewTitle">
-      <h1 class="mb-1"><i class="bi bi-award fs-3"></i>&nbsp; 연말 업적 평가 작성</h1>
-      <img src="@/assets/buttons/guide.png" class="guide"
-           @click="showModal('guideReview')"></img>
+      <h1 class="mb-1"><i class="bi bi-award fs-3"></i>&nbsp; 연말 업적 평가 작성 &nbsp;&nbsp;<i class="bi bi-info-circle fs-5 mt-5" id="popover-target-1" style="color: darkgoldenrod; cursor: pointer;" @click="showModal('guideReview')"></i></h1>
     </div>
     <div class="titleTableContainer">
       <table>
@@ -49,10 +47,10 @@
           <thead>
           <tr>
             <th>No</th>
+            <th>업무명</th>
             <th>목표</th>
-            <th>실행과제</th>
             <th>측정지표</th>
-            <th>세부계획</th>
+            <th>계획</th>
             <th>가중치</th>
             <th>추진실적</th>
             <th>자기 평가</th>
@@ -69,23 +67,13 @@
               {{ item.goal }}
             </td>
             <td>
-              <input
-                  v-if="!isReadOnly"
-                  v-model="item.actionItem"
-                  type="text"
-              />
-              <span v-else>{{ item.actionItem }}</span>
+              <span>{{ item.actionItem }}</span>
             </td>
             <td>
               {{ item.metric }}
             </td>
             <td>
-              <input
-                  v-if="!isReadOnly"
-                  v-model="item.detailPlan"
-                  type="text"
-              />
-              <span v-else>{{ item.detailPlan }}</span>
+              <span>{{ item.detailPlan }}</span>
             </td>
             <td>
               {{ item.weight }}
@@ -120,10 +108,14 @@
               <span v-else>{{ item.selfComment }}</span>
             </td>
             <td>
-              {{ gradeMapping[item.superiorId] || 0 }}
+              <span>
+                {{ gradeMapping[3] || 0 }}
+              </span>
             </td>
             <td>
-              {{ item.superiorScore }}
+              <span>
+                {{ item.weight * 75 * 0.01 }}
+              </span>
             </td>
           </tr>
           </tbody>
@@ -478,7 +470,7 @@ async function submit() {
   display: grid;
   grid-template-columns: 24% 4%;
   align-items: center;
-  min-width: 1000px;
+  min-width: 1200px;
 }
 
 .reviewTitle h1 {
