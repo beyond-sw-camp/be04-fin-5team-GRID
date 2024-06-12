@@ -111,9 +111,21 @@ https://www.notion.so/Grid-api-b1d410e771d148ae9b99b035a446663d
 
 ## 2-8. 단위 테스트 결과 
 - 테스트 케이스 정리
-- 
+  
 ![image](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/108782390/73f696ab-58d6-4d2e-8f76-f0909b0a7a40)
 ![스크린샷 2024-06-12 160928](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/64297541/3bb18e48-fd24-436b-adba-3ac86ba17838)
+
+부서
+![스크린샷 2024-06-12 173938](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/115036933/da485919-7776-4ce7-b233-7075ad4a7667)
+![스크린샷 2024-06-12 174025](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/115036933/5ef7df79-ce2c-4507-8fc9-60b6824de584)
+팀
+![스크린샷 2024-06-12 174000](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/115036933/7442c86e-060c-4998-b088-3fcc62d15a67)
+![스크린샷 2024-06-12 174033](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/115036933/6df963d6-d752-49f4-8fff-a0f22f3da393)
+동료평가
+![스크린샷 2024-06-12 174048](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/115036933/a694dba9-ec2c-4628-a19a-5af1edf94619)
+![스크린샷 2024-06-12 174059](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/115036933/41c0d37b-4851-44c2-8463-7ba96e0c4bda)
+
+
 
 
 
