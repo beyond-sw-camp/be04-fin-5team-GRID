@@ -58,8 +58,9 @@ const menus = {
       { label: '휴가 종류', path: '/vacation/manage', role: 'ROLE_ADMIN' },
       { label: '휴가 정책', path: '/vacation/policy', role: 'ROLE_ADMIN' },
       { label: '휴가 종류/정책', path: '/vacation/policy', role: 'ROLE_USER' },
-      { label: '휴가 보유 정보', path: '/vacation/info' },
-      { label: '휴가 변화 이력', path: '/vacation/changeInfo' },
+      { label: '휴가 보유 정보', path: '/vacation/info', role: 'ROLE_ADMIN'},
+      { label: '휴가 보유 정보/변화 이력', path: '/vacation/userInfo', role: 'ROLE_USER'},
+      { label: '휴가 변화 이력', path: '/vacation/changeInfo', role: 'ROLE_ADMIN'},
     ]
   },
   paymentManagement: {
