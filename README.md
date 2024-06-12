@@ -117,10 +117,12 @@ https://www.notion.so/Grid-api-b1d410e771d148ae9b99b035a446663d
 
 
 ## 2-9. UI/UX 테스트 결과
+![ERP - UI_UX 테스트 (1)_page-0001](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/64297541/1eda27a5-c91b-40ea-a9ef-fdc18633bc6e)
 
 
 ## 2-10. 통합 테스트 결과 
 ![image](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/108782390/a08358ba-1d8f-47cb-a293-bf672cde8781)
+
 
 
 
