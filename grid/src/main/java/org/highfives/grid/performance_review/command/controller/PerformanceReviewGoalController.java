@@ -256,12 +256,23 @@ public class PerformanceReviewGoalController {
             // 목표 상태 승인으로 수정
             PerformanceReviewGoalDTO goal = performanceReviewGoalService.modifyGoalStatusApproval(requestGoalVO.getId());
 
+            List<RequestGoalItemDTO> requestList = requestGoalVO.getGoalItemList();
+
+            List<PerformanceReviewGoalItemDTO> responseList = new ArrayList<>();
+
+            // 목표 항목이 있으면
+            if(!requestList.isEmpty()) {
+                for (RequestGoalItemDTO request : requestList) {
+                    PerformanceReviewGoalItemDTO item = modelMapper.map(request, PerformanceReviewGoalItemDTO.class);
+                    responseList.add(item);
+                }
+            }
             ResponseGoalAndItemVO response = ResponseGoalAndItemVO.builder()
                     .statusCode(200)
                     .message("평가 목표 승인 수정 완료")
                     .href("performance-review/goal")
                     .goal(goal)
-                    .itemList(null)
+                    .itemList(responseList)
                     .build();
 
             return ResponseEntity.status(HttpStatus.OK).body(response);

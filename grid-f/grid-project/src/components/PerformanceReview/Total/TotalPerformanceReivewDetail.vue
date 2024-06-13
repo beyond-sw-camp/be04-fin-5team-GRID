@@ -283,7 +283,7 @@ const gradeMapping = {
   display: grid;
   grid-template-columns: 25% 4%;
   align-items: center;
-  min-width: 1200px;
+  min-width: 1300px;
 }
 
 .reviewTitle h1 {

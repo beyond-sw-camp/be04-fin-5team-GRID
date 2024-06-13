@@ -29,7 +29,7 @@ class PerformanceReviewGoalServiceImplTest {
 
     @DisplayName("3번 직원이 결재할 업적 평가 목록 조회")
     @Test
-    public void findGoalByEApproverId(){
+    public void findGoalByApproverId(){
         int employeeId = 3;
         List<PerformanceReviewGoalDTO> findGoalList = performanceReviewGoalService.findAllGoalByApproverId(employeeId);
 
