@@ -26,20 +26,16 @@ public class JwtInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
-        System.out.println("Interceptor invoked");
-        System.out.println(" 리스폰스 헤더 " + request.getHeader("Authorization"));
         String authorizationHeader = request.getHeader("Authorization");
 
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             String token = authorizationHeader.substring(7);
 
-            System.out.println("Interceptor invoked22");
             Jws<Claims> claims = Jwts.parserBuilder()
                     .setSigningKey(env.getProperty("application.security.jwt.secretKey"))
                     .build()
                     .parseClaimsJws(token);
 
-            System.out.println("여기까지 통과하는지? : " + token);
             request.setAttribute("claims", claims.getBody());
         }
 

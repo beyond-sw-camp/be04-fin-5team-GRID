@@ -1,10 +1,7 @@
 <template>
     <div class="manageAll">
         <div class="manageTitle">
-            <i class="bi bi-brightness-high fs-3"></i>
-            <h1 class="mb-1">휴가 종류</h1>
-            <img src="@/assets/buttons/guide.png" v-if="userRole === 'ROLE_ADMIN'" class="guide"
-                @click="showModal('guideManage')"></img>
+            <h1 class="mb-1"><i class="bi bi-brightness-high fs-3"></i>&nbsp;휴가 종류&nbsp;&nbsp;<i class="bi bi-info-circle fs-5 custom-icon" v-if="userRole === 'ROLE_ADMIN'" id="popover-target-1" style="color: darkgoldenrod" @click="showModal('guideManage')"></i></h1>
             <button class="manageRegist btn-custom-2" type="button" @click="showModal('registVacation')"><span>등록하기</span></button>
             <button class="manageVacation btn-custom-3" type="button" @click="showModal('manageVacation')"><span>관리하기</span></button>
         </div>
@@ -588,8 +585,12 @@ onMounted(() => {
     margin-top: 2%;
     color: #000000;
     display: grid;
-    grid-template-columns: 3% 10% 5% 2% 64% 7% 2% 7%;
+    grid-template-columns: 20% 64% 7% 2% 7%;
     align-items: center;
+}
+
+.custom-icon {
+    cursor: pointer;
 }
 
 .manageTitle h1 {
@@ -615,7 +616,7 @@ onMounted(() => {
     overflow: hidden;
     font-size: 11px;
     font-weight: bold;
-    grid-column-start: 6;
+    grid-column-start: 3;
 }
 
 .btn-custom-2::before {
@@ -656,7 +657,7 @@ onMounted(() => {
     overflow: hidden;
     font-size: 11px;
     font-weight: bold;
-    grid-column-start: 8;
+    grid-column-start: 5;
 }
 
 .btn-custom-3::before {

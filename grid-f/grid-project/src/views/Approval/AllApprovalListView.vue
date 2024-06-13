@@ -184,12 +184,18 @@ const fetchReqApprovalList = async (typeId, approvalStatus, approverId) => {
   }
 }
 
+let items;
+
 const filteredItems = computed(() => {
   if (!filterStatus.value) {
-    return state.approvalList;
+    items =  state.approvalList;
   } else {
-    return state.approvalList.filter(item => item.approvalStatus === filterStatus.value);
+    console.log(state.approvalList);
+    items= state.approvalList.filter(item => item.approvalStatus === filterStatus.value);
   }
+
+  items.type = state.approvalList.type;
+  return items;
 });
 
 const setTab = async (tabIndex) => {

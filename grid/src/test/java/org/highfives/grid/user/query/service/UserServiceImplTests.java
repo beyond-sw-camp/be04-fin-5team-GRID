@@ -20,8 +20,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Stream;
 @SpringBootTest
 class UserServiceImplTests {
@@ -31,8 +31,9 @@ class UserServiceImplTests {
 
     static Stream<Arguments> findAllUsersInfos() {
 
-        List<EmpStatusDTO> example = new ArrayList<>();
-        example.add(new EmpStatusDTO(2, "출장", "2024-06-11", "2024-06-12"));
+        EmpStatusDTO empStatusDTO = new EmpStatusDTO(2, "출장", "2024-06-11", "2024-06-12");
+        Map<Integer, EmpStatusDTO> example = new HashMap<>();
+        example.put(2, empStatusDTO);
 
         return Stream.of(
                 // user 서비스 정상 동작 시에 예외가 발생하지 않는 것을 확인하기 위함이므로, 타 서비스의 함수는 가져오지 않는다.
@@ -49,8 +50,9 @@ class UserServiceImplTests {
 
     static Stream<Arguments> findUsersByNameInfos() {
 
-        List<EmpStatusDTO> example = new ArrayList<>();
-        example.add(new EmpStatusDTO(2, "출장", "2024-06-11", "2024-06-12"));
+        EmpStatusDTO empStatusDTO = new EmpStatusDTO(2, "출장", "2024-06-11", "2024-06-12");
+        Map<Integer, EmpStatusDTO> example = new HashMap<>();
+        example.put(2, empStatusDTO);
 
         return Stream.of(
                 Arguments.of("정",PageRequest.of(0, 12), example, "ROLE_ADMIN"),
@@ -83,8 +85,9 @@ class UserServiceImplTests {
 
     static Stream<Arguments> findUserByEmployeeNumInfo() {
 
-        List<EmpStatusDTO> example = new ArrayList<>();
-        example.add(new EmpStatusDTO(1, "휴가", "2024-06-11", "2024-06-12"));
+        EmpStatusDTO empStatusDTO = new EmpStatusDTO(2, "출장", "2024-06-11", "2024-06-12");
+        Map<Integer, EmpStatusDTO> example = new HashMap<>();
+        example.put(2, empStatusDTO);
 
         return Stream.of(
                 Arguments.of("9999999", example),
@@ -114,7 +117,7 @@ class UserServiceImplTests {
     @DisplayName("전체 유저 리스트 조회(페이징)")
     @ParameterizedTest
     @MethodSource("findAllUsersInfos")
-    void findAllUsersTest(Pageable pageable, List<EmpStatusDTO> absenceInfo, String auth) {
+    void findAllUsersTest(Pageable pageable, Map<Integer, EmpStatusDTO> absenceInfo, String auth) {
         Assertions.assertDoesNotThrow(
                 () -> userService.findAllUsers(pageable, absenceInfo, auth)
         );
@@ -123,9 +126,9 @@ class UserServiceImplTests {
     @DisplayName("전체 유저 리스트 조회(페이징, 이름 검색)")
     @ParameterizedTest
     @MethodSource("findUsersByNameInfos")
-    void findUsersByNameTest(String name, Pageable pageable, List<EmpStatusDTO> absenceInfo, String auth) {
+    void findUsersByNameTest(String name, Pageable pageable, Map<Integer, EmpStatusDTO> ndAbsenceInfo, String auth) {
         Assertions.assertDoesNotThrow(
-                () -> userService.findUsersByName(name, pageable, absenceInfo, auth)
+                () -> userService.findUsersByName(name, pageable, ndAbsenceInfo, auth)
         );
     }
 
@@ -160,9 +163,9 @@ class UserServiceImplTests {
     @DisplayName("유저 정보 조회(사원번호) 테스트 - 정상 동작")
     @ParameterizedTest
     @MethodSource("findUserByEmployeeNumInfo")
-    void findUserByEmployeeNumNormalTest1(String eNum, List<EmpStatusDTO> absenceInfo) {
+    void findUserByEmployeeNumNormalTest1(String eNum, Map<Integer, EmpStatusDTO> ndAbsenceInfo) {
         Assertions.assertDoesNotThrow(
-                () -> userService.findUserByEmployeeNum(eNum, absenceInfo)
+                () -> userService.findUserByEmployeeNum(eNum, ndAbsenceInfo)
         );
     }
 
@@ -187,6 +190,7 @@ class UserServiceImplTests {
                 .joinType(JoinType.NEW)
                 .name("Admin")
                 .assignedTask("관리자 계정")
+                .contractEndTime("2999-12-31")
                 .phoneNumber("02-1234-5678")
                 .position(new PositionDTO(1, "사원"))
                 .resignYn(YN.N)
@@ -249,6 +253,7 @@ class UserServiceImplTests {
                 .joinType(JoinType.NEW)
                 .name("Admin")
                 .assignedTask("관리자 계정")
+                .contractEndTime("2999-12-31")
                 .phoneNumber("02-1234-5678")
                 .position(new PositionDTO(1, "사원"))
                 .resignYn(YN.N)
@@ -311,6 +316,7 @@ class UserServiceImplTests {
                 .joinType(JoinType.NEW)
                 .name("Admin")
                 .assignedTask("관리자 계정")
+                .contractEndTime("2999-12-31")
                 .phoneNumber("02-1234-5678")
                 .position(new PositionDTO(1, "사원"))
                 .resignYn(YN.N)

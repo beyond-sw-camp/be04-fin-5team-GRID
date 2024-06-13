@@ -44,8 +44,6 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
             ReqLoginVO requestLogin =
                     new ObjectMapper().readValue(request.getInputStream(), ReqLoginVO.class);
 
-            System.out.println("requestLogin = " + requestLogin);
-            System.out.println("chechorigins : " + request.getHeader("Origin"));
           // 사용자가 전달한 id / pwd 를 사용해 authentication 토큰을 만듬
             return getAuthenticationManager().authenticate(
                     new UsernamePasswordAuthenticationToken(

@@ -1,9 +1,7 @@
 <template>
   <div class="policyAll">
       <div class="policyTitle" v-if="userRole === 'ROLE_ADMIN'">
-        <i class="bi bi-brightness-high fs-3"></i>
-        <h1 class="mb-1">휴가 정책</h1>
-        <img src="@/assets/buttons/guide.png" v-if="userRole === 'ROLE_ADMIN'" class="guide" @click="showModal('guideManage')"></img>
+        <h1 class="mb-1"><i class="bi bi-brightness-high fs-3"></i>&nbsp;휴가 정책&nbsp;&nbsp;<i class="bi bi-info-circle fs-5 custom-icon" v-if="userRole === 'ROLE_ADMIN'" id="popover-target-1" style="color: darkgoldenrod" @click="showModal('guideManage')"></i></h1>
         <button class="policyRegist btn-custom-1" @click="showModal('registPolicy')" v-if="userRole === 'ROLE_ADMIN'"><span>등록하기</span></button>
       </div>
       <div class="policyTitleUser" v-if="userRole === 'ROLE_USER'">
@@ -358,6 +356,10 @@ Array.from(forms).forEach(form => {
   height: 100%;
 }
 
+.custom-icon {
+  cursor: pointer;
+}
+
 .policyTitle {
   grid-column-start: 2;
   grid-column-end: 3;
@@ -367,7 +369,7 @@ Array.from(forms).forEach(form => {
   color: #000000;
   align-items: center;
   display: grid;
-  grid-template-columns: 3% 10% 5% 66% 7% 2% 7%;
+  grid-template-columns: 21% 63% 7% 2% 7%;
 }
 
 .policyTitle h1 {
@@ -412,7 +414,7 @@ Array.from(forms).forEach(form => {
   font-style: bold;
   width: 100%;
   min-width: 51.4px;
-  grid-column-start: 7;
+  grid-column-start: 5;
 }
 
 .guide {

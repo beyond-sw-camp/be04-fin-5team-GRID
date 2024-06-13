@@ -61,7 +61,6 @@ public class ImgServiceImpl implements ImgService {
                             .withCannedAcl(CannedAccessControlList.PublicRead));
 
             String imagePath = amazonS3Client.getUrl(bucketName, newFileName).toString();
-            System.out.println("imagePath = " + imagePath);
 
             result.put("origin",originFileName);
             result.put("new",newFileName);
@@ -79,7 +78,6 @@ public class ImgServiceImpl implements ImgService {
     public String imgTableUpdate(Map<String, String> result, int userId, int typeId) {
 
         EmployeeImg oldImg = imgRepository.findByEmployeeIdAndTypeId(userId, typeId);
-        System.out.println("oldImg = " + oldImg);
 
         if(oldImg == null) {
             log.info("해당 유저의 이미지가 없습니다.");
@@ -106,14 +104,10 @@ public class ImgServiceImpl implements ImgService {
                 .build();
 
         String oldImgPath = oldImg.getPath();
-        System.out.println("inputImg = " + inputImg);
-        System.out.println("oldImg = " + oldImg);
-        System.out.println("oldImgPath = " + oldImgPath);
+
         try{
             imgRepository.save(inputImg);
 
-            System.out.println("oldImg = " + oldImg.getPath());
-            System.out.println("inputImg = " + inputImg.getPath());
             return oldImgPath;
         } catch (Exception e) {
             log.info("Exception occurred: {}", e.getMessage());
@@ -123,7 +117,7 @@ public class ImgServiceImpl implements ImgService {
 
     @Override
     public void imgS3Delete(String path) {
-        System.out.println("오래된 경로: " + path);
+
         String splitStr = ".com/";
         String fileName = path.substring(path.lastIndexOf(splitStr) + splitStr.length());
 

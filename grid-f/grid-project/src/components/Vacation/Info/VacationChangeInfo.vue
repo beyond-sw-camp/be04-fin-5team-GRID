@@ -1,8 +1,7 @@
 <template>
   <div class="historyAll">
     <div class="historyTitle">
-      <i class="bi bi-brightness-high fs-3"></i>
-      <h1>휴가 변화 이력 &nbsp;&nbsp;<i class="bi bi-info-circle fs-5 mt-5" id="popover-target-1" style="color: darkgoldenrod" @click="showModal('guideModal')"></i></h1>
+        <h1 class="mb-1"><i class="bi bi-brightness-high fs-3"></i>&nbsp;휴가 변화 이력&nbsp;&nbsp;<i class="bi bi-info-circle fs-5 custom-icon" v-if="userRole === 'ROLE_ADMIN'" id="popover-target-1" style="color: darkgoldenrod" @click="showModal('guideModal')"></i> </h1>
     </div>
     <div class="vacations">
       <div class="annual" v-if="userRole === 'ROLE_ADMIN'">
@@ -516,7 +515,7 @@ onBeforeMount(() => {
   grid-column-start: 2;
   margin-top: 2%;
   display: grid;
-  grid-template-columns: 3% 15% 5% 77%;
+  grid-template-columns: 23% 77%;
   align-items: center;
   color: #000000;
 }
@@ -611,6 +610,10 @@ onBeforeMount(() => {
   grid-column-end: 3;
   margin-top: 20px;
   font-size: 12px;
+}
+
+.custom-icon {
+    cursor: pointer;
 }
 
 
