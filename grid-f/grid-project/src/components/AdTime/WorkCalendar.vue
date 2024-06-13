@@ -95,7 +95,7 @@ const initCalendar = async (events) => {
         let endDate = new Date(info.event.end);
 
         if(info.event.title === '출장' || info.event.title === '연차' || info.event.title === '월차'
-            || info.event.title === '정기 휴가'){
+            || info.event.title === '정기휴가'){
           endDate.setDate(endDate.getDate() - 1);
         }
 
@@ -103,7 +103,7 @@ const initCalendar = async (events) => {
         let startTimeString = '';
         let endTimeString = '';
         if(info.event.title === '출장' || info.event.title === '연차' || info.event.title === '월차'
-            || info.event.title === '정기 휴가'){
+            || info.event.title === '정기휴가'){
           startTimeString = formatDate(startDate, false);
           endTimeString = formatDate(endDate, false);
         } else {

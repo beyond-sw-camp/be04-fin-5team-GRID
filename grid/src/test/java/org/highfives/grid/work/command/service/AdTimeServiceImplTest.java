@@ -41,7 +41,7 @@
 
 
      @DisplayName("출근 체크")
-     @ParameterizedTest
+     @ParameterizedTest(name="출근 체크")
      @MethodSource("addAdTimeDTO")
      @Transactional
      void addStartTime(AdTimeDTO adTimeDTO) {
@@ -51,7 +51,7 @@
      }
 
      @DisplayName("퇴근 체크")
-     @ParameterizedTest
+     @ParameterizedTest(name="퇴근 체크")
      @MethodSource("addAdTimeDTO2")
      @Transactional
      void addEndTime(AdTimeDTO adTimeDTO) {
