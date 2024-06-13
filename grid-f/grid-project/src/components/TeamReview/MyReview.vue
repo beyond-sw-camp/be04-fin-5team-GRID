@@ -333,12 +333,10 @@ th,
 td {
   padding: 8px;
   text-align: left;
-  border-top: 1px solid #ddd;
   border-bottom: 1px solid #ddd;
 }
 
 th {
-  background-color: #f2f2f2;
   color: #333;
 }
 
@@ -390,9 +388,9 @@ tr:hover {
 
 .modal-content {
   background-color: white;
-  padding: 20px;
-  border-radius: 5px;
-  width: 600px;
+  padding: 30px;
+  border-radius: 10px;
+  width: 500px;
   max-width: 80%;
 }
 

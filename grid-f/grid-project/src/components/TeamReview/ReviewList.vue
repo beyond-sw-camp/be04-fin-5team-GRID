@@ -373,12 +373,10 @@ const search = () => {
 th, td {
   padding: 8px;
   text-align: left;
-  border-top: 1px solid #ddd;
   border-bottom: 1px solid #ddd;
 }
 
 th {
-  background-color: #f2f2f2;
   color: #333;
 }
 
