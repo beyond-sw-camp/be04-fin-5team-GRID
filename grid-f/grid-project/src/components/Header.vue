@@ -42,25 +42,25 @@
                 :group="{ name: 'teams', pull: true, put: true }" @end="handleTeamDragEnd($event)" class="list-group"
                 :itemKey="item => item.id" :disabled="userRole === 'ROLE_USER'">
                 <template #item="{ element: team }">
-                  <li class="list-group-item">
-                    <div @click="toggleEmployees(team.id)" style="cursor: pointer;">
-                      {{ team.teamName }}
-                    </div>
-                    <ul v-if="team.showEmployees">
-                      <li v-for="employee in team.employees" :key="employee.id" @click="goToProfile(employee.employeeNumber)"
-                        style="cursor: pointer;">
-                        {{ employee.name }}
-                      </li>
-                    </ul>
-                  </li>
-                </template>
-              </draggable>
+            <li class="list-group-item">
+              <div @click="toggleEmployees(team.id)" style="cursor: pointer;">
+                {{ team.teamName }}
+              </div>
+              <ul v-if="team.showEmployees">
+                <li v-for="employee in team.employees" :key="employee.id" @click="goToProfile(employee.employeeNumber)"
+                  style="cursor: pointer;">
+                  {{ employee.name }}
+                </li>
+              </ul>
             </li>
           </template>
         </draggable>
-      </div>
-    </div>
-  </div>
+        </li>
+</template>
+</draggable>
+</div>
+</div>
+</div>
 </template>
 
 
@@ -116,7 +116,7 @@ const goToProfile = async (employeeNumber) => {
     router.push(`/hr/profile/${employeeNumber}`).then(() => {
       window.location.reload();
     });
-  }, 300); // 모달이 닫히는 애니메이션 시간을 고려하여 약간의 지연을 줌
+  }, 300);
 };
 
 const goProfile = () => {
@@ -286,7 +286,7 @@ const getNewToken = async () => {
           headers: {
             'Content-Type': 'application/json'
           },
-          withCredentials: true // httpOnly 쿠키 전송을 위해 필요
+          withCredentials: true
         }
       );
 
@@ -322,11 +322,11 @@ function isTokenExpired(token) {
 
 function calculateTimeLeft(token) {
   const payload = JSON.parse(atob(token.split('.')[1]));
-  const exp = payload.exp * 1000; // Expiration time in milliseconds
+  const exp = payload.exp * 1000;
   const timeLeft = exp - Date.now();
   if (timeLeft > 0) {
-    const minutes = Math.floor(timeLeft / 60000).toString().padStart(2, '0'); // 2자리로 패딩
-    const seconds = Math.floor((timeLeft % 60000) / 1000).toString().padStart(2, '0'); // 2자리로 패딩
+    const minutes = Math.floor(timeLeft / 60000).toString().padStart(2, '0');
+    const seconds = Math.floor((timeLeft % 60000) / 1000).toString().padStart(2, '0');
     return `${minutes} : ${seconds}`;
   }
   return '토큰이 만료되었습니다.';
@@ -406,28 +406,30 @@ function deleteCookie(name, path, domain) {
 }
 
 const logout = async () => {
-  try {
-    await axios.post(
-      '/api/logout',
-      {},
-      {
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        withCredentials: true // httpOnly 쿠키 전송을 위해 필요
-      }
-    );
+  if (confirm("로그아웃 하시겠습니까?")) {
+    try {
+      await axios.post(
+        '/api/logout',
+        {},
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          withCredentials: true // httpOnly 쿠키 전송을 위해 필요
+        }
+      );
 
-    localStorage.removeItem('access');
-    localStorage.removeItem('email');
+      localStorage.removeItem('access');
+      localStorage.removeItem('email');
 
-    deleteCookie('refresh', '/', '.gridhr.site');
+      deleteCookie('refresh', '/', '.gridhr.site');
 
-    store.dispatch('resetState');
-    alert('로그아웃 되었습니다');
-    router.push('/');
-  } catch (error) {
-    console.error('로그아웃 중 오류가 발생했습니다:', error);
+      store.dispatch('resetState');
+      alert('로그아웃 되었습니다');
+      router.push('/');
+    } catch (error) {
+      console.error('로그아웃 중 오류가 발생했습니다:', error);
+    }
   }
 };
 
@@ -573,7 +575,8 @@ onMounted(fetchDepartments);
   cursor: pointer;
 }
 
-.icon-image:hover, .profile:hover {
+.icon-image:hover,
+.profile:hover {
   opacity: 0.8;
 }
 </style>
