@@ -73,12 +73,12 @@ public class ApprovalServiceImpl implements ApprovalService {
                 .requesterId(btApprovalVO.getRequesterId())
                 .build();
 
-        btApprovalRepository.save(btApproval);
+        BTApproval result = btApprovalRepository.save(btApproval);
 
         ReqAddApprovalChainVO request = new ReqAddApprovalChainVO(1, btApproval.getId(), btApproval.getRequesterId());
         approvalChainService.addBTApprovalChain(request);
 
-        return mapper.map(btApproval, BTApprovalDTO.class);
+        return mapper.map(result, BTApprovalDTO.class);
     }
 
     @Override
@@ -149,12 +149,12 @@ public class ApprovalServiceImpl implements ApprovalService {
                     .requesterId(overtimeApprovalVO.getRequesterId())
                     .build();
 
-            oApprovalRepository.save(overtimeApproval);
+            OvertimeApproval result = oApprovalRepository.save(overtimeApproval);
 
             ReqAddApprovalChainVO request = new ReqAddApprovalChainVO(2, overtimeApproval.getId(), overtimeApproval.getRequesterId());
             approvalChainService.addOApprovalChain(request);
 
-            return mapper.map(overtimeApproval, OvertimeApprovalDTO.class);
+            return mapper.map(result, OvertimeApprovalDTO.class);
         }
 
         return null;
@@ -191,12 +191,12 @@ public class ApprovalServiceImpl implements ApprovalService {
                 .path(rwApprovalVO.getPath())
                 .build();
 
-        rwApprovalRepository.save(rwApproval);
+        RWApproval result = rwApprovalRepository.save(rwApproval);
 
         ReqAddApprovalChainVO request = new ReqAddApprovalChainVO(3, rwApproval.getId(), rwApproval.getRequesterId());
         approvalChainService.addRWApprovalChain(request);
 
-        return mapper.map(rwApproval, RWApprovalDTO.class);
+        return mapper.map(result, RWApprovalDTO.class);
     }
 
     @Override
@@ -214,12 +214,12 @@ public class ApprovalServiceImpl implements ApprovalService {
 
         // info의 employeeId와 일치 확인?
 
-        vApprovalRepository.save(vacationApproval);
+        VacationApproval result = vApprovalRepository.save(vacationApproval);
 
         ReqAddApprovalChainVO request = new ReqAddApprovalChainVO(4, vacationApproval.getId(), vacationApprovalVO.getRequesterId());
         approvalChainService.addVApprovalChain(request);
 
-        return mapper.map(vacationApproval, VacationApprovalDTO.class);
+        return mapper.map(result, VacationApprovalDTO.class);
     }
 
     @Override
@@ -330,12 +330,12 @@ public class ApprovalServiceImpl implements ApprovalService {
                 .cancelDocId(btApprovalId)
                 .build();
 
-        btApprovalRepository.save(cancelApproval);
+        BTApproval result = btApprovalRepository.save(cancelApproval);
 
         ReqAddApprovalChainVO request = new ReqAddApprovalChainVO(1, cancelApproval.getId(), cancelApproval.getRequesterId());
         approvalChainService.addBTApprovalChain(request);
 
-        return mapper.map(cancelApproval, BTApprovalDTO.class);
+        return mapper.map(result, BTApprovalDTO.class);
     }
 
     @Override
@@ -361,12 +361,12 @@ public class ApprovalServiceImpl implements ApprovalService {
                 .cancelDocId(overtimeApprovalId)
                 .build();
 
-        oApprovalRepository.save(cancelApproval);
+        OvertimeApproval result = oApprovalRepository.save(cancelApproval);
 
         ReqAddApprovalChainVO request = new ReqAddApprovalChainVO(2, cancelApproval.getId(), cancelApproval.getRequesterId());
         approvalChainService.addOApprovalChain(request);
 
-        return mapper.map(cancelApproval, OvertimeApprovalDTO.class);
+        return mapper.map(result, OvertimeApprovalDTO.class);
     }
 
     @Override
@@ -395,12 +395,12 @@ public class ApprovalServiceImpl implements ApprovalService {
                 .cancelDocId(rwApprovalId)
                 .build();
 
-        rwApprovalRepository.save(cancelApproval);
+        RWApproval result = rwApprovalRepository.save(cancelApproval);
 
         ReqAddApprovalChainVO request = new ReqAddApprovalChainVO(3, cancelApproval.getId(), cancelApproval.getRequesterId());
         approvalChainService.addRWApprovalChain(request);
 
-        return mapper.map(cancelApproval, RWApprovalDTO.class);
+        return mapper.map(result, RWApprovalDTO.class);
     }
 
     @Override
@@ -427,12 +427,12 @@ public class ApprovalServiceImpl implements ApprovalService {
                 .cancelDocId(vacationApprovalId)
                 .build();
 
-        vApprovalRepository.save(cancelApproval);
+        VacationApproval result = vApprovalRepository.save(cancelApproval);
 
         ReqAddApprovalChainVO request = new ReqAddApprovalChainVO(4, cancelApproval.getId(), cancelApproval.getRequesterId());
         approvalChainService.addVApprovalChain(request);
 
-        return mapper.map(cancelApproval, VacationApprovalDTO.class);
+        return mapper.map(result, VacationApprovalDTO.class);
     }
 
     @Override
