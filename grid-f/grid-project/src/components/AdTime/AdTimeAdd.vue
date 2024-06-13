@@ -146,12 +146,38 @@ const initCalendar = async (events) => {
         eventEl.style.overflow = 'hidden';
         eventEl.style.textOverflow = 'ellipsis';
         eventEl.style.whiteSpace = 'nowrap';
+
+
+        // 이벤트의 시작 및 종료 시간을 가져옵니다.
+        const startDate = new Date(info.event.start);
+        let endDate = new Date(info.event.end);
+
+        if(info.event.title === '출장' || info.event.title === '연차' || info.event.title === '월차'
+            || info.event.title === '정기휴가'){
+          endDate.setDate(endDate.getDate() - 1);
+        }
+
+        // 시작 시간과 종료 시간을 문자열로 변환합니다.
+        let startTimeString = '';
+        let endTimeString = '';
+        if(info.event.title === '출장' || info.event.title === '연차' || info.event.title === '월차'
+            || info.event.title === '정기휴가'){
+          startTimeString = formatDate(startDate, false);
+          endTimeString = formatDate(endDate, false);
+        } else {
+          startTimeString = formatDate(startDate, true);
+          endTimeString = formatDate(endDate, true);
+        }
+
+
+        var popover = new bootstrap.Popover(info.el, {
+          title: info.event.title,
+          content: `시작: ${startTimeString}<br>종료: ${endTimeString}`,
+          trigger: 'hover',
+          placement: 'right',
+          html: true
+        });
       },
-      eventClick: function (info) {
-        console.log('Event clicked:', info.event.title);
-        // 이벤트 클릭 시 실행할 동작을 여기에 추가
-        // 예: 모달 열기, 이벤트 상세 정보 표시 등
-      }
     });
     calendar.render();
   } else {
@@ -228,16 +254,40 @@ function transformEvents(list, type, color, priority) {
         priority: priority
       };
     } else {
+      let startTime = item.startTime ? item.startTime.replace(" ", "T") : null;
+      let endTime = item.endTime ? item.endTime.replace(" ", "T") : null;
+
+      if (type === '출장') {
+        let endDate = new Date(endTime);
+        endDate.setDate(endDate.getDate() + 1);
+        endTime = endDate.toISOString().split('T')[0];
+      }
+
       return {
         title: type !== '휴가' ? type : item.vacationType,
-        start: item.startTime ? item.startTime.replace(" ", "T") : null,
-        end: item.endTime ? item.endTime.replace(" ", "T") : null,
+        start: startTime,
+        end: endTime,
         color: color,
         textColor: "#424242",
         priority: priority
       };
     }
   });
+}
+
+
+function formatDate(date, includeTime) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  if (includeTime) {
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+  } else {
+    return `${year}-${month}-${day}`;
+  }
 }
 
 
