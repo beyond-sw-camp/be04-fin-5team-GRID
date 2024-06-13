@@ -132,6 +132,101 @@ GRID 프로젝트는 HR에 특화된 ERP 시스템으로, 조직의 인사 관�
 ## 2-3. Context Map 
 ![DDD](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/108782390/5befa14f-3d38-41b1-a92e-f3e2c44cc05a)
 
+<details>
+  <summary>컨텍스트 이미지 모음</summary>
+- 기획을 통해 나온 컨텍스트
+
+![평가_직원](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/127740594/a1bb6663-daf1-4e3d-a6ac-33296b04a935)
+![출퇴근_결재라인](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/127740594/37a956d9-e546-4777-b8ba-4b2e0a5cea9b)
+![단축 근무 결재](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/127740594/b5a3908c-3f1c-4d55-beb3-49210238ca85)
+![시간외_근무_결재](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/127740594/250f5a91-b31b-405e-a8cf-3c1df969a2db)
+![휴가_결재](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/127740594/8b16c38f-f248-4461-891e-52134da64bab)
+![휴가](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/127740594/0fd6baf3-716f-46b8-b1d3-928cc67b59b9)
+![업적_평가_목표](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/127740594/b9f21971-c36a-467e-9f15-2f63e4b48f95)
+![업적평가_종합업적평가](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/127740594/328608d5-c960-4d0d-aad1-7842498ccc78)
+
+</details>
+
+<details>
+  <summary>컨텍스트 맵</summary>
+
+  <details>
+    <summary>직원&부서&팀</summary>
+    <ul style="margin-left: 20px;">
+      <li>직원: 직원에 대한 정보 관리</li>
+      <li>부서: 부서에 대한 정보 관리</li>
+      <li>팀: 팀에 대한 정보 관리</li>
+      <li>직원은 팀과 부서를 하나씩만 가진다.</li>
+    </ul>
+
+    ![직원맵](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/127740594/8b16344f-3f54-4ad8-83e2-e644e4e72fe2)
+  </details>
+
+  <details>
+    <summary>직원&출퇴근</summary>
+    <ul style="margin-left: 20px;">
+      <li>출퇴근: 직원의 출근 시간과 퇴근 시간 정보 관리</li>
+      <li>직원은 하루에 한 번 출퇴근을 찍을 수 있다.</li>
+    </ul>
+
+    ![출퇴근맵](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/127740594/ae5ca39c-dca1-4084-b10a-8715857c7974)
+  </details>
+
+  <details>
+    <summary>결재</summary>
+    <ul style="margin-left: 20px;">
+      <li>출장 결재: 출장 결재에 대한 정보 관리</li>
+      <li>시간외 근무 결재: 시간외 근무 결재에 대한 정보 관리</li>
+      <li>단축 근무 결재: 단축 근무 결재에 대한 정보 관리</li>
+      <li>휴가 결재: 휴가 결재에 대한 정보 관리</li>
+      <li>결재별 결재 라인: 결재 문서 하나당 결재 상태, 결재자에 대한 정보 관리</li>
+      <li>결재 라인: 문서 유형별 결재자를 정의한 정보 관리</li>
+      <li>결재 문서를 작성할 때 결재 라인에 있는 결재자를 불러와 문서별 결재라인에 결재하는 직원의 정보를 저장한다.</li>
+      <li>문서별 결재라인에서 결재자의 결재 상태를 확인할 수 있다.</li>
+    </ul>
+
+    ![결재맵](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/127740594/2bcf7065-044a-4b5c-b39c-9f6317f7a34f)
+  </details>
+
+  <details>
+    <summary>휴가</summary>
+    <ul style="margin-left: 20px;">
+      <li>보유 휴가: 직원이 보유하고 있는 휴가에 대한 정보 관리</li>
+      <li>휴가 유형: 등록되어있는 휴가 유형에 대한 정보 관리</li>
+      <li>휴가 정책: 등록 되어있는 휴가 유형별 정책에 대한 정보 관리</li>
+      <li>휴가 유형별 직원이 휴가를 몇 개를 가지고 있는지 저장한다.</li>
+    </ul>
+
+    ![휴가맵](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/127740594/70e0f571-b97b-4023-aec3-80b93cb749c3)
+  </details>
+
+  <details>
+    <summary>동료 평가</summary>
+    <ul style="margin-left: 20px;">
+      <li>동료 평가 내역: 동료 평가 문서에 대한 정보 관리</li>
+      <li>동료평가: 동료 평가와 그에 대한 동료 평가 항목에 대한 정보 관리</li>
+      <li>평가 항목: 평가할 동료 평가에 대한 항목 내용 정보 관리</li>
+    </ul>
+
+    ![동료평가맵](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/127740594/f69a5f35-f98e-4c61-b8d0-7589557cd120)
+  </details>
+
+  <details>
+    <summary>업적 평가</summary>
+    <ul style="margin-left: 20px;">
+      <li>업적 평가 목표: 업적 평가 목표에 대한 정보 관리</li>
+      <li>업적 평가 목표 항목: 업적 평가 목표에 들어가는 목표에 대한 정보 관리</li>
+      <li>업적 평가: 중간 업적 평가와 연말 업적 평가에 대한 정보 관리</li>
+      <li>업적 평가 항목: 업적 평가 목표 항목을 기반으로 들어가는 평가 항목에 대한 정보 관리</li>
+      <li>종합 업적 평가: 중간 업적 평가와 연말 업적 평가를 합산한 결과에 대한 정보 관리</li>
+    </ul>
+
+    ![업적평가맵](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/127740594/4d856985-f3d2-4288-bfed-81b86ef6cd8b)
+  </details>
+
+</details>
+
+
 ## 2-4. DB 모델링
 ### 2-4-1. 논리 모델링
 - ERD Cloud link : 
