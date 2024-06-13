@@ -81,7 +81,7 @@ const initCalendar = async (events) => {
         if(info.event.extendedProps.approvalType === '출장'
             || info.event.extendedProps.approvalType === '연차'
             || info.event.extendedProps.approvalType === '월차'
-            || info.event.extendedProps.approvalType === '정기 휴가'){
+            || info.event.extendedProps.approvalType === '정기휴가'){
           endDate.setDate(endDate.getDate() - 1);
         }
 
@@ -93,7 +93,7 @@ const initCalendar = async (events) => {
         if(info.event.extendedProps.approvalType === '출장'
             || info.event.extendedProps.approvalType === '연차'
             || info.event.extendedProps.approvalType === '월차'
-            || info.event.extendedProps.approvalType === '정기 휴가'){
+            || info.event.extendedProps.approvalType === '정기휴가'){
           startTimeString = formatDate(startDate, false);
           endTimeString = formatDate(endDate, false);
         } else {
