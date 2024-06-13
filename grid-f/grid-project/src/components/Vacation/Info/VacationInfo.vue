@@ -1,8 +1,7 @@
 <template>
     <div class="historyAll">
         <div class="historyTitle">
-            <i class="bi bi-brightness-high fs-3"></i>
-            <h1 class="mb-1">휴가 보유 정보</h1>
+            <h1 class="mb-1"><i class="bi bi-brightness-high fs-3"></i>&nbsp;휴가 보유 정보</h1>
         </div>
         <div class="vacations">
             <div class="annual" v-if="userRole === 'ROLE_USER'">
@@ -253,19 +252,19 @@ onBeforeMount(() => {
 }
 
 .historyTitle {
-  grid-column-start: 2;
-  align-items: center;
-  margin-top: 2%;
-  display: grid;
-  grid-template-columns: 3% 97%;
-  color: #000000;
+    grid-column-start: 2;
+    align-items: center;
+    margin-top: 2%;
+    display: grid;
+    grid-template-columns: 100%;
+    color: #000000;
 }
 
 .historyTitle h1 {
-  margin-bottom: 0;
-  font-size: 25px;
-  font-weight: 600;
-  font-family: 'IBMPlexSansKR-Regular', sans-serif;
+    margin-bottom: 0;
+    font-size: 25px;
+    font-weight: 600;
+    font-family: 'IBMPlexSansKR-Regular', sans-serif;
 }
 
 
@@ -427,7 +426,7 @@ th {
 }
 
 .pagination a {
-  cursor: pointer;
+    cursor: pointer;
 }
 
 .vacationsNum {

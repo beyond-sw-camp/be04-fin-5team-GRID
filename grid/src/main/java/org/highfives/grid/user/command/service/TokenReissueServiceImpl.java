@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.highfives.grid.security.JwtUtil;
 import org.highfives.grid.user.command.aggregate.RefreshToken;
 import org.highfives.grid.user.command.repository.TokenReissueRepository;
+import org.highfives.grid.user.exception.InvalidInfoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +17,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-@Service
+@Service("TokenReissueService")
 @Slf4j
 public class TokenReissueServiceImpl implements TokenReissueService{
 
@@ -32,6 +33,9 @@ public class TokenReissueServiceImpl implements TokenReissueService{
 
     @Override
     public ResponseEntity<?> checkValidation(String refresh) {
+
+        if (refresh == null || refresh.isEmpty())
+            throw new InvalidInfoException("Refresh Token is empty");
 
         //토큰 유효성 체크 & refresh 토큰 체크
         try {
@@ -50,6 +54,9 @@ public class TokenReissueServiceImpl implements TokenReissueService{
 
     @Override
     public ResponseEntity<?> checkRefreshToken(String refresh) {
+
+        if(refresh == null || refresh.isEmpty())
+            throw new InvalidInfoException("Token is empty");
 
         // 토큰이 refresh인지 확인 (발급시 페이로드에 명시)
         String category = jwtUtil.getCategory(refresh);

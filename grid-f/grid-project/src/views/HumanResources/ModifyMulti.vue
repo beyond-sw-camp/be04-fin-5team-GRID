@@ -12,20 +12,19 @@
                 </ol>
             </nav>
             <div class="title-content">
-                <h1> <i class="bi bi-pencil-square"></i>&nbsp 인사 정보 일괄 수정</h1>
-                <div class="guide">
-                    <img src="@/assets/buttons/guide.png" alt="guide button" id="guide" @click="openModal">
-                </div>
+                <h1> <i class="bi bi-pencil-square"></i>&nbsp; 인사 정보 일괄 수정&nbsp;&nbsp;<i
+                        class="bi bi-info-circle fs-5 mt-5" id="popover-target-1" style="color: darkgoldenrod"
+                        @click="openModal"></i></h1>
             </div>
         </div>
         <div class="search">
-            <button class="downloadBtn" @click="downloadCSV">
-                <i class="bi bi-download"></i> &nbsp
-                작성 양식
+            <button class="downloadBtn btn-custom-1" @click="downloadCSV">
+                <i class="bi bi-download bi-custom-1"></i> &nbsp;
+                <span>작성 양식</span>
             </button>
-            <button class="uploadBtn" @click="triggerFileUpload">
-                <i class="bi bi-upload"></i> &nbsp
-                양식 적용
+            <button class="uploadBtn btn-custom-1" @click="triggerFileUpload">
+                <i class="bi bi-upload"></i> &nbsp;
+                <span>양식 적용</span>
             </button>
             <input type="file" ref="fileInput" class="d-none" @change="handleFileUpload" accept=".csv" />
         </div>
@@ -124,13 +123,13 @@
             <div class="employee-count">
                 추가된 사원 수 : {{ employees.length }}명
             </div>
-            <button class="plusBtn" @click="addEmployee">
-                <i class="bi bi-plus-circle"></i>&nbsp &nbsp;
-                행 추가
+            <button class="plusBtn btn-custom-1" @click="addEmployee">
+                <i class="bi bi-plus-circle"></i>&nbsp;
+                <span>행 추가</span>
             </button>
-            <button class="submitBtn" @click="submitForm">
-                <i class="bi bi-check2-circle"></i>&nbsp &nbsp;
-                확인
+            <button class="submitBtn btn-custom-1" @click="submitForm">
+                <i class="bi bi-check2-circle"></i>&nbsp;
+                <span>확인</span>
             </button>
         </div>
     </div>
@@ -671,5 +670,47 @@ thead th {
 
 .invalid-input::placeholder {
     color: rgb(240, 125, 125);
+}
+
+.btn-custom-1 {
+    background-color: white;
+    color: #088A85;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.4s, color 0.4s;
+    position: relative;
+    overflow: hidden;
+    font-size: 11px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.btn-custom-1::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background-color: #088A85;
+    transition: left 0.4s;
+    z-index: 1;
+}
+
+.btn-custom-1:hover::before {
+    left: 0;
+}
+
+.btn-custom-1 span,
+.btn-custom-1 i {
+    position: relative;
+    z-index: 2;
+    color: #088A85;
+}
+
+.btn-custom-1:hover span,
+.btn-custom-1:hover i {
+    color: white;
 }
 </style>
