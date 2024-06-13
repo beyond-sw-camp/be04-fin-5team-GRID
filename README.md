@@ -158,6 +158,9 @@ https://ambiguous-birth-7ff.notion.site/Grid-api-b1d410e771d148ae9b99b035a446663
 동료평가
 ![스크린샷 2024-06-12 174048](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/115036933/a694dba9-ec2c-4628-a19a-5af1edf94619)
 ![스크린샷 2024-06-12 174059](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/115036933/41c0d37b-4851-44c2-8463-7ba96e0c4bda)
+휴가
+![스크린샷 2024-06-12 오후 11 11 11](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/105986200/37b39ae7-1a36-439f-9e14-e6ad96614d66)
+![스크린샷 2024-06-12 오후 11 09 58](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/105986200/1a4d6cee-4ffb-48f1-b9ab-180a2c8a52fb)
 
 
 
