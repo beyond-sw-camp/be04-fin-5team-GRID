@@ -12,10 +12,7 @@
                 </ol>
             </nav>
             <div class="title-content">
-                <h1> <i class="bi bi-person-plus"></i>&nbsp; 신규 사원 등록</h1>
-                <div class="guide">
-                    <img src="@/assets/buttons/guide.png" alt="guide button" id="guide" @click="openModal">
-                </div>
+                <h1> <i class="bi bi-person-plus"></i>&nbsp; 신규 사원 등록 &nbsp;&nbsp;<i class="bi bi-info-circle fs-5 mt-5" id="popover-target-1" style="color: darkgoldenrod" @click="openModal"></i></h1>
             </div>
         </div>
         <div class="search">

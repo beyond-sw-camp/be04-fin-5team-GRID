@@ -16,10 +16,7 @@
                 </ol>
             </nav>
             <div class="title-content">
-                <h1> <i class="bi bi-pencil-square"></i>&nbsp;인사 정보 수정 </h1>
-                <div class="guide" v-if="userRole === 'ROLE_ADMIN'">
-                    <img src="@/assets/buttons/guide.png" alt="guide button" id="guide" @click="openGuideModal">
-                </div>
+                <h1> <i class="bi bi-pencil-square"></i>&nbsp;인사 정보 수정&nbsp;&nbsp;<i class="bi bi-info-circle fs-5 mt-5" id="popover-target-1" style="color: darkgoldenrod" @click="openGuideModal"></i></h1>
             </div>
         </div>
         <div class="first" v-if="user">
@@ -553,7 +550,7 @@ body {
 
 .title-content {
     display: grid;
-    grid-template-columns: 150px auto;
+    grid-template-columns: 210px auto;
     align-items: flex-start;
     height: 80%;
 }
