@@ -103,7 +103,8 @@ GRID 프로젝트는 HR에 특화된 ERP 시스템으로, 조직의 인사 관�
    - EC2
    - Elastic Beanstalk
    - RDS
-   - Route53
+   - Route 53
+   - S3
 - **Prometheus :** 2.52.0
 - **Grafana :** 11.0.0
 
