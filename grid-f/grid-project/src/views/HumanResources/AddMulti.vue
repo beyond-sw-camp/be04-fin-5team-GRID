@@ -51,28 +51,30 @@
                 <tbody>
                     <tr v-for="(employee, index) in employees" :key="index">
                         <td>
-                            <input v-model="employee.name"
+                            <input v-model="employee.name" 
                                 :class="{ 'invalid-input': employee.invalid && !employee.name }" required
-                                placeholder="이름" :style="{ color: employee.invalid && !employee.name ? 'red' : '' }">
+                                placeholder="이름" :style="{ borderColor: employee.invalid && !employee.name ? 'red' : '' }">
                         </td>
                         <td>
                             <input v-model="employee.employeeNumber"
                                 :class="{ 'invalid-input': employee.invalid && !employee.employeeNumber }" required
                                 placeholder="사번"
-                                :style="{ color: employee.invalid && !employee.employeeNumber ? 'red' : '' }">
+                                :style="{ borderColor: employee.invalid && !employee.employeeNumber ? 'red' : '' }">
                         </td>
                         <td style="width: 140px;">
                             <div class="input-container">
                                 <input v-model="employee.email" type="email" class="no-border" required
                                     placeholder="이메일" @blur="validateEmail(employee)"
-                                    :style="{ color: employee.invalidEmail ? 'red' : '' }" style="width: 90%;">
+                                    :class="{ 'invalid-input': employee.invalid && !employee.email }" style="width: 90%;">
                                 <img v-if="employee.invalidEmail && employee.email != ''" src="@/assets/HR/fail.png"
                                     alt="실패 이미지" style="width:15px; height:15px;">
                             </div>
                         </td>
                         <td>
                             <select v-model="employee.gender"
-                                :class="{ 'invalid-input': employee.invalid && !employee.gender }">
+                                :class="{ 'invalid-input': employee.invalid && !employee.gender }"
+                                :style="{ borderColor: employee.invalid && !employee.gender ? 'red' : '' }"
+                                style="min-height: 22.6px;">
                                 <option disabled value="">선택</option>
                                 <option value="M">남성</option>
                                 <option value="F">여성</option>
@@ -82,17 +84,20 @@
                             <div class="input-container">
                                 <input v-model="employee.phoneNumber" class="no-border" required placeholder="휴대폰 번호"
                                     @blur="validatePhoneNumber(employee)"
-                                    :style="{ color: employee.invalidPhoneNumber ? 'red' : '' }" style="width: 80%;">
+                                    :class="{ 'invalid-input': employee.invalid && !employee.phoneNumber }" style="width: 80%;">
                                 <img v-if="employee.invalidPhoneNumber && employee.phoneNumber != ''"
                                     src="@/assets/HR/fail.png" alt="실패 이미지" style="width:15px; height:15px;">
                             </div>
                         </td>
                         <td>
-                            <input v-model="employee.hireDate" type="date" class="no-border" required placeholder="입사일">
+                            <input v-model="employee.hireDate" type="date" class="no-border" required placeholder="입사일"
+                                :class="{ 'invalid-input': employee.invalid && !employee.hireDate }">
                         </td>
                         <td>
                             <select v-model="employee.hireType"
-                                :class="{ 'invalid-input': employee.invalid && !employee.hireType }">
+                                :class="{ 'invalid-input': employee.invalid && !employee.hireType }"
+                                :style="{ borderColor: employee.invalid && !employee.hireType ? 'red' : '' }"
+                                style="min-height: 22.6px;">
                                 <option disabled value="">선택</option>
                                 <option value="NEW">신입</option>
                                 <option value="EXPERIENCED">경력</option>
@@ -100,7 +105,9 @@
                         </td>
                         <td>
                             <select v-model="employee.workType"
-                                :class="{ 'invalid-input': employee.invalid && !employee.workType }">
+                                :class="{ 'invalid-input': employee.invalid && !employee.workType }"
+                                :style="{ borderColor: employee.invalid && !employee.workType ? 'red' : '' }"
+                                style="min-height: 22.6px;">
                                 <option disabled value="">선택</option>
                                 <option value="R">정규직</option>
                                 <option value="C">계약직</option>
@@ -113,7 +120,10 @@
                             <input v-model="employee.contractEndTime" type="date" class="no-border" required>
                         </td>
                         <td>
-                            <select v-model="employee.departmentId">
+                            <select v-model="employee.departmentId"
+                                :class="{ 'invalid-input': employee.invalid && !employee.departmentId }"
+                                :style="{ borderColor: employee.invalid && !employee.departmentId ? 'red' : '' }"
+                                style="min-height: 22.6px;">
                                 <option disabled value="">선택</option>
                                 <option v-for="department in departments" :key="department.value"
                                     :value="department.value">
@@ -122,7 +132,10 @@
                             </select>
                         </td>
                         <td>
-                            <select v-model="employee.teamId">
+                            <select v-model="employee.teamId"
+                                :class="{ 'invalid-input': employee.invalid && !employee.teamId }"
+                                :style="{ borderColor: employee.invalid && !employee.teamId ? 'red' : '' }"
+                                style="min-height: 22.6px;">
                                 <option disabled value="">선택</option>
                                 <option v-for="team in teams" :key="team.value" :value="team.value">
                                     {{ team.text }}
@@ -130,7 +143,10 @@
                             </select>
                         </td>
                         <td>
-                            <select v-model="employee.positionId">
+                            <select v-model="employee.positionId"
+                                :class="{ 'invalid-input': employee.invalid && !employee.positionId }"
+                                :style="{ borderColor: employee.invalid && !employee.positionId ? 'red' : '' }"
+                                style="min-height: 22.6px;">
                                 <option disabled value="">선택</option>
                                 <option v-for="position in positions" :key="position.value" :value="position.value">
                                     {{ position.text }}
@@ -138,7 +154,10 @@
                             </select>
                         </td>
                         <td>
-                            <select v-model="employee.dutiesId">
+                            <select v-model="employee.dutiesId"
+                                :class="{ 'invalid-input': employee.invalid && !employee.dutiesId }"
+                                :style="{ borderColor: employee.invalid && !employee.dutiesId ? 'red' : '' }"
+                                style="min-height: 22.6px;">
                                 <option disabled value="">선택</option>
                                 <option v-for="duty in dutiesList" :key="duty.value" :value="duty.value">
                                     {{ duty.text }}
@@ -150,12 +169,13 @@
                                 <div>
                                     <button class="searchBtn" @click="execDaumPostcode(employee)">검색</button>
                                     <input v-model="employee.zipCode" placeholder="우편 번호" style="width: 23%;" required
-                                        readonly>
+                                        readonly >
                                     <input v-model="employee.address1" placeholder="주소" style="width: 57%;" required
-                                        readonly>
+                                        readonly >
                                 </div>
                                 <div id="address-container2">
-                                    <input v-model="employee.address2" placeholder="상세 주소" style="width: 82%;" required>
+                                    <input v-model="employee.address2" placeholder="상세 주소" style="width: 82%;" required
+                                        >
                                 </div>
                             </div>
                         </td>
@@ -300,7 +320,9 @@ const addEmployee = () => {
         zipCode: '',
         address1: '',
         address2: '',
-        invalid: false
+        invalid: false,
+        invalidEmail: false,
+        invalidPhoneNumber: false
     });
 };
 
@@ -419,7 +441,9 @@ const handleFileUpload = (event) => {
                         zipCode: (row['우편 번호'] || '').trim(),
                         address1: (row['도로명 주소'] || '').trim(),
                         address2: (row['상세 주소'] || '').trim(),
-                        invalid: false // Add invalid field for validation
+                        invalid: false,
+                        invalidEmail: false,
+                        invalidPhoneNumber: false
                     });
                 });
             }
@@ -441,6 +465,30 @@ watch(formattedEmployees, (newVal) => {
 }, { deep: true });
 
 const submitForm = async () => {
+    let hasInvalid = false;
+
+    employees.forEach(emp => {
+        emp.invalid = false;
+
+        if (!emp.name || !emp.employeeNumber || !emp.email || !emp.gender || !emp.phoneNumber || 
+            !emp.hireDate || !emp.hireType || !emp.workType || !emp.departmentId || !emp.teamId || !emp.positionId || 
+            !emp.dutiesId) {
+            emp.invalid = true;
+            hasInvalid = true;
+        }
+
+        validateEmail(emp);
+        validatePhoneNumber(emp);
+
+        if (emp.invalidEmail || emp.invalidPhoneNumber) {
+            hasInvalid = true;
+        }
+    });
+
+    if (hasInvalid) {
+        alert('필수 정보를 전부 입력해주세요.');
+        return;
+    }
 
     const cleanedEmployees = formattedEmployees.value
         .map(emp => {
@@ -738,5 +786,9 @@ thead th {
     display: flex;
     align-items: flex-start;
     height: 90%;
+}
+
+.invalid-input {
+    border: 1px solid red !important;
 }
 </style>
