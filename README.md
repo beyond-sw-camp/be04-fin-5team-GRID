@@ -303,6 +303,8 @@ https://ambiguous-birth-7ff.notion.site/Grid-api-b1d410e771d148ae9b99b035a446663
 ![스크린샷 2024-06-12 오후 11 11 11](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/105986200/37b39ae7-1a36-439f-9e14-e6ad96614d66)
 ![스크린샷 2024-06-12 오후 11 09 58](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/105986200/1a4d6cee-4ffb-48f1-b9ab-180a2c8a52fb)
 
+![ERP - 단위 테스트_page-0002](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/127740594/f401bcdc-e5ed-4dd5-b52d-52f2dec02f4f)
+![ERP - 단위 테스트_page-0001](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/127740594/b2a06a8c-258c-4944-99f7-48f3924cd0d7)
 
 
 ## 2-9. UI/UX 테스트 결과
@@ -310,8 +312,8 @@ https://ambiguous-birth-7ff.notion.site/Grid-api-b1d410e771d148ae9b99b035a446663
 
 
 ## 2-10. 통합 테스트 결과 
-![image](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/108782390/a08358ba-1d8f-47cb-a293-bf672cde8781)
-
+![ERP - 통합 테스트_page-0001](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/127740594/56650243-090e-4a84-a8c6-4510376ec77f)
+![ERP - 통합 테스트_page-0002](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/127740594/798fdb4f-11e7-42d3-9792-3085a0b2e2f3)
 
 
 
