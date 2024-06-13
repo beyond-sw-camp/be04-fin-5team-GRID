@@ -91,16 +91,50 @@
 ![DDD](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/108782390/5befa14f-3d38-41b1-a92e-f3e2c44cc05a)
 
 ## 2-4. DB 모델링
-- 논리 모델링
+### 2-4-1. 논리 모델링
+- ERD Cloud link : 
+https://www.erdcloud.com/d/NT8QTiNqAd6DpHJ2c
+
+- 결재 <br>
+![image](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/108782390/0599b739-dbe1-47f1-8db9-7aeb6f0bb387)
 
 
-- 물리 모델링
+- 휴가<br>
+![image](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/108782390/953fa522-76dd-4feb-b9c5-53c1b6cca3f0)
 
+
+- 사원 관련<br>
+![image](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/108782390/a9851e18-0e60-4bab-b83b-2629097e71ca)
+
+
+- 동료 평가<br>
+![image](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/108782390/d7c3b9f0-e8d4-4e79-bf35-3b3665d6c3b0)
+
+- 업적 평가<br>
+![image](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/108782390/6b282cf8-16c8-4036-a295-fee117cdd118)
+
+
+
+
+
+### 2-4-2. 물리 모델링
+- 전체 구성 <br>
+![image](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/108782390/7d00e650-7e43-4dd4-9f08-66a3f1cb3ab9)
+
+- 결재 및 휴가<br>
+![image](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/108782390/b6c8fcdc-95d3-4643-8827-62e45452ce16)
+
+- 사원 관련 <br>
+![image](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/108782390/a2b0b8db-ad52-4b7b-ac04-1c6b0667a92f)
+
+- 평가 관련 <br>
+![image](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/108782390/da695240-4049-4595-8c64-755b18be2f1d)
 
 ## 2-5. 화면 설계서
 ![image](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/108782390/ac9cc906-f02d-4ef1-ad77-78eb047fdb3e)
 ![image](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/108782390/b2550eee-731f-45df-9142-3cb1a83ac35f)
 ![image](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/108782390/17f77ef0-282c-41db-91a0-db5e09972eb6)
+
 
 ## 2-6. 시스템 아키텍쳐
 ![아키텍처](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/108782390/e242a2a8-d9aa-4834-b0a9-5ca1c0b91508)
