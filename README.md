@@ -107,7 +107,7 @@
 
 
 ## 2-7. API 명세서
-https://www.notion.so/Grid-api-b1d410e771d148ae9b99b035a446663d
+https://ambiguous-birth-7ff.notion.site/Grid-api-b1d410e771d148ae9b99b035a446663d
 
 ## 2-8. 단위 테스트 결과 
 - 테스트 케이스 정리
