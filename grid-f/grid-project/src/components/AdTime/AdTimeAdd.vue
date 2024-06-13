@@ -194,36 +194,29 @@ const fetchEmployeeEvent = async () => {
     const responseAdTime = await axios.get(`/api/ad-time/${userId.value}`);
 
     const adTime = responseAdTime.data.adTimeDTOList;
-    console.log(adTime);
 
     const adEvents = transformAdEvents(adTime);
-    console.log(adTime.attendanceStatus);
-    console.log(events.value);
-    // updateCalendarEvents(events.value);
+
     // 출장 조회
     const responseBt = await axios.get(`/api/approval/list/1/1/${userId.value}`);
-    console.log('출장', responseBt.data);
 
     const bt = responseBt.data.approvalEmpResultList
     const btEvents = transformEvents(bt, '출장', '#ffd5d5',2);
 
     // 시간외 근무 조회
     const responseO = await axios.get(`/api/approval/list/2/1/${userId.value}`);
-    console.log('시간외', responseO.data);
 
     const O = responseO.data.approvalEmpResultList
     const OEvents = transformEvents(O, '시간외 근무', '#bec8fc',4);
 
     // 휴가 조회
     const responseV = await axios.get(`/api/approval/list/4/1/${userId.value}`);
-    console.log(responseV.data);
 
     const V = responseV.data.approvalEmpResultList
     const VEvents = transformEvents(V, '휴가', '#f4d4ff',3);
 
 
     events.value = [...adEvents, ...btEvents, ...OEvents, ...VEvents];
-    console.log(events.value);
 
   } catch (error) {
     console.error('에러 발생:', error);
@@ -245,10 +238,16 @@ function transformAdEvents(list) {
 function transformEvents(list, type, color, priority) {
   return list.map(item => {
     if (type === '휴가' && ['연차', '월차', '정기휴가'].includes(item.vacationType)) {
+      let startTime = item.startTime ? item.startTime.split(" ")[0] : null;
+      let endTime = item.endTime ? item.endTime.split(" ")[0] : null;
+
+      let endDate = new Date(endTime);
+      endDate.setDate(endDate.getDate() + 1);
+      endTime = endDate.toISOString().split('T')[0];
       return {
         title: item.vacationType,
-        start: item.startTime ? item.startTime.split(" ")[0] : null,
-        end: item.endTime ? item.endTime.split(" ")[0] : null,
+        start: startTime,
+        end: endTime,
         color: color,
         textColor: "#424242",
         priority: priority
