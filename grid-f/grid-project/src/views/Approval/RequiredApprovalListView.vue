@@ -128,13 +128,19 @@ import {computed, onMounted, reactive, ref} from "vue";
     }
   }
 
-  const filteredItems = computed(() => {
-    if (!filterStatus.value) {
-      return state.approvalList;
-    } else {
-      return state.approvalList.filter(item => item.approvalStatus === filterStatus.value);
-    }
-  });
+let items;
+
+const filteredItems = computed(() => {
+  if (!filterStatus.value) {
+    items =  state.approvalList;
+  } else {
+    console.log(state.approvalList);
+    items= state.approvalList.filter(item => item.approvalStatus === filterStatus.value);
+  }
+
+  items.type = state.approvalList.type;
+  return items;
+});
 
   const setTab = async (tabIndex) => {
     currentTab.value = tabIndex;
