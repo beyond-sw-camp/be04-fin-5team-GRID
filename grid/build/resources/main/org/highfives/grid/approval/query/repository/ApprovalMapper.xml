@@ -435,11 +435,18 @@
         cancel_document_id,
         requester_id
         FROM
-        <if test="typeId == 1">bt_approval</if>
-        <if test="typeId == 2">vacation_approval</if>
-        WHERE  (#{today} BETWEEN (STR_TO_DATE(start_time, '%Y-%m-%d %H:%i:%s')) AND (STR_TO_DATE(end_time, '%Y-%m-%d %H:%i:%s')))
-        AND  approval_status = 'A'
-        AND  cancel_yn = 'N'
-        AND  cancel_document_id = 0;
+        <choose>
+            <when test="typeId == 1">
+                bt_approval
+            </when>
+            <when test="typeId == 2">
+                vacation_approval
+            </when>
+        </choose>
+        WHERE
+        #{today} BETWEEN STR_TO_DATE(start_time, '%Y-%m-%d %H:%i:%s') AND DATE_ADD(STR_TO_DATE(end_time, '%Y-%m-%d %H:%i:%s'), INTERVAL 1 DAY)
+        AND approval_status = 'A'
+        AND cancel_yn = 'N'
+        AND cancel_document_id = 0;
     </select>
 </mapper>
