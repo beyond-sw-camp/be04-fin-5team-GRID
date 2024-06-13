@@ -5,7 +5,6 @@
 ![Group 70 (2)](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/105986200/ae76d635-a0ec-4230-8bc9-bb3d609a35ae)
 
 
----
 
 ### 팀명: HighFives(Team HighFives)
 
@@ -29,10 +28,31 @@
 ---
 
 # 1. 프로젝트 개요
-|HR 이란|프로젝트|
-|---|---|
-|  |   |
 
+## 프로젝트 소개
+현대 기업의 성공적인 운영을 위해서는 통합된 정보 관리 시스템이 필수적입니다. GRID 프로젝트는 이러한 필요성을 인식하고, 기업이 휴가나 출퇴근 등의 인사 관리를 편리하게 수행하며, 동료 평가와 업적 평가 기능을 통해 업무 효율성을 향상시키는 것을 목표로 만들어졌습니다.
+
+### 글로벌 ERP 시장의 성장
+![image](https://github.com/beyond-sw-camp/be04-fin-5team-GRID/assets/108782390/d953adf1-6802-460b-b802-8d92b9a22250)
+
+전 세계적으로 ERP 시스템에 대한 수요는 지속적으로 증가하고 있습니다. 시장조사 전문 기관인 VMR(Verified Market Research)에 따르면, 전 세계 클라우드 ERP 시장의 규모는 2022년 554억 달러로 평가되었으며, 2023년부터 2030년까지 연평균 12.53%씩 성장하여 2030년에는 1683억 4천만 달러에 이를 것으로 예상됩니다. GRID 프로젝트는 이러한 흐름에 발맞춰, 기업이 필요로 하는 ERP를 제공하고자 합니다.
+
+### 프로젝트 목표 
+- **사원 등록 및 탈퇴 관리 :** 새로운 직원의 등록과 퇴사 절차를 간소화하고 자동화합니다.
+- **사원 상태 표시 :** 사원의 현재 상태(부재중, 재실 등) 및 근무 상태(시간외 근무, 출퇴근 관리 등)을 표시하여 조직의 업무 상황을 정확히 파악할 수 있도록 합니다. 이를 통해 효율적인 업무 배치와 협업을 지원합니다.
+- **휴가 관리 :** 직원들의 휴가를 생성하고 부여하며, 휴가 일정과 잔여 휴가일을 효율적으로 관리합니다.
+- **동료 평가 기능 :** 직원들 간의 동료 평가 시스템을 구축하여, 협업 능력과 팀워크를 강화합니다. 이를 통해 조직 내 커뮤니케이션과 협력 문화를 촉진합니다.
+- **업적 평가 기능 :** 직원들의 업적을 공정하게 평가하고, 이를 기반으로 보상 및 승진을 결정할 수 있는 체계를 마련합니다. 이를 통해 직원들의 동기부여를 높이고, 조직의 성과를 극대화합니다.
+- **사용자 친화적 인터페이스 :** 직관적이고 사용자 친화적인 인터페이스를 통해 모든 직원이 쉽게 접근하고 사용할 수 있도록 합니다. 또한 사용 가이드를 제공하여 시스템 도입과 적응을 원활하게 합니다.
+
+### 기대 효과
+- **업무 효율성 증가 :** 시스템 전반에 걸쳐 자동화된 기능들을 제공하여 직원들의 업무 효율성을 높입니다.  
+- **직원 만족도 증가 :** 휴가 관리, 평가 시스템 등을 통해 직원들의 만족도와 업무 몰입도를 높입니다.
+- **조직의 투명성 및 공정성 강화 :** 평가 및 보상 시스템을 통해 공정하고 투명한 인사 관리를 실현합니다.
+<br>
+GRID 프로젝트는 HR에 특화된 ERP 시스템으로, 조직의 인사 관리를 혁신하고 전반적인 운영 효율성을 극대화하며, 직원들의 만족도와 생산성을 향상시키는 것을 목표로 합니다.
+
+---
 
 # 2. 프로젝트 관리 
 
@@ -57,15 +77,36 @@
 **프로젝트 일정** : 2024.04.18 ~ 2024.06.14 
 
 **작업 공간** : 서울 동작구 보라매로 SFC빌딩, 원격 소통
+<br>
 
-**기술 스택**   
-|Vue 3.0|JavaScript|Spring Boot|Spring Data JPA|Docker|Kubernetes|Jenkins|Prometheus|Grafana|
-|---|---|---|---|---|---|---|---|---|
-|<img src="https://github.com/beyond-sw-camp/be04-3rd-TeamPhoenix-ahub/blob/feature-post-check/img/Vue.png" height="60" />|<img src="https://github.com/beyond-sw-camp/be04-3rd-TeamPhoenix-ahub/blob/feature-post-check/img/js.png" height="80" />|![icons8-봄-로고-48](https://github.com/dongh810/ESC-English_Study_Club-develop/assets/105986200/434f3918-640f-4cef-8050-43ca415d6d4c)|![다운로드__1_-removebg-preview](https://github.com/dongh810/ESC-English_Study_Club-develop/assets/105986200/82d8f3e5-9b6d-481b-92e3-0ff4a691b01b)|![icons8-부두-노동자-96](https://github.com/dongh810/ESC-English_Study_Club-develop/assets/105986200/547c5002-b2bb-49b7-afc8-f083846a0769)|![icons8-쿠버네티스-96](https://github.com/dongh810/ESC-English_Study_Club-develop/assets/105986200/08d3f8ed-6755-4e79-aba2-8680a63dfa52)|![icons8-젠킨스-96](https://github.com/dongh810/ESC-English_Study_Club-develop/assets/105986200/50215ec0-8598-4f6c-869a-2e795d69950f)|![icons8-프로메테우스-앱-96](https://github.com/dongh810/ESC-English_Study_Club-develop/assets/105986200/b146f025-eed4-4af1-9db8-101cad3f78b6)|![icons8-그라파나-48](https://github.com/dongh810/ESC-English_Study_Club-develop/assets/105986200/8afb44c6-75e1-4ca5-8072-2686600fdec9)|
+## 기술 스택   
 
+<img alt="NOTION" src ="https://img.shields.io/badge/Notion-000000.svg?&style=for-the-badge&logo=notion&logoColor=white"/> <img alt="SLACK" src ="https://img.shields.io/badge/Slack-4A154B.svg?&style=for-the-badge&logo=slack&logoColor=white"/>
+<img alt="IntelliJ" src ="https://img.shields.io/badge/IntelliJ-000000.svg?&style=for-the-badge&logo=intellijidea&logoColor=white"/> <img alt="VSCODE" src ="https://img.shields.io/badge/VS Code-007ACC.svg?&style=for-the-badge&logo=visualstudiocode&logoColor=white"/>
+<img alt="OPOEN JDK" src ="https://img.shields.io/badge/Open JDK-000000.svg?&style=for-the-badge&logo=openjdk&logoColor=white"/> <img alt="SPRING BOOT" src ="https://img.shields.io/badge/Spring Boot-6DB33F.svg?&style=for-the-badge&logo=springboot&logoColor=white"/> <img alt="SPRING SECURITY" src ="https://img.shields.io/badge/Spring Security-6DB33F.svg?&style=for-the-badge&logo=springsecurity&logoColor=white"/>
+<img alt="MARIA DB" src ="https://img.shields.io/badge/Maria DB-003545.svg?&style=for-the-badge&logo=mariadb&logoColor=white"/> <img alt="REDIS" src ="https://img.shields.io/badge/Redis-FF4438.svg?&style=for-the-badge&logo=redis&logoColor=white"/> <img alt="VUEJS" src ="https://img.shields.io/badge/Vue.js-4FC08D.svg?&style=for-the-badge&logo=vuedotjs&logoColor=white"/>
+<img alt="HTML5" src ="https://img.shields.io/badge/HTML5-E34F26.svg?&style=for-the-badge&logo=html5&logoColor=white"/> <img alt="CSS3" src ="https://img.shields.io/badge/CSS3-1572B6.svg?&style=for-the-badge&logo=css3&logoColor=white"/> <img alt="JAVASCRIPT" src ="https://img.shields.io/badge/JavaScript-F7DF1E.svg?&style=for-the-badge&logo=javascript&logoColor=white"/>
+<img alt="DOCKER" src ="https://img.shields.io/badge/Docker-2496ED.svg?&style=for-the-badge&logo=docker&logoColor=white"/> <img alt="JENKINS" src ="https://img.shields.io/badge/Jenkins-D24939.svg?&style=for-the-badge&logo=jenkins&logoColor=white"/> <img alt="AWS" src ="https://img.shields.io/badge/AWS-232F3E.svg?&style=for-the-badge&logo=amazonwebservices&logoColor=white"/>
+<img alt="PROMETHEUS" src ="https://img.shields.io/badge/Prometheus-E6522C.svg?&style=for-the-badge&logo=prometheus&logoColor=white"/> <img alt="GRAFANA" src ="https://img.shields.io/badge/Grafana-F46800.svg?&style=for-the-badge&logo=grafana&logoColor=white"/>
 
-## 주요기능
-
+- **Open JDK :** 17.0.3 2022-04-19 LTS
+- **Spring Boot :** 3.2.5
+- **Spring Security :** 6.3
+- **Maria DB :** 10.11.6
+  - Spring Data JPA : 3.3.0
+  - Mybatis : 3.0.3
+- **Redis :** 7.2.5
+- **Vue.js :** 3.4.27
+- **Docker :** 25.0.3
+- **Jenkins :** 2.460
+- **AWS**
+   - EC2
+   - Elastic Beanstalk
+   - RDS
+   - Route 53
+   - S3
+- **Prometheus :** 2.52.0
+- **Grafana :** 11.0.0
 
 ---
 ## 2-1. WBS
