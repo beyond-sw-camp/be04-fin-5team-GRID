@@ -405,6 +405,7 @@ const modifyDepartmentsStatus = async () => {
       alert('수정되었습니다.');
       await fetchDepartments();
       selectedDepartment.value = null;
+      window.location.reload(); 
     }
   } catch (error) {
     console.error('부서 상태를 수정하는 중 에러 발생:', error);
