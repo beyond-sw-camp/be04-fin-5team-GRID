@@ -212,6 +212,9 @@ public class UserServiceImpl implements UserService{
         try {
             Employee employee = userRepository.findByEmail(email);
             if (employee != null) {
+                if (employee.getEmail().equals(email)){
+                    return "Pass";
+                }
                 return "Already used Email: " + email;
             }
         } catch (Exception e) {
@@ -224,6 +227,9 @@ public class UserServiceImpl implements UserService{
         try {
             Employee employee = userRepository.findByEmployeeNumber(employeeNumber);
             if (employee != null) {
+                if (employee.getEmployeeNumber().equals(employeeNumber)){
+                    return "Pass";
+                }
                 return "Already used Employee Number: " + employeeNumber;
             }
         } catch (Exception e) {
@@ -236,6 +242,9 @@ public class UserServiceImpl implements UserService{
         try {
             Employee employee = userRepository.findByPhoneNumber(phoneNumber);
             if (employee != null) {
+                if (employee.getPhoneNumber().equals(phoneNumber)){
+                    return "Pass";
+                }
                 return "Already used Phone Number: " + phoneNumber;
             }
         } catch (Exception e) {
