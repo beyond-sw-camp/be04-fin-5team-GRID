@@ -83,11 +83,10 @@ const fetchAdTime = async () => {
 
     today.value = currentDate;
 
-    console.log(currentDate);
     const response = await axios.get(`/api/ad-time/${currentDate}/${userId.value}`);
-    console.log('출근 조회: ', response.data);
+
     const data = response.data.adTimeDTO;
-    console.log(response.data.adTimeDTO);
+
     adTime.value = {
       id: data.id,
       startTime: data.startTime ? data.startTime.slice(11, 16) : "00:00",
@@ -95,7 +94,7 @@ const fetchAdTime = async () => {
       employeeId: data.employeeId,
     };
 
-    console.log(adTime.value);
+
   } catch (error) {
     if (error.response && error.response.status === 400) {
       console.log('데이터가 없습니다. 초기값을 설정합니다.');
@@ -313,7 +312,7 @@ onMounted(async () => {
 const addArrivalTime = async () => {
   if (userRole.value === 'ROLE_USER') {
     const currentTime = getCurrentDateTimeString();
-    console.log(currentTime);
+    
     await axios.post(
         '/api/ad-time/arrival-time',
         {
@@ -340,7 +339,7 @@ const addArrivalTime = async () => {
 const addDepartureTime = async () => {
   if (userRole.value === 'ROLE_USER') {
     const currentTime = getCurrentDateTimeString();
-    console.log(currentTime);
+
     await axios.put(
         '/api/ad-time/departure-time',
         {

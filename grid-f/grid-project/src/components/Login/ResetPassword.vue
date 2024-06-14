@@ -100,7 +100,6 @@ function validatePwd2() {
 
 async function resetPwd() {
 
-    console.log('input: ', inputValue.value)
     isPwdExistence.value = false;
     isPwdExistence2.value = false;
 

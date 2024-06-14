@@ -18,7 +18,6 @@
   const printRW = async () => {
     const confirmed = window.confirm('pdf 파일을 다운로드 하시겠습니까?');
 
-    console.log(props.approval['id'])
     if(confirmed) {
       var url = `/api/approval/downloadRW/${props.approval['id']}`;
 

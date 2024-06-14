@@ -194,7 +194,6 @@ const handleDragEnd = async () => {
       departmentCode: department.departmentCode,
       sequence: index + 1
     }));
-    console.log(updatedDepartments);
 
     await axios.put('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/department/list', updatedDepartments, {
       headers: {

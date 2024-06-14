@@ -117,9 +117,7 @@ async function find() {
         await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/${inputValue2.value}`)
             .then((response) => {
                 findResult.value = response.data.result;
-                console.log(findResult.value);
-                console.log(findResult.value.name);
-                console.log(findResult.value.email);
+
                 
                 if (findResult.value.name == inputValue.value && findResult.value.employeeNumber == inputValue2.value) {
                     router.push({

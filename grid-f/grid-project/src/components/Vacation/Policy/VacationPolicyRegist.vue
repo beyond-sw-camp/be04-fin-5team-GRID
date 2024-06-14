@@ -36,7 +36,6 @@ const getVacationType = async () => {
     try {
         const response = await axios.get("/api/vacation/type");
         types.value = response.data.result;
-        console.log(response.data.result);
     } catch (error) {
         console.error("Error:", error);
     }

@@ -168,7 +168,6 @@ const fetchEmployeeEvent = async () => {
     const bt = responseBt.data.approvalEmpResultList
     const btEvents = transformEvents(bt, '출장', '#fad7d7', 2);
 
-    console.log(btEvents);
 
     // 시간외 근무 조회
     const responseO = await axios.get(`/api/approval/list/2/5/${effectiveProfileId.value}`);
@@ -176,14 +175,12 @@ const fetchEmployeeEvent = async () => {
     const o = responseO.data.approvalEmpResultList
     const oEvents = transformEvents(o, '시간외 근무', '#c0caff', 4);
 
-    console.log(oEvents);
     // 휴가 조회
     const responseV = await axios.get(`/api/approval/list/4/5/${effectiveProfileId.value}`);
 
     const v = responseV.data.approvalEmpResultList
     const vEvents = transformEvents(v, '휴가', '#ffdbf7',3);
 
-    console.log(vEvents);
 
     events.value = [...adEvents, ...btEvents, ...oEvents, ...vEvents];
 

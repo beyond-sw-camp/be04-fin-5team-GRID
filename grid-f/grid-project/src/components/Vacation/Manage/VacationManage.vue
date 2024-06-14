@@ -288,7 +288,6 @@ const getVacationType = async (id) => {
     try {
         const response = await axios.get(`/api/vacation/type/${id}`);
         modifyType.value = response.data.result;
-        console.log(modifyType.value);
     } catch (error) {
         console.error("Error:", error);
     }
@@ -332,8 +331,6 @@ const registType = async () => {
         alert('이미 등록된 휴가 종류입니다.');
         return;
     }
-
-    console.log(registVacationType.value.timeCheck);
 
     try {
         const confirmed = window.confirm('등록하시겠습니까?');

@@ -89,7 +89,7 @@ const initCalendar = async (events) => {
         // 시작 시간과 종료 시간을 문자열로 변환합니다.
         let startTimeString = '';
         let endTimeString = '';
-        console.log(info.event.extendedProps.approvalType);
+
         if(info.event.extendedProps.approvalType === '출장'
             || info.event.extendedProps.approvalType === '연차'
             || info.event.extendedProps.approvalType === '월차'
@@ -142,7 +142,7 @@ const fetchAllEvent = async () => {
   try {
     // 출장 조회
     const responseBt = await axios.get(`/api/approval/all/1/5`);
-    console.log(responseBt.data);
+
 
     const bt = responseBt.data.approvalEmpResultList
     const btEvents = transformEvents(bt, '출장', '#fad7d7', 2);
@@ -150,21 +150,21 @@ const fetchAllEvent = async () => {
 
     // 시간외 근무 조회
     const responseO = await axios.get(`/api/approval/all/2/5`);
-    console.log(responseO.data);
+
 
     const o = responseO.data.approvalEmpResultList
     const oEvents = transformEvents(o, '시간외 근무', '#c0caff', 4);
 
     // 휴가 조회
     const responseV = await axios.get(`/api/approval/all/4/5`);
-    console.log(responseV.data);
+
 
     const v = responseV.data.approvalEmpResultList
     const vEvents = transformEvents(v, '휴가', '#ffdbf7', 3);
 
 
     events.value = [...btEvents, ...oEvents, ...vEvents];
-    console.log(events.value);
+
 
   } catch (error) {
     console.error('에러 발생:', error);
@@ -177,7 +177,6 @@ function transformEvents(list, type, color, priority) {
       let startTime = item.startTime ? item.startTime.split(" ")[0] : null;
       let endTime = item.endTime ? item.endTime.split(" ")[0] : null;
 
-      console.log(type === '휴가'? `${item.vacationType}` : `${type}`);
       let endDate = new Date(endTime);
       endDate.setDate(endDate.getDate() + 1);
       endTime = endDate.toISOString().split('T')[0];

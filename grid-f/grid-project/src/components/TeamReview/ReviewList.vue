@@ -164,7 +164,7 @@ const fetchReviewItems = async (reviewId) => {
       options: ['S', 'A', 'B', 'C', 'D']
     }));
     selectedOptions.value = Array(response.data.result.length).fill(null);
-    console.log(reviewItems.value);
+
   } catch (error) {
     console.error('Error fetching review items:', error);
   }
@@ -244,7 +244,7 @@ const closeModal = () => {
 
 const selectOption = (itemIndex, option) => {
   selectedOptions.value[itemIndex] = option;
-  console.log(`Selected option ${option} for item ${itemIndex + 1}`);
+
 };
 
 const submitReview = async () => {
@@ -258,8 +258,6 @@ const submitReview = async () => {
     score: optionToScoreMap[selectedOptions.value[index]],
     historyId: selectedReview.value.id
   }));
-
-  console.log('Submitting payload:', JSON.stringify(reviewData));
 
   try {
     await axios.post('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/review', reviewData);

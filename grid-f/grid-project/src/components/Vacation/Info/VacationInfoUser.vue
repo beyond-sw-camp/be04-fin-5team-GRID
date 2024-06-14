@@ -195,7 +195,6 @@ const getUserVacationInfo = async () => {
 const getUserVacationHistory = async () => {
   try {
     const response = await axios.get(`/api/vacation/details/${userId.value}`);
-    console.log(response.value)
     histories.value = response.data.result;
     filteredHistories.value = histories.value; // 처음에 모든 기록을 보여줌
   } catch (error) {

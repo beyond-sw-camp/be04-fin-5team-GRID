@@ -83,7 +83,6 @@
       userId.value = decodedToken.id || '';
       userRole.value = decodedToken.auth || '';
     }
-    console.log(userRole.value);
 
     if (userRole.value !== 'ROLE_ADMIN') {
       await fetchReqApprovalList(0, 5, userId.value);

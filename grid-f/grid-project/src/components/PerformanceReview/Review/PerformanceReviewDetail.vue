@@ -309,7 +309,7 @@ const fetchReviewDetail = async () => {
     const id = route.params.id;
 
     const response = await axios.get(`/api/performance-review/detail/${id}`)
-    console.log(response.data);
+
     const review = response.data.findDetailReview;
     reviewItemList.value = review.reviewItemList;
 
@@ -328,7 +328,7 @@ const fetchReviewDetail = async () => {
     if (isMember) {
       if (reviewDetail.value.status === '작성 중')
         isReadOnly.value = false;
-      console.log(reviewDetail.value.status);
+
     } else {
       if (reviewDetail.value.status === '상신' || reviewDetail.value.status === '확인 중' || reviewDetail.value.status === '확인')
         isReadOnly.value = false;
@@ -377,7 +377,7 @@ const getType = (type) => {
 
 onMounted(() => {
   try {
-    console.log(user.value.duties);
+
     if (user.value) {
       if (user.value.duties.dutiesName === '팀원')
         isMember.value = true;
@@ -385,7 +385,6 @@ onMounted(() => {
       if (user.value.duties.dutiesName === '팀장')
         isMember.value = false;
 
-      console.log('멤버확인', isMember.value);
       fetchReviewDetail();
 
     }
@@ -448,7 +447,7 @@ async function memberSave() {
           reviewId: reviewDetail.value.id
         }))
       };
-      console.log(sendData);
+
       try {
         await axios.put(
             `/api/performance-review/in-progress`,
@@ -499,7 +498,7 @@ async function submit() {
           reviewId: reviewDetail.value.id
         }))
       };
-      console.log(sendData);
+
       try {
         await axios.put(
             `/api/performance-review/submit`,
@@ -520,7 +519,6 @@ async function leaderSave() {
   if (reviewDetail.value.status === '상신' || reviewDetail.value.status === '확인 중') {
     if (confirm("평가를 저장하시겠습니까?")) {
 
-      console.log('저장 확인:', reviewItemList.value);
       // 필수 값이 입력되지 않은 경우
       for (const item of reviewItemList.value) {
         if (!item.goal || !item.actionItem || !item.metric || item.weight === undefined || item.weight === 0
@@ -549,7 +547,7 @@ async function leaderSave() {
           reviewId: reviewDetail.value.id
         }))
       };
-      console.log(sendData);
+
       try {
         await axios.put(
             `/api/performance-review/read`,
@@ -600,7 +598,7 @@ async function complete() {
           reviewId: reviewDetail.value.id
         }))
       };
-      console.log(sendData);
+
       try {
         await axios.put(
             `/api/performance-review/complete`,
@@ -652,7 +650,7 @@ async function valid() {
           reviewId: reviewDetail.value.id
         }))
       };
-      console.log(sendData);
+
       try {
         await axios.put(
             `/api/performance-review/valid`,

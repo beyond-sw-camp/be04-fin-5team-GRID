@@ -45,7 +45,7 @@
                 </div>
             </div>
 
-            <div class="button" v-if="userRole === 'ROLE_ADMIN' || profileId == result.id">
+            <div class="button" v-if="userRole === 'ROLE_ADMIN' || userId == result.id">
                 <div>
                     <button class="custom-button" @click="toModify(result.employeeNumber, result)" :userRole="userRole">
                         <i class="bi bi-gear"></i>&nbsp;
@@ -70,7 +70,7 @@
             </div>
         </div>
         <div class="content">
-            <component :is="currentTabComponent" :result="result" :userRole="userRole" :profileId="profileId">
+            <component :is="currentTabComponent" :result="result" :userRole="userRole" :userId="userId" :profileId="profileId">
             </component>
         </div>
     </div>
@@ -144,8 +144,7 @@ function formatDateString(dateString) {
 
 function toModify(employeeNumber, user) {
     sessionStorage.setItem('user', JSON.stringify(user));
-    console.log('전해줄 유저:', user);
-    console.log('전해줄 토큰: ', userRole.value);
+
     router.push({
         path: `/hr/modify/${employeeNumber}`,
         query: { userRole: userRole.value }
@@ -165,7 +164,7 @@ onMounted(async () => {
     if (result.value.absenceYn === 'Y') {
         isAbsence.value = true;
     }
-    console.log('받아오는 유저: ', result.value);
+
     givenEmail.value = result.value.email;
     profileId.value = result.value.id;
     currentTab.value = route.query.tab || 'human-resources';

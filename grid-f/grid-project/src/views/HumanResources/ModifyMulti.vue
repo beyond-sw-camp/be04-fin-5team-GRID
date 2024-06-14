@@ -315,9 +315,9 @@ const handleFileUpload = (event) => {
         Papa.parse(file, {
             header: true,
             complete: (results) => {
-                console.log('Parsed CSV data:', results.data); // 디버깅을 위한 콘솔 출력
+
                 results.data.forEach(row => {
-                    console.log('Processing row:', row); // 디버깅을 위한 콘솔 출력
+
                     employees.push({
                         employeeNumber: (row['사번'] || '').trim(),
                         name: (row['이름'] || '').trim(),
@@ -390,7 +390,6 @@ const submitForm = async () => {
     }
 
     try {
-        console.log('보낼 데이터: ', cleanedEmployees)
         await axios.put('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/list', cleanedEmployees);
         alert('수정에 성공하였습니다.');
         router.push('/hr');

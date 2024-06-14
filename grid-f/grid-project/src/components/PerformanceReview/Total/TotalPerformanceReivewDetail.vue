@@ -176,7 +176,6 @@ const fetchReviewDetail = async () => {
 
     // 종합평가 먼저 조회해서 넣기
     const responseTotalReview = await axios.get(`/api/total-performance-review/${id}`)
-    console.log(responseTotalReview.data.findTotal);
 
     const total = responseTotalReview.data.findTotal;
 
@@ -192,17 +191,15 @@ const fetchReviewDetail = async () => {
       reviewerName: total.reviewer ? total.reviewer.employeeName : '없음'
     };
 
-    console.log(totalDetail.value);
 
     // 중간 평가 조회하기
     const midtermId = totalDetail.value.midtermId;
     const responseMid = await axios.get(`/api/performance-review/detail/${midtermId}`);
-    console.log(responseMid.data);
+
     if (responseMid.data.findDetailReview) {
       const reviewMid = responseMid.data.findDetailReview;
       midReviewItemList.value = reviewMid.reviewItemList;
     }
-    console.log(midReviewItemList.value);
 
     // 중간 평가 점수와 등급
     let scoreM = 0;
@@ -243,7 +240,7 @@ onMounted(() => {
 });
 
 const mappingScoreGrade = (score) => {
-  console.log('점수', score);
+
   if (score <= 95 && score > 85)
     return 'S';
   if (score <= 85 && score > 75)

@@ -39,7 +39,6 @@ const getVacationPolicy = async () => {
         const response = await axios.get(`/api/vacation/policy/${route.params.id}`);
         policies.value = response.data.result;
         plainContent.value = policies.value.content.replace(/<br\s*\/?>/gi, '\n');
-        console.log(response.data.result);
     } catch (error) {
         console.error("Error:", error);
     }

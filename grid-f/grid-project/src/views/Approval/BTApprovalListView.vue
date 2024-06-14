@@ -65,8 +65,6 @@
       state.approvalList = response.data.approvalEmpResultList;
       state.approvalList.type = "bt";
 
-      console.log(state.approvalList);
-
     } catch (error) {
       console.error('Fetch error: ' + error.message);
     }

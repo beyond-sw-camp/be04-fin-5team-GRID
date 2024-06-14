@@ -34,8 +34,6 @@
 
   onMounted(async() => {
     await fetchApproval(typeId, approvalId);
-
-    console.log(state.approval)
   })
 </script>
 

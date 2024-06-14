@@ -138,7 +138,6 @@ const showModal = (modalId) => {
 const fetchMemberGoal = async () => {
   try {
     // 팀원일때
-    console.log(user.value.id);
     const response = await axios.get(`/api/review-goal/member/${user.value.id}`);
 
     goalList.value = response.data.findGoalList;
@@ -152,7 +151,7 @@ const fetchLeaderGoal = async () => {
 
     // 팀장일 때
     const response = await axios.get(`/api/review-goal/leader/${user.value.id}`);
-    console.log(response.data.findGoalList);
+
     goalList.value = response.data.findGoalList;
   } catch (error) {
     console.error('에러 발생:', error);
@@ -160,9 +159,9 @@ const fetchLeaderGoal = async () => {
 };
 
 onMounted(() => {
-  console.log("1");
+
   if(user.value.duties.dutiesName === '팀원') {
-    console.log("2");
+
     fetchMemberGoal();
   } else {
     fetchLeaderGoal();
@@ -246,7 +245,7 @@ const getEmployeeNumber = (employee) => {
 };
 
 const goToDetailPage = (id) => {
-  console.log(id);
+
   router.push(`/performance-review/goal/detail/${id}`);
 };
 </script>

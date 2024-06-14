@@ -149,8 +149,6 @@ async function sendMail() {
     try {
         const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/${inputValue2.value}/name`);
 
-        console.log('result: ', response.data.result);
-
         if (response.data.result.employee_name == inputValue.value) {
             try {
                 const mailResponse = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/mails/pwd/${inputValue2.value}`);
@@ -173,7 +171,7 @@ async function sendMail() {
     } catch (error) {
         isLoading.value = false;
         if (error.response && error.response.status == 404) {
-            console.log(error.response.data.message);
+
             isWrong.value = true;
         } else {
             console.error(error);

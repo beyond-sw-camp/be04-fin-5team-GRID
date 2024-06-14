@@ -212,12 +212,10 @@ const fetchGoalAdd = async () => {
     const currentYear = new Date().getFullYear();   // 올해 년도
     const currentTime = getCurrentDateTimeString()  // 현재 시간
 
-    console.log(currentTime);
 
     // 올해 생성된 목표 평가가 있는지 확인
     const responseGoal = await axios.get(`/api/review-goal/${currentYear}/${user.value.id}`);
 
-    console.log('목표 조회', responseGoal.data);
     // 생성된 목표 없으면
     if (!responseGoal.data.findGoal) {
 
@@ -240,11 +238,9 @@ const fetchGoalAdd = async () => {
 
       const id = responseAdd.data.goal.id;
       const response = await axios.get(`/api/review-goal/detail/${id}`);
-      console.log(response.data);
       const goal = response.data.findDetailGoal;
       goalItemList.value = goal.goalItemList;
 
-      console.log(goalItemList.value);
       goalDetail.value = {
         id: id,
         year: goal.year,
@@ -260,7 +256,6 @@ const fetchGoalAdd = async () => {
       // 생성된 목표가 있을 때
       const id = responseGoal.data.findGoal.id;
       const response = await axios.get(`/api/review-goal/detail/${id}`);
-      console.log(response.data);
       const goal = response.data.findDetailGoal;
       goalItemList.value = goal.goalItemList;
 
@@ -396,7 +391,6 @@ async function memberSave() {
         }
       }
 
-      console.log(goalItemList.value);
       const sendData = {
         id: goalDetail.value.id,
         goalItemList: goalItemList.value.map(item => ({
@@ -478,7 +472,6 @@ async function submit() {
         }))
       };
 
-      console.log(sendData);
 
       try {
         const response = await axios.put(

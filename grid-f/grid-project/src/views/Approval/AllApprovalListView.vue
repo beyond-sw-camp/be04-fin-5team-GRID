@@ -190,7 +190,6 @@ const filteredItems = computed(() => {
   if (!filterStatus.value) {
     items =  state.approvalList;
   } else {
-    console.log(state.approvalList);
     items= state.approvalList.filter(item => item.approvalStatus === filterStatus.value);
   }
 

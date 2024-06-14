@@ -274,12 +274,12 @@ const showModal = (modalId) => {
 
 const fetchGoalDetail = async () => {
   try {
-    console.log(isMember.value);
+
     const route = router.currentRoute.value;
     const id = route.params.id;
     const response = await axios.get(`/api/review-goal/detail/${id}`);
     const goal = response.data.findDetailGoal;
-    console.log(response.data.findDetailGoal);
+
     goalItemList.value = goal.goalItemList;
 
     goalDetail.value = {
@@ -296,11 +296,11 @@ const fetchGoalDetail = async () => {
     if (isMember.value) {
       if (goalDetail.value.status === '작성 중' || goalDetail.value.status === '반려')
         isReadOnly.value = false;
-      console.log(goalDetail.value.status);
+
     } else {
       if (goalDetail.value.status === '상신' || goalDetail.value.status === '확인 중')
         isReadOnly.value = false;
-      console.log(isReadOnly.value);
+
     }
   } catch (error) {
     console.error('에러 발생:', error);
@@ -338,7 +338,7 @@ const getApprovalStatus = (status) => {
 
 onMounted(() => {
   try {
-    console.log(user.value.duties);
+
     if (user.value) {
       if (user.value.duties.dutiesName === '팀원')
         isMember.value = true;
@@ -388,7 +388,7 @@ async function deleteItem(index) {
   if (confirm("목표를 삭제하시겠습니까?")) {
     try {
       const id = goalItemList.value[index].id;
-      console.log(id);
+
 
       if (id != '') {
         await axios.delete(`/api/goal-item/${id}`);
@@ -513,7 +513,6 @@ async function submit() {
         }))
       };
 
-      console.log(sendData);
 
       try {
         const response = await axios.put(
@@ -550,7 +549,7 @@ async function leaderSave() {
           objection: item.objection || null
         }))
       };
-      console.log(sendData);
+
       try {
         const response = await axios.put(
             `/api/review-goal/read`,
@@ -600,7 +599,6 @@ async function approval() {
             `/api/review-goal/approval`,
             sendData
         );
-        console.log("확인: ", response);
 
         alert('목표를 승인했습니다.')
         if (response.data.href) {
@@ -627,9 +625,8 @@ async function denied() {
       // 반려의견이 하나도 없을 시
       let hasNoObjection = true;
 
-      console.log('반려:',goalItemList.value);
       for (const item of goalItemList.value) {
-        console.log(item.objection);
+
         if (item.objection) {
           hasNoObjection = false;
           break;
@@ -654,14 +651,12 @@ async function denied() {
         }))
       };
 
-      console.log(sendData);
 
       try {
         const response = await axios.put(
             `/api/review-goal/denied`,
             sendData
         );
-        console.log("확인: ", response);
 
         alert('목표를 반려했습니다.')
         if (response.data.href) {

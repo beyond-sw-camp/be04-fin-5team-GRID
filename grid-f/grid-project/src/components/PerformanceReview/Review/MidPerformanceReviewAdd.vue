@@ -216,7 +216,6 @@ const fetchReviewAdd = async () => {
 
     const responseGoal = await axios.get(`/api/review-goal/${currentYear}/${user.value.id}`);
 
-    console.log(responseGoal.data.findGoal.approvalStatus);
 
     // 승인된 목표만 중간 평가 생성 가능
     if(!responseGoal || responseGoal.data.findGoal.approvalStatus !== 'A'){
@@ -225,8 +224,6 @@ const fetchReviewAdd = async () => {
 
     const responseReview = await axios.get(`/api/performance-review/mid/${currentYear}/${user.value.id}`)
 
-
-    console.log(responseReview);
 
     if (!responseReview.data.findReview) {
       // 생성된 중간 평가 없을 때
@@ -377,7 +374,7 @@ async function memberSave() {
           reviewId: reviewDetail.value.id
         }))
       };
-      console.log(sendData);
+
       try {
         await axios.put(
             `/api/performance-review/in-progress`,
@@ -402,8 +399,6 @@ async function submit() {
   if (reviewDetail.value.status === '작성 중') {
     if (confirm("평가를 상신하시겠습니까?")) {
 
-
-      console.log(reviewItemList.value);
       // 필수 값이 입력되지 않은 경우
       for (const item of reviewItemList.value) {
         if (!item.goal || !item.actionItem || !item.metric || item.weight === undefined || item.weight === 0
@@ -432,7 +427,7 @@ async function submit() {
           reviewId: reviewDetail.value.id
         }))
       };
-      console.log(sendData);
+
       try {
         await axios.put(
             `/api/performance-review/submit`,

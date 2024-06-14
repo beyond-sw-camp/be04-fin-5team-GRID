@@ -99,8 +99,6 @@ const getAllVacationHistory = async () => {
     await axios.get("/api/vacation/details")
     .then(response => {
         histories.value = response.data;
-        console.log(response.data);
-        console.log(histories.value.result)
     })
 
 }

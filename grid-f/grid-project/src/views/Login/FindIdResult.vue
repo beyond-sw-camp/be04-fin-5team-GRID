@@ -33,7 +33,6 @@
 </template>
 
 <script setup>
-import { onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 const router = useRouter();
@@ -47,10 +46,6 @@ function login() {
 function findPwd() {
     router.push('/find/pwd');
 }
-
-onMounted(async () => {
-    console.log(route.query.email);
-}) 
 
 </script>
 

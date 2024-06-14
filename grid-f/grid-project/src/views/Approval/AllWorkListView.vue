@@ -116,8 +116,6 @@ const fetchApprovalList = async (typeId, approvalStatus, employeeId) => {
       throw new Error("response is not ok");
     }
 
-    console.log(url)
-
     switch (typeId) {
       case 1:
         state.btApprovalList = response.data.approvalEmpResultList.slice(0, 3);

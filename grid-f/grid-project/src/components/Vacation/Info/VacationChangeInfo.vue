@@ -295,7 +295,7 @@ const getAllVacationHistory = async () => {
 const getUserVacationHistory = async () => {
   try {
     const response = await axios.get(`/api/vacation/details/${userId.value}`);
-    console.log(response.value)
+
     histories.value = response.data.result;
     filteredHistories.value = histories.value; // 처음에 모든 기록을 보여줌
   } catch (error) {
@@ -390,7 +390,7 @@ const allUsers = async () => {
   try {
     const response = await axios.get('/api/users/list/all');
     users.value = response.data.result;
-    console.log(users.value);
+
   } catch (error) {
     console.error('Error:', error);
   }

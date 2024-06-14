@@ -218,7 +218,7 @@ const fetchAllAdTime = async () => {
 const fetchEmployeeAdTime = async () => {
   try{
     const response = await axios.get(`/api/ad-time/${userId.value}`);
-    console.log(response.data.adTimeDTOList);
+
     adTimeList.value = response.data.adTimeDTOList;
 
   } catch (error) {

@@ -249,7 +249,6 @@ const registApproval = async () => {
     const confirmed = window.confirm('휴가를 사용하시겠습니까?');
 
     if (confirmed) {
-      console.log(postData.startTime, postData.endTime);
       if (postData.content !== '' && postData.startTime !== ' 00:00:00' && postData.endTime !== ' 00:00:00' && postData.infoId !== 0) {
         if (vacationNum.value >= businessDaysBetween) {
           const response = await axios.post(`/api/approval/vacation`, postData, {

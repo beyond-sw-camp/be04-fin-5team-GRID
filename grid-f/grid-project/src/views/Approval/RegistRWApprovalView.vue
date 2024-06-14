@@ -96,7 +96,6 @@ const handleFileChange = (event) => {
 
   if (file) {
     fileCheck.value = true;
-    console.log("Selected file:", file, fileCheck.value);
     
   } else {
     fileCheck.value = false;
@@ -127,8 +126,6 @@ const registApproval = async () => {
 
   postData.requesterId = userId.value;
 
-  console.log(user.value.gender)
-
   const formData = new FormData();
 
   formData.append("file", fileInput);
@@ -138,7 +135,7 @@ const registApproval = async () => {
     const confirmed = window.confirm("결재를 제출하시겠습니까?");
     if (confirmed) {
       if (postData.content !== "" && postData.startTime !== "" && postData.endTime !== "" && fileCheck.value) {
-        console.log(formData);
+
         if (user.value.gender === "F") {
           const response = await axios.post(
               `/api/approval/rw`,

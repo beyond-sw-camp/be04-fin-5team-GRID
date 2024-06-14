@@ -230,7 +230,7 @@ const fetchReviewAdd = async () => {
       throw new Error('중간 평가가 확정되지 않았습니다.');
     }
 
-    console.log(responseReview);
+
 
     if (!responseReview.data.findReview) {
       // 생성된 연말 평가 없을 때
@@ -381,7 +381,7 @@ async function memberSave() {
           reviewId: reviewDetail.value.id
         }))
       };
-      console.log(sendData);
+
       try {
         await axios.put(
             `/api/performance-review/in-progress`,
@@ -432,7 +432,7 @@ async function submit() {
           reviewId: reviewDetail.value.id
         }))
       };
-      console.log(sendData);
+
       try {
         await axios.put(
             `/api/performance-review/submit`,

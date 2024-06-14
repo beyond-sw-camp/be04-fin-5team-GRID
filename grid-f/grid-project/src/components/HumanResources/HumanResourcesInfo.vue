@@ -92,11 +92,11 @@
                 {{ result.joinTime }}
             </div>
         </div>
-        <div class="admin-info-title" v-if="userRole === 'ROLE_ADMIN' || profileId == result.id">
+        <div class="admin-info-title" v-if="userRole === 'ROLE_ADMIN' || userId == result.id">
             관리 정보
         </div>
-        <hr id="hr-3" v-if="userRole === 'ROLE_ADMIN' || profileId == result.id">
-        <div class="admin-info-name" v-if="userRole === 'ROLE_ADMIN' || profileId == result.id"
+        <hr id="hr-3" v-if="userRole === 'ROLE_ADMIN' || userId == result.id">
+        <div class="admin-info-name" v-if="userRole === 'ROLE_ADMIN' || userId == result.id"
             style="color: rgb(180, 177, 177);">
             <div id="admin-info-name1" style="min-height: 48px;">
                 <i class="bi bi-pin-map" style="width: 12px; height: 12px;"></i> &nbsp;
@@ -123,7 +123,7 @@
                 퇴사 여부
             </div>
         </div>
-        <div class="admin-info-content" v-if="userRole === 'ROLE_ADMIN' || profileId == result.id">
+        <div class="admin-info-content" v-if="userRole === 'ROLE_ADMIN' || userId == result.id">
             <div id="admin-info-content1" style="min-height: 48px;">
                 {{ result.zipCode }} <br>
                 {{ result.address }}
@@ -163,14 +163,14 @@ const props = defineProps({
     profileId: {
         type: String,
         required: true
+    },
+    userId: {
+        type: String,
+        required: true
     }
 });
 
 const updateValues = () => {
-    console.log("Updated result:", props.result);
-    console.log("Updated userRole:", props.userRole);
-    console.log("updated id:", props.profileId);
-    console.log('퇴사 여부:', props.result.resignYn);
 
     joinType.value = props.result.joinType === 'NEW' ? '신입' : '경력';
     workType.value = props.result.workType === 'R' ? '정규직' : '계약직';

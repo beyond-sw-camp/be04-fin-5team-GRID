@@ -150,8 +150,6 @@
 
       state.approvalChainList = response.data.chainResultList;
 
-      console.log(state.approvalChainList);
-
     } catch {
       console.error('Fetch error: ' + error.message);
     }
@@ -190,7 +188,7 @@
 
   const registCheck = async () => {
     if (state.chain['comment'] === null){
-      console.log("댓글 입력 가능");
+
       state.registCheck = true;
     }
   }

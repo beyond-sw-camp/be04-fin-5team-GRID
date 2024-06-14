@@ -163,7 +163,7 @@ const findUser = async () => {
     employeeList.value = response.data.result;
     totalPages.value = response.data.totalPages;
     updateVisiblePages();
-    console.log("사원리스트 조회 결과: ", employeeList.value);
+
 };
 
 const updateVisiblePages = () => {
@@ -274,7 +274,6 @@ onMounted(async () => {
     if (token) {
         const decodedToken = parseJwt(token);
         userRole.value = decodedToken?.auth || '';
-        console.log('토큰:', decodedToken.auth);
     }
 
     try {

@@ -134,7 +134,7 @@ const fetchReviewDetails = async (id, revieweeId) => {
       }))
     }));
     await fetchReviewContents();
-    console.log(reviewItems.value);
+
   } catch (error) {
     console.error('Error fetching review details:', error);
   }

@@ -320,8 +320,6 @@ const resultAddress = computed(() => `${newAddress.value} ${newAddressDetail.val
 
 const changeValues = (user) => {
     if (!user) return;
-    console.log('props 확인: ', user);
-    console.log('props 확인: ', user.name);
 
     callNum.value = user.callNumber != null ? user.callNumber : '-';
     assignedTask.value = user.assignedTask != null ? user.assignedTask : '-';
@@ -357,7 +355,6 @@ onMounted(async () => {
     changeValues(props.user);
     const depRes = await axios.get('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/department/find-all');
     departmentInfo.value = depRes.data.result;
-    console.log('부서정보:', depRes.data.result);
 
     const teamRes = await axios.get('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/team/find-all');
     teamInfo.value = teamRes.data.result;
@@ -371,7 +368,6 @@ onMounted(async () => {
 
 const checkDuplicate = async (field) => {
     try {
-        console.log('체크 정보 확인: ', props.user[field]);
         const response = await axios.post('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/duplication', { field, value: props.user[field] });
         duplicateWarning.value[field] = response.data.isDuplicate;
     } catch (error) {
@@ -434,7 +430,6 @@ const resignUser = async () => {
             resignedTime: format(new Date(), 'yyyy-MM-dd')
         });
         alert('퇴사 처리 되었습니다.');
-        console.log('퇴사 처리 완료:', response.data);
         router.push(`/hr/profile/${props.user.employeeNumber}`);
 
     } catch (error) {
@@ -526,7 +521,6 @@ watch(
             dutiesId: newDutiesId.value || props.user.duties.id
         };
 
-        console.log('Updated user:', updatedUser); // 전체 값을 콘솔에 출력
         emit('update-user', updatedUser);
     }
 );

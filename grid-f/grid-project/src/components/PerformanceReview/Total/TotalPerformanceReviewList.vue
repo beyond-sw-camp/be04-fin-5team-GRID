@@ -122,7 +122,7 @@ const fetchMemberTotal = async () => {
   try {
     // 팀원일때
     const response = await axios.get(`/api/total-performance-review/reviewee/${user.value.id}`);
-    console.log(response.data.findTotalList);
+
     totalList.value = response.data.findTotalList;
   } catch (error) {
     console.error('에러 발생:', error);
@@ -133,7 +133,7 @@ const fetchLeaderTotal = async () => {
   try {
     // 팀장일 때
     const response = await axios.get(`/api/total-performance-review/reviewer/${user.value.id}`);
-    console.log(response.data.findTotalList);
+
     totalList.value = response.data.findTotalList;
   } catch (error) {
     console.error('에러 발생:', error);
@@ -144,7 +144,7 @@ const fetchAllTotal = async () => {
   try {
     // 관리자
     const response = await axios.get(`/api/total-performance-review`);
-    console.log(response.data.findTotalList);
+
     totalList.value = response.data.findTotalList;
   } catch (error) {
     console.error('에러 발생:', error);
@@ -249,7 +249,7 @@ const getEmployeeNumber = (employee) => {
 };
 
 const goToDetailPage = (id) => {
-  console.log(id);
+
   router.push(`/performance-review/total/detail/${id}`);
 };
 </script>

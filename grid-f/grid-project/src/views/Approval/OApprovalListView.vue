@@ -93,7 +93,6 @@
 
       state.overtimeInWeek = response.data;
 
-      console.log(userRole.value)
 
     } catch (error) {
       console.error('Fetch error: ' + error.message);

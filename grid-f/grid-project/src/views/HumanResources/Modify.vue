@@ -284,7 +284,6 @@ const updateUser = (newData) => {
         dutiesId: newData.dutiesId !== undefined ? newData.dutiesId : user.value.duties?.id,
     };
 
-    console.log("Updated user: ", updatedUser.value);
 };
 
 onMounted(() => {
@@ -306,7 +305,6 @@ onMounted(() => {
     }
 
     userRole.value = route.query.userRole;
-    console.log('권한확인: ', userRole.value);
 });
 </script>
 
