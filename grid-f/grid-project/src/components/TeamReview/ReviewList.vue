@@ -14,13 +14,13 @@
     <table class="reviewTable">
       <thead>
         <tr>
-          <th class="fixed-width">제목</th>
-          <th>연도</th>
-          <th>분기</th>
-          <th>작성 시간</th>
-          <th>평가 대상자</th>
-          <th>평가 확인</th>
-          <th>평가 하기</th>
+          <th class="fixed-width" style="width: 25%;">제목</th>
+          <th style="width: 7.5%;">연도</th>
+          <th style="width: 7.5%;">분기</th>
+          <th style="width: 30%;">작성 시간</th>
+          <th style="width: 10%;">평가 대상자</th>
+          <th style="width: 10%;">평가 확인</th>
+          <th style="width: 10%;">평가 하기</th>
         </tr>
       </thead>
       <tbody>
@@ -164,7 +164,7 @@ const fetchReviewItems = async (reviewId) => {
       options: ['S', 'A', 'B', 'C', 'D']
     }));
     selectedOptions.value = Array(response.data.result.length).fill(null);
-
+    console.log(reviewItems.value);
   } catch (error) {
     console.error('Error fetching review items:', error);
   }
@@ -244,7 +244,7 @@ const closeModal = () => {
 
 const selectOption = (itemIndex, option) => {
   selectedOptions.value[itemIndex] = option;
-
+  console.log(`Selected option ${option} for item ${itemIndex + 1}`);
 };
 
 const submitReview = async () => {
@@ -258,6 +258,8 @@ const submitReview = async () => {
     score: optionToScoreMap[selectedOptions.value[index]],
     historyId: selectedReview.value.id
   }));
+
+  console.log('Submitting payload:', JSON.stringify(reviewData));
 
   try {
     await axios.post('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/review', reviewData);
