@@ -58,7 +58,7 @@
 </a>
 
 ## 2-3. Context Map 
-<a href="https://github.com/beyond-sw-camp/be04-fin-5team-GRID/wiki/Context-Map" target="_blank">
+<a href="https://github.com/beyond-sw-camp/be04-fin-5team-GRID/wiki/DDD-(Context-Map)" target="_blank">
 <img src="https://img.shields.io/badge/Context Map-417598.svg?style=flat-square&logo=GitHub&logoColor=white"/>
 </a> 
 
