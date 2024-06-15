@@ -132,12 +132,12 @@ const optionToScoreMap = {
 
 const fetchReviews = async () => {
   try {
-    const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/review/assigned-review/${user.value.id}`);
+    const response = await axios.get(`http://localhost:10000/review/assigned-review/${user.value.id}`);
     const reviewList = response.data.result;
 
     await Promise.all(reviewList.map(async review => {
       try {
-        const revieweeResponse = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/id/${review.revieweeId}`);
+        const revieweeResponse = await axios.get(`http://localhost:10000/users/id/${review.revieweeId}`);
         review.revieweeName = revieweeResponse.data.result.name || 'Unknown';
         review.revieweeImage = revieweeResponse.data.result.image || '';
         review.revieweePosition = revieweeResponse.data.result.position || '';
@@ -157,7 +157,7 @@ const fetchReviews = async () => {
 
 const fetchReviewItems = async (reviewId) => {
   try {
-    const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/review/list`);
+    const response = await axios.get(`http://localhost:10000/review/list`);
     reviewItems.value = response.data.result.map(item => ({
       listName: item.listName,
       reviewId: item.id,
@@ -262,8 +262,8 @@ const submitReview = async () => {
   console.log('Submitting payload:', JSON.stringify(reviewData));
 
   try {
-    await axios.post('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/review', reviewData);
-    await axios.put(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/review/history`, {
+    await axios.post('http://localhost:10000/review', reviewData);
+    await axios.put(`http://localhost:10000/review/history`, {
       id: selectedReview.value.id
     });
 

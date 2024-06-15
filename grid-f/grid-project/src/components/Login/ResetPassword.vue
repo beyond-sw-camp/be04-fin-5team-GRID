@@ -124,7 +124,7 @@ async function resetPwd() {
     }
 
     try {
-        await axios.put(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/pwd`, {
+        await axios.put(`http://localhost:10000/users/pwd`, {
             pwd: inputValue.value,
             email: props.givenEmail
         });

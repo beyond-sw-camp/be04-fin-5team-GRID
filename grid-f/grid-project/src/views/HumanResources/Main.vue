@@ -156,8 +156,8 @@ const findUser = async () => {
     const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
 
     const url = searchCondition.value.trim() === ''
-        ? `http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/list?page=${currentPage.value}&size=${pageSize.value}`
-        : `http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/list/${encodeURIComponent(searchCondition.value)}?page=${currentPage.value}&size=${pageSize.value}`;
+        ? `http://localhost:10000/users/list?page=${currentPage.value}&size=${pageSize.value}`
+        : `http://localhost:10000/users/list/${encodeURIComponent(searchCondition.value)}?page=${currentPage.value}&size=${pageSize.value}`;
 
     response = await axios.get(url, { headers });
     employeeList.value = response.data.result;
@@ -184,7 +184,7 @@ const updateVisiblePages = () => {
 };
 
 const downloadCSV = async () => {
-    const response = await axios.get('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/list/all');
+    const response = await axios.get('http://localhost:10000/users/list/all');
     const csvData = response.data.result.map(
         item => ({
             name: item.name,

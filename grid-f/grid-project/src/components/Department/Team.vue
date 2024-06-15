@@ -241,12 +241,12 @@ const leaderSearchQuery = ref('');
 
 const fetchTeams = async () => {
   try {
-    const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/team/sub-department/${departmentId.value}`);
+    const response = await axios.get(`http://localhost:10000/team/sub-department/${departmentId.value}`);
     const teamData = await Promise.all(response.data.result.map(async team => {
-      const leaderResponse = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/id/${team.leaderId}`);
+      const leaderResponse = await axios.get(`http://localhost:10000/users/id/${team.leaderId}`);
       team.leaderName = leaderResponse.data.result.name;
       
-      const departmentResponse = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/department/${team.departmentId}`);
+      const departmentResponse = await axios.get(`http://localhost:10000/department/${team.departmentId}`);
       team.departmentName = departmentResponse.data.result.departmentName;
       
       return team;
@@ -260,7 +260,7 @@ const fetchTeams = async () => {
 
 const fetchDepartmentName = async () => {
   try {
-    const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/department/${departmentId.value}`);
+    const response = await axios.get(`http://localhost:10000/department/${departmentId.value}`);
     departmentName.value = response.data.result.departmentName;
     newTeam.value.departmentName = departmentName.value; // 부서명 설정
   } catch (error) {
@@ -270,7 +270,7 @@ const fetchDepartmentName = async () => {
 
 const fetchDepartments = async () => {
   try {
-    const response = await axios.get('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/department/find-all');
+    const response = await axios.get('http://localhost:10000/department/find-all');
     departments.value = response.data.result;
   } catch (error) {
     console.error('부서 정보를 가져오는 중 오류 발생:', error);
@@ -279,7 +279,7 @@ const fetchDepartments = async () => {
 
 const fetchLeaders = async () => {
   try {
-    const response = await axios.get('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/list/all');
+    const response = await axios.get('http://localhost:10000/users/list/all');
     leaders.value = response.data.result;
   } catch (error) {
     console.error('직원 정보를 가져오는 중 오류 발생:', error);
@@ -410,7 +410,7 @@ const addNewTeam = async () => {
   }
 
   try {
-    await axios.post('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/team', {
+    await axios.post('http://localhost:10000/team', {
       teamName: newTeam.value.teamName,
       departmentId: newTeam.value.departmentId,
       leaderId: newTeam.value.leaderId
@@ -460,7 +460,7 @@ const updateLeader = async () => {
   }
 
   try {
-    await axios.put(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/team/team-leader`, {
+    await axios.put(`http://localhost:10000/team/team-leader`, {
       id: selectedTeamId.value,
       leaderId: newLeaderId.value
     });
@@ -500,7 +500,7 @@ const toggleTeamStatus = async () => {
   }
 
   try {
-    const response = await axios.put('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/team/status', selectedTeams.value);
+    const response = await axios.put('http://localhost:10000/team/status', selectedTeams.value);
 
     if (response.status === 200) {
       alert('팀 상태가 수정되었습니다.');

@@ -88,7 +88,7 @@ const user = computed(() => store.state.user);
 
 const fetchDepartments = async () => {
   try {
-    const response = await axios.get('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/department/find-all');
+    const response = await axios.get('http://localhost:10000/department/find-all');
     departments.value = response.data.result
       .filter(department => department.departmentStatus !== 'N')  // departmentStatus가 N인 부서는 제외
       .map(department => ({
@@ -127,7 +127,7 @@ const goProfile = () => {
 
 const fetchTeams = async (departmentId) => {
   try {
-    const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/team/sub-department/${departmentId}`);
+    const response = await axios.get(`http://localhost:10000/team/sub-department/${departmentId}`);
     return response.data.result
       .map(team => ({
         ...team,
@@ -143,7 +143,7 @@ const fetchTeams = async (departmentId) => {
 
 const fetchEmployees = async (teamId) => {
   try {
-    const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/team-list/${teamId}`);
+    const response = await axios.get(`http://localhost:10000/users/team-list/${teamId}`);
     return response.data.result.sort((a, b) => a.sequence - b.sequence);  // sequence 순으로 정렬
   } catch (error) {
     console.error('직원 정보를 가져오는 데 실패했습니다:', error);
@@ -195,7 +195,7 @@ const handleDragEnd = async () => {
       sequence: index + 1
     }));
 
-    await axios.put('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/department/list', updatedDepartments, {
+    await axios.put('http://localhost:10000/department/list', updatedDepartments, {
       headers: {
         'Content-Type': 'application/json'
       }
@@ -224,7 +224,7 @@ const handleTeamDragEnd = async (event) => {
     if (team) {
       team.departmentId = newDepartmentId;
       try {
-        await axios.put(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/team`, {
+        await axios.put(`http://localhost:10000/team`, {
           id: team.id,
           teamName: team.teamName,
           teamStatus: team.teamStatus,

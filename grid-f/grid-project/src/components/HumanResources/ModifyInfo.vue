@@ -353,22 +353,22 @@ const changeValues = (user) => {
 
 onMounted(async () => {
     changeValues(props.user);
-    const depRes = await axios.get('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/department/find-all');
+    const depRes = await axios.get('http://localhost:10000/department/find-all');
     departmentInfo.value = depRes.data.result;
 
-    const teamRes = await axios.get('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/team/find-all');
+    const teamRes = await axios.get('http://localhost:10000/team/find-all');
     teamInfo.value = teamRes.data.result;
 
-    const dutiesRes = await axios.get('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/duties');
+    const dutiesRes = await axios.get('http://localhost:10000/users/duties');
     dutiesInfo.value = dutiesRes.data.result;
 
-    const positionRes = await axios.get('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/positions');
+    const positionRes = await axios.get('http://localhost:10000/users/positions');
     positionInfo.value = positionRes.data.result;
 });
 
 const checkDuplicate = async (field) => {
     try {
-        const response = await axios.post('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/duplication', { field, value: props.user[field] });
+        const response = await axios.post('http://localhost:10000/users/duplication', { field, value: props.user[field] });
         duplicateWarning.value[field] = response.data.isDuplicate;
     } catch (error) {
         if (error.response) {
@@ -425,7 +425,7 @@ const rejoin = () => {
 
 const resignUser = async () => {
     try {
-        const response = await axios.put(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/${props.user.employeeNumber}/status`, {
+        const response = await axios.put(`http://localhost:10000/users/${props.user.employeeNumber}/status`, {
             resignYn: 'Y',
             resignedTime: format(new Date(), 'yyyy-MM-dd')
         });
@@ -439,7 +439,7 @@ const resignUser = async () => {
 
 const rejoinUser = async () => {
     try {
-        const response = await axios.put(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/${props.user.employeeNumber}/status`, {
+        const response = await axios.put(`http://localhost:10000/users/${props.user.employeeNumber}/status`, {
             resignYn: 'N',
             resignedTime: null
         });
