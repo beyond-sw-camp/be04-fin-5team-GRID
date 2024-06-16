@@ -41,9 +41,9 @@ public class UserServiceImpl implements UserService{
         List<UserDTO> userList = userMapper.getList();
 
         // profile 이미지 조회 해서 입력
-        userList.forEach(user -> {
+        for (UserDTO user : userList) {
             user.setProfilePath(imgMapper.getProfileImg(user.getId()));
-        });
+        }
 
         return userList;
     }
@@ -56,7 +56,9 @@ public class UserServiceImpl implements UserService{
 
         Map<Integer, EmpStatusDTO> validAbsenceInfo = (absenceInfo != null) ? absenceInfo : new HashMap<>();
 
-        userList.forEach(user -> updateDetail(user, validAbsenceInfo));
+        List<Integer> userIds = userList.stream().map(UserDTO::getId).collect(Collectors.toList());
+        Map<Integer, String> profileImages = imgMapper.getProfileImages(userIds);
+        userList.forEach(user -> updateDetail(user, validAbsenceInfo, profileImages));
 
         long total = userMapper.countAllUsers();
 
@@ -72,14 +74,18 @@ public class UserServiceImpl implements UserService{
 
         Map<Integer, EmpStatusDTO> validateAbsenceInfo = (absenceInfo != null) ? absenceInfo : new HashMap<>();
 
-        userList.forEach(user -> updateDetail(user, validateAbsenceInfo));
+        List<Integer> userIds = userList.stream().map(UserDTO::getId).collect(Collectors.toList());
+        Map<Integer, String> profileImages = imgMapper.getProfileImages(userIds);
+
+        userList.forEach(user -> updateDetail(user, validateAbsenceInfo, profileImages));
 
         long total = userMapper.countUsersByName(name);
 
         return new PageImpl<>(userList, pageable, total);
     }
 
-    private void updateDetail(UserDTO user, Map<Integer, EmpStatusDTO> absenceInfo) {
+    private void updateDetail(UserDTO user, Map<Integer, EmpStatusDTO> absenceInfo,
+                              Map<Integer, String> profileImages) {
         if(user.getResignYn().equals(YN.N)) {
             EmpStatusDTO empStatusDTO = absenceInfo.get(user.getId());
             if (empStatusDTO != null) {
@@ -87,7 +93,7 @@ public class UserServiceImpl implements UserService{
                 user.setAbsenceContent(empStatusDTO.getStatus());
             }
         }
-        user.setProfilePath(imgMapper.getProfileImg(user.getId()));
+        user.setProfilePath(profileImages.get(user.getId()));
     }
 
     @Override
