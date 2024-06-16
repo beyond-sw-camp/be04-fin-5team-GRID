@@ -27,4 +27,13 @@
         AND T.type_name = '인감'
     </select>
 
+    <select id="getProfileImages" resultType="map">
+        SELECT id, profile_path
+        FROM users
+        WHERE id IN
+        <foreach item="id" index="index" collection="userIdList" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
 </mapper>

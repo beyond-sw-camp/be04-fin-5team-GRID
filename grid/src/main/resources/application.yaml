@@ -59,3 +59,7 @@ management:
 
 server:
   port: 10000
+
+email:
+  id: wj8300@gmail.com
+  password: "hnqh syhp xibh cohb"

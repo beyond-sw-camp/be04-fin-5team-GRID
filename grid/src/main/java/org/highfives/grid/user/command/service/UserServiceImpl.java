@@ -101,14 +101,12 @@ public class UserServiceImpl implements UserService{
     @Transactional
     public UserDTO modifyUser(int id, UserDTO modifyInfo) {
 
-        // 기존 정보 불러오기
         Employee oldInfo = userRepository.findById(id).orElseThrow(NullPointerException::new);
 
-        // 기존 정보와 새 정보 비교해서 정보 넣기
-        userRepository.save(inputNewInfo(oldInfo, modifyInfo));
+        Employee updatedData = inputNewInfo(oldInfo, modifyInfo);
+        userRepository.save(updatedData);
 
-        Employee resultInfo = userRepository.findById(modifyInfo.getId()).orElseThrow(NullPointerException::new);
-        return modelMapper.map(resultInfo, UserDTO.class);
+        return modelMapper.map(updatedData, UserDTO.class);
     }
 
     @Override
@@ -129,14 +127,16 @@ public class UserServiceImpl implements UserService{
             employeeList.add(inputNewMultiInfo(oldInfo, userDTO));
         }
 
-        // 검증에 성공한 경우 수정 단계
         userRepository.saveAll(employeeList);
 
         List<UserDTO> resultList = new ArrayList<>();
-        for (Employee employee : employeeList) {
-            Employee result = userRepository.findById(employee.getId()).orElseThrow(NullPointerException::new);
-            resultList.add(modelMapper.map(result, UserDTO.class));
-        }
+
+        employeeList.forEach(
+                employee -> {
+                    Employee result = userRepository.findById(employee.getId()).orElseThrow(NullPointerException::new);
+                    resultList.add(modelMapper.map(result, UserDTO.class));
+                }
+        );
 
         return resultList;
     }
