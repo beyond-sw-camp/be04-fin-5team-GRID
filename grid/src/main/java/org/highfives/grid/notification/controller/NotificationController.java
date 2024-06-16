@@ -1,6 +1,7 @@
 package org.highfives.grid.notification.controller;
 
 import org.highfives.grid.notification.service.EmailService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,12 +29,15 @@ public class NotificationController {
 //        emailService.sendEmail(fromEmail, password, toEmail, subject, body);
 //    }
 
+    @Value("email.id")
+    private String fromEmail;
+
+    @Value("email.password")
+    private String password;
+
     @GetMapping("/pwd/{email}")
     public void findPwd(@PathVariable("email") String email) {
         EmailService emailService = new EmailService();
-
-        String fromEmail = "wj8300@gmail.com";
-        String password = "hnqh syhp xibh cohb";
 
         String encodedEmail = Base64.getEncoder().encodeToString(email.getBytes());
         String urlEncodedEmail = URLEncoder.encode(encodedEmail, StandardCharsets.UTF_8);
