@@ -1,12 +1,7 @@
 package org.highfives.grid.user.query.repository;
 
 import org.apache.ibatis.annotations.Mapper;
-import org.highfives.grid.user.query.dto.DutiesDTO;
-import org.highfives.grid.user.query.dto.LeaderInfoDTO;
-import org.highfives.grid.user.query.dto.PositionDTO;
-import org.highfives.grid.user.query.dto.UserDTO;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.highfives.grid.user.query.dto.*;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
@@ -15,13 +10,17 @@ import java.util.Map;
 @Mapper
 public interface UserMapper {
 
-    LeaderInfoDTO getDepInfo(int id);
+    LeaderInfoDTO getTeamDepartmentInfo(int id);
 
-    LeaderInfoDTO getTeamInfo(int id);
+    List<NameAndPositionDTO> getNameAndPosition(@Param("leadersId") Map<String, Integer> leadersId);
 
-    LeaderInfoDTO getDepLeaderInfo(int depLeaderId);
-
-    LeaderInfoDTO getTeamLeaderInfo(int teamLeaderId);
+//    LeaderInfoDTO getDepInfo(int id);
+//
+//    LeaderInfoDTO getTeamInfo(int id);
+//
+//    LeaderInfoDTO getDepLeaderInfo(int depLeaderId);
+//
+//    LeaderInfoDTO getTeamLeaderInfo(int teamLeaderId);
 
     List<UserDTO> getList();
 
@@ -44,4 +43,5 @@ public interface UserMapper {
     List<UserDTO> findTeamList(int teamId);
 
     List<DutiesDTO> findDuties();
+
 }

@@ -121,8 +121,8 @@ class VacationServiceTest {
                 .departmentId(1)
                 .build();
         userRepository.save(employee);
-        int size = userService.findAllUsers().size();
-        int id = userService.findAllUsers().get(size - 1).getId();
+        int size = userService.findList().size();
+        int id = userService.findList().get(size - 1).getId();
 
         //when
         vacationService.giveAnnualVacationBeforeYear();
@@ -164,8 +164,8 @@ class VacationServiceTest {
                 .departmentId(1)
                 .build();
         userRepository.save(employee);
-        int size = userService.findAllUsers().size();
-        int id = userService.findAllUsers().get(size - 1).getId();
+        int size = userService.findList().size();
+        int id = userService.findList().get(size - 1).getId();
 
         //when
         vacationService.giveAnnualVacationAfterYear();
@@ -205,8 +205,8 @@ class VacationServiceTest {
                 .departmentId(1)
                 .build();
         userRepository.save(employee);
-        int size = userService.findAllUsers().size();
-        int id = userService.findAllUsers().get(size - 1).getId();
+        int size = userService.findList().size();
+        int id = userService.findList().get(size - 1).getId();
 
         //when
         vacationService.giveRegularVacation();
@@ -246,8 +246,8 @@ class VacationServiceTest {
                 .departmentId(1)
                 .build();
         userRepository.save(employee);
-        int size = userService.findAllUsers().size();
-        int id = userService.findAllUsers().get(size - 1).getId();
+        int size = userService.findList().size();
+        int id = userService.findList().get(size - 1).getId();
 
         //when
         vacationService.giveHealthVacation();
@@ -307,7 +307,7 @@ class VacationServiceTest {
         int employeeId = 1;
 
         //when
-        vacationService.plusVacationNum(1, 5);
+        vacationService.plusVacationNum(1, 5, 1);
 
         //then
         Assertions.assertThat(vacationInfoRepository.findByEmployeeIdAndTypeId(1, 1).getVacationNum()).isEqualTo(15.5);
@@ -322,7 +322,7 @@ class VacationServiceTest {
         int employeeId = 1;
 
         //when
-        vacationService.minusVacationNum(1, 5);
+        vacationService.minusVacationNum(1, 5,1);
 
         //then
         Assertions.assertThat(vacationInfoRepository.findByEmployeeIdAndTypeId(1, 1).getVacationNum()).isEqualTo(14.5);

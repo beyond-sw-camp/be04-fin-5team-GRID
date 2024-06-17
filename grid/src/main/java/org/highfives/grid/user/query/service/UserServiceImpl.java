@@ -4,10 +4,7 @@ import org.highfives.grid.approval.query.dto.EmpStatusDTO;
 import org.highfives.grid.user.command.aggregate.YN;
 import org.highfives.grid.user.exception.InvalidNumberException;
 import org.highfives.grid.user.exception.UserNotFoundException;
-import org.highfives.grid.user.query.dto.DutiesDTO;
-import org.highfives.grid.user.query.dto.LeaderInfoDTO;
-import org.highfives.grid.user.query.dto.PositionDTO;
-import org.highfives.grid.user.query.dto.UserDTO;
+import org.highfives.grid.user.query.dto.*;
 import org.highfives.grid.user.query.repository.UserMapper;
 import org.highfives.grid.user.query.repository.ImgMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,50 +47,48 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public Page<UserDTO> findAllUsers(Pageable pageable, Map<Integer, EmpStatusDTO> absenceInfo, String auth) {
-        long offset = pageable.getOffset();
-        int pageSize = pageable.getPageSize();
-        List<UserDTO> userList = userMapper.getUserList(offset, pageSize, auth);
-
-        Map<Integer, EmpStatusDTO> validAbsenceInfo = (absenceInfo != null) ? absenceInfo : new HashMap<>();
-
-        List<Integer> userIds = userList.stream().map(UserDTO::getId).collect(Collectors.toList());
-        Map<Integer, String> profileImages = imgMapper.getProfileImages(userIds);
-        userList.forEach(user -> updateDetail(user, validAbsenceInfo, profileImages));
-
-        long total = userMapper.countAllUsers();
-
-        return new PageImpl<>(userList, pageable, total);
+        return findUsers(pageable, absenceInfo, auth, null);
     }
 
     @Override
-    public Page<UserDTO> findUsersByName(String name, Pageable pageable, Map<Integer, EmpStatusDTO> absenceInfo,
-                                         String auth) {
+    public Page<UserDTO> findUsersByName(String name, Pageable pageable, Map<Integer, EmpStatusDTO> absenceInfo, String auth) {
+        return findUsers(pageable, absenceInfo, auth, name);
+    }
+
+    //중복된 코드를 최대한 빼보자.
+    private Page<UserDTO> findUsers(Pageable pageable, Map<Integer, EmpStatusDTO> absenceInfo, String auth, String name) {
         long offset = pageable.getOffset();
         int pageSize = pageable.getPageSize();
-        List<UserDTO> userList = userMapper.getUserListByName(name, offset, pageSize, auth);
 
-        Map<Integer, EmpStatusDTO> validateAbsenceInfo = (absenceInfo != null) ? absenceInfo : new HashMap<>();
+        List<UserDTO> userList = (name == null)
+                ? userMapper.getUserList(offset, pageSize, auth)
+                : userMapper.getUserListByName(name, offset, pageSize, auth);
 
-        List<Integer> userIds = userList.stream().map(UserDTO::getId).collect(Collectors.toList());
-        Map<Integer, String> profileImages = imgMapper.getProfileImages(userIds);
+        Map<Integer, EmpStatusDTO> validAbsenceInfo = (absenceInfo != null) ? absenceInfo : new HashMap<>();
 
-        userList.forEach(user -> updateDetail(user, validateAbsenceInfo, profileImages));
+        if (userList != null && !userList.isEmpty()) {
+            List<Integer> userIdList = userList.stream().map(UserDTO::getId).collect(Collectors.toList());
+            Map<Integer, String> profileImages = imgMapper.getProfileImages(userIdList);
+            userList.forEach(user -> updateDetail(user, validAbsenceInfo, profileImages));
+        }
 
-        long total = userMapper.countUsersByName(name);
+        long total = (name == null)
+                ? userMapper.countAllUsers()
+                : userMapper.countUsersByName(name);
 
         return new PageImpl<>(userList, pageable, total);
     }
 
-    private void updateDetail(UserDTO user, Map<Integer, EmpStatusDTO> absenceInfo,
-                              Map<Integer, String> profileImages) {
-        if(user.getResignYn().equals(YN.N)) {
+    private void updateDetail(UserDTO user, Map<Integer, EmpStatusDTO> absenceInfo, Map<Integer, String> profileImages) {
+        if (user.getResignYn().equals(YN.N)) {
             EmpStatusDTO empStatusDTO = absenceInfo.get(user.getId());
             if (empStatusDTO != null) {
                 user.setAbsenceYn(YN.Y);
                 user.setAbsenceContent(empStatusDTO.getStatus());
             }
         }
-        user.setProfilePath(profileImages.get(user.getId()));
+        if(profileImages != null)
+            user.setProfilePath(profileImages.get(user.getId()));
     }
 
     @Override
@@ -112,20 +107,22 @@ public class UserServiceImpl implements UserService{
             throw new UserNotFoundException("User not found with employee number: " + eNum);
         }
 
-        if( result.getResignYn() == YN.N) {
-            EmpStatusDTO absence = validAbsenceInfo.get(result.getId());
-            if (absence != null) {
-                result.setAbsenceYn(YN.Y);
-                result.setAbsenceContent(absence.getStatus());
-                result.setAbsenceStartTime(absence.getStartTime());
-                result.setAbsenceEndTime(absence.getEndTime());
-            }
-        }
+        if( result.getResignYn() == YN.N)
+            inputAbsenceInfo(validAbsenceInfo, result);
 
-        result.setProfilePath(imgMapper.getProfileImg(result.getId()));
-        result.setSealPath(imgMapper.getSealImg(result.getId()));
+        inputImagePaths(result);
 
         return result;
+    }
+
+    private void inputAbsenceInfo(Map<Integer, EmpStatusDTO> validAbsenceInfo, UserDTO result) {
+        EmpStatusDTO absence = validAbsenceInfo.get(result.getId());
+        if (absence != null) {
+            result.setAbsenceYn(YN.Y);
+            result.setAbsenceContent(absence.getStatus());
+            result.setAbsenceStartTime(absence.getStartTime());
+            result.setAbsenceEndTime(absence.getEndTime());
+        }
     }
 
     @Override
@@ -143,8 +140,8 @@ public class UserServiceImpl implements UserService{
             throw new UserNotFoundException("User not found with user id: " + id);
         }
 
-        result.setProfilePath(imgMapper.getProfileImg(result.getId()));
-        result.setSealPath(imgMapper.getSealImg(result.getId()));
+        inputImagePaths(result);
+
         return result;
     }
 
@@ -158,32 +155,69 @@ public class UserServiceImpl implements UserService{
             throw new UserNotFoundException("User not found with email: " + email);
         }
 
-        result.setProfilePath(imgMapper.getProfileImg(result.getId()));
-        result.setSealPath(imgMapper.getSealImg(result.getId()));
+        inputImagePaths(result);
+
         return result;
+    }
+
+    private void inputImagePaths(UserDTO result) {
+        Map<Integer, String> paths = imgMapper.getPaths(result.getId());
+        if(paths != null && !paths.isEmpty()) {
+            result.setSealPath(paths.get(1));
+            result.setProfilePath(paths.get(2));
+        }
     }
 
     @Override
     public LeaderInfoDTO findLeaderInfo(int id) {
 
-        LeaderInfoDTO result = new LeaderInfoDTO();
-        LeaderInfoDTO info = userMapper.getDepInfo(id);
-        result.setDepName(info.getDepName());
-        result.setDepLeaderId(info.getDepLeaderId());
+        // 기존 코드 남겨두기 (비교용)
 
-        info = userMapper.getDepLeaderInfo(info.getDepLeaderId());
-        result.setDepLeaderName(info.getDepLeaderName());
-        result.setDepLeaderPosition(info.getDepLeaderPosition());
+//        LeaderInfoDTO result = new LeaderInfoDTO();
+//        LeaderInfoDTO info = userMapper.getDepInfo(id);
+//        System.out.println("info = " + info);
+//
+//        result.setDepName(info.getDepName());
+//        result.setDepLeaderId(info.getDepLeaderId());
+//
+//        info = userMapper.getDepLeaderInfo(info.getDepLeaderId());
+//        result.setDepLeaderName(info.getDepLeaderName());
+//        result.setDepLeaderPosition(info.getDepLeaderPosition());
+//
+//        info = userMapper.getTeamInfo(id);
+//        result.setTeamName(info.getTeamName());
+//        result.setTeamLeaderId(info.getTeamLeaderId());
+//
+//        info = userMapper.getTeamLeaderInfo(info.getTeamLeaderId());
+//        result.setTeamLeaderName(info.getTeamLeaderName());
+//        result.setTeamLeaderPosition(info.getTeamLeaderPosition());
+//
+//
+//        System.out.println("result = " + result);
+//        return result;
 
-        info = userMapper.getTeamInfo(id);
-        result.setTeamName(info.getTeamName());
-        result.setTeamLeaderId(info.getTeamLeaderId());
 
-        info = userMapper.getTeamLeaderInfo(info.getTeamLeaderId());
-        result.setTeamLeaderName(info.getTeamLeaderName());
-        result.setTeamLeaderPosition(info.getTeamLeaderPosition());
+        LeaderInfoDTO info = userMapper.getTeamDepartmentInfo(id);
+        Map<String, Integer> leadersId = new HashMap<>();
+        leadersId.put("team", info.getTeamLeaderId());
+        leadersId.put("dep", info.getDepLeaderId());
 
-        return result;
+        List<NameAndPositionDTO> nameAndDutiesInfo = userMapper.getNameAndPosition(leadersId);;
+
+        nameAndDutiesInfo.forEach(
+                leaderInfo -> {
+                    if (leaderInfo.getId() == leadersId.get("team")) {
+                        info.setTeamLeaderName(leaderInfo.getName());
+                        info.setTeamLeaderPosition(leaderInfo.getPositionName());
+                    }
+                    if (leaderInfo.getId() == leadersId.get("dep")) {
+                        info.setDepLeaderName(leaderInfo.getName());
+                        info.setDepLeaderPosition(leaderInfo.getPositionName());
+                    }
+                }
+        );
+
+        return info;
     }
 
     @Override

@@ -4,6 +4,74 @@
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.highfives.grid.user.query.repository.UserMapper">
 
+    <resultMap id="teamDepartmentInfo" type="org.highfives.grid.user.query.dto.LeaderInfoDTO">
+        <id property="teamName" column="team_name"/>
+        <result property="teamLeaderId" column="team_leader_id"/>
+        <result property="depName" column="department_name"/>
+        <result property="depLeaderId" column="dep_leader_id"/>
+    </resultMap>
+
+    <select id="getTeamDepartmentInfo" parameterType="_int" resultMap="teamDepartmentInfo">
+        SELECT
+        D.department_name,
+        D.leader_id AS dep_leader_id,
+        T.team_name,
+        T.leader_id AS team_leader_id
+        FROM employee E
+        JOIN department D ON D.id = E.department_id
+        JOIN team T ON T.id = E.team_id
+        WHERE E.id = #{id}
+    </select>
+
+    <resultMap id="leadersInfo" type="org.highfives.grid.user.query.dto.NameAndPositionDTO">
+        <id property="id" column="id"/>
+        <result property="name" column="employee_name"/>
+        <result property="positionName" column="position_name"/>
+    </resultMap>
+
+    <select id="getNameAndPosition" resultMap="leadersInfo" parameterType="map">
+        SELECT
+        E.id,
+        E.employee_name,
+        P.position_name
+        FROM employee E
+        JOIN e_position P ON E.position_id = P.id
+        WHERE E.id = #{team}
+        OR E.id = #{dep}
+<!--        <foreach item="id" index="index" collection="leadersId" open="(" separator="," close=")">-->
+<!--            #{id}-->
+<!--        </foreach>-->
+    </select>
+    <!--  부서장 정보 조회  -->
+    <resultMap id="depLeaderInfo" type="org.highfives.grid.user.query.dto.LeaderInfoDTO">
+        <id property="depLeaderName" column="employee_name"/>
+        <result property="depLeaderPosition" column="position_name"/>
+    </resultMap>
+    <resultMap id="teamLeaderInfo" type="org.highfives.grid.user.query.dto.LeaderInfoDTO">
+        <id property="teamLeaderName" column="employee_name"/>
+        <result property="teamLeaderPosition" column="duties_name"/>
+    </resultMap>
+
+    <select id="getDepLeaderInfo" parameterType="_int" resultMap="depLeaderInfo">
+        SELECT
+        E.employee_name,
+        P.position_name
+        FROM employee E
+        JOIN e_position P ON E.position_id = P.id
+        WHERE E.id = #{id}
+    </select>
+
+    <!--  팀장 정보 조회  -->
+
+    <select id="getTeamLeaderInfo" parameterType="_int" resultMap="teamLeaderInfo">
+        SELECT
+        E.employee_name,
+        D.duties_name
+        FROM employee E
+        JOIN duties D ON E.duties_id = D.id
+        WHERE E.id = #{id}
+    </select>
+
     <!-- 부서 정보 불러오는 쿼리 -->
     <resultMap id="depInfo" type="org.highfives.grid.user.query.dto.LeaderInfoDTO">
         <id property="depName" column="department_name"/>
@@ -57,36 +125,6 @@
         D.duties_name
         FROM duties D
         ORDER By D.id DESC;
-    </select>
-
-    <!--  부서장 정보 조회  -->
-    <resultMap id="depLeaderInfo" type="org.highfives.grid.user.query.dto.LeaderInfoDTO">
-        <id property="depLeaderName" column="employee_name"/>
-        <result property="depLeaderPosition" column="position_name"/>
-    </resultMap>
-
-    <select id="getDepLeaderInfo" parameterType="_int" resultMap="depLeaderInfo">
-        SELECT
-        E.employee_name,
-        P.position_name
-        FROM employee E
-        JOIN e_position P ON E.position_id = P.id
-        WHERE E.id = #{id}
-    </select>
-
-    <!--  팀장 정보 조회  -->
-    <resultMap id="teamLeaderInfo" type="org.highfives.grid.user.query.dto.LeaderInfoDTO">
-        <id property="teamLeaderName" column="employee_name"/>
-        <result property="teamLeaderPosition" column="duties_name"/>
-    </resultMap>
-
-    <select id="getTeamLeaderInfo" parameterType="_int" resultMap="teamLeaderInfo">
-        SELECT
-        E.employee_name,
-        D.duties_name
-        FROM employee E
-        JOIN duties D ON E.duties_id = D.id
-        WHERE E.id = #{id}
     </select>
 
     <!--  유저 정보 조회 관련  -->

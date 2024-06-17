@@ -28,12 +28,20 @@
     </select>
 
     <select id="getProfileImages" resultType="map">
-        SELECT id, profile_path
-        FROM users
-        WHERE id IN
+        SELECT I.id, I.path
+        FROM employee_img I
+        WHERE I.type_id = 2
+        AND I.employee_id IN
         <foreach item="id" index="index" collection="userIdList" open="(" separator="," close=")">
             #{id}
         </foreach>
     </select>
+
+    <select id="getPaths" parameterType="_int" resultType="map">
+        SELECT I.type_id,I.path
+        FROM employee_img I
+        WHERE I.employee_id = #{id}
+    </select>
+
 
 </mapper>
