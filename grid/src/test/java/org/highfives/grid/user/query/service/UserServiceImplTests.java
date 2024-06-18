@@ -92,8 +92,8 @@ class UserServiceImplTests {
         return Stream.of(
                 Arguments.of("9999999", example),
                 Arguments.of("9999999", null),
-                Arguments.of("2401020", example),
-                Arguments.of("2401020", null)
+                Arguments.of("0201001", example),
+                Arguments.of("0201001", null)
         );
     }
 
@@ -143,7 +143,7 @@ class UserServiceImplTests {
     //리더(팀장, 부서장) 정보 조회
     @DisplayName("팀장, 부서장 정보 조회")
     @ParameterizedTest
-    @ValueSource(ints = {1, 2, 56})
+    @ValueSource(ints = {1, 2, 3})
     void findLeaderInfoTest(int id) {
         Assertions.assertDoesNotThrow(
                 () -> userService.findLeaderInfo(id)

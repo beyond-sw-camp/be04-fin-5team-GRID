@@ -11,4 +11,5 @@ public interface ImgMapper {
     String getProfileImg(int id);
     String getSealImg(int id);
     Map<Integer, String> getProfileImages(@Param("userIdList")List<Integer> userIds);
+    Map<Integer, String> getPaths(int id);
 }
