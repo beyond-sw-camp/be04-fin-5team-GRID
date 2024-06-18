@@ -1,31 +1,23 @@
 package org.highfives.grid.user.command.service;
 
-import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.highfives.grid.department.command.aggregate.Department;
 import org.highfives.grid.department.command.aggregate.Team;
 import org.highfives.grid.department.command.repository.DepartmentRepository;
 import org.highfives.grid.department.command.repository.TeamRepository;
-import org.highfives.grid.department.command.service.DepartmentServiceImpl;
-import org.highfives.grid.department.command.service.TeamServiceImpl;
+
 import org.highfives.grid.user.command.aggregate.*;
 import org.highfives.grid.user.command.dto.UserDTO;
 import org.highfives.grid.user.command.repository.UserRepository;
 import org.highfives.grid.user.exception.InvalidInfoException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -145,7 +137,7 @@ public class UserServiceImpl implements UserService{
     @Transactional
     public boolean deleteUser(String eNum) {
 
-        if(eNum.isEmpty() || eNum == null)
+        if(eNum.isEmpty())
             throw new InvalidInfoException("Employee number is empty");
 
         try {
@@ -253,6 +245,71 @@ public class UserServiceImpl implements UserService{
         return "Pass";
     }
 
+    /* 수정 시 중복값 체크와 등록 시 중복값 체크는 비슷해보이지만 다르다.
+    *  수정 : 입력 이메일과 검색으로 받아온 이메일이 같은 이메일을 입력 했을 때는 Pass 를 띄워줘야함
+    *  등록 : 기존 이메일과 같은 이메일을 사용하면 에러가 발생
+    * */
+    @Override
+    public String duplicateAddInfoCheck(UserDTO givenInfo) {
+        try {
+            String emailCheckResult = checkAddEmail(givenInfo.getEmail());
+            if (!emailCheckResult.equals("Pass")) {
+                return emailCheckResult;
+            }
+
+            String employeeNumberCheckResult = checkAddEmployeeNumber(givenInfo.getEmployeeNumber());
+            if (!employeeNumberCheckResult.equals("Pass")) {
+                return employeeNumberCheckResult;
+            }
+
+            String phoneNumberCheckResult = checkAddPhoneNumber(givenInfo.getPhoneNumber());
+            if (!phoneNumberCheckResult.equals("Pass")) {
+                return phoneNumberCheckResult;
+            }
+        } catch (Exception e) {
+            return "Unexpected error occurred: " + e.getMessage();
+        }
+
+        return "Pass";
+    }
+
+    private String checkAddEmail(String email) {
+        try {
+            Employee employee = userRepository.findByEmail(email);
+            if (employee != null) {
+                return "Already used Email: " + email;
+            }
+        } catch (Exception e) {
+            return "Error while checking Email: " + e.getMessage();
+        }
+        return "Pass";
+    }
+
+    private String checkAddEmployeeNumber(String employeeNumber) {
+        try {
+            Employee employee = userRepository.findByEmployeeNumber(employeeNumber);
+            if (employee != null) {
+                return "Already used Employee Number: " + employeeNumber;
+            }
+        } catch (Exception e) {
+            return "Error while checking Employee Number: " + e.getMessage();
+        }
+        return "Pass";
+    }
+
+    private String checkAddPhoneNumber(String phoneNumber) {
+        try {
+            Employee employee = userRepository.findByPhoneNumber(phoneNumber);
+            if (employee != null) {
+                return "Already used Phone Number: " + phoneNumber;
+            }
+        } catch (Exception e) {
+            return "Error while checking Phone Number: " + e.getMessage();
+        }
+        return "Pass";
+    }
+
+
     @Override
     public String multiInfoInputCheck(List<UserDTO> modifyList) {
 
@@ -345,55 +402,7 @@ public class UserServiceImpl implements UserService{
 
     private Employee inputNewInfo(Employee oldInfo, UserDTO givenInfo) {
 
-        if(givenInfo.getEmail() == null)
-            givenInfo.setEmail(oldInfo.getEmail());
-        if(givenInfo.getName() == null)
-            givenInfo.setName(oldInfo.getEmployeeName());
-        if(givenInfo.getEmployeeNumber() == null)
-            givenInfo.setEmployeeNumber(oldInfo.getEmployeeNumber());
-        if(givenInfo.getPhoneNumber() == null)
-            givenInfo.setPhoneNumber(oldInfo.getPhoneNumber());
-        if(givenInfo.getCallNumber() == null)
-            givenInfo.setCallNumber(oldInfo.getCallNumber());
-        if(givenInfo.getDepartmentId() == 0)
-            givenInfo.setDepartmentId(oldInfo.getDepartmentId());
-        if(givenInfo.getTeamId() == 0)
-            givenInfo.setTeamId(oldInfo.getTeamId());
-        if(givenInfo.getPositionId() == 0)
-            givenInfo.setPositionId(oldInfo.getPositionId());
-        if(givenInfo.getDutiesId() == 0) {
-            givenInfo.setDutiesId(oldInfo.getDutiesId());
-        }
-        if (givenInfo.getDutiesId() == 3) { // 팀장으로 변경할 경우 해당 팀 불러와서 leaderid 변경
-            Team team = teamRepository.findById(givenInfo.getTeamId()).orElseThrow(NullPointerException::new);
-            Employee oldLeader = userRepository.findById(team.getLeaderId()).orElseThrow(NullPointerException::new);
-            team.setLeaderId(oldInfo.getId());
-            oldLeader.setDutiesId(4);
-            teamRepository.save(team);
-            userRepository.save(oldLeader);
-        }
-        if (givenInfo.getDutiesId() == 2) { // 부서장으로 변경할 경우 해당 팀 불러와서 leaderid 변경
-            Department department = departmentRepository.findById(givenInfo.getDepartmentId()).orElseThrow(NullPointerException::new);
-            Employee oldLeader = userRepository.findById(department.getLeaderId()).orElseThrow(NullPointerException::new);
-            department.setLeaderId(oldInfo.getId());
-            oldLeader.setDutiesId(4);
-            departmentRepository.save(department);
-            userRepository.save(oldLeader);
-        }
-        if(givenInfo.getWorkType() == null)
-            givenInfo.setWorkType(oldInfo.getWorkType());
-        if(givenInfo.getContractEndTime() == null)
-            givenInfo.setContractEndTime(oldInfo.getContractEndTime());
-        if(givenInfo.getZipCode() == null)
-            givenInfo.setZipCode(oldInfo.getZipCode());
-        if(givenInfo.getAddress() == null)
-            givenInfo.setAddress(oldInfo.getAddress());
-
-        //관리자일 경우 1 ADMIN , 1이외의 유저일 경우 USER 넣음
-        if(oldInfo.getId() == 1)
-            givenInfo.setRole(Role.ROLE_ADMIN);
-        if(oldInfo.getId() != 1)
-            givenInfo.setRole(Role.ROLE_USER);
+        updateUserInfo(oldInfo, givenInfo);
 
         return Employee.builder()
                 .id(oldInfo.getId())
@@ -425,6 +434,61 @@ public class UserServiceImpl implements UserService{
                 .build();
     }
 
+    private void updateUserInfo(Employee oldInfo, UserDTO givenInfo) {
+        if(givenInfo.getEmail() == null)
+            givenInfo.setEmail(oldInfo.getEmail());
+        if(givenInfo.getName() == null)
+            givenInfo.setName(oldInfo.getEmployeeName());
+        if(givenInfo.getEmployeeNumber() == null)
+            givenInfo.setEmployeeNumber(oldInfo.getEmployeeNumber());
+        if(givenInfo.getPhoneNumber() == null)
+            givenInfo.setPhoneNumber(oldInfo.getPhoneNumber());
+        if(givenInfo.getCallNumber() == null)
+            givenInfo.setCallNumber(oldInfo.getCallNumber());
+        if(givenInfo.getDepartmentId() == 0)
+            givenInfo.setDepartmentId(oldInfo.getDepartmentId());
+        if(givenInfo.getTeamId() == 0)
+            givenInfo.setTeamId(oldInfo.getTeamId());
+        if(givenInfo.getPositionId() == 0)
+            givenInfo.setPositionId(oldInfo.getPositionId());
+        if(givenInfo.getDutiesId() == 0)
+            givenInfo.setDutiesId(oldInfo.getDutiesId());
+        if (givenInfo.getDutiesId() == 3)  // 팀장으로 변경할 경우 해당 팀 불러와서 leaderid 변경
+            updateTeamLeader(oldInfo, givenInfo);
+        if (givenInfo.getDutiesId() == 2)  // 부서장으로 변경할 경우 해당 팀 불러와서 leaderid 변경
+            updateDepartmentLeader(oldInfo, givenInfo);
+        if(givenInfo.getWorkType() == null)
+            givenInfo.setWorkType(oldInfo.getWorkType());
+        if(givenInfo.getContractEndTime() == null)
+            givenInfo.setContractEndTime(oldInfo.getContractEndTime());
+        if(givenInfo.getZipCode() == null)
+            givenInfo.setZipCode(oldInfo.getZipCode());
+        if(givenInfo.getAddress() == null)
+            givenInfo.setAddress(oldInfo.getAddress());
+        if(oldInfo.getId() == 1)
+            givenInfo.setRole(Role.ROLE_ADMIN);
+        if(oldInfo.getId() != 1)
+            givenInfo.setRole(Role.ROLE_USER);
+    }
+
+    private void updateDepartmentLeader(Employee oldInfo, UserDTO givenInfo) {
+        Department department = departmentRepository.findById(givenInfo.getDepartmentId()).orElseThrow(NullPointerException::new);
+        Employee oldLeader = userRepository.findById(department.getLeaderId()).orElseThrow(NullPointerException::new);
+        department.setLeaderId(oldInfo.getId());
+        oldLeader.setDutiesId(4);
+        departmentRepository.save(department);
+        userRepository.save(oldLeader);
+    }
+
+    private void updateTeamLeader(Employee oldInfo, UserDTO givenInfo) {
+        Team team = teamRepository.findById(givenInfo.getTeamId()).orElseThrow(NullPointerException::new);
+        Employee oldLeader = userRepository.findById(team.getLeaderId()).orElseThrow(NullPointerException::new);
+        team.setLeaderId(oldInfo.getId());
+        oldLeader.setDutiesId(4);
+        teamRepository.save(team);
+        userRepository.save(oldLeader);
+    }
+
     private Employee inputNewMultiInfo(Employee oldInfo, UserDTO givenInfo) {
 
         // 수정 받는 정보들 중에 null 값이 있을 시 기존 값으로 입력받음.
@@ -437,20 +501,10 @@ public class UserServiceImpl implements UserService{
         if(givenInfo.getDutiesId() == 0)
             givenInfo.setDutiesId(oldInfo.getDutiesId());
         if (givenInfo.getDutiesId() == 3) { // 팀장으로 변경할 경우 해당 팀 불러와서 leaderid 변경
-            Team team = teamRepository.findById(givenInfo.getTeamId()).orElseThrow(NullPointerException::new);
-            Employee oldLeader = userRepository.findById(team.getLeaderId()).orElseThrow(NullPointerException::new);
-            team.setLeaderId(oldInfo.getId());
-            oldLeader.setDutiesId(4);
-            teamRepository.save(team);
-            userRepository.save(oldLeader);
+            updateTeamLeader(oldInfo, givenInfo);
         }
         if (givenInfo.getDutiesId() == 2) { // 부서장으로 변경할 경우 해당 팀 불러와서 leaderid 변경
-            Department department = departmentRepository.findById(givenInfo.getDepartmentId()).orElseThrow(NullPointerException::new);
-            Employee oldLeader = userRepository.findById(department.getLeaderId()).orElseThrow(NullPointerException::new);
-            department.setLeaderId(oldInfo.getId());
-            oldLeader.setDutiesId(4);
-            departmentRepository.save(department);
-            userRepository.save(oldLeader);
+            updateDepartmentLeader(oldInfo, givenInfo);
         }
         if(givenInfo.getWorkType() == null)
             givenInfo.setWorkType(oldInfo.getWorkType());

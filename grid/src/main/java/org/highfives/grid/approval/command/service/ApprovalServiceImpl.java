@@ -212,8 +212,6 @@ public class ApprovalServiceImpl implements ApprovalService {
                 .infoId(vacationApprovalVO.getInfoId())
                 .build();
 
-        // info의 employeeId와 일치 확인?
-
         VacationApproval result = vApprovalRepository.save(vacationApproval);
 
         ReqAddApprovalChainVO request = new ReqAddApprovalChainVO(4, vacationApproval.getId(), vacationApprovalVO.getRequesterId());

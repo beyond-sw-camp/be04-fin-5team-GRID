@@ -60,10 +60,10 @@ class UserServiceImplTests {
     static Stream<Arguments> modifyInfo() {
 
         UserDTO userDTO = UserDTO.builder()
-                .id(71)
-                .email("test19990101@gmail.com")
-                .name("Admin3")
-                .employeeNumber("9999998")
+                .id(2)
+                .email("first@naver.com")
+                .name("유부장")
+                .employeeNumber("0201001")
                 .gender(M)
                 .pwd("")
                 .contractStartTime("2009-12-31")
@@ -104,7 +104,7 @@ class UserServiceImplTests {
                 .build();
 
         return Stream.of(
-                Arguments.of(71, userDTO),
+                Arguments.of(2, userDTO),
                 Arguments.of(1, userDTO2)
         );
     }
@@ -114,10 +114,10 @@ class UserServiceImplTests {
         List<UserDTO> userDTOList = new ArrayList<>();
 
         UserDTO userDTO = UserDTO.builder()
-                .id(71)
-                .email("test19990101@gmail.com")
-                .name("Admin3")
-                .employeeNumber("9999998")
+                .id(2)
+                .email("first@naver.com")
+                .name("유부장")
+                .employeeNumber("0201001")
                 .gender(M)
                 .pwd("")
                 .contractStartTime("2009-12-31")
@@ -170,10 +170,10 @@ class UserServiceImplTests {
         List<UserDTO> userDTOList = new ArrayList<>();
 
         UserDTO userDTO = UserDTO.builder()
-                .id(71)
-                .email("test19990101@gmail.com")
-                .name("Admin2")
-                .employeeNumber("9999998")
+                .id(2)
+                .email("first@naver.com")
+                .name("유부장")
+                .employeeNumber("0201001")
                 .gender(M)
                 .pwd("")
                 .contractStartTime("2009-12-31")
@@ -194,7 +194,7 @@ class UserServiceImplTests {
         UserDTO userDTO2 = UserDTO.builder()
                 .id(1)
                 .email("gridpeople2023@gmail.com")
-                .name("Admin")
+                .name("Admin3")
                 .employeeNumber("9999999")
                 .gender(M)
                 .pwd("")
@@ -224,7 +224,7 @@ class UserServiceImplTests {
     static Stream<Arguments> duplicateInfoCheckNormalData() {
 
         UserDTO userDTO = UserDTO.builder()
-                .email("test19990102@gmail.com")
+                .email("gridpeople2023@gmail.com")
                 .employeeNumber("9999997")
                 .phoneNumber("010-9999-2222")
                 .build();
@@ -237,21 +237,21 @@ class UserServiceImplTests {
     static Stream<Arguments> duplicateInfoCheckDuplicateData() {
 
         UserDTO userDTO = UserDTO.builder()
-                .email("test19990101@gmail.com")
-                .employeeNumber("9999997")
-                .phoneNumber("010-9999-2222")
+                .email("gridpeople2024@gmail.com")
+                .employeeNumber("9999998")
+                .phoneNumber("02-1234-5677")
                 .build();
 
         UserDTO userDTO2 = UserDTO.builder()
-                .email("test19990102@gmail.com")
-                .employeeNumber("9999998")
-                .phoneNumber("010-9999-2222")
+                .email("gridpeople2023@gmail.com")
+                .employeeNumber("9999999")
+                .phoneNumber("02-1234-5677")
                 .build();
 
         UserDTO userDTO3 = UserDTO.builder()
-                .email("test19990102@gmail.com")
-                .employeeNumber("9999997")
-                .phoneNumber("010-9999-1111")
+                .email("gridpeople2023@gmail.com")
+                .employeeNumber("9999998")
+                .phoneNumber("02-1234-5678")
                 .build();
 
         return Stream.of(
@@ -352,10 +352,10 @@ class UserServiceImplTests {
     @ParameterizedTest
     @MethodSource("duplicateInfoCheckNormalData")
     @Transactional
-    void duplicateInfoCheckTest1(UserDTO userDTO) {
+    void duplicateAddInfoCheckTest1(UserDTO userDTO) {
 
         // 각각 이메일, 사번, 휴대폰 번호가 중복되는 경우에 Pass 이외의 에러 문구 발생
-        Assertions.assertEquals("Pass", userService.duplicateInfoCheck(userDTO)
+        Assertions.assertEquals("Pass", userService.duplicateAddInfoCheck(userDTO)
         );
     }
 
@@ -363,10 +363,10 @@ class UserServiceImplTests {
     @ParameterizedTest
     @MethodSource("duplicateInfoCheckDuplicateData")
     @Transactional
-    void duplicateInfoCheckTest2(UserDTO userDTO) {
+    void duplicateAddInfoCheckTest2(UserDTO userDTO) {
 
         // 각각 이메일, 사번, 휴대폰 번호가 중복되는 경우에 Pass 이외의 에러 문구 발생
-        Assertions.assertNotEquals("Pass", userService.duplicateInfoCheck(userDTO)
+        Assertions.assertNotEquals("Pass", userService.duplicateAddInfoCheck(userDTO)
         );
     }
 
@@ -441,7 +441,7 @@ class UserServiceImplTests {
     void changeGenderTest() {
 
         Assertions.assertFalse(userService.changeGender(1));
-        Assertions.assertTrue(userService.changeGender(3));
+        Assertions.assertTrue(userService.changeGender(9));
     }
 
     @DisplayName("비밀번호 리셋 테스트 - 정상 동작")

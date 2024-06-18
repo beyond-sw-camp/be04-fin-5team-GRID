@@ -98,31 +98,31 @@
 <!--        WHERE E.id = #{id}-->
 <!--    </select>-->
 
-    <!--   직위 정보 불러오는 쿼리   -->
-<!--    <resultMap id="positionInfo" type="org.highfives.grid.user.query.dto.PositionDTO">-->
-<!--        <id property="id" column="id"/>-->
-<!--        <result property="positionName" column="position_name"/>-->
-<!--    </resultMap>-->
-<!--    <select id="findPositions" resultMap="positionInfo">-->
-<!--        SELECT-->
-<!--        P.id,-->
-<!--        P.position_name-->
-<!--        FROM e_position P-->
-<!--        ORDER BY P.id ASC;-->
-<!--    </select>-->
+<!--       직위 정보 불러오는 쿼리-->
+    <resultMap id="positionInfo" type="org.highfives.grid.user.query.dto.PositionDTO">
+        <id property="id" column="id"/>
+        <result property="positionName" column="position_name"/>
+    </resultMap>
+    <select id="findPositions" resultMap="positionInfo">
+        SELECT
+        P.id,
+        P.position_name
+        FROM e_position P
+        ORDER BY P.id ASC;
+    </select>
 
-    <!--   직책 정보 불러오는 쿼리   -->
-<!--    <resultMap id="dutiesInfo" type="org.highfives.grid.user.query.dto.DutiesDTO">-->
-<!--        <id property="id" column="id"/>-->
-<!--        <result property="dutiesName" column="duties_name"/>-->
-<!--    </resultMap>-->
-<!--    <select id="findDuties" resultMap="dutiesInfo">-->
-<!--        SELECT-->
-<!--        D.id,-->
-<!--        D.duties_name-->
-<!--        FROM duties D-->
-<!--        ORDER By D.id DESC;-->
-<!--    </select>-->
+<!--       직책 정보 불러오는 쿼리-->
+    <resultMap id="dutiesInfo" type="org.highfives.grid.user.query.dto.DutiesDTO">
+        <id property="id" column="id"/>
+        <result property="dutiesName" column="duties_name"/>
+    </resultMap>
+    <select id="findDuties" resultMap="dutiesInfo">
+        SELECT
+        D.id,
+        D.duties_name
+        FROM duties D
+        ORDER By D.id DESC;
+    </select>
 
     <!--  유저 정보 조회 관련  -->
     <resultMap id="userInfo" type="org.highfives.grid.user.query.dto.UserDTO">

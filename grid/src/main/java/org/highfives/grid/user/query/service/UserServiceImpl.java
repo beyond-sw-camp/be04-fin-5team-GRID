@@ -171,32 +171,6 @@ public class UserServiceImpl implements UserService{
     @Override
     public LeaderInfoDTO findLeaderInfo(int id) {
 
-        // 기존 코드 남겨두기 (비교용)
-
-//        LeaderInfoDTO result = new LeaderInfoDTO();
-//        LeaderInfoDTO info = userMapper.getDepInfo(id);
-//        System.out.println("info = " + info);
-//
-//        result.setDepName(info.getDepName());
-//        result.setDepLeaderId(info.getDepLeaderId());
-//
-//        info = userMapper.getDepLeaderInfo(info.getDepLeaderId());
-//        result.setDepLeaderName(info.getDepLeaderName());
-//        result.setDepLeaderPosition(info.getDepLeaderPosition());
-//
-//        info = userMapper.getTeamInfo(id);
-//        result.setTeamName(info.getTeamName());
-//        result.setTeamLeaderId(info.getTeamLeaderId());
-//
-//        info = userMapper.getTeamLeaderInfo(info.getTeamLeaderId());
-//        result.setTeamLeaderName(info.getTeamLeaderName());
-//        result.setTeamLeaderPosition(info.getTeamLeaderPosition());
-//
-//
-//        System.out.println("result = " + result);
-//        return result;
-
-
         LeaderInfoDTO info = userMapper.getTeamDepartmentInfo(id);
         Map<String, Integer> leadersId = new HashMap<>();
         leadersId.put("team", info.getTeamLeaderId());

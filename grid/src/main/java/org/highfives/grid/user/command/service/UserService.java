@@ -32,4 +32,5 @@ public interface UserService extends UserDetailsService {
 
     boolean changeGender(int userId);
 
+    String duplicateAddInfoCheck(UserDTO addInfo);
 }
