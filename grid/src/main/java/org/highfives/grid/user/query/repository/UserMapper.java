@@ -12,7 +12,7 @@ public interface UserMapper {
 
     LeaderInfoDTO getTeamDepartmentInfo(int id);
 
-    List<NameAndPositionDTO> getNameAndPosition(@Param("leadersId") Map<String, Integer> leadersId);
+    List<NameAndPositionDTO> getNameAndPositionAndEmail(@Param("leadersId") Map<String, Integer> leadersId);
 
 //    LeaderInfoDTO getDepInfo(int id);
 //

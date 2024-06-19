@@ -176,17 +176,19 @@ public class UserServiceImpl implements UserService{
         leadersId.put("team", info.getTeamLeaderId());
         leadersId.put("dep", info.getDepLeaderId());
 
-        List<NameAndPositionDTO> nameAndDutiesInfo = userMapper.getNameAndPosition(leadersId);;
+        List<NameAndPositionDTO> nameAndDutiesInfo = userMapper.getNameAndPositionAndEmail(leadersId);;
 
         nameAndDutiesInfo.forEach(
                 leaderInfo -> {
                     if (leaderInfo.getId() == leadersId.get("team")) {
                         info.setTeamLeaderName(leaderInfo.getName());
                         info.setTeamLeaderPosition(leaderInfo.getPositionName());
+                        info.setTeamLeaderEmail(leaderInfo.getEmail());
                     }
                     if (leaderInfo.getId() == leadersId.get("dep")) {
                         info.setDepLeaderName(leaderInfo.getName());
                         info.setDepLeaderPosition(leaderInfo.getPositionName());
+                        info.setDepLeaderEmail(leaderInfo.getEmail());
                     }
                 }
         );

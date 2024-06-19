@@ -13,4 +13,5 @@ public class NameAndPositionDTO {
     private int id;
     private String name;
     private String positionName;
+    private String email;
 }
