@@ -1,0 +1,134 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKERHUB_USERNAME = 't4e1'
+        GITHUB_URL = 'https://github.com/beyond-sw-camp/be04-fin-5team-GRID.git'
+        AWS_DEFAULT_REGION = 'ap-northeast-2'
+    }
+
+    stages {
+        stage('Preparation') {
+            steps {
+                script {
+                    sh 'docker --version'
+                }
+            }
+        }
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: "${env.GITHUB_URL}"
+            }
+        }
+        stage('Detect Changes') {
+            steps {
+                script {
+                    def changeLogSets = currentBuild.changeSets
+                    def backendChanges = false
+
+                    for (changeLogSet in changeLogSets) {
+                        for (entry in changeLogSet.items) {
+                            for (file in entry.affectedFiles) {
+                                if (file.path.startsWith('grid/')) {
+                                    backendChanges = true
+                                }
+                            }
+                        }
+                    }
+
+                    env.BACKEND_CHANGES = backendChanges.toString()
+                    echo "Backend changes: ${backendChanges}"
+                }
+            }
+        }
+        stage('Build Backend') {
+            when {
+                expression {
+                    return env.BACKEND_CHANGES.toBoolean()
+                }
+            }
+            steps {
+                script {
+                    dir('grid') {
+                        sh "chmod +x ./gradlew"
+                        sh "./gradlew clean build -P jasypt.encryptor.password=gridhr"
+                        sh "cp ./build/libs/*.jar ."
+                        sh "docker build -t ${DOCKERHUB_USERNAME}/grid-backend:latest -f Dockerfile ."
+                        withCredentials([usernamePassword(credentialsId: 'DOCKERHUB_PASSWORD', usernameVariable: 'DOCKERHUB_USER', passwordVariable: 'DOCKERHUB_PASS')]) {
+                            sh "echo $DOCKERHUB_PASS | docker login --username $DOCKERHUB_USER --password-stdin"
+                            sh "docker push ${DOCKERHUB_USERNAME}/grid-backend:latest"
+                        }
+                    }
+                }
+            }
+        }
+        stage('Generate deployment package') {
+            when {
+                expression {
+                    return env.BACKEND_CHANGES.toBoolean()
+                }
+            }
+            steps {
+                script {
+                    sh '''
+                        mkdir -p deploy/.ebextensions
+                        pwd
+                        cp ./grid/docker-compose.yml deploy/docker-compose.yml
+                        cp ./grid/.ebextensions/00-set-timezone.config deploy/.ebextensions/00-set-timezone.config
+                        cd deploy
+                        zip -r deploy.zip .
+                        ls -la
+                    '''
+                }
+            }
+        }
+        stage('S3 Upload') {
+            when {
+                expression {
+                    return env.BACKEND_CHANGES.toBoolean()
+                }
+            }
+            steps {
+                withCredentials([string(credentialsId: 'AWS_ACCESS_KEY_ID', variable: 'AWS_ACCESS_KEY_ID'),
+                                 string(credentialsId: 'AWS_SECRET_ACCESS_KEY', variable: 'AWS_SECRET_ACCESS_KEY')]) {
+                    script {
+                        sh '''
+                            aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+                            aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+                            aws configure set default.region $AWS_DEFAULT_REGION
+                            pwd
+                            aws s3 cp ./deploy/deploy.zip s3://elasticbeanstalk-ap-northeast-2-736067063849/grid-backend/deploy.zip --region $AWS_DEFAULT_REGION
+                        '''
+                    }
+                }
+            }
+        }
+        stage('Deploy to Elastic Beanstalk') {
+            when {
+                expression {
+                    return env.BACKEND_CHANGES.toBoolean()
+                }
+            }
+            steps {
+                withCredentials([string(credentialsId: 'AWS_ACCESS_KEY_ID', variable: 'AWS_ACCESS_KEY_ID'),
+                                 string(credentialsId: 'AWS_SECRET_ACCESS_KEY', variable: 'AWS_SECRET_ACCESS_KEY')]) {
+                    script {
+                        sh '''
+                            aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+                            aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+                            aws configure set default.region $AWS_DEFAULT_REGION
+                            aws elasticbeanstalk create-application-version --region $AWS_DEFAULT_REGION \
+                                --application-name grid-backend \
+                                --version-label beanstalk_v${BUILD_NUMBER} \
+                                --source-bundle S3Bucket="elasticbeanstalk-ap-northeast-2-736067063849",S3Key="grid-backend/deploy.zip"
+                            aws elasticbeanstalk update-environment --region $AWS_DEFAULT_REGION \
+                                --environment-name grid-backend-env \
+                                --version-label beanstalk_v${BUILD_NUMBER}
+                        '''
+                    }
+                }
+            }
+        }
+    }
+}
+

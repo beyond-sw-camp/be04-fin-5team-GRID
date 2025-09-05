@@ -66,7 +66,7 @@ const userId = ref('');
 
 const fetchReviews = async () => {
   try {
-    const response = await axios.get('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/review/list');
+    const response = await axios.get('http://localhost:10000/review/list');
     reviews.value = response.data.result;
     reviews.value.sort((a, b) => a.id - b.id);
   } catch (error) {
@@ -117,7 +117,7 @@ const deleteSelectedReviews = async () => {
 
   try {
     for (const reviewId of selectedReviews.value) {
-      await axios.delete(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/review/list/${reviewId}`);
+      await axios.delete(`http://localhost:10000/review/list/${reviewId}`);
     }
     reviews.value = reviews.value.filter(review => !selectedReviews.value.includes(review.id));
     selectedReviews.value = [];
@@ -136,7 +136,7 @@ const addReview = async () => {
   }
 
   try {
-    const response = await axios.post('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/review/list', {
+    const response = await axios.post('http://localhost:10000/review/list', {
       listName: newReviewText.value
     });
     reviews.value.push(response.data.result);

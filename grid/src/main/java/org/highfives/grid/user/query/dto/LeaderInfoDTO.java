@@ -12,9 +12,11 @@ public class LeaderInfoDTO {
     private String teamName;
     private int teamLeaderId;
     private String teamLeaderName;
+    private String teamLeaderEmail;
     private String teamLeaderPosition;
     private String depName;
     private int depLeaderId;
     private String depLeaderName;
+    private String depLeaderEmail;
     private String depLeaderPosition;
 }

@@ -127,7 +127,7 @@ const showModal = (modalId) => {
 
 const fetchReviews = async () => {
   try {
-    const response = await axios.get(`http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/review/employees-history?page=${currentPage.value}&size=${itemsPerPage.value}`);
+    const response = await axios.get(`http://localhost:10000/review/employees-history?page=${currentPage.value}&size=${itemsPerPage.value}`);
     const reviewPage = response.data;
     reviews.value = reviewPage.list;
     totalPages.value = Math.ceil(reviewPage.total / itemsPerPage.value); // 총 페이지 수를 계산합니다.
@@ -272,7 +272,7 @@ const addNewReview = async () => {
 
     const confirmed = window.confirm('생성하시겠습니까?');
     if (confirmed) {
-      await axios.post('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/review/history', newReview);
+      await axios.post('http://localhost:10000/review/history', newReview);
       alert('생성 완료되었습니다!');
       await fetchReviews();
       closeModal('addReview');

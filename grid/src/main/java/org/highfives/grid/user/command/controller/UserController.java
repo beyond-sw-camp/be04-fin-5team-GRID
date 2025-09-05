@@ -5,6 +5,7 @@ import org.highfives.grid.user.command.service.ImgService;
 import org.highfives.grid.user.command.service.UserService;
 import org.highfives.grid.user.command.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,28 +29,6 @@ public class UserController {
                           ImgService imgService) {
         this.userService = userService;
         this.imgService =imgService;
-    }
-
-    // 신규 유저 등록 (단일)
-    @PostMapping
-    public ResponseEntity<ResUserVO> addNewUser(@RequestBody UserDTO givenInfo,
-                                                MultipartFile multipartFile) throws Exception{
-
-        Map<String, String> uploadResult = new HashMap<>();
-
-        if(multipartFile != null) {
-            uploadResult = imgService.imgS3Upload(multipartFile);
-        }
-
-        if(duplicateInfoCheck(givenInfo) != null)
-            return duplicateInfoCheck(givenInfo);
-
-        UserDTO result = userService.addNewUser(givenInfo, uploadResult);
-
-        ResUserVO response = new ResUserVO(
-                201, "Success to add new user", "/user", result);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     // 다중 유저 가입 ( csv 파싱은 프론트에서 처리해서 json 형태로 전해준다고 가정 )12
@@ -133,10 +112,10 @@ public class UserController {
 
         //받아온 데이터 간의 중복 체크가 정상적으로 종료 시, DB의 데이터와 중복 체크
         for(UserDTO info : modifyList) {
-            if( duplicateInfoCheck(info) != null ){
+            if( duplicateAddInfoCheck(info) != null ){
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body(new ResUserListVO (
-                                400, duplicateInfoCheck(info).getBody().getMessage(),
+                                400, duplicateAddInfoCheck(info).getBody().getMessage(),
                                 "/users", null));
             }
         }
@@ -201,7 +180,6 @@ public class UserController {
 
     @PostMapping("/duplication")
     public ResponseEntity<ResUserVO> duplicateInfoCheck(UserDTO givenInfo) {
-        System.out.println("givenInfo = " + givenInfo);
         String result = userService.duplicateInfoCheck(givenInfo);
         if (!result.equals("Pass")) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -209,7 +187,17 @@ public class UserController {
                             userService.duplicateInfoCheck(givenInfo),
                             "/user", null ));
         }
+        return null;
+    }
 
+    private ResponseEntity<ResUserVO> duplicateAddInfoCheck(UserDTO addInfo) {
+        String result = userService.duplicateAddInfoCheck(addInfo);
+        if (!result.equals("Pass")) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ResUserVO(400,
+                            userService.duplicateAddInfoCheck(addInfo),
+                            "/user", null ));
+        }
         return null;
     }
 }

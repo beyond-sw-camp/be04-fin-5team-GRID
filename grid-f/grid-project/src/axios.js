@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-axios.defaults.baseURL = 'http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com';
+axios.defaults.baseURL = 'http://localhost:10000';
 
 // axios 인터셉터 설정 (필요한 경우)
 axios.interceptors.request.use(config => {

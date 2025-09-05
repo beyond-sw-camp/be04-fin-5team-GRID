@@ -282,16 +282,16 @@ const validatePhoneNumber = (employee) => {
 };
 
 const fetchDropdownData = async () => {
-    const departmentRes = await axios.get('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/department/find-all');
+    const departmentRes = await axios.get('http://localhost:10000/department/find-all');
     departments.value = departmentRes.data.result.map(d => ({ value: d.id, text: d.departmentName }));
 
-    const teamRes = await axios.get('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/team/find-all');
+    const teamRes = await axios.get('http://localhost:10000/team/find-all');
     teams.value = teamRes.data.result.map(t => ({ value: t.id, text: t.teamName }));
 
-    const positionRes = await axios.get('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/positions');
+    const positionRes = await axios.get('http://localhost:10000/users/positions');
     positions.value = positionRes.data.result.map(p => ({ value: p.id, text: p.positionName }));
 
-    const dutiesRes = await axios.get('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/duties');
+    const dutiesRes = await axios.get('http://localhost:10000/users/duties');
     dutiesList.value = dutiesRes.data.result.map(d => ({ value: d.id, text: d.dutiesName }));
 };
 
@@ -505,7 +505,7 @@ const submitForm = async () => {
     }
 
     try {
-        await axios.post('http://grid-backend-env.eba-p6dfcnta.ap-northeast-2.elasticbeanstalk.com/users/list', cleanedEmployees);
+        await axios.post('http://localhost:10000/users/list', cleanedEmployees);
         alert('회원 등록이 성공하였습니다.');
         router.push('/hr');
     } catch (e) {
